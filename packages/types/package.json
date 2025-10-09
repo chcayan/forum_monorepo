@@ -1,0 +1,11 @@
+{
+  "name": "@forum-monorepo/types",
+  "version": "1.0.0",
+  "description": "types",
+  "main": "index.ts",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.18.1"
+}

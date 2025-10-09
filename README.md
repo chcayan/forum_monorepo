@@ -27,6 +27,12 @@
 pnpm i
 ```
 
+安装全局依赖
+
+```bash
+pnpm i -g tsc tsc-alias
+```
+
 修改后端配置
 
 ```ts

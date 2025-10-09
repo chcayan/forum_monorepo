@@ -23,6 +23,10 @@
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.18.1",
+  "dependencies": {
+    "@forum-monorepo/types": "workspace:*",
+    "@forum-monorepo/utils": "workspace:*"
+  },
   "devDependencies": {
     "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",

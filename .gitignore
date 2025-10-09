@@ -30,3 +30,5 @@ coverage
 *.tsbuildinfo
 
 desktop.ini
+
+.env.production

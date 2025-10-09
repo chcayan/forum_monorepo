@@ -5,10 +5,29 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "node src/index.ts"
+    "dev": "tsc && tsc-alias && node scripts/fix-extensions.mts && node dist/index.js",
+    "prod": "cross-env NODE_ENV=production tsc && tsc-alias && node scripts/fix-extensions.mts && node dist/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.18.1"
+  "packageManager": "pnpm@10.18.1",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "cross-env": "^10.1.0",
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.2",
+    "mysql": "^2.18.1",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.0.0",
+    "@types/mysql": "^2.15.27"
+  }
 }
