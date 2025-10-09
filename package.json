@@ -11,7 +11,8 @@
     "lint:eslint": "eslint",
     "commit": "git-cz",
     "prepare": "husky",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "dev": "concurrently \"pnpm --filter frontend dev\" \"pnpm --filter backend dev\""
   },
   "config": {
     "commitizen": {
@@ -32,6 +33,7 @@
     "@vue/eslint-config-typescript": "^14.6.0",
     "@vue/tsconfig": "^0.8.1",
     "commitizen": "^4.3.1",
+    "concurrently": "^9.2.1",
     "cz-git": "^1.12.0",
     "eslint": "^9.37.0",
     "eslint-config-prettier": "^10.1.8",

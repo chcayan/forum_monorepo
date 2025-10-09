@@ -4,7 +4,9 @@
   "description": "backend",
   "main": "index.js",
   "type": "module",
-  "scripts": {},
+  "scripts": {
+    "dev": "node src/index.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

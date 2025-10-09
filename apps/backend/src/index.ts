@@ -1,2 +1,2 @@
-console.log()
+console.log('success')
 // var a = 1
