@@ -2,8 +2,15 @@
   "name": "@forum-monorepo/utils",
   "version": "1.0.0",
   "description": "utils",
-  "main": "index.ts",
-  "scripts": {},
+  "type": "module",
+  "main": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./paths": "./dist/paths.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json --outDir dist --pretty"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

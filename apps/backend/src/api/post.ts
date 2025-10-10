@@ -1,21 +1,10 @@
-import { PostInfo, PostTotal } from '@forum-monorepo/types'
+import { PostDetail, PostInfo, PostTotal } from '@forum-monorepo/types'
 import type { Express } from 'express'
 import mysql from 'mysql'
+import { dbQueryPromise, getNonEssentialAuthUserId } from './index'
 
 export function registerPostAPI(db: mysql.Connection, app: Express) {
   // 帖子列表接口
-  function dbQueryPromise<T>(
-    sql: string,
-    value?: (string | number | null)[]
-  ): Promise<T[]> {
-    return new Promise((resolve, reject) => {
-      db.query(sql, value, (err, result) => {
-        if (err) return reject(err)
-        resolve(result)
-      })
-    })
-  }
-
   app.get('/post', async (req, res) => {
     const userId: string | null = (req.query.user_id as string) || null
     const page: number = parseInt(req.query.page as string) || 1
@@ -50,8 +39,8 @@ export function registerPostAPI(db: mysql.Connection, app: Express) {
 
     try {
       const [list, count] = await Promise.all([
-        dbQueryPromise<PostInfo>(sql, [userId, limit, offset]),
-        dbQueryPromise<PostTotal>(countSql),
+        dbQueryPromise<PostInfo>(db, sql, [userId, limit, offset]),
+        dbQueryPromise<PostTotal>(db, countSql),
       ])
 
       res.json({
@@ -72,8 +61,12 @@ export function registerPostAPI(db: mysql.Connection, app: Express) {
   })
 
   // 帖子详情接口
-  app.post('/post/detail', (req, res) => {
-    const { p_id, user_id } = req.body
+  app.get('/post/:post_id', (req, res) => {
+    const p_id = req.params.post_id
+    const user_id = getNonEssentialAuthUserId(req)
+
+    console.log('当前测试用户id:', user_id)
+
     const sql = `
       select 
         p.p_id, 
@@ -96,11 +89,15 @@ export function registerPostAPI(db: mysql.Connection, app: Express) {
       AND 
         c.user_id = ? 
       where 
-        p.p_id = ?`
+        p.p_id = ?
+      AND (
+        p.is_public = 'true'
+        or 
+        p.user_id = ?
+      );`
 
-    db.query(sql, [user_id, p_id], (err, result) => {
+    db.query(sql, [user_id, p_id, user_id], (err, result: PostDetail[]) => {
       if (err) {
-        console.error('数据库查询错误:', err)
         return res.status(500).json({
           code: 1,
           message: '数据库查询错误',
@@ -111,7 +108,7 @@ export function registerPostAPI(db: mysql.Connection, app: Express) {
       if (result.length === 0) {
         return res.status(404).json({
           code: 2,
-          message: '未找到对应id的post',
+          message: '未找到对应帖子或者帖子被作者隐藏',
         })
       }
 
@@ -119,6 +116,35 @@ export function registerPostAPI(db: mysql.Connection, app: Express) {
         code: 0,
         message: '请求成功',
         data: result,
+      })
+    })
+  })
+
+  // 更新浏览数接口
+  app.patch('/post/view/:p_id', (req, res) => {
+    const { p_id } = req.params
+
+    const getSql = 'SELECT p_view_count FROM post WHERE p_id = ?'
+
+    db.query(getSql, [p_id], (err, result) => {
+      if (err) return res.status(500).json({ error: '查询失败' })
+
+      if (result.length === 0) {
+        return res.status(404).json({ message: '帖子不存在' })
+      }
+
+      const currentViews = +result[0].p_view_count
+
+      const updateSql = 'UPDATE post SET p_view_count = ? WHERE p_id = ?'
+      db.query(updateSql, [currentViews + 1, p_id], (err) => {
+        if (err) {
+          return res.status(500).json({ error: '更新失败' })
+        }
+
+        res.json({
+          code: 0,
+          message: `帖子 ${p_id} 浏览量已更新为 ${currentViews + 1}`,
+        })
       })
     })
   })

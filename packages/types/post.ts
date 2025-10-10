@@ -1,3 +1,4 @@
+// 帖子列表
 export interface PostInfo {
   p_id: string
   user_id: string
@@ -12,3 +13,8 @@ export interface PostInfo {
 }
 
 export type PostTotal = { total: number }
+
+// 帖子详情
+export interface PostDetail extends PostInfo {
+  is_public: string
+}

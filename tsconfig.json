@@ -18,6 +18,6 @@
     "moduleDetection": "force",
     "skipLibCheck": true
   },
-  "include": ["packages/types", "eslint.config.ts"],
+  "include": ["packages/types", "packages/utils", "eslint.config.ts"],
   "exclude": ["node_modules", "dist"]
 }

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
-import jwt from 'jsonwebtoken'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 
-const JWT_SECRET = '你的密钥'
+const JWT_SECRET = process.env.JWT_SECRET
 
 export function authMiddleware(
   req: Request,
@@ -15,7 +15,7 @@ export function authMiddleware(
   if (!token) return res.status(401).json({ message: '未登录' })
 
   try {
-    const payload = jwt.verify(token, JWT_SECRET) as { id: string }
+    const payload = jwt.verify(token, JWT_SECRET) as JwtPayload
     req.user = { id: payload.id }
     next()
   } catch {

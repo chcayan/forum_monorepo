@@ -4,7 +4,8 @@ declare namespace NodeJS {
     ORIGIN?: any
     SERVER_HOST?: String
     PORT?: string
-    SECRET_KEY?: String
+    SECRET_KEY: string
+    JWT_SECRET: string
     DB_HOST?: string
     DB_USER?: string
     DB_PASSWORD?: string

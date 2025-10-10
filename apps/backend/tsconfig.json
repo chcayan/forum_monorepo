@@ -6,8 +6,11 @@
     "esModuleInterop": true,
     "outDir": "dist",
     "baseUrl": "./",
+    "declaration": true,
     "paths": {
-      "@configs/*": ["src/configs/*"]
+      "@configs/*": ["src/configs/*"],
+      "@middleware/*": ["src/middleware/*"],
+      "@forum-monorepo/utils": ["../../packages/utils/src/index.ts"]
     }
   },
   "include": ["src", "env.d.ts"]
