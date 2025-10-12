@@ -1,16 +1,19 @@
 import '@configs/env'
 
 import mysql from 'mysql'
-// import jwt from 'jsonwebtoken'
-// import bcrypt from 'bcryptjs'
 import path from 'path'
 import http from 'http'
-// import { Server } from 'socket.io'
-// import fs from 'fs'
+import { Server } from 'socket.io'
 import express from 'express'
 import cors from 'cors'
 import { __dirname } from '@forum-monorepo/utils'
-import { registerLoginAPI, registerPostAPI } from './api/index'
+import {
+  createSocketConnection,
+  registerCommentAPI,
+  registerLoginAPI,
+  registerPostAPI,
+  registerUserAPI,
+} from './api/index'
 
 const app = express()
 
@@ -22,13 +25,13 @@ app.get('/test', (req, res) => {
 
 const server = http.createServer(app)
 
-// const io = new Server(server, {
-//   cors: {
-//     origin: process.env.ORIGIN,
-//     methods: ['GET', 'POST'],
-//     credentials: true,
-//   },
-// })
+const io = new Server(server, {
+  cors: {
+    origin: process.env.ORIGIN,
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+})
 
 app.use(express.json())
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
@@ -47,9 +50,14 @@ db.connect((err) => {
 })
 
 // API
-registerPostAPI(db, app)
-registerLoginAPI(db, app)
+registerPostAPI(app, db)
+registerLoginAPI(app, db)
+registerCommentAPI(app, db)
+registerUserAPI(app, db)
+
+// websocket
+createSocketConnection(io, db)
 
 server.listen(process.env.PORT, () => {
-  console.log(`服务器运行在${process.env.ORIGIN}`)
+  console.log(`\n服务器运行在${process.env.ORIGIN}`)
 })

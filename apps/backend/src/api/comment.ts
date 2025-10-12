@@ -3,20 +3,20 @@ import type { Express } from 'express'
 import { authMiddleware } from '@middleware/auth'
 import { CommentList } from '@forum-monorepo/types'
 
-export function registerCommentAPI(db: mysql.Connection, app: Express) {
+export function registerCommentAPI(app: Express, db: mysql.Connection) {
   // 发送评论接口
   app.post('/post/comments', authMiddleware, (req, res) => {
-    const { p_id, c_content } = req.body
-    const user_id = req.user?.id
+    const { postId, content } = req.body
+    const userId = req.user?.id
 
-    if (!user_id || !p_id || !c_content) {
+    if (!userId || !postId || !content) {
       return res.status(400).json({ error: '参数不完整' })
     }
 
     const sql =
       'INSERT INTO comments (user_id, p_id, c_content) VALUES (?, ?, ?)'
 
-    db.query(sql, [user_id, p_id, c_content], (err) => {
+    db.query(sql, [userId, postId, content], (err) => {
       if (err) {
         return res.status(500).json({ error: '插入失败' })
       }
@@ -29,8 +29,8 @@ export function registerCommentAPI(db: mysql.Connection, app: Express) {
   })
 
   // 评论列表接口
-  app.get('/post/comments/:p_id', (req, res) => {
-    const p_id = req.params.p_id
+  app.get('/post/comments/:postId', (req, res) => {
+    const postId = req.params.postId
 
     const sql = `
       SELECT 
@@ -52,7 +52,7 @@ export function registerCommentAPI(db: mysql.Connection, app: Express) {
       ORDER BY 
         created_time desc;`
 
-    db.query(sql, [p_id], (err, result: CommentList) => {
+    db.query(sql, [postId], (err, result: CommentList[]) => {
       if (err) {
         return res.status(500).json({
           code: 1,

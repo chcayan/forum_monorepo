@@ -23,6 +23,9 @@ const config: Linter.Config[] = defineConfig(
       sourceType: 'module',
       parser: tseslint.parser,
     },
+    rules: {
+      'eol-last': ['error', 'always'],
+    },
   },
 
   // frontend

@@ -11,3 +11,18 @@ export interface UserInfo {
   sex: string
   signature: string
 }
+
+// 好友信息
+export interface FriendInfo {
+  user_id: string
+  follow_id: string
+  username: string
+  user_avatar: string
+}
+
+// 搜索用户信息
+export interface UserBySearchInfo {
+  username: string
+  user_avatar: string
+  user_id: string
+}

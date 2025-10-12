@@ -12,7 +12,7 @@
     "commit": "git-cz",
     "prepare": "husky",
     "precommit": "lint-staged",
-    "dev": "concurrently \"pnpm --filter frontend dev\" \"pnpm --filter backend dev\""
+    "dev": "concurrently \"pnpm --filter frontend dev\" \"pnpm --filter backend dev\" \"pnpm --filter utils build\""
   },
   "config": {
     "commitizen": {

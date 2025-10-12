@@ -3,7 +3,7 @@ import mysql from 'mysql'
 import bcrypt from 'bcryptjs'
 import type { Express } from 'express'
 
-export function registerLoginAPI(db: mysql.Connection, app: Express) {
+export function registerLoginAPI(app: Express, db: mysql.Connection) {
   // 登录接口
   app.post('/login', (req, res) => {
     const { email, password } = req.body

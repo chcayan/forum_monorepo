@@ -25,4 +25,4 @@ function walk(dir: string) {
 }
 
 walk(root)
-console.log('已为 import/export 自动补上 .js 扩展')
+console.log('\n已为 import/export 自动补上 .js 扩展')

@@ -3,18 +3,31 @@
 ## 帖子列表接口
 
 - GET /post (query)
-  - user_id
-  - page
-  - limit
+  - page: number
+  - limit: number
 
-- 数据结构：PostInfo
+- 数据结构：PostInfo[]
 
 ## 帖子详情接口
 
-- GET /post/:post_id (param)
+- GET /post/:postId (param)
 
-- 数据结构：PostDetail
+- 数据结构：PostDetail[]
 
 ## 更新浏览数接口
 
-- PATCH /post/view/:p_id (param)
+- PATCH /post/view/:postId (param)
+
+## 发送帖子接口
+
+- POST /post/publish (body)
+  - content: string
+  - isPublic: string
+  - postImages: file
+
+## 搜索接口
+
+- GET /post/search (query)
+  - result: string
+
+- 数据结构：PostInfo[]

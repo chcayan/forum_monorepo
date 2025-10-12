@@ -3,11 +3,11 @@
 ## 发送评论接口
 
 - POST /post/comments (body)
-  - p_id
-  - c_content
+  - postId: string
+  - content: string
 
 ## 评论列表接口
 
-- GET /post/comments/:p_id (param)
+- GET /post/comments/:postId (param)
 
-- 数据结构：CommentList
+- 数据结构：CommentList[]
