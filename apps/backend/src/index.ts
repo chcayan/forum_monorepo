@@ -9,6 +9,7 @@ import cors from 'cors'
 import { __dirname } from '@forum-monorepo/utils'
 import {
   createSocketConnection,
+  registerChatAPI,
   registerCommentAPI,
   registerLoginAPI,
   registerPostAPI,
@@ -54,6 +55,7 @@ registerPostAPI(app, db)
 registerLoginAPI(app, db)
 registerCommentAPI(app, db)
 registerUserAPI(app, db)
+registerChatAPI(app, db)
 
 // websocket
 createSocketConnection(io, db)
