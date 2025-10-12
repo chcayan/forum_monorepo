@@ -18,7 +18,13 @@ import {
 
 const app = express()
 
-app.use(cors())
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    credentials: true,
+  })
+)
 
 app.get('/test', (req, res) => {
   res.send('running')
@@ -28,7 +34,7 @@ const server = http.createServer(app)
 
 const io = new Server(server, {
   cors: {
-    origin: process.env.ORIGIN,
+    origin: process.env.CORS_ORIGIN,
     methods: ['GET', 'POST'],
     credentials: true,
   },
