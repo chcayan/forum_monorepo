@@ -1,0 +1,23 @@
+@use './theme.scss';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+  font-family: 'Gill Sans';
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+svg {
+  fill: rgb(0, 0, 0);
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+}

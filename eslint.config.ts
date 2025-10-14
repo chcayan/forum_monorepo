@@ -34,7 +34,7 @@ const config: Linter.Config[] = defineConfig(
       'apps/frontend/**/*.{ts,js,tsx,jsx,vue}',
       'packages/components/**/*.{ts,js,tsx,jsx,vue}',
     ],
-    extends: [pluginVue.configs['flat/essential'], eslintConfigPrettier],
+    extends: [pluginVue.configs['flat/essential']],
     languageOptions: {
       globals: {
         ...globals.browser,

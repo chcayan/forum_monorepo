@@ -32,3 +32,7 @@ coverage
 desktop.ini
 
 .env.production
+
+apps/backend/uploads/*
+!apps/backend/uploads/default/
+!apps/backend/uploads/default/**
