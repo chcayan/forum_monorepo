@@ -5,7 +5,37 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      component: () => import('@/views/layout/LayoutContainer.vue'),
+      component: () => import('@/views/layout/LayoutView.vue'),
+      children: [
+        {
+          path: '',
+          component: () => import('@/views/post/PostView.vue'),
+        },
+        {
+          path: '/chat',
+          component: () => import('@/views/chat/ChatView.vue'),
+        },
+        {
+          path: '/publish',
+          component: () => import('@/views/post/PublishView.vue'),
+        },
+        {
+          path: '/login',
+          component: () => import('@/views/login/LoginView.vue'),
+        },
+        {
+          path: '/user',
+          component: () => import('@/views/user/UserView.vue'),
+        },
+        {
+          path: '/setting',
+          component: () => import('@/views/setting/SettingView.vue'),
+        },
+        {
+          path: '/:pathMatch(.*)*',
+          component: () => import('@/views/notfound/NotfoundView.vue'),
+        },
+      ],
     },
   ],
 })

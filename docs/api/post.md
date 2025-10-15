@@ -23,7 +23,7 @@
 - POST /post/publish (body)
   - content: string
   - isPublic: string
-  - postImages: file
+  - postImages?: File[]
 
 ## 搜索接口
 

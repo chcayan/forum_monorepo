@@ -18,4 +18,3 @@
 
 - POST /chat/mark-as-read (body)
   - from: string
-  - to: string

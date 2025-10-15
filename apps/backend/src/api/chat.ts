@@ -93,7 +93,8 @@ export function registerChatAPI(app: Express, db: mysql.Connection) {
 
   // 标记为已读接口
   app.post('/chat/mark-as-read', authMiddleware, (req, res) => {
-    const { from, to } = req.body
+    const { from } = req.body
+    const to = req.user?.id
     const sql =
       'UPDATE messages SET is_read = TRUE WHERE sender = ? AND receiver = ? AND is_read = FALSE'
 

@@ -10,11 +10,17 @@
 }
 
 ::selection {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: var(--theme-select-color);
 }
 
 svg {
-  fill: rgb(0, 0, 0);
+  fill: var(--theme-svg-color);
+  transition: all 0.3s ease;
+}
+
+body {
+  background-color: var(--theme-color);
+  transition: all 0.3s ease;
 }
 
 .icon {

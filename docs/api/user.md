@@ -20,8 +20,8 @@
   - username: string
   - sex: string
   - signature: string
-  - avatar: file
-  - bgImg: file
+  - avatar?: file
+  - bgImg?: file
 
 ## 用户收藏帖子信息接口
 
@@ -54,12 +54,12 @@
 - DELETE /user/post/del (body)
   - postId: string
 
-## 用户设置帖子公开
+## 用户设置帖子公开接口
 
 - PATCH /user/post/public (body)
   - postId: string
 
-## 用户设置帖子非公开
+## 用户设置帖子非公开接口
 
 - PATCH /user/post/private (body)
   - postId: string

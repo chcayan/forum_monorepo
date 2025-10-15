@@ -1,9 +1,19 @@
-body[data-theme='dark'] {
+body[data-theme='Dark'] {
   --theme-color: rgb(0, 0, 0);
-  --theme-shadow-color: rgba(0, 0, 0, 0.5);
+  --theme-shadow-color: rgba(255, 255, 255, 0.5);
+  --theme-svg-color: rgb(255, 255, 255);
+  --theme-font-color: rgb(255, 255, 255);
+  --theme-nav-color: rgb(58, 58, 58);
+  --theme-select-color: rgba(255, 255, 255, 0.2);
+  --theme-tag-active-color: rgb(115, 109, 106);
 }
 
 :root {
   --theme-color: rgb(255, 255, 255);
   --theme-shadow-color: rgba(0, 0, 0, 0.5);
+  --theme-svg-color: rgb(0, 0, 0);
+  --theme-font-color: rgb(0, 0, 0);
+  --theme-nav-color: rgb(255, 255, 255);
+  --theme-select-color: rgba(0, 0, 0, 0.2);
+  --theme-tag-active-color: rgb(255, 214, 192);
 }

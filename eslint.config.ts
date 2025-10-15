@@ -6,6 +6,7 @@ import eslintPluginPrettier from 'eslint-plugin-prettier'
 import globals from 'globals'
 import eslintConfigPrettier from 'eslint-config-prettier/flat'
 import pluginVue from 'eslint-plugin-vue'
+import vueParser from 'vue-eslint-parser'
 
 const config: Linter.Config[] = defineConfig(
   // 通用
@@ -36,6 +37,13 @@ const config: Linter.Config[] = defineConfig(
     ],
     extends: [pluginVue.configs['flat/essential']],
     languageOptions: {
+      parser: vueParser,
+      parserOptions: {
+        parser: tseslint.parser,
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        extraFileExtensions: ['.vue'],
+      },
       globals: {
         ...globals.browser,
       },
