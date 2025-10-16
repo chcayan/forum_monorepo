@@ -9,6 +9,11 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+html::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
 ::selection {
   background-color: var(--theme-select-color);
 }
@@ -19,6 +24,7 @@ svg {
 }
 
 body {
+  width: 100vw;
   background-color: var(--theme-color);
   transition: all 0.3s ease;
 }
@@ -26,4 +32,24 @@ body {
 .icon {
   width: 32px;
   height: 32px;
+}
+
+a:focus-visible,
+button:focus-visible,
+.tab-focus-style:focus-visible {
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow:
+    0 0 0 3px var(--theme-nav-color),
+    0 0 0 7px var(--theme-tag-active-color);
+  border-radius: 6px;
+}
+
+#app {
+  display: flex;
+  justify-content: center;
+}
+
+img {
+  display: block;
 }

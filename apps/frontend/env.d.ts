@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  readonly VITE_PORT: string
+  readonly VITE_SOCKET: string
 }

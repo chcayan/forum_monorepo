@@ -1,7 +1,7 @@
 import mysql from 'mysql'
 import type { Express } from 'express'
 import { authMiddleware } from '@middleware/auth'
-import { CommentList } from '@forum-monorepo/types'
+import type { CommentList } from '@forum-monorepo/types'
 
 export function registerCommentAPI(app: Express, db: mysql.Connection) {
   // 发送评论接口

@@ -1,4 +1,4 @@
-import { PostDetail, PostInfo, PostTotal } from '@forum-monorepo/types'
+import type { PostDetail, PostInfo, PostTotal } from '@forum-monorepo/types'
 import type { Express } from 'express'
 import mysql from 'mysql'
 import { dbQueryPromise, getNonEssentialAuthUserId } from './index'
@@ -23,6 +23,7 @@ export function registerPostAPI(app: Express, db: mysql.Connection) {
         p_comment_count,
         p_content,
         p_images,
+        publish_time,
         u.user_avatar,
         u.username
       FROM

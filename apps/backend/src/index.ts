@@ -6,7 +6,6 @@ import http from 'http'
 import { Server } from 'socket.io'
 import express from 'express'
 import cors from 'cors'
-import { __dirname } from '@forum-monorepo/utils'
 import {
   createSocketConnection,
   registerChatAPI,
@@ -41,7 +40,7 @@ const io = new Server(server, {
 })
 
 app.use(express.json())
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
+app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')))
 
 // database
 const db = mysql.createConnection({

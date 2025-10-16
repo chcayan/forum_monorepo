@@ -38,9 +38,9 @@ const toggleTheme = () => {
       <router-link to="/setting" class="mobile"><SettingSvg /></router-link>
     </nav>
     <div class="my">
-      <span @click="toggleTheme">
+      <button @click="toggleTheme">
         <component :is="tabs[currentTheme]"></component>
-      </span>
+      </button>
       <img src="/avatar.jpg" />
     </div>
   </header>
@@ -50,18 +50,17 @@ const toggleTheme = () => {
 </template>
 
 <style scoped lang="scss">
-$gap: 10px;
 header {
   display: flex;
-  justify-content: center;
   width: 90%;
-  max-width: 800px;
+  max-width: $nav-max-width;
   margin: 10px auto 0;
   height: 60px;
   background-color: var(--theme-nav-color);
   box-shadow: 0px 0px 2px var(--theme-shadow-color);
   padding: 10px;
   border-radius: $gap;
+  position: fixed;
 
   .logo {
     display: flex;
@@ -106,7 +105,12 @@ header {
     flex: 1;
     gap: $gap;
 
-    span {
+    button {
+      width: 32px;
+      height: 32px;
+      background-color: transparent;
+      outline: none;
+      border: none;
       cursor: pointer;
     }
 
@@ -124,6 +128,7 @@ header {
     position: fixed;
     border-radius: initial;
     bottom: 0;
+    z-index: 1000;
 
     .logo {
       display: none;
@@ -145,9 +150,13 @@ header {
 }
 
 main {
-  display: flex;
-  justify-content: center;
   margin-top: $gap * 2;
   color: var(--theme-font-color);
+  padding: 60px 0 $gap;
+
+  @media (max-width: $mobile-size) {
+    margin-top: initial;
+    padding: 0 0 70px;
+  }
 }
 </style>

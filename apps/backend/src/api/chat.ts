@@ -2,7 +2,7 @@ import { Server } from 'socket.io'
 import type { Express } from 'express'
 import mysql from 'mysql'
 import { authMiddleware } from '@middleware/auth'
-import { ChatInfo, UnreadInfo } from '@forum-monorepo/types'
+import type { ChatInfo, UnreadInfo } from '@forum-monorepo/types'
 
 export function createSocketConnection(io: Server, db: mysql.Connection) {
   const users: Record<string, string> = {}

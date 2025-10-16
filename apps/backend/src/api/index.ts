@@ -1,6 +1,6 @@
 import mysql from 'mysql'
 import jwt, { JwtPayload } from 'jsonwebtoken'
-import { Request } from 'express'
+import type { Request } from 'express'
 
 /**
  * 使用 Promise 封装 MySQL 查询函数

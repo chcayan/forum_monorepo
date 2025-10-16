@@ -7,7 +7,8 @@ export interface PostInfo {
   p_share_count: number
   p_comment_count: number
   p_content: string
-  p_images: string[]
+  p_images: string
+  publish_time: string
   user_avatar: string
   username: string
 }

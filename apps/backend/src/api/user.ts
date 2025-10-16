@@ -1,6 +1,6 @@
 import mysql, { FieldInfo } from 'mysql'
 import type { Express } from 'express'
-import {
+import type {
   FriendInfo,
   PostDetail,
   PostTotal,
