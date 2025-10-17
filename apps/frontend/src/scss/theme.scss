@@ -3,21 +3,23 @@ body[data-theme='Dark'] {
   --theme-shadow-color: rgba(255, 255, 255, 0.5);
   --theme-svg-color: rgb(255, 255, 255);
   --theme-font-color: rgb(255, 255, 255);
-  --theme-nav-color: rgb(36, 36, 36);
+  --theme-nav-color: rgb(0, 0, 0);
   --theme-select-color: rgba(255, 255, 255, 0.2);
   --theme-tag-active-color: rgb(115, 109, 106);
   --theme-button-color: rgb(255, 255, 255);
+  --theme-button-hover-color: rgb(255, 214, 192);
   --theme-post-card-color: var(--theme-nav-color);
 }
 
 :root {
   --theme-color: rgb(255, 255, 255);
-  --theme-shadow-color: rgba(0, 0, 0, 0.5);
+  --theme-shadow-color: rgba(134, 134, 134, 0.5);
   --theme-svg-color: rgb(0, 0, 0);
   --theme-font-color: rgb(0, 0, 0);
   --theme-nav-color: rgb(255, 255, 255);
   --theme-select-color: rgba(0, 0, 0, 0.2);
   --theme-tag-active-color: rgb(255, 214, 192);
   --theme-button-color: rgb(255, 214, 192);
+  --theme-button-hover-color: rgb(233, 185, 160);
   --theme-post-card-color: var(--theme-nav-color);
 }

@@ -1,3 +1,5 @@
 export * from './request'
 export * from './socket'
 export * from './wordProcessing'
+export * from './regex'
+export * from './debounce'

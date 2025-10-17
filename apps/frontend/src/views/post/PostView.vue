@@ -8,35 +8,38 @@ const postList = ref<PostInfo[]>([])
 const getPostList = async () => {
   const res = await getPostListAPI(1, 20)
   postList.value = res.data.data
-  console.log(postList.value)
 }
 getPostList()
 </script>
 
 <template>
-  <ul>
-    <li v-for="post in postList" :key="post.p_id"><PostCard :post /></li>
-  </ul>
+  <section>
+    <ul>
+      <li v-for="post in postList" :key="post.p_id"><PostCard :post /></li>
+    </ul>
+  </section>
 </template>
 
 <style scoped lang="scss">
-ul {
-  display: grid;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  gap: $gap;
-
-  li {
-    width: 400px;
-  }
-
-  @media (max-width: $mobile-size) {
-    gap: initial;
+section {
+  ul {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: $gap;
 
     li {
-      width: 100%;
-      padding: 10px 10px 0;
+      width: 400px;
+    }
+
+    @media (max-width: $mobile-size) {
+      gap: initial;
+
+      li {
+        width: 100%;
+        padding: 10px 10px 0;
+      }
     }
   }
 }

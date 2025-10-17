@@ -8,7 +8,6 @@ const { images } = defineProps<{
 }>()
 
 parseImages.value = JSON.parse(images)
-console.log(images)
 
 onMounted(() => {
   active.value = `size${parseImages.value.length}`
@@ -17,7 +16,12 @@ onMounted(() => {
 
 <template>
   <div class="box" :class="active">
-    <img v-for="image in parseImages" :key="image" :src="image" />
+    <img
+      v-for="image in parseImages"
+      :key="image"
+      :src="image"
+      alt="postImage"
+    />
   </div>
 </template>
 

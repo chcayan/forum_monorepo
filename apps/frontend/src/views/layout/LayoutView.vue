@@ -41,7 +41,7 @@ const toggleTheme = () => {
       <button @click="toggleTheme">
         <component :is="tabs[currentTheme]"></component>
       </button>
-      <img src="/avatar.jpg" />
+      <img src="/avatar.jpg" alt="avatar" />
     </div>
   </header>
   <main>
@@ -109,9 +109,6 @@ header {
       width: 32px;
       height: 32px;
       background-color: transparent;
-      outline: none;
-      border: none;
-      cursor: pointer;
     }
 
     img {
@@ -150,6 +147,9 @@ header {
 }
 
 main {
+  display: flex;
+  justify-content: center;
+  width: 100%;
   margin-top: $gap * 2;
   color: var(--theme-font-color);
   padding: 60px 0 $gap;

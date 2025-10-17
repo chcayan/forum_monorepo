@@ -7,6 +7,7 @@
   list-style: none;
   font-family: 'Gill Sans';
   -webkit-tap-highlight-color: transparent;
+  scroll-behavior: smooth;
 }
 
 html::-webkit-scrollbar {
@@ -24,7 +25,6 @@ svg {
 }
 
 body {
-  width: 100vw;
   background-color: var(--theme-color);
   transition: all 0.3s ease;
 }
@@ -52,4 +52,19 @@ button:focus-visible,
 
 img {
   display: block;
+}
+
+button,
+input {
+  outline: none;
+  border: none;
+  background-color: transparent;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: var(--theme-font-color);
 }

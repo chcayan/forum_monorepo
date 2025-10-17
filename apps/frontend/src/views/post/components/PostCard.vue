@@ -12,23 +12,22 @@ import NGrid from './NGrid.vue'
 const { post } = defineProps<{
   post: PostInfo
 }>()
-console.log(post.user_avatar)
 </script>
 
 <template>
   <article tabindex="0" class="tab-focus-style">
     <header>
-      <img :src="post.user_avatar" />
+      <img :src="post.user_avatar" alt="avatar" />
       <div>
         <p class="name">{{ post.username }}</p>
         <p class="time">{{ formatDateByYear(post.publish_time) }}</p>
       </div>
       <FollowButton />
     </header>
-    <main>
+    <div class="main">
       <p v-html="lineBreakReplace(post.p_content)"></p>
       <NGrid class="n-grid" v-if="post.p_images" :images="post.p_images" />
-    </main>
+    </div>
     <footer>
       <ul>
         <li><ViewSvg class="svg" /><span>0</span></li>
@@ -72,7 +71,7 @@ article {
     }
   }
 
-  main {
+  .main {
     margin: $gap 0;
 
     .n-grid {

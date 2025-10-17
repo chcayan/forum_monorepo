@@ -6,8 +6,6 @@
 
 <style scoped lang="scss">
 button {
-  border: none;
-  outline: none;
   width: 50px;
   height: 32px;
   border-radius: $gap;
