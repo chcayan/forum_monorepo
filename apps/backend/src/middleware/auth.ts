@@ -19,6 +19,6 @@ export function authMiddleware(
     req.user = { id: payload.id }
     next()
   } catch {
-    res.status(401).json({ message: 'Token 无效' })
+    res.status(401).json({ message: '登录状态过期，请重新登录' })
   }
 }

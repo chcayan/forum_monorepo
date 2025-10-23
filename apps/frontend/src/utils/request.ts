@@ -1,5 +1,6 @@
-import router from '@/router'
 import axios from 'axios'
+import emitter from './eventEmitter'
+import { useUserStore } from '@/stores'
 
 const baseURL = '/api'
 
@@ -13,7 +14,8 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token')
+    const userStore = useUserStore()
+    const token = userStore.token
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`
     }
@@ -28,12 +30,8 @@ instance.interceptors.response.use(
   },
   (err) => {
     if (err.response?.status === 401) {
-      console.log('请重新登录')
-      localStorage.removeItem('token')
-    }
-    if (err.response?.status === 404) {
-      console.log('404 not found')
-      router.push('/notfound')
+      console.log(err.response?.data.message)
+      emitter.emit('API:UN_AUTH')
     }
     return Promise.reject(err)
   }

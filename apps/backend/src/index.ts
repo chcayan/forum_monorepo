@@ -14,6 +14,7 @@ import {
   registerPostAPI,
   registerUserAPI,
 } from './api/index'
+import { authMiddleware } from '@middleware/auth'
 
 const app = express()
 
@@ -25,7 +26,7 @@ app.use(
   })
 )
 
-app.get('/test', (req, res) => {
+app.get('/test', authMiddleware, (req, res) => {
   res.send('running')
 })
 

@@ -11,10 +11,10 @@ export function registerLoginAPI(app: Express, db: mysql.Connection) {
     const sql = 'select * from users where user_email = ?'
 
     db.query(sql, [email], async (err, result) => {
-      if (err) return res.status(500).send('数据库查询失败')
+      if (err) return res.status(500).json({ message: '数据库查询失败' })
 
       if (result.length === 0) {
-        return res.status(401).send('用户不存在')
+        return res.status(401).json({ message: '用户不存在' })
       }
 
       const user = result[0]
@@ -23,11 +23,11 @@ export function registerLoginAPI(app: Express, db: mysql.Connection) {
       const isMatch = await bcrypt.compare(password, user.user_password)
 
       if (!isMatch) {
-        return res.status(401).send('用户名或密码错误')
+        return res.status(401).json({ message: '用户名或密码错误' })
       }
 
-      const token = jwt.sign({ id: userId }, process.env.SECRET_KEY, {
-        expiresIn: '10s',
+      const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
+        expiresIn: '1d',
       })
 
       res.json({

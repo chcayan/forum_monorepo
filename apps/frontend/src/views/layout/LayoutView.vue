@@ -10,6 +10,10 @@ import Dark from '@/components/svgIcon/DarkSvg.vue'
 import { ref } from 'vue'
 
 import type { Component } from 'vue'
+import { useUserStore } from '@/stores'
+import { testAPI } from '@/api'
+
+const userStore = useUserStore()
 
 const currentTheme = ref(localStorage.getItem('theme') || 'Light')
 const tabs: Record<string, Component> = {
@@ -22,11 +26,15 @@ const toggleTheme = () => {
   localStorage.setItem('theme', currentTheme.value)
   document.body.dataset.theme = currentTheme.value
 }
+
+const test = async () => {
+  await testAPI()
+}
 </script>
 
 <template>
   <header>
-    <div class="logo">
+    <div @click="test" class="logo">
       <LogoSvg class="svg" />
       <span>forum</span>
     </div>
@@ -41,7 +49,8 @@ const toggleTheme = () => {
       <button @click="toggleTheme">
         <component :is="tabs[currentTheme]"></component>
       </button>
-      <img src="/avatar.jpg" alt="avatar" />
+      <button v-if="!userStore.token" class="login">登录</button>
+      <img v-if="userStore.token" src="/avatar.jpg" alt="avatar" />
     </div>
   </header>
   <main>
@@ -104,6 +113,18 @@ header {
     justify-content: end;
     flex: 1;
     gap: $gap;
+
+    .login {
+      width: 50px;
+      height: 32px;
+      border-radius: 10px;
+      background-color: var(--theme-button-color);
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: var(--theme-button-hover-color);
+      }
+    }
 
     button {
       width: 32px;

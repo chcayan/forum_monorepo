@@ -1,7 +1,11 @@
 <script setup lang="ts">
+import { loginAPI } from '@/api'
 import LogoSvg from '@/components/svgIcon/LogoSvg.vue'
+import { useUserStore } from '@/stores'
 import { debounce, isValidEmail, isValidPassword } from '@/utils'
 import { ref } from 'vue'
+
+const userStore = useUserStore()
 
 // 验证邮箱
 const email = ref('')
@@ -28,9 +32,14 @@ const verifyPassword = debounce(() => {
 }, 300)
 
 // 提交
-const submitForm = () => {
+const submitForm = async () => {
   if (isValidEmail(email.value) && isValidPassword(password.value)) {
-    console.log(555)
+    const res = await loginAPI({
+      email: email.value,
+      password: password.value,
+    })
+    userStore.setToken(res.data.token)
+    console.log(res)
   }
 }
 </script>
