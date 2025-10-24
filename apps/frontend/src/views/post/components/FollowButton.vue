@@ -1,7 +1,18 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import router from '@/router'
+import { checkLoginStatus } from '@/utils'
+
+function navigateToLogin() {
+  router.push('/login')
+}
+const follow = () => {
+  if (!checkLoginStatus(navigateToLogin)) return
+  console.log(666)
+}
+</script>
 
 <template>
-  <button>关注</button>
+  <button @click="follow">关注</button>
 </template>
 
 <style scoped lang="scss">

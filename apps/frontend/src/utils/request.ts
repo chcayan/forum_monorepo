@@ -33,7 +33,11 @@ instance.interceptors.response.use(
       console.log(err.response?.data.message)
       emitter.emit('API:UN_AUTH')
     }
-    return Promise.reject(err)
+    if (err.response?.status === 400) {
+      console.log(err.response?.data.message)
+      emitter.emit('API:BAD_REQUEST', err.response?.data.message)
+    }
+    if (err.response?.status) return Promise.reject(err)
   }
 )
 

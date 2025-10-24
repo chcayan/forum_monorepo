@@ -4,6 +4,7 @@ import type { Component } from 'vue'
 
 import Login from './components/LoginBox.vue'
 import Signup from './components/SignupBox.vue'
+import emitter from '@/utils/eventEmitter'
 
 const currentTab = ref('Login')
 const tabs: Record<string, Component> = {
@@ -14,6 +15,10 @@ const tabs: Record<string, Component> = {
 const toggle = () => {
   currentTab.value = currentTab.value === 'Login' ? 'Signup' : 'Login'
 }
+
+emitter.on('TAB:LOGIN', () => {
+  toggle()
+})
 </script>
 
 <template>

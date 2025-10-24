@@ -12,6 +12,7 @@ import { ref } from 'vue'
 import type { Component } from 'vue'
 import { useUserStore } from '@/stores'
 import { testAPI } from '@/api'
+import router from '@/router'
 
 const userStore = useUserStore()
 
@@ -49,7 +50,13 @@ const test = async () => {
       <button @click="toggleTheme">
         <component :is="tabs[currentTheme]"></component>
       </button>
-      <button v-if="!userStore.token" class="login">登录</button>
+      <button
+        @click="router.push('/login')"
+        v-if="!userStore.token"
+        class="login"
+      >
+        登录
+      </button>
       <img v-if="userStore.token" src="/avatar.jpg" alt="avatar" />
     </div>
   </header>

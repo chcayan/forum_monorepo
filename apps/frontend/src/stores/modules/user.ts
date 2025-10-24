@@ -1,10 +1,5 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import emitter from '@/utils/eventEmitter'
-
-emitter.on('API:UN_AUTH', () => {
-  useUserStore().removeToken()
-})
 
 export const useUserStore = defineStore(
   'user',

@@ -10,7 +10,7 @@ export function registerCommentAPI(app: Express, db: mysql.Connection) {
     const userId = req.user?.id
 
     if (!userId || !postId || !content) {
-      return res.status(400).json({ error: '参数不完整' })
+      return res.status(400).json({ message: '参数不完整' })
     }
 
     const sql =

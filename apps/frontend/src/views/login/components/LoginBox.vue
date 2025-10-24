@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { loginAPI } from '@/api'
 import LogoSvg from '@/components/svgIcon/LogoSvg.vue'
+import router from '@/router'
 import { useUserStore } from '@/stores'
-import { debounce, isValidEmail, isValidPassword } from '@/utils'
+import { debounce, isValidEmail, isValidPassword, Toast } from '@/utils'
 import { ref } from 'vue'
 
 const userStore = useUserStore()
@@ -39,7 +40,11 @@ const submitForm = async () => {
       password: password.value,
     })
     userStore.setToken(res.data.token)
-    console.log(res)
+    Toast.show({
+      msg: '登录成功',
+      type: 'success',
+    })
+    router.replace('/')
   }
 }
 </script>

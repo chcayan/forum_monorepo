@@ -1,11 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
-type EventNames = 'API:UN_AUTH' | 'API:INVALID'
+type ApiEvent = 'API:UN_AUTH' | 'API:INVALID' | 'API:BAD_REQUEST'
+type TabEvent = 'TAB:LOGIN'
+type EventNames = ApiEvent | TabEvent
 
 class EventEmitter {
   private listeners: Record<EventNames, Set<Function>> = {
     'API:UN_AUTH': new Set(),
     'API:INVALID': new Set(),
+    'API:BAD_REQUEST': new Set(),
+    'TAB:LOGIN': new Set(),
   }
 
   on(eventName: EventNames, listener: Function) {

@@ -42,7 +42,7 @@ export function registerLoginAPI(app: Express, db: mysql.Connection) {
     const { email, password } = req.body
 
     if (!email || !password) {
-      return res.status(400).send('邮箱和密码不能为空')
+      return res.status(400).json({ message: '邮箱和密码不能为空' })
     }
 
     try {

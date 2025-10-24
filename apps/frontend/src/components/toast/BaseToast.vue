@@ -8,18 +8,19 @@ const toastRef = useTemplateRef('toast')
 const _msg = ref<string>()
 const btnType = ref<ColorType>('normal')
 
-const confirmBtnVisible = ref(true)
+const confirmBtnVisible = ref(false)
 const count = ref<number>()
 
 function isInt(time: number) {
   if (Number.isNaN(time) || time === Infinity || typeof time !== 'number') {
     console.error('请输入一个正确的数字')
-    return
+    return false
   }
   if (parseInt((time / 1000) as unknown as string) !== time / 1000) {
     console.error('请输入1000倍数的正整数')
-    return
+    return false
   }
+  return true
 }
 
 let timer: number | undefined
@@ -34,12 +35,12 @@ const handleEvent = () => {
 class Toast {
   /**
    * 显示弹窗
-   * @param params msg 弹窗信息 type 弹窗类型 duration 持续时间(ms) eventFn 弹窗事件
+   * @param params msg 弹窗信息 type 弹窗类型 duration 持续时间(ms),默认2s eventFn 弹窗事件
    */
   static show(options: ToastParams) {
-    const { msg, type, duration, eventFn } = options
+    const { msg, type, duration = 2000, eventFn } = options
     if (duration) {
-      isInt(duration)
+      if (!isInt(duration)) return
       setTimeout(() => {
         Toast.hide()
       }, duration)
@@ -123,7 +124,8 @@ defineExpose({
   width: auto;
   min-width: 80px;
   margin-top: 20px;
-  padding: 10px;
+  font-size: 14px;
+  padding: 10px 15px;
   text-align: center;
   border-radius: 10px;
   background-color: white;

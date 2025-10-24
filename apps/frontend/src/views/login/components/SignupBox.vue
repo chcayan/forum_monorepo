@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { registerAPI } from '@/api'
 import LogoSvg from '@/components/svgIcon/LogoSvg.vue'
-import { debounce, isValidEmail, isValidPassword } from '@/utils'
+import { debounce, isValidEmail, isValidPassword, Toast } from '@/utils'
+import emitter from '@/utils/eventEmitter'
 import { ref } from 'vue'
 
 // 验证邮箱
@@ -40,13 +42,21 @@ const verifyConfirmPassword = debounce(() => {
 }, 300)
 
 // 提交
-const submitForm = () => {
+const submitForm = async () => {
   if (
     isValidEmail(email.value) &&
     isValidPassword(password.value) &&
     confirmPassword.value === password.value
   ) {
-    console.log(555)
+    await registerAPI({
+      email: email.value,
+      password: password.value,
+    })
+    Toast.show({
+      msg: '注册成功，前往登录页登录',
+      type: 'success',
+    })
+    emitter.emit('TAB:LOGIN')
   }
 }
 </script>
