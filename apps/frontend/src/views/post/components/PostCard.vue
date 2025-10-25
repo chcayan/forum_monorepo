@@ -8,14 +8,30 @@ import type { PostInfo } from '@forum-monorepo/types'
 import { formatDateByYear } from '@forum-monorepo/utils'
 import { lineBreakReplace } from '@/utils'
 import NGrid from './NGrid.vue'
+import { onMounted, useTemplateRef } from 'vue'
+import emitter from '@/utils/eventEmitter'
 
 const { post } = defineProps<{
   post: PostInfo
 }>()
+
+const postRef = useTemplateRef('postEl')
+
+onMounted(() => {
+  let lastKey: string | null = null
+  window.addEventListener('keydown', (e) => (lastKey = e.key))
+
+  window.addEventListener('focusin', (e) => {
+    if (lastKey !== 'Tab') return
+    if (e.target === postRef.value) {
+      emitter.emit('TAB:CLOSE_AVATAR_WIDGET')
+    }
+  })
+})
 </script>
 
 <template>
-  <article tabindex="0" class="tab-focus-style">
+  <article ref="postEl" tabindex="0" class="tab-focus-style">
     <header>
       <img :src="post.user_avatar" alt="avatar" />
       <div>

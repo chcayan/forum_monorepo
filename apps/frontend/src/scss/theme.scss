@@ -9,6 +9,7 @@ body[data-theme='Dark'] {
   --theme-button-color: rgb(255, 255, 255);
   --theme-button-hover-color: rgb(255, 214, 192);
   --theme-post-card-color: var(--theme-nav-color);
+  --theme-avatar-widget-color: rgb(0, 0, 0);
 }
 
 :root {
@@ -22,4 +23,5 @@ body[data-theme='Dark'] {
   --theme-button-color: rgb(255, 214, 192);
   --theme-button-hover-color: rgb(233, 185, 160);
   --theme-post-card-color: var(--theme-nav-color);
+  --theme-avatar-widget-color: rgb(255, 214, 192);
 }

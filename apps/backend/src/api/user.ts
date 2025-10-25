@@ -20,7 +20,7 @@ const fields: MulterField[] = [{ name: 'avatar' }, { name: 'bgImg' }]
 export function registerUserAPI(app: Express, db: mysql.Connection) {
   // 用户信息接口
   app.post('/user/info', (req, res) => {
-    const { userId } = req.body
+    const userId = req.body?.userId || getNonEssentialAuthUserId(req)
 
     const sql = `
       select 

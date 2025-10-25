@@ -1,18 +1,26 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, watch } from 'vue'
 import { socket, Toast } from './utils'
 import emitter from '@/utils/eventEmitter'
 import { useUserStore } from './stores'
 
 const userStore = useUserStore()
+watch(
+  () => userStore.token,
+  () => {
+    if (!userStore.token) return
+    console.log('token update, get user info')
+    userStore.getUserInfo()
+  }
+)
 
 // websocket
-socket.emit('login', '555')
+socket.emit('login', userStore.userInfo?.user_id)
 
 // api
-emitter.on('API:UN_AUTH', () => {
+emitter.on('API:UN_AUTH', (message: string) => {
   Toast.show({
-    msg: '登录状态失效，请重新登录',
+    msg: message,
     type: 'error',
   })
   userStore.removeToken()

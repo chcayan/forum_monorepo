@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import router from '@/router'
+import router, { RouterPath } from '@/router'
 import { checkLoginStatus } from '@/utils'
 
 function navigateToLogin() {
-  router.push('/login')
+  router.push(RouterPath.login)
 }
 const follow = () => {
   if (!checkLoginStatus(navigateToLogin)) return

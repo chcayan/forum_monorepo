@@ -5,7 +5,7 @@ import { request } from '@/utils'
  * @param data 用户id
  * @returns
  */
-export function getUserInfoAPI(data: { userId: string }) {
+export function getUserInfoAPI(data: { userId?: string } = {}) {
   return request.post('/user/info', data)
 }
 

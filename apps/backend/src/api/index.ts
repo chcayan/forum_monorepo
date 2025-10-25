@@ -34,7 +34,7 @@ export function getNonEssentialAuthUserId(req: Request): string | null {
   if (authHeader) {
     const token = authHeader.split(' ')[1] as string
     try {
-      const payload = jwt.verify(token, process.env.SECRET_KEY) as JwtPayload
+      const payload = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload
       user_id = payload.id
     } catch {
       return user_id

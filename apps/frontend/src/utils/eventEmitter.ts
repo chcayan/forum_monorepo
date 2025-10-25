@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 type ApiEvent = 'API:UN_AUTH' | 'API:INVALID' | 'API:BAD_REQUEST'
-type TabEvent = 'TAB:LOGIN'
+type TabEvent = 'TAB:LOGIN' | 'TAB:CLOSE_AVATAR_WIDGET'
 type EventNames = ApiEvent | TabEvent
 
 class EventEmitter {
@@ -10,6 +10,7 @@ class EventEmitter {
     'API:INVALID': new Set(),
     'API:BAD_REQUEST': new Set(),
     'TAB:LOGIN': new Set(),
+    'TAB:CLOSE_AVATAR_WIDGET': new Set(),
   }
 
   on(eventName: EventNames, listener: Function) {

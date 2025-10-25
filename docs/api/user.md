@@ -3,7 +3,7 @@
 ## 用户信息接口
 
 - POST /user/info (body)
-  - userId: string
+  - userId?: string
 
 - 数据结构：UserInfo[]
 

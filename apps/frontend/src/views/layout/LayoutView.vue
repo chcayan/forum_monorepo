@@ -12,7 +12,8 @@ import { ref } from 'vue'
 import type { Component } from 'vue'
 import { useUserStore } from '@/stores'
 import { testAPI } from '@/api'
-import router from '@/router'
+import router, { RouterPath } from '@/router'
+import emitter from '@/utils/eventEmitter'
 
 const userStore = useUserStore()
 
@@ -30,7 +31,27 @@ const toggleTheme = () => {
 
 const test = async () => {
   await testAPI()
+  console.log('auth passed')
 }
+
+const showAvatarWidget = ref(false)
+const toggleWidgetVisible = () => {
+  showAvatarWidget.value = !showAvatarWidget.value
+}
+
+const navigateToUser = () => {
+  router.push(RouterPath.user)
+  showAvatarWidget.value = false
+}
+
+const navigateToSetting = () => {
+  router.push(RouterPath.setting)
+  showAvatarWidget.value = false
+}
+
+emitter.on('TAB:CLOSE_AVATAR_WIDGET', () => {
+  showAvatarWidget.value = false
+})
 </script>
 
 <template>
@@ -51,13 +72,40 @@ const test = async () => {
         <component :is="tabs[currentTheme]"></component>
       </button>
       <button
-        @click="router.push('/login')"
+        @click="router.push(RouterPath.login)"
         v-if="!userStore.token"
         class="login"
+        title="登录"
       >
         登录
       </button>
-      <img v-if="userStore.token" src="/avatar.jpg" alt="avatar" />
+      <div
+        v-if="userStore.token"
+        tabindex="0"
+        class="avatar tab-focus-style"
+        @keydown.enter="toggleWidgetVisible"
+      >
+        <img
+          :src="userStore.userInfo?.user_avatar"
+          alt="avatar"
+          @click="toggleWidgetVisible"
+          :title="userStore.userInfo?.username"
+        />
+        <transition name="widget">
+          <div ref="widget" v-if="showAvatarWidget" class="widget">
+            <p class="info">{{ userStore.userInfo?.username }}</p>
+            <p class="info">{{ userStore.userInfo?.user_email }}</p>
+            <button title="个人中心" @click="navigateToUser">
+              <p class="btn">个人中心</p>
+              <MySvg class="btn-icon" title="个人中心" />
+            </button>
+            <button title="设置" @click="navigateToSetting">
+              <p class="btn">设置</p>
+              <SettingSvg class="btn-icon" />
+            </button>
+          </div>
+        </transition>
+      </div>
     </div>
   </header>
   <main>
@@ -77,6 +125,7 @@ header {
   padding: 10px;
   border-radius: $gap;
   position: fixed;
+  z-index: $tab-z-index;
 
   .logo {
     display: flex;
@@ -139,12 +188,78 @@ header {
       background-color: transparent;
     }
 
-    img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      user-select: none;
-      cursor: pointer;
+    .avatar {
+      img {
+        position: relative;
+        z-index: $avatar-z-index + 1;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        user-select: none;
+        cursor: pointer;
+      }
+
+      .widget {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: $avatar-z-index;
+        width: 200px;
+        height: auto;
+        padding: 10px;
+        border-radius: 10px;
+        background-color: var(--theme-avatar-widget-color);
+        box-shadow: 0 0 2px var(--theme-shadow-color);
+
+        .info {
+          display: -webkit-box;
+          line-clamp: 1;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          // text-align: end;
+          color: var(--theme-font-color);
+          width: 130px;
+          height: 20px;
+          line-height: 20px;
+          font-size: 14px;
+        }
+
+        button {
+          display: flex;
+          align-items: center;
+          justify-content: end;
+          width: 100%;
+          height: 40px;
+          margin-top: 5px;
+
+          .btn {
+            color: var(--theme-font-color);
+          }
+
+          .btn-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+          }
+        }
+      }
+
+      .widget-enter-active,
+      .widget-leave-active {
+        transition: all 0.3s ease;
+        transform-origin: 185px 15px;
+      }
+
+      .widget-enter-from,
+      .widget-leave-to {
+        transform: scale(0.2);
+        border-radius: 50%;
+        opacity: 0;
+      }
     }
   }
 
@@ -153,7 +268,7 @@ header {
     position: fixed;
     border-radius: initial;
     bottom: 0;
-    z-index: 1000;
+    z-index: $tab-z-index;
 
     .logo {
       display: none;

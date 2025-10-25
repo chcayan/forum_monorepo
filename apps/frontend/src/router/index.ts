@@ -1,10 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+class RouterPath {
+  static base: string = '/'
+  static chat: string = '/chat'
+  static publish: string = '/publish'
+  static login: string = '/login'
+  static user: string = '/user'
+  static setting: string = '/setting'
+}
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
+      path: RouterPath.base,
       component: () => import('@/views/layout/LayoutView.vue'),
       children: [
         {
@@ -12,23 +21,23 @@ const router = createRouter({
           component: () => import('@/views/post/PostView.vue'),
         },
         {
-          path: '/chat',
+          path: RouterPath.chat,
           component: () => import('@/views/chat/ChatView.vue'),
         },
         {
-          path: '/publish',
+          path: RouterPath.publish,
           component: () => import('@/views/post/PublishView.vue'),
         },
         {
-          path: '/login',
+          path: RouterPath.login,
           component: () => import('@/views/login/LoginView.vue'),
         },
         {
-          path: '/user',
+          path: RouterPath.user,
           component: () => import('@/views/user/UserView.vue'),
         },
         {
-          path: '/setting',
+          path: RouterPath.setting,
           component: () => import('@/views/setting/SettingView.vue'),
         },
         {
@@ -40,4 +49,5 @@ const router = createRouter({
   ],
 })
 
+export { RouterPath }
 export default router

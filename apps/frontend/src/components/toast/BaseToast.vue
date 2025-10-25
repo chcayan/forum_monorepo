@@ -25,10 +25,10 @@ function isInt(time: number) {
 
 let timer: number | undefined
 
-let fn: () => void
+let _eventFn: () => void
 
 const handleEvent = () => {
-  fn()
+  _eventFn()
   Toast.hide()
 }
 
@@ -60,7 +60,7 @@ class Toast {
             clearInterval(timer)
           }
         }, 1000)
-        fn = eventFn
+        _eventFn = eventFn
       }
     }
 
@@ -120,7 +120,7 @@ defineExpose({
   position: fixed;
   top: 0;
   left: 50%;
-  z-index: 9999;
+  z-index: $toast-z-index;
   width: auto;
   min-width: 80px;
   margin-top: 20px;
