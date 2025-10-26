@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 class RouterPath {
   static base: string = '/'
+  static post: string = '/post'
   static chat: string = '/chat'
   static publish: string = '/publish'
   static login: string = '/login'
@@ -19,6 +20,10 @@ const router = createRouter({
         {
           path: '',
           component: () => import('@/views/post/PostView.vue'),
+        },
+        {
+          path: `${RouterPath.post}/:postId`,
+          component: () => import('@/views/post/PostDetail.vue'),
         },
         {
           path: RouterPath.chat,

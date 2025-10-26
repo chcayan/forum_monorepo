@@ -1,4 +1,5 @@
 import { request } from '@/utils'
+import { escapeHTML } from '@/utils/format'
 
 /**
  * 帖子列表 - 数据结构：PostInfo[]
@@ -41,7 +42,7 @@ type PostPublish = {
  */
 export function publishPostAPI(data: PostPublish) {
   const formData = new FormData()
-  formData.append('content', data.content)
+  formData.append('content', escapeHTML(data.content))
   formData.append('isPublish', data.isPublish)
   if (data.postImages) {
     data.postImages.forEach((file) => {

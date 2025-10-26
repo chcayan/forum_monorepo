@@ -1,4 +1,5 @@
 import { request } from '@/utils'
+import { escapeHTML } from '@/utils/format'
 
 /**
  * 发送评论
@@ -6,6 +7,7 @@ import { request } from '@/utils'
  * @returns
  */
 export function publishCommentAPI(data: { postId: string; content: string }) {
+  data.content = escapeHTML(data.content)
   return request.post('/post/comments', data)
 }
 

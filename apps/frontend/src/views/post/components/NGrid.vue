@@ -17,6 +17,9 @@ onMounted(() => {
 <template>
   <div class="box" :class="active">
     <img
+      v-loading
+      v-fullScreen
+      loading="lazy"
       v-for="image in parseImages"
       :key="image"
       :src="image"

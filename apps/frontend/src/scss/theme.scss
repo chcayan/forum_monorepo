@@ -10,6 +10,7 @@ body[data-theme='Dark'] {
   --theme-button-hover-color: rgb(255, 214, 192);
   --theme-post-card-color: var(--theme-nav-color);
   --theme-avatar-widget-color: rgb(0, 0, 0);
+  --theme-img-loading-color: rgba(177, 177, 177, 0.137);
 }
 
 :root {
@@ -24,4 +25,5 @@ body[data-theme='Dark'] {
   --theme-button-hover-color: rgb(233, 185, 160);
   --theme-post-card-color: var(--theme-nav-color);
   --theme-avatar-widget-color: rgb(255, 214, 192);
+  --theme-img-loading-color: rgba(177, 177, 177, 0.137);
 }

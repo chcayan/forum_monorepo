@@ -10,6 +10,7 @@ import { lineBreakReplace } from '@/utils'
 import NGrid from './NGrid.vue'
 import { onMounted, useTemplateRef } from 'vue'
 import emitter from '@/utils/eventEmitter'
+import router, { RouterPath } from '@/router'
 
 const { post } = defineProps<{
   post: PostInfo
@@ -28,19 +29,25 @@ onMounted(() => {
     }
   })
 })
+
+const navigateToPostDetail = (e: MouseEvent) => {
+  const target = e.target as HTMLElement
+  if (target && target.tagName === 'IMG') return
+  router.push(`${RouterPath.post}/${post.p_id}`)
+}
 </script>
 
 <template>
   <article ref="postEl" tabindex="0" class="tab-focus-style">
     <header>
-      <img :src="post.user_avatar" alt="avatar" />
+      <img v-loading loading="lazy" :src="post.user_avatar" alt="avatar" />
       <div>
         <p class="name">{{ post.username }}</p>
         <p class="time">{{ formatDateByYear(post.publish_time) }}</p>
       </div>
       <FollowButton />
     </header>
-    <div class="main">
+    <div class="main" @click="navigateToPostDetail">
       <p v-html="lineBreakReplace(post.p_content)"></p>
       <NGrid class="n-grid" v-if="post.p_images" :images="post.p_images" />
     </div>
@@ -74,9 +81,14 @@ article {
       height: 32px;
       aspect-ratio: 1;
       border-radius: 50%;
+      cursor: pointer;
     }
 
     div {
+      .name {
+        cursor: pointer;
+      }
+
       .time {
         font-size: 10px;
       }
@@ -89,6 +101,7 @@ article {
 
   .main {
     margin: $gap 0;
+    cursor: pointer;
 
     .n-grid {
       margin-top: $gap;

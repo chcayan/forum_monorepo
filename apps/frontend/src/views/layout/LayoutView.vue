@@ -86,6 +86,8 @@ emitter.on('TAB:CLOSE_AVATAR_WIDGET', () => {
         @keydown.enter="toggleWidgetVisible"
       >
         <img
+          v-loading
+          loading="lazy"
           :src="userStore.userInfo?.user_avatar"
           alt="avatar"
           @click="toggleWidgetVisible"
