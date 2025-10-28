@@ -1,4 +1,8 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const { isCollect } = defineProps<{
+  isCollect: boolean
+}>()
+</script>
 
 <template>
   <div class="icon" title="收藏数">
@@ -55,7 +59,7 @@
       -0.2562484,0.04692 -0.4287397,0.01292 z"
         id="path3"
         transform="translate(-30, -30) scale(34)"
-        fill="white"
+        :fill="isCollect ? 'yellow' : 'transparent'"
       />
     </svg>
   </div>

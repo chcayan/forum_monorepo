@@ -11,11 +11,11 @@ watch(
     if (!userStore.token) return
     console.log('token update, get user info')
     userStore.getUserInfo()
+
+    // websocket
+    socket.emit('login', userStore.userInfo?.user_id)
   }
 )
-
-// websocket
-socket.emit('login', userStore.userInfo?.user_id)
 
 // api
 emitter.on('API:UN_AUTH', (message: string) => {

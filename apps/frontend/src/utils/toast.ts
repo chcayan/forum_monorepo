@@ -6,7 +6,7 @@ class Toast {
   private static toast = Toast.mount()
   private static timer: number | null = null
 
-  static mount() {
+  private static mount() {
     const toastInstance = createApp(BaseToast)
     const container = document.createElement('div')
     document.body.appendChild(container)

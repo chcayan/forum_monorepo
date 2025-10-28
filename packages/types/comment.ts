@@ -4,7 +4,7 @@ export interface CommentList {
   user_id: string
   p_id: string
   c_content: string
-  create_time: string
+  created_time: string
   user_avatar: string
   username: string
 }

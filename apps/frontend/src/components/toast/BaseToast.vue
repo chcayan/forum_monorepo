@@ -2,7 +2,7 @@
 import { ref, useTemplateRef } from 'vue'
 import type { ColorType, ToastParams } from './types'
 
-const y = ref('-70px')
+const y = ref('-100px')
 const toastRef = useTemplateRef('toast')
 
 const _msg = ref<string>()

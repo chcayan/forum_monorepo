@@ -5,6 +5,7 @@ import { checkLoginStatus } from '@/utils'
 function navigateToLogin() {
   router.push(RouterPath.login)
 }
+
 const follow = () => {
   if (!checkLoginStatus(navigateToLogin)) return
   console.log(666)

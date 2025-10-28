@@ -7,7 +7,6 @@
   list-style: none;
   font-family: 'Gill Sans';
   -webkit-tap-highlight-color: transparent;
-  scroll-behavior: smooth;
 }
 
 html::-webkit-scrollbar {
@@ -36,6 +35,7 @@ body {
 
 a:focus-visible,
 button:focus-visible,
+.tab-focus-style.post-card:focus-visible,
 .tab-focus-style:focus-visible {
   outline: none;
   transition: all 0.3s ease;

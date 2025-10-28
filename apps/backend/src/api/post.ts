@@ -25,7 +25,11 @@ export function registerPostAPI(app: Express, db: mysql.Connection) {
         p_images,
         publish_time,
         u.user_avatar,
-        u.username
+        u.username,
+        CASE
+          WHEN c.p_id IS NOT NULL THEN 1 
+          ELSE 0 
+        END AS is_collected
       FROM
         post p
       LEFT JOIN
@@ -80,9 +84,14 @@ export function registerPostAPI(app: Express, db: mysql.Connection) {
         p_comment_count, 
         p_content, 
         p_images, 
+        publish_time,
         user_avatar, 
         username, 
-        is_public 
+        is_public,
+        CASE
+          WHEN c.p_id IS NOT NULL THEN 1 
+          ELSE 0 
+        END AS is_collected
       FROM 
         post p 
       left join 

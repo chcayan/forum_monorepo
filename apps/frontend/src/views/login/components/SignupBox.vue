@@ -62,12 +62,12 @@ const submitForm = async () => {
 </script>
 
 <template>
-  <header>
+  <header class="signup-header">
     <LogoSvg class="logo" />
     <h1>Welcome Forum!</h1>
     <p>Please enter you details</p>
   </header>
-  <form @submit.prevent="submitForm">
+  <form @submit.prevent="submitForm" class="signup-main">
     <label>
       <input
         :class="{ error: !isEmailValid }"
@@ -112,7 +112,7 @@ const submitForm = async () => {
 </template>
 
 <style scoped lang="scss">
-header {
+.signup-header {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -128,7 +128,7 @@ header {
   }
 }
 
-form {
+.signup-main {
   display: flex;
   flex-direction: column;
   width: 300px;

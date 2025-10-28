@@ -17,7 +17,7 @@ export function getPostListAPI(page: number, limit: number) {
  * @returns
  */
 export function getPostDetailAPI(postId: string) {
-  return request.patch(`/post/${postId}`)
+  return request.get(`/post/${postId}`)
 }
 
 /**
@@ -26,7 +26,7 @@ export function getPostDetailAPI(postId: string) {
  * @returns
  */
 export function updatePostViewAPI(postId: string) {
-  return request.get(`/post/view/${postId}`)
+  return request.patch(`/post/view/${postId}`)
 }
 
 type PostPublish = {

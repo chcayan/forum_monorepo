@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { loginAPI } from '@/api'
 import LogoSvg from '@/components/svgIcon/LogoSvg.vue'
-import router from '@/router'
+import router, { RouterPath } from '@/router'
 import { useUserStore } from '@/stores'
 import { debounce, isValidEmail, isValidPassword, Toast } from '@/utils'
 import { ref } from 'vue'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const userStore = useUserStore()
 
 // 验证邮箱
@@ -44,18 +46,20 @@ const submitForm = async () => {
       msg: '登录成功',
       type: 'success',
     })
-    router.replace('/')
+
+    const redirect = (route.query.redirect || RouterPath.base) as string
+    router.replace(redirect)
   }
 }
 </script>
 
 <template>
-  <header>
+  <header class="login-header">
     <LogoSvg class="logo" />
     <h1>Welcome back!</h1>
     <p>Please enter you details</p>
   </header>
-  <form @submit.prevent="submitForm">
+  <form @submit.prevent="submitForm" class="login-main">
     <label>
       <input
         :class="{ error: !isEmailValid }"
@@ -87,7 +91,7 @@ const submitForm = async () => {
 </template>
 
 <style scoped lang="scss">
-header {
+.login-header {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -103,7 +107,7 @@ header {
   }
 }
 
-form {
+.login-main {
   display: flex;
   flex-direction: column;
   width: 300px;

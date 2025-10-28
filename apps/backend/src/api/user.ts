@@ -279,7 +279,7 @@ export function registerUserAPI(app: Express, db: mysql.Connection) {
     }
   })
 
-  // 用户收藏帖子p_id数组接口
+  // 用户收藏帖子p_id数组接口(deprecate)
   app.post('/user/collect/postId', authMiddleware, (req, res) => {
     const { creatorUserId } = req.body
     const userId = req.user?.id

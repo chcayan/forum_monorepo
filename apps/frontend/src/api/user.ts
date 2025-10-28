@@ -85,7 +85,7 @@ export function updateUserAddCollectAPI(data: { postId: string }) {
  * @returns
  */
 export function updateUserDelCollectAPI(data: { postId: string }) {
-  return request.post('/user/collect/del', data)
+  return request.delete('/user/collect/del', { data })
 }
 
 /**

@@ -1,3 +1,5 @@
+import { useUserStore } from '@/stores'
+import { Toast } from '@/utils'
 import { createRouter, createWebHistory } from 'vue-router'
 
 class RouterPath {
@@ -28,10 +30,12 @@ const router = createRouter({
         {
           path: RouterPath.chat,
           component: () => import('@/views/chat/ChatView.vue'),
+          meta: { requireAuth: true },
         },
         {
           path: RouterPath.publish,
           component: () => import('@/views/post/PublishView.vue'),
+          meta: { requireAuth: true },
         },
         {
           path: RouterPath.login,
@@ -40,6 +44,7 @@ const router = createRouter({
         {
           path: RouterPath.user,
           component: () => import('@/views/user/UserView.vue'),
+          meta: { requireAuth: true },
         },
         {
           path: RouterPath.setting,
@@ -52,6 +57,28 @@ const router = createRouter({
       ],
     },
   ],
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { top: 0 }
+    }
+  },
+})
+
+router.beforeEach((to) => {
+  const userStore = useUserStore()
+  if (!userStore.token && to.path !== RouterPath.login && to.meta.requireAuth) {
+    return { path: RouterPath.login, query: { redirect: to.path } }
+  }
+  if (userStore.token && to.path.startsWith(RouterPath.login)) {
+    Toast.show({
+      msg: '您已登录，不要手动跳到登录页哦😊',
+      type: 'error',
+    })
+    return RouterPath.base
+  }
+  return true
 })
 
 export { RouterPath }

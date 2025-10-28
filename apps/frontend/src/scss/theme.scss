@@ -11,6 +11,9 @@ body[data-theme='Dark'] {
   --theme-post-card-color: var(--theme-nav-color);
   --theme-avatar-widget-color: rgb(0, 0, 0);
   --theme-img-loading-color: rgba(177, 177, 177, 0.137);
+  --theme-send-button-color: rgb(44, 44, 44);
+  --theme-send-button-hover-color: rgb(81, 81, 81);
+  --theme-scrollbar-thumb-color: rgb(78, 77, 77);
 }
 
 :root {
@@ -26,4 +29,7 @@ body[data-theme='Dark'] {
   --theme-post-card-color: var(--theme-nav-color);
   --theme-avatar-widget-color: rgb(255, 214, 192);
   --theme-img-loading-color: rgba(177, 177, 177, 0.137);
+  --theme-send-button-color: rgb(255, 214, 192);
+  --theme-send-button-hover-color: rgb(233, 185, 160);
+  --theme-scrollbar-thumb-color: rgb(255, 214, 192);
 }

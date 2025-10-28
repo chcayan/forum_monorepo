@@ -55,7 +55,7 @@ emitter.on('TAB:CLOSE_AVATAR_WIDGET', () => {
 </script>
 
 <template>
-  <header>
+  <header class="layout-view">
     <div @click="test" class="logo">
       <LogoSvg class="svg" />
       <span>forum</span>
@@ -110,13 +110,18 @@ emitter.on('TAB:CLOSE_AVATAR_WIDGET', () => {
       </div>
     </div>
   </header>
-  <main>
-    <router-view />
+  <main class="layout-view-main">
+    <!-- <router-view /> -->
+    <router-view v-slot="{ Component }">
+      <keep-alive :include="['PostView']">
+        <component :is="Component"></component>
+      </keep-alive>
+    </router-view>
   </main>
 </template>
 
 <style scoped lang="scss">
-header {
+.layout-view {
   display: flex;
   width: 90%;
   max-width: $nav-max-width;
@@ -291,7 +296,7 @@ header {
   }
 }
 
-main {
+.layout-view-main {
   display: flex;
   justify-content: center;
   width: 100%;

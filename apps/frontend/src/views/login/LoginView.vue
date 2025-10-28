@@ -22,7 +22,7 @@ emitter.on('TAB:LOGIN', () => {
 </script>
 
 <template>
-  <section>
+  <section class="login-view">
     <component :is="tabs[currentTab]"></component>
     <footer>
       <div v-if="currentTab === 'Login'">
@@ -38,7 +38,7 @@ emitter.on('TAB:LOGIN', () => {
 </template>
 
 <style scoped lang="scss">
-section {
+.login-view {
   display: flex;
   flex-direction: column;
   align-items: center;
