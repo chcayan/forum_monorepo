@@ -8,7 +8,14 @@ import type { PostDetail, PostInfo } from '@forum-monorepo/types'
 import { formatDateByYear } from '@forum-monorepo/utils'
 import { checkLoginStatus, lineBreakReplace, Toast } from '@/utils'
 import NGrid from './NGrid.vue'
-import { onMounted, ref, useTemplateRef, watch } from 'vue'
+import {
+  onDeactivated,
+  onMounted,
+  onUnmounted,
+  ref,
+  useTemplateRef,
+  watch,
+} from 'vue'
 import emitter from '@/utils/eventEmitter'
 import router, { RouterPath } from '@/router'
 import {
@@ -38,28 +45,29 @@ onMounted(() => {
 })
 
 const route = useRoute()
-const navigateToPostDetail = async (e: MouseEvent) => {
+const navigateToPostDetail = async (e: MouseEvent | KeyboardEvent) => {
   if (route.path.startsWith(RouterPath.post)) return
   const target = e.target as HTMLElement
   if (target && target.tagName === 'IMG') return
   router.push(`${RouterPath.post}/${post.p_id}`)
-  const res = await updatePostViewAPI(post.p_id)
+  await updatePostViewAPI(post.p_id)
   emitter.emit('EVENT:UPDATE_POST_LIST')
-  console.log(res.data)
 }
 
 const isCollect = ref(false)
 
 const initCollectStatus = async () => {
-  console.log(post.is_collected)
   isCollect.value = post.is_collected ? true : false
 }
 initCollectStatus()
 
+let flag = true
+let off: () => void | null
 const changeCollectStatus = async () => {
+  if (!flag) return
+  flag = false
   if (!checkLoginStatus()) return
   if (!isCollect.value) {
-    console.log(555)
     await updateUserAddCollectAPI({
       postId: post.p_id,
     })
@@ -68,7 +76,6 @@ const changeCollectStatus = async () => {
       type: 'success',
     })
   } else {
-    console.log(post.p_id)
     await updateUserDelCollectAPI({
       postId: post.p_id,
     })
@@ -82,16 +89,35 @@ const changeCollectStatus = async () => {
   if (route.path.startsWith(RouterPath.post)) {
     emitter.emit('EVENT:UPDATE_POST_DETAIL')
   }
+  off = emitter.on('EVENT:TOGGLE_FLAG', setFlag)
+}
+
+function setFlag() {
+  flag = true
 }
 
 watch(
   () => post.is_collected,
   () => initCollectStatus()
 )
+
+onUnmounted(() => {
+  console.log('clear')
+  off?.()
+})
+
+onDeactivated(() => {
+  off?.()
+})
 </script>
 
 <template>
-  <article ref="postEl" tabindex="0" class="tab-focus-style post-card">
+  <article
+    ref="postEl"
+    tabindex="0"
+    class="tab-focus-style post-card"
+    @keydown.enter="navigateToPostDetail"
+  >
     <header>
       <img v-loading loading="lazy" :src="post.user_avatar" alt="avatar" />
       <div>

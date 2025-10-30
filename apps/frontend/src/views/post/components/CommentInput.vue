@@ -4,7 +4,7 @@ import SendSvg from '@/components/svgIcon/SendSvg.vue'
 import router, { RouterPath } from '@/router'
 import { checkLoginStatus, Toast } from '@/utils'
 import emitter from '@/utils/eventEmitter'
-import { ref, useTemplateRef } from 'vue'
+import { onUnmounted, ref, useTemplateRef } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
@@ -42,8 +42,12 @@ const sendComment = async (e: KeyboardEvent | MouseEvent) => {
 }
 
 const textareaRef = useTemplateRef('textareaEl')
-emitter.on('EVENT:FOCUS_COMMENT_INPUT', () => {
+let off = emitter.on('EVENT:FOCUS_COMMENT_INPUT', () => {
   textareaRef.value?.focus()
+})
+
+onUnmounted(() => {
+  off?.()
 })
 </script>
 

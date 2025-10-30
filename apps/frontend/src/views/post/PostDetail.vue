@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onUnmounted, ref } from 'vue'
 import PostCard from './components/PostCard.vue'
 import type { CommentList, PostDetail } from '@forum-monorepo/types'
 import { useRoute } from 'vue-router'
@@ -45,12 +45,18 @@ const onCommentInput = () => {
   emitter.emit('EVENT:FOCUS_COMMENT_INPUT')
 }
 
-emitter.on('EVENT:UPDATE_POST_DETAIL', () => {
-  getPostDetail()
+let off1 = emitter.on('EVENT:UPDATE_POST_DETAIL', async () => {
+  await getPostDetail()
+  emitter.emit('EVENT:TOGGLE_FLAG')
 })
 
-emitter.on('EVENT:UPDATE_COMMENT_LIST', () => {
+let off2 = emitter.on('EVENT:UPDATE_COMMENT_LIST', () => {
   getCommentList()
+})
+
+onUnmounted(() => {
+  off1?.()
+  off2?.()
 })
 </script>
 
@@ -64,7 +70,7 @@ emitter.on('EVENT:UPDATE_COMMENT_LIST', () => {
         <CommentInput />
       </div>
       <footer>
-        <ul v-if="commentList?.length">
+        <ul class="tab-focus-outline-style" v-if="commentList?.length">
           <li v-for="comment in commentList" :key="comment.comment_id">
             <CommentCard :comment />
           </li>

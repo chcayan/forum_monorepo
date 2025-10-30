@@ -98,11 +98,20 @@ class Toast {
       }
     )
   }
+
+  /**
+   * 用于切换状态时修改文字
+   * @param newValue 文本内容
+   */
+  static modifyMsg(newValue: string) {
+    _msg.value = newValue
+  }
 }
 
 defineExpose({
   show: Toast.show,
   hide: Toast.hide,
+  modifyMsg: Toast.modifyMsg,
 })
 </script>
 

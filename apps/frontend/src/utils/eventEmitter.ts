@@ -7,6 +7,7 @@ type BaseEvent =
   | 'EVENT:UPDATE_COMMENT_LIST'
   | 'EVENT:UPDATE_POST_LIST'
   | 'EVENT:UPDATE_POST_DETAIL'
+  | 'EVENT:TOGGLE_FLAG'
 type EventNames = ApiEvent | TabEvent | BaseEvent
 
 class EventEmitter {
@@ -20,14 +21,26 @@ class EventEmitter {
     'EVENT:UPDATE_COMMENT_LIST': new Set(),
     'EVENT:UPDATE_POST_LIST': new Set(),
     'EVENT:UPDATE_POST_DETAIL': new Set(),
+    'EVENT:TOGGLE_FLAG': new Set(),
   }
 
   on(eventName: EventNames, listener: Function) {
     this.listeners[eventName]?.add(listener)
+
+    return () => this.off(eventName, listener)
   }
 
   emit(eventName: EventNames, ...args: any[]) {
     this.listeners[eventName]?.forEach((listener) => listener(...args))
+  }
+
+  off(eventName: EventNames, listener: Function) {
+    this.listeners[eventName]?.delete(listener)
+  }
+
+  clear(eventName?: EventNames) {
+    if (eventName) this.listeners[eventName]?.clear()
+    else Object.values(this.listeners).forEach((set) => set.clear())
   }
 }
 

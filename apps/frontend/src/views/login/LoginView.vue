@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onUnmounted, ref } from 'vue'
 import type { Component } from 'vue'
 
 import Login from './components/LoginBox.vue'
@@ -16,8 +16,12 @@ const toggle = () => {
   currentTab.value = currentTab.value === 'Login' ? 'Signup' : 'Login'
 }
 
-emitter.on('TAB:LOGIN', () => {
+let off = emitter.on('TAB:LOGIN', () => {
   toggle()
+})
+
+onUnmounted(() => {
+  off?.()
 })
 </script>
 

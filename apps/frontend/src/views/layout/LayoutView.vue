@@ -11,9 +11,10 @@ import { ref } from 'vue'
 
 import type { Component } from 'vue'
 import { useUserStore } from '@/stores'
-import { testAPI } from '@/api'
 import router, { RouterPath } from '@/router'
 import emitter from '@/utils/eventEmitter'
+import BackSvg from '@/components/svgIcon/BackSvg.vue'
+import { useRoute } from 'vue-router'
 
 const userStore = useUserStore()
 
@@ -27,11 +28,6 @@ const toggleTheme = () => {
   currentTheme.value = currentTheme.value === 'Light' ? 'Dark' : 'Light'
   localStorage.setItem('theme', currentTheme.value)
   document.body.dataset.theme = currentTheme.value
-}
-
-const test = async () => {
-  await testAPI()
-  console.log('auth passed')
 }
 
 const showAvatarWidget = ref(false)
@@ -52,13 +48,33 @@ const navigateToSetting = () => {
 emitter.on('TAB:CLOSE_AVATAR_WIDGET', () => {
   showAvatarWidget.value = false
 })
+
+const route = useRoute()
+
+const showBackBtn = () => {
+  if (
+    route.path === RouterPath.base ||
+    route.path.startsWith(RouterPath.chat) ||
+    route.path.startsWith(RouterPath.publish)
+  ) {
+    return true
+  }
+  return false
+}
 </script>
 
 <template>
   <header class="layout-view">
-    <div @click="test" class="logo">
-      <LogoSvg class="svg" />
-      <span>forum</span>
+    <div class="logo">
+      <LogoSvg v-if="showBackBtn()" class="svg" title="forum" />
+      <div
+        tabindex="0"
+        class="tab-focus-style back"
+        @click="router.back()"
+        v-else
+      >
+        <BackSvg />
+      </div>
     </div>
     <nav>
       <router-link to="/"><PostSvg /></router-link>
@@ -139,6 +155,22 @@ emitter.on('TAB:CLOSE_AVATAR_WIDGET', () => {
     align-items: center;
     gap: $gap;
     flex: 1;
+
+    .back {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background-color: var(--theme-button-color);
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: var(--theme-button-hover-color);
+      }
+    }
 
     span {
       color: var(--theme-font-color);
@@ -240,6 +272,12 @@ emitter.on('TAB:CLOSE_AVATAR_WIDGET', () => {
           width: 100%;
           height: 40px;
           margin-top: 5px;
+          border-radius: 10px;
+          transition: all 0.3s ease;
+
+          &:hover {
+            background-color: var(--theme-button-hover-color);
+          }
 
           .btn {
             color: var(--theme-font-color);

@@ -8,7 +8,7 @@ function navigateToLogin() {
 
 const follow = () => {
   if (!checkLoginStatus(navigateToLogin)) return
-  console.log(666)
+  // TODO
 }
 </script>
 

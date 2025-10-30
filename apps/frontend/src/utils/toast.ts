@@ -13,10 +13,12 @@ class Toast {
 
     const toast = toastInstance.mount(container) as unknown as {
       show: (options: ToastParams) => void
+      modifyMsg: (newValue: string) => void
     }
     return toast
   }
   static show({ msg, type, duration = 2000, eventFn }: ToastParams) {
+    this.toast.modifyMsg(msg)
     if (this.timer) return
 
     this.toast.show({

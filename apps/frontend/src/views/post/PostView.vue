@@ -4,17 +4,22 @@ import PostCard from './components/PostCard.vue'
 import { ref } from 'vue'
 import type { PostInfo } from '@forum-monorepo/types'
 import emitter from '@/utils/eventEmitter'
+import { useRoute } from 'vue-router'
+import { RouterPath } from '@/router'
 
 const postList = ref<PostInfo[]>([])
 const getPostList = async () => {
   const res = await getPostListAPI(1, 20)
   postList.value = res.data.data
-  console.log(postList.value)
 }
 getPostList()
 
-emitter.on('EVENT:UPDATE_POST_LIST', () => {
-  getPostList()
+const route = useRoute()
+emitter.on('EVENT:UPDATE_POST_LIST', async () => {
+  await getPostList()
+  if (route.path === RouterPath.base) {
+    emitter.emit('EVENT:TOGGLE_FLAG')
+  }
 })
 </script>
 
