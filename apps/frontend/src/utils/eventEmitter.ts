@@ -8,6 +8,8 @@ type BaseEvent =
   | 'EVENT:UPDATE_POST_LIST'
   | 'EVENT:UPDATE_POST_DETAIL'
   | 'EVENT:TOGGLE_FLAG'
+  | 'EVENT:PUBLISH_POST'
+  | 'EVENT:RESET_POST_IMAGES'
 type EventNames = ApiEvent | TabEvent | BaseEvent
 
 class EventEmitter {
@@ -22,6 +24,8 @@ class EventEmitter {
     'EVENT:UPDATE_POST_LIST': new Set(),
     'EVENT:UPDATE_POST_DETAIL': new Set(),
     'EVENT:TOGGLE_FLAG': new Set(),
+    'EVENT:PUBLISH_POST': new Set(),
+    'EVENT:RESET_POST_IMAGES': new Set(),
   }
 
   on(eventName: EventNames, listener: Function) {

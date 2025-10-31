@@ -4,6 +4,10 @@
  * @returns
  */
 export function escapeHTML(str: string) {
+  if (!str) {
+    console.error('请输入文本')
+    return
+  }
   return str
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')

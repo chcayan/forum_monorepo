@@ -70,7 +70,11 @@ onUnmounted(() => {
         <CommentInput />
       </div>
       <footer>
-        <ul class="tab-focus-outline-style" v-if="commentList?.length">
+        <ul
+          tabindex="0"
+          class="tab-focus-outline-style"
+          v-if="commentList?.length"
+        >
           <li v-for="comment in commentList" :key="comment.comment_id">
             <CommentCard :comment />
           </li>

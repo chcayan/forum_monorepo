@@ -6,6 +6,7 @@ import type { PostInfo } from '@forum-monorepo/types'
 import emitter from '@/utils/eventEmitter'
 import { useRoute } from 'vue-router'
 import { RouterPath } from '@/router'
+import LoadingSvg from '@/components/svgIcon/LoadingSvg.vue'
 
 const postList = ref<PostInfo[]>([])
 const getPostList = async () => {
@@ -29,6 +30,9 @@ emitter.on('EVENT:UPDATE_POST_LIST', async () => {
       <li class="post-item" v-for="post in postList" :key="post.p_id">
         <PostCard :post :is-restrict-line="true" />
       </li>
+      <li class="loading">
+        <LoadingSvg />
+      </li>
     </ul>
   </section>
 </template>
@@ -44,6 +48,19 @@ emitter.on('EVENT:UPDATE_POST_LIST', async () => {
 
     .post-item {
       width: 400px;
+    }
+
+    .loading {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      height: 80px;
+      margin: 10px 0;
+
+      .icon {
+        width: 64px;
+        height: 64px;
+      }
     }
 
     @media (max-width: $mobile-size) {

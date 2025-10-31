@@ -10,6 +10,7 @@
       p-id="15627"
       width="25"
       height="25"
+      class="back-svg"
       xmlns:xlink="http://www.w3.org/1999/xlink"
     >
       <path
@@ -21,4 +22,8 @@
   </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.back-svg {
+  fill: black;
+}
+</style>

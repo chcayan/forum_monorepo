@@ -171,10 +171,13 @@ export function registerPostAPI(app: Express, db: mysql.Connection) {
       const userId = req.user?.id
 
       if (!userId) {
-        return res.status(400).json({ error: '用户ID为空' })
+        return res.status(400).json({ message: '用户ID为空' })
       }
       if (!content) {
-        return res.status(400).json({ error: '内容为空' })
+        return res.status(400).json({ message: '内容为空' })
+      }
+      if (!isPublic) {
+        return res.status(400).json({ message: '可见性为空' })
       }
 
       const files = req.files as Express.Multer.File[]

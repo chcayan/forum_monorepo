@@ -1,8 +1,59 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onUnmounted, ref, useTemplateRef } from 'vue'
 import ImgUpload from './components/ImgUpload.vue'
+import ToggleBtn from '@/components/button/ToggleBtn.vue'
+import emitter from '@/utils/eventEmitter'
+import { publishPostAPI } from '@/api'
+import { Toast } from '@/utils'
 
 const context = ref<string>()
+
+const imgUploadRef = useTemplateRef('ImgUploadEl')
+
+function getPostImages() {
+  return imgUploadRef.value?.$!.exposed!.allFiles
+}
+
+const isPublic = ref(true)
+
+const changeStatus = () => {
+  isPublic.value = !isPublic.value
+}
+
+let flag = true
+const publishPost = async () => {
+  if (!flag) return
+  if (!context.value) {
+    Toast.show({
+      msg: '请输入内容...',
+      type: 'error',
+    })
+    return
+  }
+  flag = false
+
+  await publishPostAPI({
+    content: context.value as string,
+    isPublic: isPublic.value ? 'true' : 'false',
+    postImages: getPostImages(),
+  })
+
+  context.value = ''
+  Toast.show({
+    msg: '发布成功',
+    type: 'success',
+  })
+
+  emitter.emit('EVENT:RESET_POST_IMAGES')
+
+  flag = true
+}
+
+let off = emitter.on('EVENT:PUBLISH_POST', publishPost)
+
+onUnmounted(() => {
+  off?.()
+})
 </script>
 
 <template>
@@ -20,7 +71,11 @@ const context = ref<string>()
           placeholder="请输入内容..."
         ></textarea>
         <h3>图片：</h3>
-        <ImgUpload />
+        <ImgUpload ref="ImgUploadEl" />
+        <div class="visible">
+          <h3>可见性：</h3>
+          <ToggleBtn @click="changeStatus" :status="isPublic" />
+        </div>
       </div>
     </article>
   </form>
@@ -43,11 +98,15 @@ const context = ref<string>()
     .main {
       margin-top: 20px;
 
+      h3 {
+        margin-top: 20px;
+      }
+
       textarea {
-        margin: 10px 0;
+        margin: 10px 0 0;
         outline: none;
         border: none;
-        width: 380px;
+        width: 100%;
         height: 300px;
         resize: none;
         padding: 10px;
@@ -64,6 +123,26 @@ const context = ref<string>()
           background-color: var(--theme-scrollbar-thumb-color);
         }
       }
+
+      .visible {
+        display: flex;
+        align-items: center;
+
+        h3 {
+          margin-bottom: 10px;
+          margin-right: auto;
+        }
+      }
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+    }
+
+    @media (max-width: $mobile-size) {
+      margin-top: 10px;
+      width: calc(100vw - 20px);
     }
   }
 }

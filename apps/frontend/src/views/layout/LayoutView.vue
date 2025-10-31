@@ -15,6 +15,7 @@ import router, { RouterPath } from '@/router'
 import emitter from '@/utils/eventEmitter'
 import BackSvg from '@/components/svgIcon/BackSvg.vue'
 import { useRoute } from 'vue-router'
+import SendSvg from '@/components/svgIcon/SendSvg.vue'
 
 const userStore = useUserStore()
 
@@ -61,6 +62,11 @@ const showBackBtn = () => {
   }
   return false
 }
+
+const publishPostBtn = () => {
+  emitter.emit('EVENT:PUBLISH_POST')
+  console.log('publish_post')
+}
 </script>
 
 <template>
@@ -79,7 +85,10 @@ const showBackBtn = () => {
     <nav>
       <router-link to="/"><PostSvg /></router-link>
       <router-link to="/chat"><ChatSvg /></router-link>
-      <router-link to="/publish"><PublishSvg /></router-link>
+      <router-link to="/publish">
+        <PublishSvg v-if="!route.path.startsWith(RouterPath.publish)" />
+        <SendSvg v-else @click="publishPostBtn" />
+      </router-link>
       <router-link to="/user" class="mobile"><MySvg /></router-link>
       <router-link to="/setting" class="mobile"><SettingSvg /></router-link>
     </nav>

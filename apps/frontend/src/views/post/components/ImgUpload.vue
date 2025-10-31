@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref, useTemplateRef } from 'vue'
+import emitter from '@/utils/eventEmitter'
+import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 
 const inputRef = useTemplateRef('inputEl')
 const divRef = useTemplateRef('divEl')
@@ -7,11 +8,18 @@ const divRef = useTemplateRef('divEl')
 const isHide = ref(false)
 
 const allFiles: File[] = []
+let off: () => void
 
 onMounted(() => {
   const inputEl = inputRef.value
   const previewEl = divRef.value
+
   if (!inputEl || !previewEl) return
+
+  off = emitter.on('EVENT:RESET_POST_IMAGES', () => {
+    allFiles.length = 0
+    previewEl.innerHTML = ''
+  })
 
   inputEl.addEventListener('change', () => {
     const newFiles = Array.from(inputEl.files ?? [])
@@ -45,8 +53,9 @@ onMounted(() => {
         img.classList.add('del-img')
         img.alt = 'post-img'
         img.title = '删除？'
-        img.style.width = '120px'
-        img.style.height = '120px'
+        img.style.width = '100%'
+        img.style.height = '100%'
+        img.style.aspectRatio = '1'
         img.style.objectFit = 'cover'
         img.style.borderRadius = '10px'
 
@@ -67,23 +76,34 @@ onMounted(() => {
     })
 
     if (allFiles.length === 9) {
-      console.log(allFiles.length)
       isHide.value = true
     } else {
       isHide.value = false
     }
-    console.log(allFiles)
-    console.log(allFiles[0])
 
     inputEl.value = ''
   })
+})
+
+onUnmounted(() => {
+  off?.()
+})
+
+defineExpose({
+  allFiles,
 })
 </script>
 
 <template>
   <div class="img-upload">
     <div ref="divEl" id="preview"></div>
-    <label :class="{ hide: isHide }" class="image">
+    <label
+      tabindex="0"
+      class="tab-focus-outline-style image"
+      :class="{ hide: isHide }"
+      title="添加图片"
+      @keydown.enter="inputRef?.click()"
+    >
       <input
         ref="inputEl"
         type="file"
@@ -99,8 +119,8 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .img-upload {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   align-items: center;
   margin-top: 10px;
@@ -109,8 +129,9 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 120px;
-    height: 120px;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1;
     border-radius: 10px;
     cursor: pointer;
     box-shadow: 0 0 2px var(--theme-shadow-color);
@@ -118,6 +139,14 @@ onMounted(() => {
     p {
       font-size: 50px;
       opacity: 0.5;
+      transition: all 0.3s ease;
+    }
+
+    &:hover {
+      p {
+        transform: scale(1.1);
+        opacity: 1;
+      }
     }
   }
 

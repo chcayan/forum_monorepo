@@ -31,7 +31,7 @@ export function updatePostViewAPI(postId: string) {
 
 type PostPublish = {
   content: string
-  isPublish: string
+  isPublic: string
   postImages?: File[]
 }
 
@@ -42,8 +42,8 @@ type PostPublish = {
  */
 export function publishPostAPI(data: PostPublish) {
   const formData = new FormData()
-  formData.append('content', escapeHTML(data.content))
-  formData.append('isPublish', data.isPublish)
+  formData.append('content', escapeHTML(data.content) as string)
+  formData.append('isPublic', data.isPublic)
   if (data.postImages) {
     data.postImages.forEach((file) => {
       formData.append('postImages', file)

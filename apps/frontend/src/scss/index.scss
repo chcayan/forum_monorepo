@@ -10,8 +10,13 @@
 }
 
 html::-webkit-scrollbar {
-  width: 0;
-  height: 0;
+  width: 10px;
+}
+
+html::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: var(--theme-scrollbar-thumb-color);
+  cursor: pointer;
 }
 
 ::selection {
@@ -37,7 +42,9 @@ a:focus-visible,
 button:focus-visible,
 .tab-focus-style.post-card:focus-visible,
 .tab-focus-style.back:focus-visible,
-.tab-focus-style:focus-visible {
+.tab-focus-style:focus-visible,
+.tab-focus-style.toggle-btn:focus-visible,
+.tab-focus-style.image:focus-visible {
   outline: none;
   transition: all 0.3s ease;
   box-shadow:
@@ -46,7 +53,7 @@ button:focus-visible,
   border-radius: 6px;
 }
 
-.tab-focus-outline-style:focus {
+.tab-focus-outline-style:focus-visible {
   outline: none;
   outline: 5px solid var(--theme-tag-active-color);
 }
@@ -82,4 +89,10 @@ button {
 
 a {
   color: var(--theme-font-color);
+}
+
+.img-loading {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--theme-img-loading-color, #eee);
 }

@@ -3,12 +3,14 @@ import multer from 'multer'
 import crypto from 'crypto'
 import path from 'path'
 
-const hash = crypto.randomBytes(4).toString('hex')
-
+console.log('===========' + path.resolve(process.cwd(), 'uploads'))
 const storage = multer.diskStorage({
   destination: path.resolve(process.cwd(), 'uploads'),
   filename: (req, file, cb) => {
-    cb(null, `${formatDate}_${hash}`)
+    const hash = crypto.randomBytes(8).toString('hex')
+    const ext = path.extname(file.originalname)
+    const filename = `${formatDate(Date())}_${hash}${ext}`
+    cb(null, filename)
   },
 })
 
