@@ -8,14 +8,7 @@ import type { PostDetail, PostInfo } from '@forum-monorepo/types'
 import { formatDateByYear } from '@forum-monorepo/utils'
 import { checkLoginStatus, lineBreakReplace, Toast } from '@/utils'
 import NGrid from './NGrid.vue'
-import {
-  onDeactivated,
-  onMounted,
-  onUnmounted,
-  ref,
-  useTemplateRef,
-  watch,
-} from 'vue'
+import { onDeactivated, onMounted, onUnmounted, useTemplateRef } from 'vue'
 import emitter from '@/utils/eventEmitter'
 import router, { RouterPath } from '@/router'
 import {
@@ -24,15 +17,18 @@ import {
   updateUserDelCollectAPI,
 } from '@/api'
 import { useRoute } from 'vue-router'
+import { usePostStore } from '@/stores'
 
-const { post, isRestrictLine } = defineProps<{
+const { post, isRestrictLine, page, isCollect } = defineProps<{
   post: PostInfo | PostDetail
   isRestrictLine: boolean
+  page: number
+  isCollect: boolean
 }>()
 
 const postRef = useTemplateRef('postEl')
 
-onMounted(() => {
+onMounted(async () => {
   let lastKey: string | null = null
   window.addEventListener('keydown', (e) => (lastKey = e.key))
 
@@ -42,6 +38,8 @@ onMounted(() => {
       emitter.emit('TAB:CLOSE_AVATAR_WIDGET')
     }
   })
+  await emitter.emitAsync('EVENT:GET_USER_COLLECT_POST_ID_LIST')
+  console.log(isCollect)
 })
 
 const route = useRoute()
@@ -49,28 +47,23 @@ const navigateToPostDetail = async (e: MouseEvent | KeyboardEvent) => {
   if (route.path.startsWith(RouterPath.post)) return
   const target = e.target as HTMLElement
   if (target && target.tagName === 'IMG') return
-  router.push(`${RouterPath.post}/${post.p_id}`)
+  router.push(`${RouterPath.post}/${post.p_id}?page=${page}`)
   await updatePostViewAPI(post.p_id)
-  emitter.emit('EVENT:UPDATE_POST_LIST')
+  emitter.emit('EVENT:UPDATE_POST_LIST', page)
 }
 
-const isCollect = ref(false)
-
-const initCollectStatus = async () => {
-  isCollect.value = post.is_collected ? true : false
-}
-initCollectStatus()
-
+const postStore = usePostStore()
 let flag = true
 let off: () => void | null
 const changeCollectStatus = async () => {
   if (!flag) return
   flag = false
   if (!checkLoginStatus()) return
-  if (!isCollect.value) {
+  if (!isCollect) {
     await updateUserAddCollectAPI({
       postId: post.p_id,
     })
+    await postStore.getUserCollectListOfPostId()
     Toast.show({
       msg: '收藏成功',
       type: 'success',
@@ -79,15 +72,26 @@ const changeCollectStatus = async () => {
     await updateUserDelCollectAPI({
       postId: post.p_id,
     })
+    await postStore.getUserCollectListOfPostId()
+
     Toast.show({
       msg: '取消收藏成功',
       type: 'success',
     })
   }
 
-  emitter.emit('EVENT:UPDATE_POST_LIST')
+  if (
+    route.path === RouterPath.base ||
+    route.path.startsWith(RouterPath.user)
+  ) {
+    emitter.emit('EVENT:UPDATE_POST_LIST', page)
+    emitter.emit('EVENT:UPDATE_USER_POST_LIST', page)
+  }
+
   if (route.path.startsWith(RouterPath.post)) {
     emitter.emit('EVENT:UPDATE_POST_DETAIL')
+    emitter.emit('EVENT:UPDATE_POST_LIST', page)
+    emitter.emit('EVENT:UPDATE_USER_POST_LIST', page)
   }
   off = emitter.on('EVENT:TOGGLE_FLAG', setFlag)
 }
@@ -95,11 +99,6 @@ const changeCollectStatus = async () => {
 function setFlag() {
   flag = true
 }
-
-watch(
-  () => post.is_collected,
-  () => initCollectStatus()
-)
 
 onUnmounted(() => {
   console.log('clear')

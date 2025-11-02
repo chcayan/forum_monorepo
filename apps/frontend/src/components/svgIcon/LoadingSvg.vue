@@ -6,7 +6,6 @@ const loadingRef = useTemplateRef('loadingEl')
 let loadingReset: number
 onMounted(() => {
   const animationDom = loadingRef.value?.querySelectorAll('circle')
-  console.log(animationDom)
   loadingReset = setInterval(() => {
     if (!animationDom) return
     for (let i = 0; i < animationDom?.length; i++) {

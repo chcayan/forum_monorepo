@@ -14,8 +14,12 @@ export function getUserInfoAPI(data: { userId?: string } = {}) {
  * @param data 用户id
  * @returns
  */
-export function getUserPostAPI(data: { creatorUserId: string }) {
-  return request.post('/user/post', data)
+export function getUserPostAPI(data: {
+  creatorUserId: string
+  page: number
+  limit: number
+}) {
+  return request.post('/user/posts', data)
 }
 
 type UserInfo = {

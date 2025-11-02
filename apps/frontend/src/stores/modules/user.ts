@@ -14,18 +14,6 @@ export const useUserStore = defineStore(
     }
     const removeToken = () => {
       token.value = ''
-      // userInfo.value = {
-      //   user_avatar: '',
-      //   user_email: '',
-      //   user_id: '',
-      //   username: '',
-      //   registration: '',
-      //   fans: 0,
-      //   follows: 0,
-      //   background_img: '',
-      //   sex: '',
-      //   signature: '',
-      // }
     }
 
     const getUserInfo = async () => {

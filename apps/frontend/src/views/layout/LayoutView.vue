@@ -16,6 +16,7 @@ import emitter from '@/utils/eventEmitter'
 import BackSvg from '@/components/svgIcon/BackSvg.vue'
 import { useRoute } from 'vue-router'
 import SendSvg from '@/components/svgIcon/SendSvg.vue'
+import { debounce } from '@/utils'
 
 const userStore = useUserStore()
 
@@ -67,6 +68,28 @@ const publishPostBtn = () => {
   emitter.emit('EVENT:PUBLISH_POST')
   console.log('publish_post')
 }
+
+let flag = true
+let lastScrollTop = 0
+const debounceScroll = debounce(async () => {
+  if (!flag) return
+
+  const scrollTop =
+    document.documentElement.scrollTop || document.body.scrollTop
+  const clientHeight = document.documentElement.clientHeight
+  const scrollHeight = document.documentElement.scrollHeight
+
+  const isScrollDown = scrollTop > lastScrollTop
+  lastScrollTop = scrollTop
+
+  if (isScrollDown && scrollTop + clientHeight >= scrollHeight - 100) {
+    await emitter.emitAsync('EVENT:GET_MORE_POST')
+    flag = true
+    console.log('页面到底了')
+  }
+}, 300)
+
+window.addEventListener('scroll', debounceScroll)
 </script>
 
 <template>
@@ -138,7 +161,7 @@ const publishPostBtn = () => {
   <main class="layout-view-main">
     <!-- <router-view /> -->
     <router-view v-slot="{ Component }">
-      <keep-alive :include="['PostView']">
+      <keep-alive :include="['PostView', 'UserView']">
         <component :is="Component"></component>
       </keep-alive>
     </router-view>

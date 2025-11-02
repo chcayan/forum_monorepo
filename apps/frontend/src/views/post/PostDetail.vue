@@ -7,6 +7,7 @@ import { getCommentListAPI, getPostDetailAPI } from '@/api'
 import CommentInput from './components/CommentInput.vue'
 import CommentCard from './components/CommentCard.vue'
 import emitter from '@/utils/eventEmitter'
+import { usePostStore } from '@/stores'
 
 const route = useRoute()
 const postDetail = ref<PostDetail>({
@@ -23,12 +24,16 @@ const postDetail = ref<PostDetail>({
   user_avatar: '',
   username: '',
   is_collected: 0,
+  page: 0,
 })
 
 const getPostDetail = async () => {
   const postId = route.params.postId as string
   const res = await getPostDetailAPI(postId)
-  postDetail.value = res.data.data[0]
+  postDetail.value = {
+    ...res.data.data[0],
+    page: Number(route.query.page),
+  }
 }
 getPostDetail()
 
@@ -54,16 +59,29 @@ let off2 = emitter.on('EVENT:UPDATE_COMMENT_LIST', () => {
   getCommentList()
 })
 
+const postStore = usePostStore()
+let off3 = emitter.on('EVENT:GET_USER_COLLECT_POST_ID_LIST', async () => {
+  await postStore.getUserCollectListOfPostId()
+})
+
 onUnmounted(() => {
   off1?.()
   off2?.()
+  off3?.()
 })
 </script>
 
 <template>
   <article v-if="postDetail.p_id" class="post-detail">
     <header class="left">
-      <PostCard :post="postDetail" :is-restrict-line="false" />
+      <PostCard
+        :post="postDetail"
+        :is-restrict-line="false"
+        :page="postDetail.page"
+        :is-collect="
+          postStore.userCollectListOfPostId.includes(postDetail.p_id)
+        "
+      />
     </header>
     <div class="right">
       <div class="main">
@@ -135,6 +153,7 @@ onUnmounted(() => {
           text-align: center;
 
           button {
+            color: var(--theme-font-color);
             text-decoration: underline;
             font-weight: bold;
             font-size: 18px;
