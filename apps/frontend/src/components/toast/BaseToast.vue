@@ -33,51 +33,56 @@ const handleEvent = () => {
 }
 
 class Toast {
+  static isShowing = false
+
   /**
    * 显示弹窗
    * @param params msg 弹窗信息 type 弹窗类型 duration 持续时间(ms),默认2s eventFn 弹窗事件
    */
   static show(options: ToastParams) {
     const { msg, type, duration = 2000, eventFn } = options
-    if (duration) {
-      if (!isInt(duration)) return
-      setTimeout(() => {
-        Toast.hide()
-      }, duration)
 
-      if (eventFn) {
-        confirmBtnVisible.value = true
-        count.value = duration / 1000
-
-        if (timer) clearInterval(timer)
-        timer = setInterval(() => {
-          if (!count.value) return clearInterval(timer)
-          if (count.value > 0) {
-            count.value -= 1
-          } else {
-            confirmBtnVisible.value = false
-            count.value = 0
-            clearInterval(timer)
-          }
-        }, 1000)
-        _eventFn = eventFn
-      }
-    }
+    if (duration && !isInt(duration)) return
 
     _msg.value = msg
     btnType.value = type
-    toastRef.value?.animate(
-      [
-        {
-          transform: `translateY(0) translateX(-50%)`,
-        },
-      ],
-      {
-        duration: 700,
-        easing: 'ease',
-        fill: 'forwards',
-      }
-    )
+
+    if (!Toast.isShowing) {
+      Toast.isShowing = true
+      toastRef.value?.animate(
+        [{ transform: `translateY(0) translateX(-50%)` }],
+        { duration: 700, easing: 'ease', fill: 'forwards' }
+      )
+    }
+
+    if (eventFn) {
+      confirmBtnVisible.value = true
+      count.value = duration / 1000
+
+      if (timer) clearInterval(timer)
+      timer = setInterval(() => {
+        console.log(count.value)
+        if (!count.value) {
+          console.log('clear toast timer')
+          return clearInterval(timer)
+        }
+        if (count.value <= 1) {
+          confirmBtnVisible.value = false
+          count.value = 0
+          Toast.hide()
+        } else {
+          count.value -= 1
+        }
+      }, 1000)
+      _eventFn = eventFn
+    } else {
+      confirmBtnVisible.value = false
+
+      if (timer) clearInterval(timer)
+      timer = setTimeout(() => {
+        Toast.hide()
+      }, duration)
+    }
   }
 
   /**
@@ -85,6 +90,8 @@ class Toast {
    */
   static hide() {
     confirmBtnVisible.value = false
+    Toast.isShowing = false
+    _msg.value = '拜拜😊'
     toastRef.value?.animate(
       [
         {
@@ -98,26 +105,17 @@ class Toast {
       }
     )
   }
-
-  /**
-   * 用于切换状态时修改文字
-   * @param newValue 文本内容
-   */
-  static modifyMsg(newValue: string) {
-    _msg.value = newValue
-  }
 }
 
 defineExpose({
   show: Toast.show,
   hide: Toast.hide,
-  modifyMsg: Toast.modifyMsg,
 })
 </script>
 
 <template>
   <div class="toast" :class="btnType" ref="toast">
-    <span>{{ _msg }}</span>
+    <span ref="msgEl">{{ _msg }}</span>
     <button @click="handleEvent" v-if="confirmBtnVisible">
       &nbsp;&nbsp;确定（{{ count }}）
     </button>

@@ -2,15 +2,18 @@
 import { onMounted, watch } from 'vue'
 import { socket, Toast } from './utils'
 import emitter from '@/utils/eventEmitter'
-import { useUserStore } from './stores'
+import { usePostStore, useUserStore } from './stores'
 
 const userStore = useUserStore()
+const postStore = usePostStore()
+
 watch(
   () => userStore.token,
-  () => {
+  async () => {
     if (!userStore.token) return
     console.log('token update, get user info')
-    userStore.getUserInfo()
+    await userStore.getUserInfo()
+    await postStore.getUserCollectListOfPostId()
 
     // websocket
     socket.emit('login', userStore.userInfo?.user_id)
@@ -38,6 +41,11 @@ onMounted(() => {
   document.body.dataset.theme = localStorage.getItem('theme') as
     | string
     | undefined
+
+  if (userStore.token) {
+    postStore.getUserCollectListOfPostId()
+    console.log('get collect')
+  }
 })
 </script>
 

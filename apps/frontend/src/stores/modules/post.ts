@@ -12,11 +12,10 @@ export const usePostStore = defineStore('post', () => {
     const res = await getUserCollectPostIdListAPI({
       creatorUserId: userStore.userInfo?.user_id as string,
     })
-    if (!res.data?.data) return
-    userCollectListOfPostId.value = res.data.data.map(
+    const arr = res.data?.data ?? []
+    userCollectListOfPostId.value = arr.map(
       (item: { p_id: string }) => item.p_id
     )
-    // console.log(userCollectListOfPostId.value)
   }
 
   return {

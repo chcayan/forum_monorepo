@@ -103,7 +103,7 @@ $main-gap: 20px;
     color: var(--theme-font-color);
     background-color: var(--theme-color);
     transition: all 0.3s ease;
-    font-family: 'Gill Sans';
+    font-family: system-ui;
     border-radius: calc($main-gap / 2) 0 0 calc($main-gap / 2);
 
     &::-webkit-scrollbar {

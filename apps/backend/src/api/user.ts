@@ -84,7 +84,8 @@ export function registerUserAPI(app: Express, db: mysql.Connection) {
         p_images, 
         user_avatar, 
         username, 
-        is_public 
+        is_public,
+        publish_time
       FROM 
         post p 
       left join 
@@ -208,7 +209,8 @@ export function registerUserAPI(app: Express, db: mysql.Connection) {
         p.p_images, 
         u.user_avatar, 
         u.username, 
-        p.is_public
+        p.is_public,
+        publish_time
       FROM 
         collection c 
       LEFT JOIN 

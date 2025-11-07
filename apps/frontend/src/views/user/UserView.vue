@@ -8,6 +8,7 @@ import emitter from '@/utils/eventEmitter'
 import { useUserStore } from '@/stores'
 import { useRoute } from 'vue-router'
 import { RouterPath } from '@/router'
+import UserCard from './components/UserCard.vue'
 
 const postMap = ref(new Map())
 
@@ -63,10 +64,63 @@ emitter.on('EVENT:GET_MORE_POST', async () => {
   await getPostList(postListPage.value)
   showLoading.value = false
 })
+
+const getUserInfo = async () => {
+  await userStore.getUserInfo()
+}
+getUserInfo()
 </script>
 
 <template>
-  <PostList :post-list :has-more :show-loading />
+  <article class="user-view">
+    <header class="left">
+      <UserCard :user-info="userStore.userInfo" />
+    </header>
+    <div class="right">
+      <PostList :post-list :has-more :show-loading />
+    </div>
+  </article>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.user-view {
+  display: flex;
+  justify-content: center;
+  margin-right: auto;
+  gap: $gap;
+  width: 100%;
+
+  header {
+    width: 400px;
+    height: 290px;
+    gap: initial;
+    position: sticky;
+    top: 80px;
+    z-index: $user-info-card-z-index;
+  }
+
+  @media (max-width: calc($mobile-size * 2 + 10px)) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    header {
+      position: initial;
+    }
+  }
+
+  @media (max-width: $mobile-size) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 10px 0;
+
+    header {
+      position: initial;
+      width: 100%;
+    }
+  }
+}
+</style>

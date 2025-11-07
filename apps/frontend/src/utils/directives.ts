@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import FullScreen from '@/components/imgWidget/FullScreen.vue'
 import { createApp } from 'vue'
+import type { DirectiveBinding } from 'vue'
+import { Toast } from './toast'
 
 class ImgFullScreenWidget {
   static mount() {
@@ -15,6 +17,11 @@ class ImgFullScreenWidget {
   }
 
   static img = ImgFullScreenWidget.mount()
+}
+
+interface EditableLimitOptions {
+  max?: number
+  onInput?: (text: string) => void
 }
 
 export const directives: Record<string, any> = {
@@ -91,6 +98,57 @@ export const directives: Record<string, any> = {
       el.addEventListener('click', () => {
         ImgFullScreenWidget.img.onFullScreen(el)
       })
+    },
+  },
+
+  editableLimit: {
+    mounted(el: HTMLElement, binding: DirectiveBinding<EditableLimitOptions>) {
+      const { max = 16, onInput } = binding.value || {}
+      let isComposing = false
+
+      el.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.key === 'Enter') e.preventDefault()
+      })
+
+      el.addEventListener('compositionstart', () => {
+        isComposing = true
+      })
+
+      el.addEventListener('compositionend', () => {
+        isComposing = false
+        handleInput()
+      })
+
+      el.addEventListener('input', () => {
+        if (!isComposing) {
+          handleInput()
+        }
+      })
+
+      function handleInput() {
+        const text = el.innerText
+
+        if (text.length > max) {
+          Toast.show({
+            msg: `最多${max}字符`,
+            type: 'error',
+          })
+          el.innerText = text.slice(0, max)
+
+          const range = document.createRange()
+          const sel = window.getSelection()
+          if (sel) {
+            range.selectNodeContents(el)
+            range.collapse(false)
+            sel.removeAllRanges()
+            sel.addRange(range)
+          }
+        }
+
+        if (onInput && typeof onInput === 'function') {
+          onInput(el.innerText)
+        }
+      }
     },
   },
 }

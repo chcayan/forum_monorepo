@@ -8,7 +8,14 @@ import type { PostDetail, PostInfo } from '@forum-monorepo/types'
 import { formatDateByYear } from '@forum-monorepo/utils'
 import { checkLoginStatus, lineBreakReplace, Toast } from '@/utils'
 import NGrid from './NGrid.vue'
-import { onDeactivated, onMounted, onUnmounted, useTemplateRef } from 'vue'
+import {
+  onDeactivated,
+  onMounted,
+  onUnmounted,
+  ref,
+  useTemplateRef,
+  watch,
+} from 'vue'
 import emitter from '@/utils/eventEmitter'
 import router, { RouterPath } from '@/router'
 import {
@@ -19,11 +26,10 @@ import {
 import { useRoute } from 'vue-router'
 import { usePostStore } from '@/stores'
 
-const { post, isRestrictLine, page, isCollect } = defineProps<{
+const { post, isRestrictLine, page } = defineProps<{
   post: PostInfo | PostDetail
   isRestrictLine: boolean
   page: number
-  isCollect: boolean
 }>()
 
 const postRef = useTemplateRef('postEl')
@@ -38,8 +44,6 @@ onMounted(async () => {
       emitter.emit('TAB:CLOSE_AVATAR_WIDGET')
     }
   })
-  await emitter.emitAsync('EVENT:GET_USER_COLLECT_POST_ID_LIST')
-  console.log(isCollect)
 })
 
 const route = useRoute()
@@ -53,13 +57,32 @@ const navigateToPostDetail = async (e: MouseEvent | KeyboardEvent) => {
 }
 
 const postStore = usePostStore()
+const isCollect = ref(false)
+
+watch(
+  () => postStore.userCollectListOfPostId,
+  () => {
+    if (postStore.userCollectListOfPostId.includes(post.p_id)) {
+      isCollect.value = true
+    } else {
+      isCollect.value = false
+    }
+  },
+  {
+    immediate: true,
+  }
+)
+
 let flag = true
 let off: () => void | null
 const changeCollectStatus = async () => {
   if (!flag) return
   flag = false
-  if (!checkLoginStatus()) return
-  if (!isCollect) {
+  if (!checkLoginStatus()) {
+    flag = true
+    return
+  }
+  if (!isCollect.value) {
     await updateUserAddCollectAPI({
       postId: post.p_id,
     })
@@ -73,7 +96,6 @@ const changeCollectStatus = async () => {
       postId: post.p_id,
     })
     await postStore.getUserCollectListOfPostId()
-
     Toast.show({
       msg: '取消收藏成功',
       type: 'success',

@@ -113,6 +113,7 @@ onUnmounted(() => {
         border-radius: 10px;
         color: var(--theme-font-color);
         background-color: var(--theme-textarea-bg-color);
+        font-family: system-ui;
 
         &::-webkit-scrollbar {
           width: 10px;

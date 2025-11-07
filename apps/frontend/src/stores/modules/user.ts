@@ -7,7 +7,18 @@ export const useUserStore = defineStore(
   'user',
   () => {
     const token = ref<string>()
-    const userInfo = ref<UserInfo>()
+    const userInfo = ref<UserInfo>({
+      user_id: '',
+      username: '',
+      user_avatar: '',
+      user_email: '',
+      registration: '',
+      follows: 0,
+      fans: 0,
+      background_img: '',
+      sex: '',
+      signature: '',
+    })
 
     const setToken = (_token: string) => {
       token.value = _token

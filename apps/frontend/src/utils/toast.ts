@@ -4,7 +4,6 @@ import type { ToastParams } from '@/components/toast/types'
 
 class Toast {
   private static toast = Toast.mount()
-  private static timer: number | null = null
 
   private static mount() {
     const toastInstance = createApp(BaseToast)
@@ -13,24 +12,17 @@ class Toast {
 
     const toast = toastInstance.mount(container) as unknown as {
       show: (options: ToastParams) => void
-      modifyMsg: (newValue: string) => void
     }
     return toast
   }
-  static show({ msg, type, duration = 2000, eventFn }: ToastParams) {
-    this.toast.modifyMsg(msg)
-    if (this.timer) return
 
+  static show({ msg, type, duration = 2000, eventFn }: ToastParams) {
     this.toast.show({
       msg,
       type,
       duration,
       ...(eventFn ? { eventFn } : {}),
     })
-
-    this.timer = window.setTimeout(() => {
-      this.timer = null
-    }, duration)
   }
 }
 

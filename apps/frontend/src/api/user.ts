@@ -26,8 +26,8 @@ type UserInfo = {
   username: string
   sex: string
   signature: string
-  avatar?: File
-  bgImg?: File
+  avatar?: File | null
+  bgImg?: File | null
 }
 
 /**
@@ -47,7 +47,7 @@ export function updateUserInfoAPI(data: UserInfo) {
     formData.append('bgImg', data.bgImg)
   }
 
-  return request.post('/user/updata', formData)
+  return request.post('/user/update', formData)
 }
 
 type PostInfo = {

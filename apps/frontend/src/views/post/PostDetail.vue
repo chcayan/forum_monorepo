@@ -7,7 +7,6 @@ import { getCommentListAPI, getPostDetailAPI } from '@/api'
 import CommentInput from './components/CommentInput.vue'
 import CommentCard from './components/CommentCard.vue'
 import emitter from '@/utils/eventEmitter'
-import { usePostStore } from '@/stores'
 
 const route = useRoute()
 const postDetail = ref<PostDetail>({
@@ -59,15 +58,9 @@ let off2 = emitter.on('EVENT:UPDATE_COMMENT_LIST', () => {
   getCommentList()
 })
 
-const postStore = usePostStore()
-let off3 = emitter.on('EVENT:GET_USER_COLLECT_POST_ID_LIST', async () => {
-  await postStore.getUserCollectListOfPostId()
-})
-
 onUnmounted(() => {
   off1?.()
   off2?.()
-  off3?.()
 })
 </script>
 
@@ -78,9 +71,6 @@ onUnmounted(() => {
         :post="postDetail"
         :is-restrict-line="false"
         :page="postDetail.page"
-        :is-collect="
-          postStore.userCollectListOfPostId.includes(postDetail.p_id)
-        "
       />
     </header>
     <div class="right">
