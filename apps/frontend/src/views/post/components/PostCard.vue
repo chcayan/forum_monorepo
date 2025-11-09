@@ -26,10 +26,9 @@ import {
 import { useRoute } from 'vue-router'
 import { usePostStore } from '@/stores'
 
-const { post, isRestrictLine, page } = defineProps<{
+const { post, isRestrictLine } = defineProps<{
   post: PostInfo | PostDetail
   isRestrictLine: boolean
-  page: number
 }>()
 
 const postRef = useTemplateRef('postEl')
@@ -51,9 +50,10 @@ const navigateToPostDetail = async (e: MouseEvent | KeyboardEvent) => {
   if (route.path.startsWith(RouterPath.post)) return
   const target = e.target as HTMLElement
   if (target && target.tagName === 'IMG') return
-  router.push(`${RouterPath.post}/${post.p_id}?page=${page}`)
+  router.push(`${RouterPath.post}/${post.p_id}`)
   await updatePostViewAPI(post.p_id)
-  emitter.emit('EVENT:UPDATE_POST_LIST', page)
+  emitter.emit('EVENT:UPDATE_POST_LIST', post.p_id)
+  emitter.emit('EVENT:UPDATE_USER_POST_LIST', post.p_id)
 }
 
 const postStore = usePostStore()
@@ -85,8 +85,8 @@ const changeCollectStatus = async () => {
   if (!isCollect.value) {
     await updateUserAddCollectAPI({
       postId: post.p_id,
-    })
-    await postStore.getUserCollectListOfPostId()
+    }).catch()
+    await postStore.getUserCollectListOfPostId().catch()
     Toast.show({
       msg: '收藏成功',
       type: 'success',
@@ -94,8 +94,8 @@ const changeCollectStatus = async () => {
   } else {
     await updateUserDelCollectAPI({
       postId: post.p_id,
-    })
-    await postStore.getUserCollectListOfPostId()
+    }).catch()
+    await postStore.getUserCollectListOfPostId().catch()
     Toast.show({
       msg: '取消收藏成功',
       type: 'success',
@@ -106,14 +106,14 @@ const changeCollectStatus = async () => {
     route.path === RouterPath.base ||
     route.path.startsWith(RouterPath.user)
   ) {
-    emitter.emit('EVENT:UPDATE_POST_LIST', page)
-    emitter.emit('EVENT:UPDATE_USER_POST_LIST', page)
+    emitter.emit('EVENT:UPDATE_POST_LIST', post.p_id)
+    emitter.emit('EVENT:UPDATE_USER_POST_LIST', post.p_id)
   }
 
   if (route.path.startsWith(RouterPath.post)) {
     emitter.emit('EVENT:UPDATE_POST_DETAIL')
-    emitter.emit('EVENT:UPDATE_POST_LIST', page)
-    emitter.emit('EVENT:UPDATE_USER_POST_LIST', page)
+    emitter.emit('EVENT:UPDATE_POST_LIST', post.p_id)
+    emitter.emit('EVENT:UPDATE_USER_POST_LIST', post.p_id)
   }
   off = emitter.on('EVENT:TOGGLE_FLAG', setFlag)
 }

@@ -23,16 +23,12 @@ const postDetail = ref<PostDetail>({
   user_avatar: '',
   username: '',
   is_collected: 0,
-  page: 0,
 })
 
 const getPostDetail = async () => {
   const postId = route.params.postId as string
   const res = await getPostDetailAPI(postId)
-  postDetail.value = {
-    ...res.data.data[0],
-    page: Number(route.query.page),
-  }
+  postDetail.value = res.data.data[0]
 }
 getPostDetail()
 
@@ -67,11 +63,7 @@ onUnmounted(() => {
 <template>
   <article v-if="postDetail.p_id" class="post-detail">
     <header class="left">
-      <PostCard
-        :post="postDetail"
-        :is-restrict-line="false"
-        :page="postDetail.page"
-      />
+      <PostCard :post="postDetail" :is-restrict-line="false" />
     </header>
     <div class="right">
       <div class="main">
@@ -115,9 +107,14 @@ onUnmounted(() => {
     .main {
       width: 400px;
       margin-bottom: 10px;
+      position: sticky;
+      top: 80px;
     }
 
     footer {
+      position: sticky;
+      top: 150px;
+
       ul {
         width: 400px;
         max-height: calc(100vh - 160px);
@@ -176,8 +173,13 @@ onUnmounted(() => {
       .main {
         width: 400px;
         position: fixed;
+        top: initial;
         bottom: $gap;
         margin-bottom: 0;
+      }
+
+      footer {
+        position: initial;
       }
     }
   }
@@ -200,9 +202,11 @@ onUnmounted(() => {
         bottom: 70px;
         left: $gap;
         margin-bottom: 0;
+        top: initial;
       }
 
       footer {
+        position: initial;
         width: calc(100vw - $gap * 2);
       }
     }

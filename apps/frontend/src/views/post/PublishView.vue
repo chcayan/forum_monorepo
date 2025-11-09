@@ -6,7 +6,7 @@ import emitter from '@/utils/eventEmitter'
 import { publishPostAPI } from '@/api'
 import { Toast } from '@/utils'
 
-const context = ref<string>()
+const context = ref<string>('')
 
 const imgUploadRef = useTemplateRef('ImgUploadEl')
 
@@ -23,6 +23,8 @@ const changeStatus = () => {
 let flag = true
 const publishPost = async () => {
   if (!flag) return
+  const trimmed = context.value.replace(/\s+$/, '')
+  context.value = trimmed.trim().length ? trimmed : ''
   if (!context.value) {
     Toast.show({
       msg: '请输入内容...',
@@ -32,11 +34,11 @@ const publishPost = async () => {
   }
   flag = false
 
-  await publishPostAPI({
+  const res = await publishPostAPI({
     content: context.value as string,
     isPublic: isPublic.value ? 'true' : 'false',
     postImages: getPostImages(),
-  })
+  }).catch()
 
   context.value = ''
   Toast.show({
@@ -45,7 +47,7 @@ const publishPost = async () => {
   })
 
   emitter.emit('EVENT:RESET_POST_IMAGES')
-
+  emitter.emit('EVENT:UPDATE_USER_POST_LIST', res.data.p_id, true)
   flag = true
 }
 
@@ -66,7 +68,7 @@ onUnmounted(() => {
       <div class="main">
         <h3>内容：</h3>
         <textarea
-          v-model.trim="context"
+          v-model="context"
           name="context"
           placeholder="请输入内容..."
         ></textarea>
@@ -74,7 +76,14 @@ onUnmounted(() => {
         <ImgUpload ref="ImgUploadEl" />
         <div class="visible">
           <h3>可见性：</h3>
-          <ToggleBtn @click="changeStatus" :status="isPublic" />
+          <ToggleBtn
+            style="width: 120px"
+            @click="changeStatus"
+            :status="isPublic"
+          >
+            <template #first>公开</template>
+            <template #second>隐藏</template>
+          </ToggleBtn>
         </div>
       </div>
     </article>

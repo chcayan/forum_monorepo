@@ -46,6 +46,20 @@ onMounted(() => {
     postStore.getUserCollectListOfPostId()
     console.log('get collect')
   }
+
+  window.addEventListener('offline', () => {
+    Toast.show({
+      msg: '不知道谁的网络出现了点问题😢',
+      type: 'error',
+    })
+  })
+
+  window.addEventListener('online', () => {
+    Toast.show({
+      msg: '满血复活😊',
+      type: 'success',
+    })
+  })
 })
 </script>
 

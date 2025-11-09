@@ -1,74 +1,144 @@
 <script setup lang="ts">
 import PostList from '../post/components/PostList.vue'
 
-import { getUserPostAPI } from '@/api'
+import { getPostDetailAPI, getUserCollectPostAPI, getUserPostAPI } from '@/api'
 import { computed, ref } from 'vue'
 import type { PostInfo } from '@forum-monorepo/types'
 import emitter from '@/utils/eventEmitter'
 import { useUserStore } from '@/stores'
 import { useRoute } from 'vue-router'
-import { RouterPath } from '@/router'
+import router, { RouterPath } from '@/router'
 import UserCard from './components/UserCard.vue'
+import ToggleBtn from '@/components/button/ToggleBtn.vue'
 
-const postMap = ref(new Map())
+const userPostMap = ref(new Map<string, PostInfo>())
+const userCollectedPostMap = ref(new Map<string, PostInfo>())
 
-const postList = computed(() => {
-  let all: PostInfo[] = []
-  for (const [, list] of postMap.value.entries()) {
-    all = all.concat(list)
-  }
-  return all
-})
+const userPostOrder = ref<string[]>([])
+const userCollectedPostOrder = ref<string[]>([])
+
+const userPostList = computed(() =>
+  userPostOrder.value.map((p_id) => userPostMap.value.get(p_id)!)
+)
+
+const userCollectedPost = computed(() =>
+  userCollectedPostOrder.value.map(
+    (p_id) => userCollectedPostMap.value.get(p_id)!
+  )
+)
 
 const userStore = useUserStore()
-const total = ref(0)
-const postListPage = ref(1)
 const limit = 10
-const hasMore = ref(true)
 const showLoading = ref(false)
 
-const getPostList = async (page: number) => {
-  if (!hasMore.value) return
+const upHasMore = ref(true)
+const userPostListPage = ref(1)
+
+const ucpHasMore = ref(true)
+const userCollectedPostListPage = ref(1)
+
+const getUserPostList = async (page: number) => {
   const res = await getUserPostAPI({
     creatorUserId: userStore.userInfo?.user_id as string,
     page,
     limit,
   })
+
   const data: PostInfo[] = res.data.data
-  total.value = res.data.total
+
   if (data.length < limit) {
-    hasMore.value = false
+    upHasMore.value = false
     console.log('no post load')
   }
-  const dataWithPage = data.map((item) => ({
-    ...item,
-    page: postListPage.value,
-  }))
 
-  postMap.value.set(page, dataWithPage)
-}
-getPostList(postListPage.value)
-
-emitter.on('EVENT:UPDATE_USER_POST_LIST', async (page: number) => {
-  await getPostList(page)
-  if (route.path.startsWith(RouterPath.user)) {
-    emitter.emit('EVENT:TOGGLE_FLAG')
+  for (const item of data) {
+    if (!userPostMap.value.has(item.p_id)) {
+      userPostOrder.value.push(item.p_id)
+    }
+    userPostMap.value.set(item.p_id, item)
   }
-})
+}
+getUserPostList(userPostListPage.value)
+
+const getUserCollectedPostList = async (page: number) => {
+  const res = await getUserCollectPostAPI({
+    creatorUserId: userStore.userInfo?.user_id as string,
+    page,
+    limit,
+  })
+
+  const data: PostInfo[] = res.data.data
+
+  if (data.length < limit) {
+    ucpHasMore.value = false
+    console.log('no post load')
+  }
+
+  for (const item of data) {
+    if (!userCollectedPostMap.value.has(item.p_id)) {
+      userCollectedPostOrder.value.push(item.p_id)
+    }
+    userCollectedPostMap.value.set(item.p_id, item)
+  }
+}
+getUserCollectedPostList(userCollectedPostListPage.value)
+
+emitter.on(
+  'EVENT:UPDATE_USER_POST_LIST',
+  async (p_id: string, isNewPost: boolean) => {
+    const res = await getPostDetailAPI(p_id)
+    if (userPostMap.value.get(p_id)) {
+      userPostMap.value.set(p_id, res.data.data[0])
+    }
+    if (isNewPost) {
+      userPostMap.value.set(p_id, res.data.data[0])
+      userPostOrder.value = [
+        p_id,
+        ...userPostOrder.value.filter((id) => id !== p_id),
+      ]
+      return
+    }
+    if (!userCollectedPostMap.value.get(p_id)) {
+      userCollectedPostMap.value.set(p_id, res.data.data[0])
+      userCollectedPostOrder.value = [
+        p_id,
+        ...userCollectedPostOrder.value.filter((id) => id !== p_id),
+      ]
+    } else {
+      userCollectedPostMap.value.set(p_id, res.data.data[0])
+    }
+
+    if (route.path.startsWith(RouterPath.user)) {
+      emitter.emit('EVENT:TOGGLE_FLAG')
+    }
+  }
+)
 
 const route = useRoute()
 emitter.on('EVENT:GET_MORE_POST', async () => {
   if (!route.path.startsWith(RouterPath.user)) return
-  postListPage.value++
-  showLoading.value = true
-  await getPostList(postListPage.value)
-  showLoading.value = false
+  if (toggleStatus.value) {
+    userPostListPage.value++
+    showLoading.value = true
+    await getUserPostList(userPostListPage.value).catch()
+    showLoading.value = false
+  } else {
+    userCollectedPostListPage.value++
+    showLoading.value = true
+    await getUserCollectedPostList(userCollectedPostListPage.value).catch()
+    showLoading.value = false
+  }
 })
 
 const getUserInfo = async () => {
   await userStore.getUserInfo()
 }
 getUserInfo()
+
+const toggleStatus = ref(true)
+const changeStatus = () => {
+  toggleStatus.value = !toggleStatus.value
+}
 </script>
 
 <template>
@@ -77,7 +147,36 @@ getUserInfo()
       <UserCard :user-info="userStore.userInfo" />
     </header>
     <div class="right">
-      <PostList :post-list :has-more :show-loading />
+      <ToggleBtn class="toggle" @click="changeStatus" :status="toggleStatus">
+        <template #first>我的</template>
+        <template #second>收藏</template>
+      </ToggleBtn>
+      <div v-if="toggleStatus">
+        <PostList
+          v-if="userPostList.length > 0"
+          :post-list="userPostList"
+          :has-more="upHasMore"
+          :show-loading
+        />
+        <div class="tip" v-else>
+          没有帖子，去
+          <button @click="router.push(RouterPath.publish)">new</button>
+          一个
+        </div>
+      </div>
+      <div v-else>
+        <PostList
+          v-if="userCollectedPost.length > 0"
+          :post-list="userCollectedPost"
+          :has-more="ucpHasMore"
+          :show-loading
+        />
+        <div class="tip" v-else>
+          没有收藏的帖子，去
+          <button @click="router.push(RouterPath.base)">收藏</button>
+          一个
+        </div>
+      </div>
     </div>
   </article>
 </template>
@@ -93,10 +192,33 @@ getUserInfo()
   header {
     width: 400px;
     height: 290px;
+    padding: 10px 10px 0;
     gap: initial;
     position: sticky;
     top: 80px;
     z-index: $user-info-card-z-index;
+  }
+
+  .right {
+    width: 400px;
+
+    .tip {
+      text-align: center;
+      margin-top: 20px;
+
+      button {
+        font-weight: bold;
+        font-size: 18px;
+        text-decoration: underline;
+      }
+    }
+
+    .toggle {
+      margin-bottom: 10px;
+      position: sticky;
+      top: 80px;
+      z-index: $user-post-toggle-z-index;
+    }
   }
 
   @media (max-width: calc($mobile-size * 2 + 10px)) {
@@ -115,11 +237,19 @@ getUserInfo()
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 10px 10px 0;
 
     header {
       position: initial;
       width: 100%;
+    }
+
+    .right {
+      .toggle {
+        width: calc(100% - 20px);
+        margin-left: 10px;
+        margin-bottom: 0px;
+        top: 10px;
+      }
     }
   }
 }

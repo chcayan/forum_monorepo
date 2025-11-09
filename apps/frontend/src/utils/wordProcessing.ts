@@ -4,5 +4,5 @@
  * @returns
  */
 export function lineBreakReplace(content: string) {
-  return content.replace(/\n/g, '<br />')
+  return content.replace(/ /g, '&nbsp;').replace(/\n/g, '<br />')
 }

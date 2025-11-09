@@ -17,6 +17,9 @@ const sendComment = async (e: KeyboardEvent | MouseEvent) => {
   if (e instanceof KeyboardEvent) {
     if (e.key === 'Enter' && e.shiftKey) return
   }
+
+  const trimmed = textarea.value.replace(/\s+$/, '')
+  textarea.value = trimmed.trim().length ? trimmed : ''
   if (!textarea.value) {
     Toast.show({
       msg: '请输入内容',
@@ -36,8 +39,8 @@ const sendComment = async (e: KeyboardEvent | MouseEvent) => {
     type: 'success',
   })
   emitter.emit('EVENT:UPDATE_COMMENT_LIST')
-  emitter.emit('EVENT:UPDATE_POST_DETAIL')
-  emitter.emit('EVENT:UPDATE_POST_LIST')
+  emitter.emit('EVENT:UPDATE_POST_DETAIL', postId)
+  emitter.emit('EVENT:UPDATE_POST_LIST', postId)
   textarea.value = ''
 }
 
@@ -55,7 +58,7 @@ onUnmounted(() => {
   <form @submit.prevent class="comment-input">
     <textarea
       v-disableEnter
-      v-model.trim="textarea"
+      v-model="textarea"
       ref="textareaEl"
       name="comment"
       @keydown.enter="sendComment"

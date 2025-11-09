@@ -57,6 +57,7 @@ $main-gap: 20px;
 
   .main {
     margin: calc($main-gap / 2) $main-gap 0 42px;
+    line-height: 1.5;
   }
 }
 </style>

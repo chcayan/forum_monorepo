@@ -12,7 +12,6 @@ export interface PostInfo {
   user_avatar: string
   username: string
   is_collected: number
-  page: number
 }
 
 export type PostTotal = { total: number }

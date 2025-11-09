@@ -72,8 +72,6 @@ export function registerPostAPI(app: Express, db: mysql.Connection) {
     const postId = req.params.postId
     const userId = getNonEssentialAuthUserId(req)
 
-    console.log('当前测试用户id:', userId)
-
     const sql = `
       select 
         p.p_id, 
@@ -217,7 +215,9 @@ export function registerPostAPI(app: Express, db: mysql.Connection) {
                 console.error('发布失败:', err)
                 return res.status(500).send('服务器错误')
               }
-              res.status(201).json({ code: 0, message: '发布成功' })
+              res
+                .status(201)
+                .json({ code: 0, message: '发布成功', p_id: nextId })
             }
           )
         }

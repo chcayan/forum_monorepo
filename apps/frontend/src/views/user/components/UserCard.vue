@@ -80,8 +80,8 @@ const save = async () => {
     signature: signature.value.trim() || userInfo.signature,
     avatar: avatarInputRef.value?.files?.[0] || null,
     bgImg: bgInputRef.value?.files?.[0] || null,
-  })
-  await userStore.getUserInfo()
+  }).catch()
+  await userStore.getUserInfo().catch().catch()
   Toast.show({
     msg: '更新成功',
     type: 'success',
@@ -120,6 +120,14 @@ function handleBgChange(e: Event) {
   const file = input.files?.[0]
   if (!file) return
 
+  if (!file.type.startsWith('image/')) {
+    Toast.show({
+      msg: '请不要上传奇奇怪怪的东西😑',
+      type: 'error',
+    })
+    return
+  }
+
   const reader = new FileReader()
   reader.onload = () => {
     const newSrc = reader.result as string
@@ -139,6 +147,14 @@ function handleAvatarChange(e: Event) {
   const input = e.target as HTMLInputElement
   const file = input.files?.[0]
   if (!file) return
+
+  if (!file.type.startsWith('image/')) {
+    Toast.show({
+      msg: '请不要上传奇奇怪怪的东西😑',
+      type: 'error',
+    })
+    return
+  }
 
   const reader = new FileReader()
   reader.onload = () => {
@@ -196,10 +212,26 @@ function handleAvatarChange(e: Event) {
         />
       </label>
       <div v-if="userInfo.user_id === userStore.userInfo?.user_id" class="btn">
-        <EditSvg v-if="!isContenteditable" @click="edit" />
+        <EditSvg
+          tabindex="0"
+          class="tab-focus-style"
+          v-if="!isContenteditable"
+          @click="edit"
+          @keydown.enter="edit"
+        />
         <div v-else>
-          <SavaSvg @click="save" />
-          <CloseSvg @click="close(true)" />
+          <SavaSvg
+            tabindex="0"
+            class="tab-focus-style"
+            @click="save"
+            @keydown.enter="save"
+          />
+          <CloseSvg
+            tabindex="0"
+            class="tab-focus-style"
+            @click="close(true)"
+            @keydown.enter="close"
+          />
         </div>
       </div>
       <button v-else>关注</button>

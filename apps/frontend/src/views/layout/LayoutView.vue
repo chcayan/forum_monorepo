@@ -83,7 +83,7 @@ const debounceScroll = debounce(async () => {
   lastScrollTop = scrollTop
 
   if (isScrollDown && scrollTop + clientHeight >= scrollHeight - 100) {
-    await emitter.emitAsync('EVENT:GET_MORE_POST')
+    await emitter.emitAsync('EVENT:GET_MORE_POST').catch()
     flag = true
     console.log('页面到底了')
   }
@@ -308,7 +308,7 @@ window.addEventListener('scroll', debounceScroll)
           transition: all 0.3s ease;
 
           &:hover {
-            background-color: var(--theme-button-hover-color);
+            background-color: var(--theme-avatar-widget-hover-color);
           }
 
           .btn {
