@@ -1,26 +1,33 @@
 <script setup lang="ts">
 import PostList from '../post/components/PostList.vue'
+
 import { getPostDetailAPI, getUserCollectPostAPI, getUserPostAPI } from '@/api'
 import { computed, ref } from 'vue'
 import type { PostInfo } from '@forum-monorepo/types'
 import emitter from '@/utils/eventEmitter'
-import { usePostStore } from '@/stores'
+import { useUserStore } from '@/stores'
 import { useRoute } from 'vue-router'
 import router, { RouterPath } from '@/router'
 import UserCard from './components/UserCard.vue'
 import ToggleBtn from '@/components/button/ToggleBtn.vue'
 
-const route = useRoute()
-
 const userPostMap = ref(new Map<string, PostInfo>())
 const userCollectedPostMap = ref(new Map<string, PostInfo>())
 
-const userPostList = computed(() => Array.from(userPostMap.value.values()))
+const userPostOrder = ref<string[]>([])
+const userCollectedPostOrder = ref<string[]>([])
 
-const userCollectedPost = computed(() =>
-  Array.from(userCollectedPostMap.value.values())
+const userPostList = computed(() =>
+  userPostOrder.value.map((p_id) => userPostMap.value.get(p_id)!)
 )
 
+const userCollectedPost = computed(() =>
+  userCollectedPostOrder.value.map(
+    (p_id) => userCollectedPostMap.value.get(p_id)!
+  )
+)
+
+const userStore = useUserStore()
 const limit = 10
 const showLoading = ref(false)
 
@@ -30,9 +37,9 @@ const userPostListPage = ref(1)
 const ucpHasMore = ref(true)
 const userCollectedPostListPage = ref(1)
 
-const getUserPostList = async (page: number, userId: string) => {
+const getUserPostList = async (page: number) => {
   const res = await getUserPostAPI({
-    creatorUserId: userId || (route.params?.userId as string),
+    creatorUserId: userStore.userInfo?.user_id as string,
     page,
     limit,
   })
@@ -45,16 +52,17 @@ const getUserPostList = async (page: number, userId: string) => {
   }
 
   for (const item of data) {
+    if (!userPostMap.value.has(item.p_id)) {
+      userPostOrder.value.push(item.p_id)
+    }
     userPostMap.value.set(item.p_id, item)
   }
 }
-// getUserPostList(userPostListPage.value).catch(() => {
-//   router.replace(RouterPath.notFound)
-// })
+getUserPostList(userPostListPage.value)
 
-const getUserCollectedPostList = async (page: number, userId: string) => {
+const getUserCollectedPostList = async (page: number) => {
   const res = await getUserCollectPostAPI({
-    creatorUserId: userId || (route.params?.userId as string),
+    creatorUserId: userStore.userInfo?.user_id as string,
     page,
     limit,
   })
@@ -67,88 +75,76 @@ const getUserCollectedPostList = async (page: number, userId: string) => {
   }
 
   for (const item of data) {
+    if (!userCollectedPostMap.value.has(item.p_id)) {
+      userCollectedPostOrder.value.push(item.p_id)
+    }
     userCollectedPostMap.value.set(item.p_id, item)
   }
 }
-// getUserCollectedPostList(userCollectedPostListPage.value).catch(() => {
-//   router.replace(RouterPath.notFound)
-// })
+getUserCollectedPostList(userCollectedPostListPage.value)
 
-emitter.on('EVENT:UPDATE_USER_POST_LIST', async (p_id: string) => {
-  const res = await getPostDetailAPI(p_id)
-  userPostMap.value.set(p_id, res.data.data[0])
-  if (userCollectedPostMap.value.get(p_id)) {
-    userCollectedPostMap.value.set(p_id, res.data.data[0])
+emitter.on(
+  'EVENT:UPDATE_USER_POST_LIST',
+  async (p_id: string, isNewPost: boolean) => {
+    const res = await getPostDetailAPI(p_id)
+    if (userPostMap.value.get(p_id)) {
+      userPostMap.value.set(p_id, res.data.data[0])
+    }
+    if (isNewPost) {
+      userPostMap.value.set(p_id, res.data.data[0])
+      userPostOrder.value = [
+        p_id,
+        ...userPostOrder.value.filter((id) => id !== p_id),
+      ]
+      return
+    }
+    if (!userCollectedPostMap.value.get(p_id)) {
+      userCollectedPostMap.value.set(p_id, res.data.data[0])
+      userCollectedPostOrder.value = [
+        p_id,
+        ...userCollectedPostOrder.value.filter((id) => id !== p_id),
+      ]
+    } else {
+      userCollectedPostMap.value.set(p_id, res.data.data[0])
+    }
+
+    if (route.path.startsWith(RouterPath.my)) {
+      emitter.emit('EVENT:TOGGLE_FLAG')
+    }
   }
+)
 
-  if (route.path.startsWith(RouterPath.user)) {
-    emitter.emit('EVENT:TOGGLE_FLAG')
-  }
-})
-
+const route = useRoute()
 emitter.on('EVENT:GET_MORE_POST', async () => {
-  if (!route.path.startsWith(RouterPath.user)) return
+  if (!route.path.startsWith(RouterPath.my)) return
   if (toggleStatus.value) {
     userPostListPage.value++
     showLoading.value = true
-    await getUserPostList(
-      userPostListPage.value,
-      route.params?.userId as string
-    ).catch()
+    await getUserPostList(userPostListPage.value).catch()
     showLoading.value = false
   } else {
     userCollectedPostListPage.value++
     showLoading.value = true
-    await getUserCollectedPostList(
-      userCollectedPostListPage.value,
-      route.params?.userId as string
-    ).catch()
+    await getUserCollectedPostList(userCollectedPostListPage.value).catch()
     showLoading.value = false
   }
 })
 
-const postStore = usePostStore()
-const getUserInfo = async (userId: string) => {
-  await postStore
-    .getUserInfo(userId || (route.params?.userId as string))
-    .catch(() => {
-      router.replace(RouterPath.notFound)
-    })
+const getUserInfo = async () => {
+  await userStore.getUserInfo()
 }
-// getUserInfo()
+getUserInfo()
 
 const toggleStatus = ref(true)
 const changeStatus = () => {
   toggleStatus.value = !toggleStatus.value
 }
-
-function init(userId: string) {
-  getUserInfo(userId)
-  getUserPostList(userPostListPage.value, userId).catch(() => {
-    router.replace(RouterPath.notFound)
-  })
-  getUserCollectedPostList(userCollectedPostListPage.value, userId).catch(
-    () => {
-      router.replace(RouterPath.notFound)
-    }
-  )
-}
-init(route.params?.userId as string)
-
-emitter.on('EVENT:REACTIVE_USER_VIEW', (userId: string) => {
-  userPostMap.value.clear()
-  userCollectedPostMap.value.clear()
-  userPostListPage.value = 1
-  userCollectedPostListPage.value = 1
-  toggleStatus.value = true
-  init(userId)
-})
 </script>
 
 <template>
   <article class="user-view">
     <header class="left">
-      <UserCard :user-info="postStore.userInfo" />
+      <UserCard :user-info="userStore.userInfo" />
     </header>
     <div class="right">
       <ToggleBtn class="toggle" @click="changeStatus" :status="toggleStatus">
@@ -162,7 +158,11 @@ emitter.on('EVENT:REACTIVE_USER_VIEW', (userId: string) => {
           :has-more="upHasMore"
           :show-loading
         />
-        <div class="tip" v-else>该用户未发布帖子</div>
+        <div class="tip" v-else>
+          没有帖子，去
+          <button @click="router.push(RouterPath.publish)">new</button>
+          一个
+        </div>
       </div>
       <div v-else>
         <PostList
@@ -171,7 +171,11 @@ emitter.on('EVENT:REACTIVE_USER_VIEW', (userId: string) => {
           :has-more="ucpHasMore"
           :show-loading
         />
-        <div class="tip" v-else>该用户未收藏帖子</div>
+        <div class="tip" v-else>
+          没有收藏的帖子，去
+          <button @click="router.push(RouterPath.base)">收藏</button>
+          一个
+        </div>
       </div>
     </div>
   </article>

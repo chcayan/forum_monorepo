@@ -8,8 +8,10 @@ class RouterPath {
   static chat: string = '/chat'
   static publish: string = '/publish'
   static login: string = '/login'
+  static my: string = '/my'
   static user: string = '/user'
   static setting: string = '/setting'
+  static notFound: string = '/404'
 }
 
 const router = createRouter({
@@ -42,9 +44,13 @@ const router = createRouter({
           component: () => import('@/views/login/LoginView.vue'),
         },
         {
-          path: RouterPath.user,
-          component: () => import('@/views/user/UserView.vue'),
+          path: RouterPath.my,
+          component: () => import('@/views/user/MyView.vue'),
           meta: { requireAuth: true },
+        },
+        {
+          path: `${RouterPath.user}/:userId`,
+          component: () => import('@/views/user/UserView.vue'),
         },
         {
           path: RouterPath.setting,

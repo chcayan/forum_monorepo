@@ -38,7 +38,7 @@ const toggleWidgetVisible = () => {
 }
 
 const navigateToUser = () => {
-  router.push(RouterPath.user)
+  router.push(RouterPath.my)
   showAvatarWidget.value = false
 }
 
@@ -90,6 +90,15 @@ const debounceScroll = debounce(async () => {
 }, 300)
 
 window.addEventListener('scroll', debounceScroll)
+
+function handleFocusOut(e: FocusEvent) {
+  const current = e.currentTarget as HTMLElement | null
+  const next = e.relatedTarget as Node | null
+
+  if (current && !current.contains(next)) {
+    showAvatarWidget.value = false
+  }
+}
 </script>
 
 <template>
@@ -142,7 +151,12 @@ window.addEventListener('scroll', debounceScroll)
           :title="userStore.userInfo?.username"
         />
         <transition name="widget">
-          <div ref="widget" v-if="showAvatarWidget" class="widget">
+          <div
+            ref="widget"
+            v-if="showAvatarWidget"
+            class="widget"
+            @focusout="handleFocusOut"
+          >
             <p class="info">{{ userStore.userInfo?.username }}</p>
             <p class="info">{{ userStore.userInfo?.user_email }}</p>
             <button title="个人中心" @click="navigateToUser">
@@ -161,7 +175,7 @@ window.addEventListener('scroll', debounceScroll)
   <main class="layout-view-main">
     <!-- <router-view /> -->
     <router-view v-slot="{ Component }">
-      <keep-alive :include="['PostView', 'UserView']">
+      <keep-alive :include="['PostView', 'MyView', 'UserView']">
         <component :is="Component"></component>
       </keep-alive>
     </router-view>

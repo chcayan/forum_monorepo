@@ -60,6 +60,15 @@ onMounted(() => {
       type: 'success',
     })
   })
+
+  let lastTime = 0
+  window.addEventListener('scroll', () => {
+    const now = Date.now()
+    if (now - lastTime > 500) {
+      emitter.emit('TAB:CLOSE_AVATAR_WIDGET')
+      lastTime = now
+    }
+  })
 })
 </script>
 

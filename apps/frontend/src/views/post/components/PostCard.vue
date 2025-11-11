@@ -8,14 +8,7 @@ import type { PostDetail, PostInfo } from '@forum-monorepo/types'
 import { formatDateByYear } from '@forum-monorepo/utils'
 import { checkLoginStatus, lineBreakReplace, Toast } from '@/utils'
 import NGrid from './NGrid.vue'
-import {
-  onDeactivated,
-  onMounted,
-  onUnmounted,
-  ref,
-  useTemplateRef,
-  watch,
-} from 'vue'
+import { computed, onDeactivated, onUnmounted, ref, watch } from 'vue'
 import emitter from '@/utils/eventEmitter'
 import router, { RouterPath } from '@/router'
 import {
@@ -24,26 +17,14 @@ import {
   updateUserDelCollectAPI,
 } from '@/api'
 import { useRoute } from 'vue-router'
-import { usePostStore } from '@/stores'
+import { usePostStore, useUserStore } from '@/stores'
+
+const postStore = usePostStore()
 
 const { post, isRestrictLine } = defineProps<{
   post: PostInfo | PostDetail
   isRestrictLine: boolean
 }>()
-
-const postRef = useTemplateRef('postEl')
-
-onMounted(async () => {
-  let lastKey: string | null = null
-  window.addEventListener('keydown', (e) => (lastKey = e.key))
-
-  window.addEventListener('focusin', (e) => {
-    if (lastKey !== 'Tab') return
-    if (e.target === postRef.value) {
-      emitter.emit('TAB:CLOSE_AVATAR_WIDGET')
-    }
-  })
-})
 
 const route = useRoute()
 const navigateToPostDetail = async (e: MouseEvent | KeyboardEvent) => {
@@ -56,7 +37,6 @@ const navigateToPostDetail = async (e: MouseEvent | KeyboardEvent) => {
   emitter.emit('EVENT:UPDATE_USER_POST_LIST', post.p_id)
 }
 
-const postStore = usePostStore()
 const isCollect = ref(false)
 
 watch(
@@ -104,6 +84,7 @@ const changeCollectStatus = async () => {
 
   if (
     route.path === RouterPath.base ||
+    route.path.startsWith(RouterPath.my) ||
     route.path.startsWith(RouterPath.user)
   ) {
     emitter.emit('EVENT:UPDATE_POST_LIST', post.p_id)
@@ -130,19 +111,53 @@ onUnmounted(() => {
 onDeactivated(() => {
   off?.()
 })
+
+const userStore = useUserStore()
+const user_avatar = computed(() => {
+  if (post.user_id === userStore.userInfo.user_id) {
+    return userStore.userInfo.user_avatar
+  } else {
+    return post.user_avatar
+  }
+})
+
+const username = computed(() => {
+  if (post.user_id === userStore.userInfo.user_id) {
+    return userStore.userInfo.username
+  } else {
+    return post.username
+  }
+})
+
+const navigateToUser = () => {
+  if (route.params?.userId === post.user_id) return
+  if (post.user_id === userStore.userInfo.user_id) {
+    router.push(RouterPath.my)
+    return
+  }
+  emitter.emit('EVENT:REACTIVE_USER_VIEW', post.user_id)
+  router.push(`${RouterPath.user}/${post.user_id}`)
+}
 </script>
 
 <template>
   <article
-    ref="postEl"
     tabindex="0"
     class="tab-focus-style post-card"
     @keydown.enter="navigateToPostDetail"
   >
     <header>
-      <img v-loading loading="lazy" :src="post.user_avatar" alt="avatar" />
+      <img
+        v-loading
+        loading="lazy"
+        :src="user_avatar"
+        alt="avatar"
+        @click="navigateToUser"
+      />
       <div>
-        <p class="name">{{ post.username }}</p>
+        <p class="name" @click="navigateToUser">
+          {{ username }}
+        </p>
         <p class="time">{{ formatDateByYear(post.publish_time) }}</p>
       </div>
       <FollowButton />

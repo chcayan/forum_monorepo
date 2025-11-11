@@ -3,10 +3,13 @@ import { updateUserInfoAPI } from '@/api'
 import CloseSvg from '@/components/svgIcon/CloseSvg.vue'
 import EditSvg from '@/components/svgIcon/EditSvg.vue'
 import SavaSvg from '@/components/svgIcon/SavaSvg.vue'
+import { RouterPath } from '@/router'
 import { useUserStore } from '@/stores'
 import { Toast } from '@/utils'
+import FollowButton from '@/views/post/components/FollowButton.vue'
 import type { UserInfo } from '@forum-monorepo/types'
 import { nextTick, ref, useTemplateRef } from 'vue'
+import { useRoute } from 'vue-router'
 
 const { userInfo } = defineProps<{
   userInfo: UserInfo
@@ -37,7 +40,9 @@ function handleInput(field: keyof typeof fieldsMap, text: string) {
 
 const isContenteditable = ref(false)
 
+const route = useRoute()
 const edit = async () => {
+  if (!route.path.startsWith(RouterPath.my)) return
   isContenteditable.value = true
   await nextTick()
 
@@ -74,7 +79,7 @@ const save = async () => {
 
   if (!flag) return
   flag = false
-  const res = await updateUserInfoAPI({
+  await updateUserInfoAPI({
     username: name.value.trim() || userInfo.username,
     sex: userInfo.sex,
     signature: signature.value.trim() || userInfo.signature,
@@ -87,7 +92,6 @@ const save = async () => {
     type: 'success',
   })
   close(false)
-  console.log(res.data.data)
   flag = true
 }
 
@@ -234,7 +238,9 @@ function handleAvatarChange(e: Event) {
           />
         </div>
       </div>
-      <button v-else>关注</button>
+      <div class="follow-btn" v-else>
+        <FollowButton class="f-btn" />
+      </div>
     </div>
     <div class="main">
       <span
@@ -301,6 +307,15 @@ $position-size: 200px;
   .header {
     position: relative;
     height: $position-size;
+
+    .follow-btn {
+      display: flex;
+
+      .f-btn {
+        margin-left: auto;
+        margin-top: 10px;
+      }
+    }
 
     .bg {
       width: 100%;
