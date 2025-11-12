@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import FollowButton from './FollowButton.vue'
 import ViewSvg from '@/components/svgIcon/ViewSvg.vue'
 import CommentSvg from '@/components/svgIcon/CommentSvg.vue'
 import CollectSvg from '@/components/svgIcon/CollectSvg.vue'
@@ -17,9 +16,9 @@ import {
   updateUserDelCollectAPI,
 } from '@/api'
 import { useRoute } from 'vue-router'
-import { usePostStore, useUserStore } from '@/stores'
+import { useUserStore } from '@/stores'
 
-const postStore = usePostStore()
+const userStore = useUserStore()
 
 const { post, isRestrictLine } = defineProps<{
   post: PostInfo | PostDetail
@@ -40,9 +39,9 @@ const navigateToPostDetail = async (e: MouseEvent | KeyboardEvent) => {
 const isCollect = ref(false)
 
 watch(
-  () => postStore.userCollectListOfPostId,
+  () => userStore.userCollectListOfPostId,
   () => {
-    if (postStore.userCollectListOfPostId.includes(post.p_id)) {
+    if (userStore.userCollectListOfPostId.includes(post.p_id)) {
       isCollect.value = true
     } else {
       isCollect.value = false
@@ -66,7 +65,7 @@ const changeCollectStatus = async () => {
     await updateUserAddCollectAPI({
       postId: post.p_id,
     }).catch()
-    await postStore.getUserCollectListOfPostId().catch()
+    await userStore.getUserCollectListOfPostId().catch()
     Toast.show({
       msg: '收藏成功',
       type: 'success',
@@ -75,7 +74,7 @@ const changeCollectStatus = async () => {
     await updateUserDelCollectAPI({
       postId: post.p_id,
     }).catch()
-    await postStore.getUserCollectListOfPostId().catch()
+    await userStore.getUserCollectListOfPostId().catch()
     Toast.show({
       msg: '取消收藏成功',
       type: 'success',
@@ -112,7 +111,6 @@ onDeactivated(() => {
   off?.()
 })
 
-const userStore = useUserStore()
 const user_avatar = computed(() => {
   if (post.user_id === userStore.userInfo.user_id) {
     return userStore.userInfo.user_avatar
@@ -160,7 +158,7 @@ const navigateToUser = () => {
         </p>
         <p class="time">{{ formatDateByYear(post.publish_time) }}</p>
       </div>
-      <FollowButton />
+      <!-- <FollowButton /> -->
     </header>
     <div
       :class="{ 'main-cursor': !route.path.startsWith(RouterPath.post) }"

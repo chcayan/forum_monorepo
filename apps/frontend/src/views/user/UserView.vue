@@ -48,9 +48,6 @@ const getUserPostList = async (page: number, userId: string) => {
     userPostMap.value.set(item.p_id, item)
   }
 }
-// getUserPostList(userPostListPage.value).catch(() => {
-//   router.replace(RouterPath.notFound)
-// })
 
 const getUserCollectedPostList = async (page: number, userId: string) => {
   const res = await getUserCollectPostAPI({
@@ -70,9 +67,6 @@ const getUserCollectedPostList = async (page: number, userId: string) => {
     userCollectedPostMap.value.set(item.p_id, item)
   }
 }
-// getUserCollectedPostList(userCollectedPostListPage.value).catch(() => {
-//   router.replace(RouterPath.notFound)
-// })
 
 emitter.on('EVENT:UPDATE_USER_POST_LIST', async (p_id: string) => {
   const res = await getPostDetailAPI(p_id)
@@ -115,7 +109,6 @@ const getUserInfo = async (userId: string) => {
       router.replace(RouterPath.notFound)
     })
 }
-// getUserInfo()
 
 const toggleStatus = ref(true)
 const changeStatus = () => {

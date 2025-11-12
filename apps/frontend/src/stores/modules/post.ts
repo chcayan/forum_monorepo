@@ -1,24 +1,9 @@
-import { getUserCollectPostIdListAPI, getUserInfoAPI } from '@/api'
+import { getUserInfoAPI } from '@/api'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { useUserStore } from './user'
 import { UserInfo } from '@forum-monorepo/types'
 
 export const usePostStore = defineStore('post', () => {
-  const userStore = useUserStore()
-
-  const userCollectListOfPostId = ref<string[]>([])
-
-  const getUserCollectListOfPostId = async () => {
-    const res = await getUserCollectPostIdListAPI({
-      creatorUserId: userStore.userInfo?.user_id as string,
-    })
-    const arr = res.data?.data ?? []
-    userCollectListOfPostId.value = arr.map(
-      (item: { p_id: string }) => item.p_id
-    )
-  }
-
   const userInfo = ref<UserInfo>({
     user_id: '',
     username: '',
@@ -51,10 +36,16 @@ export const usePostStore = defineStore('post', () => {
     userInfo.value = res.data.data[0]
   }
 
+  const getUserInfoWithFans = async (userId: string) => {
+    const res = await getUserInfoAPI({
+      userId,
+    })
+    userInfo.value = res.data.data[0]
+  }
+
   return {
-    userCollectListOfPostId,
-    getUserCollectListOfPostId,
     userInfo,
     getUserInfo,
+    getUserInfoWithFans,
   }
 })

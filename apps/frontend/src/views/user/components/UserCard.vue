@@ -8,8 +8,10 @@ import { useUserStore } from '@/stores'
 import { Toast } from '@/utils'
 import FollowButton from '@/views/post/components/FollowButton.vue'
 import type { UserInfo } from '@forum-monorepo/types'
-import { nextTick, ref, useTemplateRef } from 'vue'
+import { nextTick, onUnmounted, ref, useTemplateRef } from 'vue'
 import { useRoute } from 'vue-router'
+import UserListWidget from './UserListWidget.vue'
+import emitter from '@/utils/eventEmitter'
 
 const { userInfo } = defineProps<{
   userInfo: UserInfo
@@ -174,6 +176,33 @@ function handleAvatarChange(e: Event) {
   }
   reader.readAsDataURL(file)
 }
+
+const showFollowList = ref(false)
+const showFanList = ref(false)
+
+type UserListType = 'follow' | 'fan' | undefined
+const isFollowOrFan = ref<UserListType>()
+
+const onShowFollowList = () => {
+  showFollowList.value = !showFollowList.value
+  showFanList.value = false
+  isFollowOrFan.value = 'follow'
+}
+
+const onShowFanList = () => {
+  showFanList.value = !showFanList.value
+  showFollowList.value = false
+  isFollowOrFan.value = 'fan'
+}
+
+let off = emitter.on('TAB:CLOSE_AVATAR_WIDGET', () => {
+  showFollowList.value = false
+  showFanList.value = false
+})
+
+onUnmounted(() => {
+  off?.()
+})
 </script>
 
 <template>
@@ -239,7 +268,10 @@ function handleAvatarChange(e: Event) {
         </div>
       </div>
       <div class="follow-btn" v-else>
-        <FollowButton class="f-btn" />
+        <FollowButton
+          class="f-btn"
+          :isFollow="userStore.userFollowIdList.includes(userInfo.user_id)"
+        />
       </div>
     </div>
     <div class="main">
@@ -257,12 +289,22 @@ function handleAvatarChange(e: Event) {
       >
       <span class="id">{{ userInfo.user_id }}</span>
       <div class="main-item">
-        <div class="follows">
-          <span class="text">0 关注</span>
+        <div class="follows" @click="onShowFollowList">
+          <span class="text">{{ userInfo.follows }} 关注</span>
+          <UserListWidget
+            class="follow-list"
+            :show-user-list-widget="showFollowList"
+            :is-follow-or-fan
+          />
         </div>
-        <span>&nbsp;&nbsp;&nbsp;</span>
-        <div class="fans">
-          <span class="text">0 粉丝</span>
+        <span style="cursor: default">&nbsp;&nbsp;&nbsp;</span>
+        <div class="fans" @click="onShowFanList">
+          <span class="text">{{ userInfo.fans }} 粉丝</span>
+          <UserListWidget
+            class="fan-list"
+            :show-user-list-widget="showFanList"
+            :is-follow-or-fan
+          />
         </div>
       </div>
       <div
@@ -364,6 +406,25 @@ $position-size: 200px;
     .main-item {
       display: flex;
       margin-top: 5px;
+
+      .follows {
+        position: relative;
+        cursor: pointer;
+
+        .follow-list {
+          position: absolute;
+          z-index: $user-list-widget-z-index;
+        }
+      }
+
+      .fans {
+        position: relative;
+        cursor: pointer;
+        .fan-list {
+          position: absolute;
+          z-index: $user-list-widget-z-index;
+        }
+      }
 
       .text {
         opacity: 0.6;

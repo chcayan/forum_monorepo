@@ -2,10 +2,9 @@
 import { onMounted, watch } from 'vue'
 import { socket, Toast } from './utils'
 import emitter from '@/utils/eventEmitter'
-import { usePostStore, useUserStore } from './stores'
+import { useUserStore } from './stores'
 
 const userStore = useUserStore()
-const postStore = usePostStore()
 
 watch(
   () => userStore.token,
@@ -13,7 +12,8 @@ watch(
     if (!userStore.token) return
     console.log('token update, get user info')
     await userStore.getUserInfo()
-    await postStore.getUserCollectListOfPostId()
+    await userStore.getUserCollectListOfPostId()
+    await userStore.getUserFollowList()
 
     // websocket
     socket.emit('login', userStore.userInfo?.user_id)
@@ -36,15 +36,16 @@ emitter.on('API:BAD_REQUEST', (message: string) => {
   })
 })
 
-onMounted(() => {
+onMounted(async () => {
   // 主题
   document.body.dataset.theme = localStorage.getItem('theme') as
     | string
     | undefined
 
   if (userStore.token) {
-    postStore.getUserCollectListOfPostId()
-    console.log('get collect')
+    await userStore.getUserInfo()
+    await userStore.getUserCollectListOfPostId()
+    await userStore.getUserFollowList()
   }
 
   window.addEventListener('offline', () => {
