@@ -16,7 +16,8 @@ import emitter from '@/utils/eventEmitter'
 import BackSvg from '@/components/svgIcon/BackSvg.vue'
 import { useRoute } from 'vue-router'
 import SendSvg from '@/components/svgIcon/SendSvg.vue'
-import { debounce } from '@/utils'
+import { debounce, Toast } from '@/utils'
+import LogoutSvg from '@/components/svgIcon/LogoutSvg.vue'
 
 const userStore = useUserStore()
 
@@ -50,6 +51,38 @@ const navigateToSetting = () => {
 emitter.on('TAB:CLOSE_AVATAR_WIDGET', () => {
   showAvatarWidget.value = false
 })
+
+const logout = () => {
+  userStore.removeToken()
+  if (
+    route.path !== RouterPath.base &&
+    !route.path.startsWith(RouterPath.post)
+  ) {
+    router.push(RouterPath.base)
+  }
+  Toast.show({
+    msg: '退出成功',
+    type: 'success',
+  })
+}
+
+const onLogout = () => {
+  Toast.show({
+    msg: '你真的要离开吗😶‍🌫️',
+    type: 'error',
+    duration: 5000,
+    eventFn: logout,
+  })
+}
+
+const onLogin = () => {
+  if (route.query.redirect) return
+  if (route.path !== RouterPath.base) {
+    router.replace(`${RouterPath.login}?redirect=${route.fullPath}`)
+  } else {
+    router.push(RouterPath.login)
+  }
+}
 
 const route = useRoute()
 
@@ -99,37 +132,43 @@ function handleFocusOut(e: FocusEvent) {
     showAvatarWidget.value = false
   }
 }
+
+const onBack = () => {
+  if ((route.query.redirect as string)?.startsWith(RouterPath.post)) {
+    const redirect = (route.query.redirect || RouterPath.base) as string
+    router.replace(redirect)
+  } else {
+    router.back()
+  }
+}
 </script>
 
 <template>
   <header class="layout-view">
     <div class="logo">
       <LogoSvg v-if="showBackBtn()" class="svg" title="forum" />
-      <div
-        tabindex="0"
-        class="tab-focus-style back"
-        @click="router.back()"
-        v-else
-      >
+      <div tabindex="0" class="tab-focus-style back" @click="onBack" v-else>
         <BackSvg />
       </div>
     </div>
     <nav>
-      <router-link to="/"><PostSvg /></router-link>
-      <router-link to="/chat"><ChatSvg /></router-link>
-      <router-link to="/publish">
+      <router-link :to="RouterPath.base"><PostSvg /></router-link>
+      <router-link :to="RouterPath.chat"><ChatSvg /></router-link>
+      <router-link :to="RouterPath.publish">
         <PublishSvg v-if="!route.path.startsWith(RouterPath.publish)" />
         <SendSvg v-else @click="publishPostBtn" />
       </router-link>
-      <router-link to="/user" class="mobile"><MySvg /></router-link>
-      <router-link to="/setting" class="mobile"><SettingSvg /></router-link>
+      <router-link :to="RouterPath.my" class="mobile"><MySvg /></router-link>
+      <router-link :to="RouterPath.setting" class="mobile"
+        ><SettingSvg
+      /></router-link>
     </nav>
     <div class="my">
       <button @click="toggleTheme">
         <component :is="tabs[currentTheme]"></component>
       </button>
       <button
-        @click="router.push(RouterPath.login)"
+        @click="onLogin"
         v-if="!userStore.token"
         class="login"
         title="登录"
@@ -167,6 +206,10 @@ function handleFocusOut(e: FocusEvent) {
               <p class="btn">设置</p>
               <SettingSvg class="btn-icon" />
             </button>
+            <button title="退出登录" @click="onLogout">
+              <p class="btn">退出登录</p>
+              <LogoutSvg class="btn-icon" />
+            </button>
           </div>
         </transition>
       </div>
@@ -190,7 +233,7 @@ function handleFocusOut(e: FocusEvent) {
   margin: 10px auto 0;
   height: 60px;
   background-color: var(--theme-nav-color);
-  box-shadow: 0px 0px 2px var(--theme-shadow-color);
+  box-shadow: var(--theme-shadow-color);
   padding: 10px;
   border-radius: $gap;
   position: fixed;
@@ -294,7 +337,7 @@ function handleFocusOut(e: FocusEvent) {
         padding: 10px;
         border-radius: 10px;
         background-color: var(--theme-avatar-widget-color);
-        box-shadow: 0 0 2px var(--theme-shadow-color);
+        box-shadow: var(--theme-shadow-color);
 
         .info {
           display: -webkit-box;

@@ -14,6 +14,7 @@ watch(
     await userStore.getUserInfo()
     await userStore.getUserCollectListOfPostId()
     await userStore.getUserFollowList()
+    await userStore.getUserFriendList()
 
     // websocket
     socket.emit('login', userStore.userInfo?.user_id)
@@ -46,6 +47,7 @@ onMounted(async () => {
     await userStore.getUserInfo()
     await userStore.getUserCollectListOfPostId()
     await userStore.getUserFollowList()
+    await userStore.getUserFriendList()
   }
 
   window.addEventListener('offline', () => {

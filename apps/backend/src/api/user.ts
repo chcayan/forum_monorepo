@@ -190,9 +190,9 @@ export function registerUserAPI(app: Express, db: mysql.Connection) {
   )
 
   // 用户收藏帖子信息接口
-  app.post('/user/collect', authMiddleware, async (req, res) => {
+  app.post('/user/collect', async (req, res) => {
     const { creatorUserId } = req.body
-    const userId = req.user?.id
+    const userId = getNonEssentialAuthUserId(req)
     const page = parseInt(req.body.page) || 1
     const limit = parseInt(req.body.limit) || 10
     const offset = (page - 1) * limit

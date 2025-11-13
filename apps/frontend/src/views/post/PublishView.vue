@@ -85,6 +85,15 @@ onUnmounted(() => {
             <template #second>隐藏</template>
           </ToggleBtn>
         </div>
+        <div
+          @click="publishPost"
+          @keydown.enter="publishPost"
+          style="margin-top: 10px"
+          tabindex="0"
+          class="tab-focus-style"
+        >
+          <button class="publish">发布</button>
+        </div>
       </div>
     </article>
   </form>
@@ -95,7 +104,7 @@ onUnmounted(() => {
   article {
     width: 400px;
     padding: 10px;
-    box-shadow: 0 0 2px var(--theme-shadow-color);
+    box-shadow: 0 0 10px rgba(156, 164, 172, 0.3);
     border-radius: 10px;
 
     header {
@@ -106,6 +115,15 @@ onUnmounted(() => {
 
     .main {
       margin-top: 20px;
+
+      .publish {
+        width: 100%;
+        height: 40px;
+        border-radius: 10px;
+        font-weight: bold;
+        box-shadow: var(--theme-shadow-color);
+        background-color: var(--theme-button-color);
+      }
 
       h3 {
         margin-top: 20px;

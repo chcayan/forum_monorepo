@@ -28,8 +28,8 @@ let timer: number | undefined
 let _eventFn: () => void
 
 const handleEvent = () => {
-  _eventFn()
   Toast.hide()
+  _eventFn()
 }
 
 class Toast {
@@ -61,9 +61,7 @@ class Toast {
 
       if (timer) clearInterval(timer)
       timer = setInterval(() => {
-        console.log(count.value)
         if (!count.value) {
-          console.log('clear toast timer')
           return clearInterval(timer)
         }
         if (count.value <= 1) {
@@ -99,7 +97,7 @@ class Toast {
         },
       ],
       {
-        duration: 700,
+        duration: 1000,
         easing: 'ease',
         fill: 'forwards',
       }
@@ -136,7 +134,7 @@ defineExpose({
   text-align: center;
   border-radius: 10px;
   background-color: white;
-  box-shadow: 0 0 2px var(--theme-shadow-color);
+  box-shadow: var(--theme-shadow-color);
   transform: translateY(v-bind(y)) translateX(-50%);
 
   button {

@@ -48,7 +48,7 @@ onUnmounted(() => {
   align-items: center;
   width: 400px;
   padding: $gap;
-  box-shadow: 0 0 2px var(--theme-shadow-color);
+  box-shadow: var(--theme-shadow-color);
   border-radius: $gap;
   background-color: var(--theme-post-card-color);
 

@@ -26,7 +26,7 @@ const { status } = defineProps<{
   );
 
   color: var(--theme-font-color);
-  box-shadow: 0 0 2px var(--theme-shadow-color);
+  box-shadow: var(--theme-shadow-color);
   border-radius: 10px;
   font-weight: bold;
   display: flex;

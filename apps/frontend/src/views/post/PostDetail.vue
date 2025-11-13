@@ -120,7 +120,7 @@ onUnmounted(() => {
         max-height: calc(100vh - 160px);
         overflow-y: scroll;
         border-radius: 10px;
-        box-shadow: 0 0 2px var(--theme-shadow-color);
+        box-shadow: var(--theme-shadow-color);
 
         &::-webkit-scrollbar {
           width: 10px;

@@ -134,7 +134,8 @@ defineExpose({
     aspect-ratio: 1;
     border-radius: 10px;
     cursor: pointer;
-    box-shadow: 0 0 2px var(--theme-shadow-color);
+    // box-shadow: 0 0 1px var(--theme-font-color);
+    box-shadow: var(--theme-shadow-color);
 
     p {
       font-size: 50px;
@@ -144,7 +145,7 @@ defineExpose({
 
     &:hover {
       p {
-        transform: scale(1.1);
+        transform: scale(1.05);
         opacity: 1;
       }
     }

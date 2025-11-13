@@ -233,11 +233,20 @@ emitter.on('EVENT:REACTIVE_USER_VIEW', (userId: string) => {
     }
 
     .right {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+
+      .post {
+        width: 100%;
+      }
+
       .toggle {
         width: calc(100% - 20px);
-        margin-left: 10px;
         margin-bottom: 0px;
         top: 10px;
+        left: 10px;
       }
     }
   }

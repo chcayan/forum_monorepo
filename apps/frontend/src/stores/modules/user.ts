@@ -1,6 +1,7 @@
 import {
   getUserCollectPostIdListAPI,
   getUserFollowsAPI,
+  getUserFriendAPI,
   getUserInfoAPI,
 } from '@/api'
 import type { FriendInfo, UserInfo } from '@forum-monorepo/types'
@@ -9,7 +10,8 @@ import { ref } from 'vue'
 
 export const useUserStore = defineStore('user', () => {
   const token = ref<string>(localStorage.getItem('token') || '')
-  const userInfo = ref<UserInfo>({
+
+  const defaultUserInfo = {
     user_id: '',
     username: '',
     user_avatar: '',
@@ -20,7 +22,8 @@ export const useUserStore = defineStore('user', () => {
     background_img: '',
     sex: '',
     signature: '',
-  })
+  }
+  const userInfo = ref<UserInfo>(defaultUserInfo)
 
   const setToken = (_token: string) => {
     token.value = _token
@@ -28,6 +31,10 @@ export const useUserStore = defineStore('user', () => {
   }
   const removeToken = () => {
     token.value = ''
+    userInfo.value = defaultUserInfo
+    userCollectListOfPostId.value = []
+    userFollowList.value = []
+    userFollowIdList.value = []
     localStorage.removeItem('token')
   }
 
@@ -57,6 +64,13 @@ export const useUserStore = defineStore('user', () => {
     userFollowIdList.value = list.map((user) => user.follow_id)
   }
 
+  const userFriendList = ref<FriendInfo[]>([])
+  const getUserFriendList = async () => {
+    const res = await getUserFriendAPI()
+    userFriendList.value = res.data.data
+    console.log(res.data.data)
+  }
+
   return {
     token,
     setToken,
@@ -68,5 +82,7 @@ export const useUserStore = defineStore('user', () => {
     userFollowList,
     userFollowIdList,
     getUserFollowList,
+    userFriendList,
+    getUserFriendList,
   }
 })

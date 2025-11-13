@@ -1,6 +1,6 @@
 body[data-theme='Dark'] {
   --theme-color: rgb(0, 0, 0);
-  --theme-shadow-color: rgba(255, 255, 255, 0.5);
+  --theme-shadow-color: 0 0 10px rgba(255, 255, 255, 0.3);
   --theme-svg-color: rgb(255, 255, 255);
   --theme-font-color: rgb(255, 255, 255);
   --theme-nav-color: rgb(0, 0, 0);
@@ -16,11 +16,13 @@ body[data-theme='Dark'] {
   --theme-scrollbar-thumb-color: rgb(78, 77, 77);
   --theme-textarea-bg-color: rgb(78, 77, 77);
   --theme-avatar-widget-hover-color: rgb(78, 77, 77);
+  --theme-chat-item-bg-color: rgb(0, 0, 0);
+  --theme-chat-item-bg-hover-color: rgba(88, 86, 86, 0.482);
 }
 
 :root {
   --theme-color: rgb(255, 255, 255);
-  --theme-shadow-color: rgba(134, 134, 134, 0.5);
+  --theme-shadow-color: 0 0 10px rgba(156, 164, 172, 0.3);
   --theme-svg-color: rgb(0, 0, 0);
   --theme-font-color: rgb(0, 0, 0);
   --theme-nav-color: rgb(255, 255, 255);
@@ -36,4 +38,6 @@ body[data-theme='Dark'] {
   --theme-scrollbar-thumb-color: rgb(255, 214, 192);
   --theme-textarea-bg-color: rgb(255, 238, 228);
   --theme-avatar-widget-hover-color: rgb(233, 185, 160);
+  --theme-chat-item-bg-color: rgba(255, 233, 221, 0.482);
+  --theme-chat-item-bg-hover-color: rgb(255, 236, 225);
 }

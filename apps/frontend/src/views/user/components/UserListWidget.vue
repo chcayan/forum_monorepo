@@ -25,7 +25,6 @@ const getUserFollowList = async () => {
   userList.value = res.data.data
   console.log(res.data.data)
 }
-// getUserList()
 
 const getUserFanList = async () => {
   const res = await getUserFansAPI(
@@ -43,7 +42,6 @@ watch(
       getUserFollowList()
     } else if (isFollowOrFan === 'fan') {
       await getUserFanList()
-      console.log(userList.value)
     }
   }
 )
@@ -86,7 +84,7 @@ const navigateToUser = (userId: string) => {
   padding: 10px;
   border-radius: 10px;
   background-color: var(--theme-avatar-widget-color);
-  box-shadow: 0 0 2px var(--theme-shadow-color);
+  box-shadow: var(--theme-shadow-color);
 
   li {
     display: flex;

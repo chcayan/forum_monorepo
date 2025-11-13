@@ -142,7 +142,7 @@ const changeStatus = () => {
 </script>
 
 <template>
-  <article class="user-view">
+  <article class="my-view">
     <header class="left">
       <UserCard :user-info="userStore.userInfo" />
     </header>
@@ -182,7 +182,7 @@ const changeStatus = () => {
 </template>
 
 <style scoped lang="scss">
-.user-view {
+.my-view {
   display: flex;
   justify-content: center;
   margin-right: auto;
@@ -244,11 +244,16 @@ const changeStatus = () => {
     }
 
     .right {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+
       .toggle {
-        width: calc(100% - 20px);
-        margin-left: 10px;
+        width: calc(100vw - 30px);
         margin-bottom: 0px;
         top: 10px;
+        left: 10px;
       }
     }
   }

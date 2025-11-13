@@ -72,10 +72,21 @@ const router = createRouter({
   },
 })
 
-router.beforeEach((to) => {
+router.beforeEach((to, from) => {
   const userStore = useUserStore()
   if (!userStore.token && to.path !== RouterPath.login && to.meta.requireAuth) {
-    return { path: RouterPath.login, query: { redirect: to.path } }
+    if (from.path === RouterPath.login) {
+      return {
+        path: RouterPath.login,
+        query: { redirect: to.fullPath },
+        replace: true,
+      }
+    }
+
+    return {
+      path: RouterPath.login,
+      query: { redirect: to.fullPath },
+    }
   }
   if (userStore.token && to.path.startsWith(RouterPath.login)) {
     Toast.show({

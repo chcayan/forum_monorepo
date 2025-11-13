@@ -128,6 +128,7 @@ const username = computed(() => {
 })
 
 const navigateToUser = () => {
+  console.log(555)
   if (route.params?.userId === post.user_id) return
   if (post.user_id === userStore.userInfo.user_id) {
     router.push(RouterPath.my)
@@ -200,7 +201,7 @@ const navigateToUser = () => {
   width: 100%;
   padding: $gap * 1;
   border-radius: $gap;
-  box-shadow: 0 0 2px var(--theme-shadow-color);
+  box-shadow: var(--theme-shadow-color);
   overflow: hidden;
   background-color: var(--theme-post-card-color);
 
@@ -251,6 +252,10 @@ const navigateToUser = () => {
     .n-grid {
       margin-top: $gap;
       width: 100%;
+
+      @media (max-width: $mobile-size) {
+        width: calc(100vw - 50px);
+      }
     }
   }
 

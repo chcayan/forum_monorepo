@@ -2,14 +2,19 @@
 import { publishCommentAPI } from '@/api'
 import SendSvg from '@/components/svgIcon/SendSvg.vue'
 import router, { RouterPath } from '@/router'
+import { useTempStore } from '@/stores'
 import { checkLoginStatus, Toast } from '@/utils'
 import emitter from '@/utils/eventEmitter'
-import { onUnmounted, ref, useTemplateRef } from 'vue'
+import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
+const tempStore = useTempStore()
 function navigateToLogin() {
-  router.push(`${RouterPath.login}?redirect=${route.path}`)
+  if (textarea.value) {
+    tempStore.setTempComment(textarea.value)
+  }
+  router.replace(`${RouterPath.login}?redirect=${route.path}`)
 }
 
 const textarea = ref<string>('')
@@ -17,6 +22,7 @@ const sendComment = async (e: KeyboardEvent | MouseEvent) => {
   if (e instanceof KeyboardEvent) {
     if (e.key === 'Enter' && e.shiftKey) return
   }
+  if (!checkLoginStatus(navigateToLogin)) return
 
   const trimmed = textarea.value.replace(/\s+$/, '')
   textarea.value = trimmed.trim().length ? trimmed : ''
@@ -28,7 +34,6 @@ const sendComment = async (e: KeyboardEvent | MouseEvent) => {
     return
   }
 
-  if (!checkLoginStatus(navigateToLogin)) return
   const postId = route.params.postId as string
   await publishCommentAPI({
     postId,
@@ -47,6 +52,11 @@ const sendComment = async (e: KeyboardEvent | MouseEvent) => {
 const textareaRef = useTemplateRef('textareaEl')
 let off = emitter.on('EVENT:FOCUS_COMMENT_INPUT', () => {
   textareaRef.value?.focus()
+})
+
+onMounted(() => {
+  textarea.value = tempStore.tempComment
+  tempStore.removeTempComment()
 })
 
 onUnmounted(() => {
@@ -76,7 +86,7 @@ $main-gap: 20px;
   display: flex;
   align-items: center;
   width: 100%;
-  box-shadow: 0 0 2px var(--theme-shadow-color);
+  box-shadow: var(--theme-shadow-color);
   border-radius: calc($main-gap / 2);
   transition: all 0.3s ease;
   // overflow: hidden;
