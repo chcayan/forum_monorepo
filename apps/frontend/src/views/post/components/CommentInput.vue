@@ -89,7 +89,6 @@ $main-gap: 20px;
   box-shadow: var(--theme-shadow-color);
   border-radius: calc($main-gap / 2);
   transition: all 0.3s ease;
-  // overflow: hidden;
 
   button {
     height: 60px;

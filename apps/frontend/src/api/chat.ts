@@ -10,11 +10,10 @@ export function getChatHistoryAPI(followId: string) {
 
 /**
  * 获取未读消息数量 - 数据结构：UnreadInfo[]
- * @param followId 好友id
  * @returns
  */
-export function getChatUnreadAPI(followId: string) {
-  return request.get(`/chat/unread/${followId}`)
+export function getChatUnreadAPI() {
+  return request.get('/chat/unread')
 }
 
 /**

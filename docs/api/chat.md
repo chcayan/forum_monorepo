@@ -9,8 +9,7 @@
 
 ## 获取未读消息数量接口
 
-- GET /chat/unread (param)
-  - followId: string
+- GET /chat/unread
 
 数据结构：UnreadInfo[]
 

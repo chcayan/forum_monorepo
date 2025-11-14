@@ -218,7 +218,7 @@ const onBack = () => {
   <main class="layout-view-main">
     <!-- <router-view /> -->
     <router-view v-slot="{ Component }">
-      <keep-alive :include="['PostView', 'MyView', 'UserView']">
+      <keep-alive :include="['PostView', 'MyView', 'UserView', 'ChatView']">
         <component :is="Component"></component>
       </keep-alive>
     </router-view>

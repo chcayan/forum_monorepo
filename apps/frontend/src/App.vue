@@ -3,8 +3,11 @@ import { onMounted, watch } from 'vue'
 import { socket, Toast } from './utils'
 import emitter from '@/utils/eventEmitter'
 import { useUserStore } from './stores'
+import router, { RouterPath } from './router'
+import { useRoute } from 'vue-router'
 
 const userStore = useUserStore()
+const route = useRoute()
 
 watch(
   () => userStore.token,
@@ -12,12 +15,23 @@ watch(
     if (!userStore.token) return
     console.log('token update, get user info')
     await userStore.getUserInfo()
-    await userStore.getUserCollectListOfPostId()
-    await userStore.getUserFollowList()
-    await userStore.getUserFriendList()
 
     // websocket
     socket.emit('login', userStore.userInfo?.user_id)
+
+    socket.on(
+      'receiveMessage',
+      async ({ from, message }: { from: string; message: string }) => {
+        Toast.show({
+          msg: `来自${from}的消息：${message}`,
+          type: 'success',
+        })
+      }
+    )
+
+    await userStore.getUserCollectListOfPostId()
+    await userStore.getUserFollowList()
+    await userStore.getUserFriendList()
   }
 )
 
@@ -35,6 +49,13 @@ emitter.on('API:BAD_REQUEST', (message: string) => {
     msg: message,
     type: 'error',
   })
+  if (
+    route.path.startsWith(RouterPath.chat) ||
+    route.path.startsWith(RouterPath.publish) ||
+    route.path.startsWith(RouterPath.my)
+  ) {
+    router.push(RouterPath.base)
+  }
 })
 
 onMounted(async () => {
@@ -45,6 +66,18 @@ onMounted(async () => {
 
   if (userStore.token) {
     await userStore.getUserInfo()
+    socket.emit('login', userStore.userInfo?.user_id)
+    socket.on(
+      'receiveMessage',
+      ({ from, message }: { from: string; message: string }) => {
+        if (route.path.startsWith(RouterPath.chat)) return
+        Toast.show({
+          msg: `来自${from}的消息：${message}`,
+          type: 'success',
+        })
+      }
+    )
+
     await userStore.getUserCollectListOfPostId()
     await userStore.getUserFollowList()
     await userStore.getUserFriendList()

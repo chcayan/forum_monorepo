@@ -69,11 +69,11 @@ export function registerChatAPI(app: Express, db: mysql.Connection) {
   })
 
   // 获取未读消息数量接口
-  app.get('/chat/unread/:followId', authMiddleware, (req, res) => {
-    const { followId } = req.params
+  app.get('/chat/unread', authMiddleware, (req, res) => {
+    const userId = req.user?.id
     const sql = `SELECT sender, COUNT(*) AS count FROM messages WHERE receiver = ? AND is_read = FALSE GROUP BY sender`
 
-    db.query(sql, [followId], (err, result: UnreadInfo[]) => {
+    db.query(sql, [userId], (err, result: UnreadInfo[]) => {
       if (err) {
         console.error('查询失败: ', err)
         return res.status(500).json({
