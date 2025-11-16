@@ -22,6 +22,10 @@ export function registerUserAPI(app: Express, db: mysql.Connection) {
   app.post('/user/info', (req, res) => {
     const userId = req.body?.userId || getNonEssentialAuthUserId(req)
 
+    if (!req.body?.userId && !getNonEssentialAuthUserId(req)) {
+      return res.status(401).json({ message: '登录状态过期，请重新登录' })
+    }
+
     const sql = `
       select 
         u.user_id, 

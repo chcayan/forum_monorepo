@@ -40,6 +40,7 @@ const follow = async () => {
     })
   }
   await userStore.getUserFollowList()
+  await userStore.getUserFriendList()
   await postStore.getUserInfoWithFans(route.params.userId as string)
   flag = true
 }

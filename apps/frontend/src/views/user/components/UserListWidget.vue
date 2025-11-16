@@ -3,7 +3,7 @@ import { getUserFansAPI, getUserFollowsAPI } from '@/api'
 import router, { RouterPath } from '@/router'
 import { useUserStore } from '@/stores'
 import emitter from '@/utils/eventEmitter'
-import { FriendInfo } from '@forum-monorepo/types'
+import type { FriendInfo } from '@forum-monorepo/types'
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -23,7 +23,6 @@ const getUserFollowList = async () => {
     (route.params?.userId as string) || userStore.userInfo.user_id
   )
   userList.value = res.data.data
-  console.log(res.data.data)
 }
 
 const getUserFanList = async () => {
@@ -47,7 +46,6 @@ watch(
 )
 
 const navigateToUser = (userId: string) => {
-  console.log(userId)
   if (userId === userStore.userInfo.user_id) {
     router.push(RouterPath.my)
     return

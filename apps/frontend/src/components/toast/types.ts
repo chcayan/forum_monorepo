@@ -6,3 +6,10 @@ export type ToastParams = {
   duration?: number
   eventFn?: () => void
 }
+
+export type ChatToastParams = {
+  username: string
+  userAvatar: string
+  userId: string
+  message: string
+}

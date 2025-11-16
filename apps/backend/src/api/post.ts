@@ -67,6 +67,66 @@ export function registerPostAPI(app: Express, db: mysql.Connection) {
     }
   })
 
+  // 搜索接口
+  app.get('/post/search', (req, res) => {
+    const { result } = req.query
+    const userId = getNonEssentialAuthUserId(req)
+    const page: number = parseInt(req.query.page as string) || 1
+    const limit: number = parseInt(req.query.limit as string) || 10
+    const offset: number = (page - 1) * limit
+
+    const sql = `
+      SELECT 
+        p.p_id, 
+        p.user_id, 
+        p_view_count, 
+        p_collect_count, 
+        p_share_count, 
+        p_comment_count, 
+        p_content, 
+        p_images, 
+        user_avatar, 
+        username 
+      FROM 
+        post p 
+      left join 
+        users u on p.user_id = u.user_id 
+      LEFT JOIN 
+        collection c ON p.p_id = c.p_id 
+      AND 
+        c.user_id = ? 
+      where 
+        is_public = 'true' 
+      and 
+        p_content LIKE ? 
+      order by 
+        publish_time desc
+      LIMIT ? OFFSET ?`
+
+    const formatSearchContent = `%${result}%`
+
+    db.query(
+      sql,
+      [userId, formatSearchContent, limit, offset],
+      (err, result: PostInfo[]) => {
+        if (err) {
+          console.error('查询错误: ', err)
+          return res.status(500).json({
+            code: 1,
+            message: '查询错误',
+            error: err.message,
+          })
+        }
+
+        res.json({
+          code: 0,
+          message: '请求成功',
+          data: result,
+        })
+      }
+    )
+  })
+
   // 帖子详情接口
   app.get('/post/:postId', (req, res) => {
     const postId = req.params.postId
@@ -224,56 +284,4 @@ export function registerPostAPI(app: Express, db: mysql.Connection) {
       )
     }
   )
-
-  // 搜索接口
-  app.get('/post/search', (req, res) => {
-    const { result } = req.query
-    const userId = getNonEssentialAuthUserId(req)
-
-    const sql = `
-      SELECT 
-        p.p_id, 
-        p.user_id, 
-        p_view_count, 
-        p_collect_count, 
-        p_share_count, 
-        p_comment_count, 
-        p_content, 
-        p_images, 
-        user_avatar, 
-        username 
-      FROM 
-        post p 
-      left join 
-        users u on p.user_id = u.user_id 
-      LEFT JOIN 
-        collection c ON p.p_id = c.p_id 
-      AND 
-        c.user_id = ? 
-      where 
-        is_public = 'true' 
-      and 
-        p_content LIKE ? 
-      order by 
-        publish_time desc;`
-
-    const formatSearchContent = `%${result}%`
-
-    db.query(sql, [userId, formatSearchContent], (err, result: PostInfo[]) => {
-      if (err) {
-        console.error('查询错误: ', err)
-        return res.status(500).json({
-          code: 1,
-          message: '查询错误',
-          error: err.message,
-        })
-      }
-
-      res.json({
-        code: 0,
-        message: '请求成功',
-        data: result,
-      })
-    })
-  })
 }

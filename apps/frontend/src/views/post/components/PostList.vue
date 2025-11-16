@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { PostInfo } from '@forum-monorepo/types'
+import type { PostDetail } from '@forum-monorepo/types'
 import PostCard from './PostCard.vue'
 import LoadingSvg from '@/components/svgIcon/LoadingSvg.vue'
 
 const { postList } = defineProps<{
-  postList: PostInfo[]
+  postList: PostDetail[]
   showLoading: boolean
   hasMore: boolean
 }>()
@@ -13,7 +13,7 @@ const { postList } = defineProps<{
 <template>
   <section class="post-view">
     <ul class="post-list">
-      <li class="post-item" v-for="post in postList" :key="post.p_id">
+      <li class="post-item" v-for="post in postList" :key="post?.p_id">
         <PostCard :post :is-restrict-line="true" />
       </li>
       <li v-if="showLoading && hasMore" class="loading">

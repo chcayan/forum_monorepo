@@ -15,6 +15,7 @@ type BaseEvent =
   | 'EVENT:GET_MORE_POST'
   | 'EVENT:GET_USER_COLLECT_POST_ID_LIST'
   | 'EVENT:REACTIVE_USER_VIEW'
+  | 'EVENT:DELETE_USER_POST_LIST'
 type EventNames = ApiEvent | TabEvent | BaseEvent
 
 class EventEmitter {
@@ -36,6 +37,7 @@ class EventEmitter {
     'EVENT:GET_USER_COLLECT_POST_ID_LIST': new Set(),
     'EVENT:UPDATE_USER_POST_LIST': new Set(),
     'EVENT:REACTIVE_USER_VIEW': new Set(),
+    'EVENT:DELETE_USER_POST_LIST': new Set(),
   }
 
   on(eventName: EventNames, listener: Function) {

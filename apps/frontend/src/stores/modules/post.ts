@@ -1,7 +1,7 @@
 import { getUserInfoAPI } from '@/api'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { UserInfo } from '@forum-monorepo/types'
+import type { UserInfo } from '@forum-monorepo/types'
 
 export const usePostStore = defineStore('post', () => {
   const userInfo = ref<UserInfo>({

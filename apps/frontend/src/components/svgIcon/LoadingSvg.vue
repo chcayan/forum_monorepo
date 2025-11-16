@@ -19,7 +19,6 @@ onMounted(() => {
 
 onUnmounted(() => {
   clearInterval(loadingReset)
-  console.log('clear loading animation')
 })
 </script>
 

@@ -50,13 +50,13 @@ button:focus-visible,
   transition: all 0.3s ease;
   box-shadow:
     0 0 0 3px var(--theme-nav-color),
-    0 0 0 7px var(--theme-tag-active-color);
+    0 0 0 7px var(--theme-tag-active-color) !important;
   border-radius: 6px;
 }
 
 .tab-focus-outline-style:focus-visible {
   outline: none;
-  outline: 5px solid var(--theme-tag-active-color);
+  outline: 5px solid var(--theme-tag-active-color) !important;
 }
 
 #app {

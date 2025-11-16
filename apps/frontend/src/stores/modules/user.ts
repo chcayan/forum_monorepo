@@ -68,7 +68,6 @@ export const useUserStore = defineStore('user', () => {
   const getUserFriendList = async () => {
     const res = await getUserFriendAPI()
     userFriendList.value = res.data.data
-    console.log(res.data.data)
   }
 
   return {

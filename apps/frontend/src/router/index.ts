@@ -8,6 +8,7 @@ class RouterPath {
   static chat: string = '/chat'
   static publish: string = '/publish'
   static login: string = '/login'
+  static search: string = '/search'
   static my: string = '/my'
   static user: string = '/user'
   static setting: string = '/setting'
@@ -28,6 +29,10 @@ const router = createRouter({
         {
           path: `${RouterPath.post}/:postId`,
           component: () => import('@/views/post/PostDetail.vue'),
+        },
+        {
+          path: RouterPath.search,
+          component: () => import('@/views/post/SearchView.vue'),
         },
         {
           path: RouterPath.chat,

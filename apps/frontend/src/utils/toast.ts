@@ -1,6 +1,8 @@
 import BaseToast from '@/components/toast/BaseToast.vue'
+import _ChatToast from '@/components/toast/ChatToast.vue'
 import { createApp } from 'vue'
-import type { ToastParams } from '@/components/toast/types'
+import type { ChatToastParams, ToastParams } from '@/components/toast/types'
+import { directives } from './directives'
 
 class Toast {
   private static toast = Toast.mount()
@@ -26,4 +28,30 @@ class Toast {
   }
 }
 
-export { Toast }
+class ChatToast {
+  private static toast = ChatToast.mount()
+
+  private static mount() {
+    const toastInstance = createApp(_ChatToast)
+    toastInstance.directive('loading', directives['loading'])
+    toastInstance.directive('disableEnter', directives['disableEnter'])
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    const toast = toastInstance.mount(container) as unknown as {
+      show: (options: ChatToastParams) => void
+    }
+    return toast
+  }
+
+  static show({ userAvatar, userId, username, message }: ChatToastParams) {
+    this.toast.show({
+      userId,
+      username,
+      userAvatar,
+      message,
+    })
+  }
+}
+
+export { Toast, ChatToast }

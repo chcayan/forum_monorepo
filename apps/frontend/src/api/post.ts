@@ -55,8 +55,12 @@ export function publishPostAPI(data: PostPublish) {
 /**
  * 搜索接口 - 数据结构：PostInfo[]
  * @param result 搜索关键词
+ * @param page 页数
+ * @param limit 每页帖子数量
  * @returns
  */
-export function searchPostAPI(result: string) {
-  return request.get(`/post/search?result=${result}`)
+export function searchPostAPI(result: string, page: number, limit: number) {
+  return request.get(
+    `/post/search?result=${result}&?page=${page}&limit=${limit}`
+  )
 }

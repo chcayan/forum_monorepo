@@ -33,10 +33,13 @@ pnpm i
 pnpm i -g tsc tsc-alias
 ```
 
-修改后端配置
+修改后端配置(.env.development)
 
-```ts
-// TODO
+```
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=yourpwd
+DB_NAME=yourdbname
 ```
 
 启动服务
@@ -47,4 +50,20 @@ pnpm dev
 
 ## 版本
 
-version: 2.0.0 (TODO)
+### version: 2.0.0 (251116)
+
+重构版本，当前版本内容：
+
+- 帖子：发布，公开/非公开，删除，收藏，评论，搜索
+- 用户：登录，注册，关注，聊天，编辑个人信息
+- UI: 浅深切换
+
+重构版本优化内容：
+
+- 新的UI设计
+- 新增残废的无障碍支持
+- 优化聊天弹窗
+- 优化图片上传
+- 修复关注功能问题
+- 优化帖子信息更新逻辑
+- more...

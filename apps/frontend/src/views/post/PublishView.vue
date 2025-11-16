@@ -62,8 +62,7 @@ onUnmounted(() => {
   <form class="publish-view" @submit.prevent>
     <article>
       <header>
-        <h1>new Post()</h1>
-        <p>发布你的绝世旷作</p>
+        <h2>新帖子</h2>
       </header>
       <div class="main">
         <h3>内容：</h3>
@@ -89,8 +88,6 @@ onUnmounted(() => {
           @click="publishPost"
           @keydown.enter="publishPost"
           style="margin-top: 10px"
-          tabindex="0"
-          class="tab-focus-style"
         >
           <button class="publish">发布</button>
         </div>

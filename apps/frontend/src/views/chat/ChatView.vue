@@ -1,30 +1,39 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
-import { getChatHistoryAPI, getChatUnreadAPI, markAsReadAPI } from '@/api'
+import {
+  getChatHistoryAPI,
+  getChatUnreadAPI,
+  markAsReadAPI,
+  searchUserAPI,
+} from '@/api'
 import CloseSvg from '@/components/svgIcon/CloseSvg.vue'
 import SearchSvg from '@/components/svgIcon/SearchSvg.vue'
 import SendSvg from '@/components/svgIcon/SendSvg.vue'
-import { useUserStore } from '@/stores'
-import { lineBreakReplace, socket, Toast } from '@/utils'
+import router, { RouterPath } from '@/router'
+import { useTempStore, useUserStore } from '@/stores'
+import { debounce, lineBreakReplace, socket, Toast } from '@/utils'
+import emitter from '@/utils/eventEmitter'
 import { escapeHTML } from '@/utils/format'
-import { ChatInfo, FriendInfo } from '@forum-monorepo/types'
+import type {
+  ChatInfo,
+  FriendInfo,
+  UserBySearchInfo,
+} from '@forum-monorepo/types'
 import {
+  onActivated,
   onDeactivated,
-  onMounted,
   onUpdated,
   reactive,
   ref,
   useTemplateRef,
   watch,
 } from 'vue'
-import { useRoute } from 'vue-router'
 
 const userStore = useUserStore()
 const friendList = ref<FriendInfo[]>([])
 
 const getFriendList = () => {
   friendList.value = userStore.userFriendList
-  console.log(friendList.value)
 }
 getFriendList()
 
@@ -43,6 +52,8 @@ const closeChatBox = () => {
 
 onDeactivated(() => {
   closeChatBox()
+  message.value = ''
+  showSearchBox.value = false
 })
 
 const currentFriendUsername = ref('')
@@ -50,6 +61,7 @@ const currentFriendAvatar = ref('')
 const currentFriendUserId = ref('')
 const selectFriend = (username: string, avatar: string, userId: string) => {
   openChatBox()
+  showSearchBox.value = false
   currentFriendUsername.value = username
   currentFriendAvatar.value = avatar
   currentFriendUserId.value = userId
@@ -68,24 +80,16 @@ const messageBoxRef = useTemplateRef('messageBoxEl')
 const fetchUnread = async () => {
   const res = await getChatUnreadAPI()
   const data = res.data.data
-  if (!data) return
 
   data.forEach(({ sender, count }: { sender: string; count: number }) => {
     unreadCount[sender] = count
   })
 }
 
-onMounted(async () => {
-  await fetchUnread()
-})
-
+const tempStore = useTempStore()
 const message = ref('')
 
-const sendMessage = (
-  e: KeyboardEvent | PointerEvent,
-  chatBoxMsg?: string,
-  sender?: string
-) => {
+const sendMessage = async (e: KeyboardEvent | PointerEvent) => {
   if (e instanceof KeyboardEvent) {
     if (e.key === 'Enter' && e.shiftKey) return
   }
@@ -94,14 +98,8 @@ const sendMessage = (
     return
   }
 
-  let msg
+  const msg = escapeHTML(message.value.trim())
 
-  if (!route.fullPath.startsWith('/chat')) {
-    msg = chatBoxMsg?.trim()
-  } else {
-    msg = message.value.trim()
-  }
-  console.log(666)
   if (!msg) {
     Toast.show({
       msg: '请输入信息',
@@ -110,18 +108,27 @@ const sendMessage = (
     return
   }
 
-  msg = escapeHTML(msg)
+  await userStore.getUserFriendList()
+  if (
+    !userStore.userFriendList
+      .map((friend) => friend.follow_id)
+      .includes(currentFriendUserId.value)
+  ) {
+    Toast.show({
+      msg: '你还未是对方好友',
+      type: 'error',
+    })
+    return
+  }
 
-  if (!chatBoxMsg) {
-    const el = messageBoxRef.value
-    if (el) {
-      el.style.scrollBehavior = 'smooth'
-    }
+  const el = messageBoxRef.value
+  if (el) {
+    el.style.scrollBehavior = 'smooth'
   }
 
   const payload = {
     from: userStore.userInfo.user_id,
-    to: currentFriendUserId.value || sender,
+    to: currentFriendUserId.value,
     message: msg,
   }
 
@@ -138,14 +145,16 @@ const sendMessage = (
   message.value = ''
 }
 
-const route = useRoute()
 const chatRecords = reactive<Record<string, any>>({})
 const unreadCount = reactive<Record<string, any>>({})
 
 socket.on(
   'receiveMessage',
   async ({ from, message }: { from: string; message: string }) => {
-    console.log('onReceiveMessage')
+    const el = messageBoxRef.value
+    if (el) {
+      el.style.scrollBehavior = 'smooth'
+    }
     if (!chatRecords[from]) chatRecords[from] = []
     chatRecords[from].push({ from, message })
 
@@ -182,20 +191,92 @@ watch(currentFriendUserId, async (friend) => {
   }))
 })
 
+onActivated(async () => {
+  if (tempStore.tempUserInfo.userId) {
+    openChatBox()
+    selectFriend(
+      tempStore.tempUserInfo.username,
+      tempStore.tempUserInfo.userAvatar,
+      tempStore.tempUserInfo.userId
+    )
+
+    tempStore.removeTempUserInfo()
+  }
+
+  Object.keys(unreadCount).forEach((sender) => {
+    unreadCount[sender] = 0
+  })
+  await userStore.getUserFriendList()
+  await fetchUnread()
+})
+
 onUpdated(() => {
   scrollToBottom()
 })
+
+const searchUserList = ref<UserBySearchInfo[]>([])
+const showSearchBox = ref(false)
+
+const search = debounce(async (result: string) => {
+  if (!result) {
+    searchUserList.value = []
+    return
+  }
+  const res = await searchUserAPI(result)
+  showSearchBox.value = true
+  searchUserList.value = res.data.data
+}, 300)
+
+const result = ref('')
+watch(result, (val) => {
+  if (!result.value) {
+    showSearchBox.value = false
+  }
+  search(val)
+})
+
+const navigateToUser = (userId: string) => {
+  if (userId === userStore.userInfo.user_id) {
+    router.push(RouterPath.my)
+    return
+  }
+  emitter.emit('EVENT:REACTIVE_USER_VIEW', userId)
+
+  router.push(`${RouterPath.user}/${userId}`)
+}
 </script>
 
 <template>
   <div class="chat-view">
     <div class="left">
       <div class="title">
-        <h2 @click="openChatBox">聊天</h2>
+        <h2>聊天</h2>
         <label>
-          <input type="text" placeholder="搜索用户" />
-          <SearchSvg class="search" />
+          <input
+            v-model="result"
+            type="text"
+            name="user-result"
+            placeholder="搜索用户"
+          />
+          <SearchSvg class="search" @click="search(result)" />
         </label>
+        <ul class="search-list" v-if="showSearchBox && searchUserList.length">
+          <li
+            v-for="user in searchUserList"
+            :key="user.user_id"
+            @click="navigateToUser(user.user_id)"
+            :title="user.username"
+          >
+            <img :src="user.user_avatar" alt="avatar" />
+            <div>{{ user.username }}</div>
+          </li>
+        </ul>
+        <ul
+          v-if="showSearchBox && result && searchUserList.length === 0"
+          class="search-list"
+        >
+          <li>没有找到用户</li>
+        </ul>
       </div>
       <ul v-if="userStore.userFriendList.length">
         <li
@@ -285,12 +366,28 @@ onUpdated(() => {
   box-shadow: var(--theme-shadow-color);
   background-color: var(--theme-color);
   overflow: hidden;
+
   position: relative;
 
   .left {
     width: 250px;
     padding: 10px;
+    height: 100%;
     box-shadow: var(--theme-shadow-color);
+
+    ul {
+      overflow-y: scroll;
+      height: calc(100% - 60px);
+
+      &::-webkit-scrollbar {
+        width: 10px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        background-color: var(--theme-scrollbar-thumb-color);
+      }
+    }
 
     .f-tip {
       margin-top: 10px;
@@ -303,6 +400,41 @@ onUpdated(() => {
       align-items: center;
       margin-bottom: 20px;
       margin-left: 10px;
+
+      .search-list {
+        position: absolute;
+        top: 60px;
+        right: 10px;
+        display: flex;
+        flex-direction: column;
+        width: 120px;
+        height: auto;
+        border-radius: 10px;
+        font-size: 14px;
+        background-color: var(--theme-avatar-widget-color);
+        box-shadow: var(--theme-shadow-color);
+
+        li {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+
+          div {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+          }
+
+          img {
+            width: 30px;
+            height: 30px;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border-radius: 50%;
+          }
+        }
+      }
 
       label {
         position: relative;

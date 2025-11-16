@@ -4,6 +4,7 @@ declare namespace NodeJS {
     ORIGIN?: any
     CORS_ORIGIN: string
     CORS_ORIGIN_1: string
+    CORS_ORIGIN_2: string
     SERVER_HOST?: String
     PORT?: string
     SECRET_KEY: string

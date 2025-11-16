@@ -2,7 +2,7 @@
 import PostList from '../post/components/PostList.vue'
 import { getPostDetailAPI, getUserCollectPostAPI, getUserPostAPI } from '@/api'
 import { computed, ref } from 'vue'
-import type { PostInfo } from '@forum-monorepo/types'
+import type { PostDetail } from '@forum-monorepo/types'
 import emitter from '@/utils/eventEmitter'
 import { usePostStore } from '@/stores'
 import { useRoute } from 'vue-router'
@@ -12,8 +12,8 @@ import ToggleBtn from '@/components/button/ToggleBtn.vue'
 
 const route = useRoute()
 
-const userPostMap = ref(new Map<string, PostInfo>())
-const userCollectedPostMap = ref(new Map<string, PostInfo>())
+const userPostMap = ref(new Map<string, PostDetail>())
+const userCollectedPostMap = ref(new Map<string, PostDetail>())
 
 const userPostList = computed(() => Array.from(userPostMap.value.values()))
 
@@ -37,11 +37,10 @@ const getUserPostList = async (page: number, userId: string) => {
     limit,
   })
 
-  const data: PostInfo[] = res.data.data
+  const data: PostDetail[] = res.data.data
 
   if (data.length < limit) {
     upHasMore.value = false
-    console.log('no post load')
   }
 
   for (const item of data) {
@@ -56,11 +55,10 @@ const getUserCollectedPostList = async (page: number, userId: string) => {
     limit,
   })
 
-  const data: PostInfo[] = res.data.data
+  const data: PostDetail[] = res.data.data
 
   if (data.length < limit) {
     ucpHasMore.value = false
-    console.log('no post load')
   }
 
   for (const item of data) {

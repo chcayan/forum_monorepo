@@ -3,7 +3,7 @@ import PostList from '../post/components/PostList.vue'
 
 import { getPostDetailAPI, getUserCollectPostAPI, getUserPostAPI } from '@/api'
 import { computed, ref } from 'vue'
-import type { PostInfo } from '@forum-monorepo/types'
+import type { PostDetail } from '@forum-monorepo/types'
 import emitter from '@/utils/eventEmitter'
 import { useUserStore } from '@/stores'
 import { useRoute } from 'vue-router'
@@ -11,20 +11,22 @@ import router, { RouterPath } from '@/router'
 import UserCard from './components/UserCard.vue'
 import ToggleBtn from '@/components/button/ToggleBtn.vue'
 
-const userPostMap = ref(new Map<string, PostInfo>())
-const userCollectedPostMap = ref(new Map<string, PostInfo>())
+const userPostMap = ref(new Map<string, PostDetail>())
+const userCollectedPostMap = ref(new Map<string, PostDetail>())
 
 const userPostOrder = ref<string[]>([])
 const userCollectedPostOrder = ref<string[]>([])
 
 const userPostList = computed(() =>
-  userPostOrder.value.map((p_id) => userPostMap.value.get(p_id)!)
+  userPostOrder.value
+    .map((p_id) => userPostMap.value.get(p_id)!)
+    .filter(Boolean)
 )
 
 const userCollectedPost = computed(() =>
-  userCollectedPostOrder.value.map(
-    (p_id) => userCollectedPostMap.value.get(p_id)!
-  )
+  userCollectedPostOrder.value
+    .map((p_id) => userCollectedPostMap.value.get(p_id)!)
+    .filter(Boolean)
 )
 
 const userStore = useUserStore()
@@ -44,11 +46,10 @@ const getUserPostList = async (page: number) => {
     limit,
   })
 
-  const data: PostInfo[] = res.data.data
+  const data: PostDetail[] = res.data.data
 
   if (data.length < limit) {
     upHasMore.value = false
-    console.log('no post load')
   }
 
   for (const item of data) {
@@ -67,11 +68,10 @@ const getUserCollectedPostList = async (page: number) => {
     limit,
   })
 
-  const data: PostInfo[] = res.data.data
+  const data: PostDetail[] = res.data.data
 
   if (data.length < limit) {
     ucpHasMore.value = false
-    console.log('no post load')
   }
 
   for (const item of data) {
@@ -82,6 +82,16 @@ const getUserCollectedPostList = async (page: number) => {
   }
 }
 getUserCollectedPostList(userCollectedPostListPage.value)
+
+emitter.on('EVENT:DELETE_USER_POST_LIST', async (p_id: string) => {
+  if (userPostMap.value.get(p_id)) {
+    userPostMap.value.delete(p_id)
+  }
+  if (userCollectedPostMap.value.get(p_id)) {
+    userCollectedPostMap.value.delete(p_id)
+  }
+  await userStore.getUserCollectListOfPostId()
+})
 
 emitter.on(
   'EVENT:UPDATE_USER_POST_LIST',

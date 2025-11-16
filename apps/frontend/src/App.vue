@@ -1,37 +1,50 @@
 <script setup lang="ts">
 import { onMounted, watch } from 'vue'
-import { socket, Toast } from './utils'
+import { ChatToast, socket, Toast } from './utils'
 import emitter from '@/utils/eventEmitter'
 import { useUserStore } from './stores'
 import router, { RouterPath } from './router'
 import { useRoute } from 'vue-router'
+import { getUserInfoAPI } from './api'
 
 const userStore = useUserStore()
 const route = useRoute()
+type userInfo = {
+  user_id: string
+  username: string
+  user_avatar: string
+}
+async function initUserStatus() {
+  await userStore.getUserInfo()
+
+  // websocket
+  socket.emit('login', userStore.userInfo?.user_id)
+
+  socket.on(
+    'receiveMessage',
+    async ({ from, message }: { from: string; message: string }) => {
+      if (route.path.startsWith(RouterPath.chat)) return
+      const res = await getUserInfoAPI({ userId: from })
+      const userInfo = res.data?.data[0] as userInfo
+      ChatToast.show({
+        userId: userInfo.user_id,
+        userAvatar: userInfo.user_avatar,
+        username: userInfo.username,
+        message,
+      })
+    }
+  )
+
+  await userStore.getUserCollectListOfPostId()
+  await userStore.getUserFollowList()
+  await userStore.getUserFriendList()
+}
 
 watch(
   () => userStore.token,
   async () => {
     if (!userStore.token) return
-    console.log('token update, get user info')
-    await userStore.getUserInfo()
-
-    // websocket
-    socket.emit('login', userStore.userInfo?.user_id)
-
-    socket.on(
-      'receiveMessage',
-      async ({ from, message }: { from: string; message: string }) => {
-        Toast.show({
-          msg: `来自${from}的消息：${message}`,
-          type: 'success',
-        })
-      }
-    )
-
-    await userStore.getUserCollectListOfPostId()
-    await userStore.getUserFollowList()
-    await userStore.getUserFriendList()
+    await initUserStatus()
   }
 )
 
@@ -65,22 +78,7 @@ onMounted(async () => {
     | undefined
 
   if (userStore.token) {
-    await userStore.getUserInfo()
-    socket.emit('login', userStore.userInfo?.user_id)
-    socket.on(
-      'receiveMessage',
-      ({ from, message }: { from: string; message: string }) => {
-        if (route.path.startsWith(RouterPath.chat)) return
-        Toast.show({
-          msg: `来自${from}的消息：${message}`,
-          type: 'success',
-        })
-      }
-    )
-
-    await userStore.getUserCollectListOfPostId()
-    await userStore.getUserFollowList()
-    await userStore.getUserFriendList()
+    await initUserStatus()
   }
 
   window.addEventListener('offline', () => {

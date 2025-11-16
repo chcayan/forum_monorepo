@@ -18,19 +18,13 @@ import { useRoute } from 'vue-router'
 import SendSvg from '@/components/svgIcon/SendSvg.vue'
 import { debounce, Toast } from '@/utils'
 import LogoutSvg from '@/components/svgIcon/LogoutSvg.vue'
+import { useStatusStore } from '@/stores/modules/status'
 
 const userStore = useUserStore()
 
-const currentTheme = ref(localStorage.getItem('theme') || 'Light')
 const tabs: Record<string, Component> = {
   Light,
   Dark,
-}
-
-const toggleTheme = () => {
-  currentTheme.value = currentTheme.value === 'Light' ? 'Dark' : 'Light'
-  localStorage.setItem('theme', currentTheme.value)
-  document.body.dataset.theme = currentTheme.value
 }
 
 const showAvatarWidget = ref(false)
@@ -99,7 +93,6 @@ const showBackBtn = () => {
 
 const publishPostBtn = () => {
   emitter.emit('EVENT:PUBLISH_POST')
-  console.log('publish_post')
 }
 
 let flag = true
@@ -107,18 +100,24 @@ let lastScrollTop = 0
 const debounceScroll = debounce(async () => {
   if (!flag) return
 
-  const scrollTop =
-    document.documentElement.scrollTop || document.body.scrollTop
-  const clientHeight = document.documentElement.clientHeight
-  const scrollHeight = document.documentElement.scrollHeight
+  if (
+    route.path === RouterPath.base ||
+    route.path.startsWith(RouterPath.user) ||
+    route.path.startsWith(RouterPath.my) ||
+    route.path.startsWith(RouterPath.search)
+  ) {
+    const scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop
+    const clientHeight = document.documentElement.clientHeight
+    const scrollHeight = document.documentElement.scrollHeight
 
-  const isScrollDown = scrollTop > lastScrollTop
-  lastScrollTop = scrollTop
+    const isScrollDown = scrollTop > lastScrollTop
+    lastScrollTop = scrollTop
 
-  if (isScrollDown && scrollTop + clientHeight >= scrollHeight - 100) {
-    await emitter.emitAsync('EVENT:GET_MORE_POST').catch()
-    flag = true
-    console.log('页面到底了')
+    if (isScrollDown && scrollTop + clientHeight >= scrollHeight - 100) {
+      await emitter.emitAsync('EVENT:GET_MORE_POST').catch()
+      flag = true
+    }
   }
 }, 300)
 
@@ -141,6 +140,8 @@ const onBack = () => {
     router.back()
   }
 }
+
+const statusStore = useStatusStore()
 </script>
 
 <template>
@@ -164,8 +165,8 @@ const onBack = () => {
       /></router-link>
     </nav>
     <div class="my">
-      <button @click="toggleTheme">
-        <component :is="tabs[currentTheme]"></component>
+      <button @click="statusStore.toggleTheme">
+        <component :is="tabs[statusStore.currentTheme]"></component>
       </button>
       <button
         @click="onLogin"
@@ -218,7 +219,9 @@ const onBack = () => {
   <main class="layout-view-main">
     <!-- <router-view /> -->
     <router-view v-slot="{ Component }">
-      <keep-alive :include="['PostView', 'MyView', 'UserView', 'ChatView']">
+      <keep-alive
+        :include="['PostView', 'MyView', 'UserView', 'ChatView', 'SearchView']"
+      >
         <component :is="Component"></component>
       </keep-alive>
     </router-view>

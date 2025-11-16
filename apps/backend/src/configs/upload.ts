@@ -3,7 +3,6 @@ import multer from 'multer'
 import crypto from 'crypto'
 import path from 'path'
 
-console.log('===========' + path.resolve(process.cwd(), 'uploads'))
 const storage = multer.diskStorage({
   destination: path.resolve(process.cwd(), 'uploads'),
   filename: (req, file, cb) => {

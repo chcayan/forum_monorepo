@@ -10,9 +10,34 @@ export const useTempStore = defineStore('temp', () => {
     tempComment.value = ''
   }
 
+  type UserInfo = {
+    userId: string
+    username: string
+    userAvatar: string
+  }
+
+  const defaultTempUserInfo: UserInfo = {
+    userId: '',
+    username: '',
+    userAvatar: '',
+  }
+
+  const tempUserInfo = ref<UserInfo>(defaultTempUserInfo)
+
+  const setTempUserInfo = (userInfo: UserInfo) => {
+    tempUserInfo.value = userInfo
+  }
+
+  const removeTempUserInfo = () => {
+    tempUserInfo.value = defaultTempUserInfo
+  }
+
   return {
     tempComment,
     setTempComment,
     removeTempComment,
+    tempUserInfo,
+    setTempUserInfo,
+    removeTempUserInfo,
   }
 })

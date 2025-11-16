@@ -29,5 +29,7 @@
 
 - GET /post/search (query)
   - result: string
+  - page: number
+  - limit: number
 
 - 数据结构：PostInfo[]
