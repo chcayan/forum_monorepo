@@ -6,6 +6,7 @@ import { useUserStore } from './stores'
 import router, { RouterPath } from './router'
 import { useRoute } from 'vue-router'
 import { getUserInfoAPI } from './api'
+import { useStatusStore } from './stores/modules/status'
 
 const userStore = useUserStore()
 const route = useRoute()
@@ -71,11 +72,10 @@ emitter.on('API:BAD_REQUEST', (message: string) => {
   }
 })
 
+const statusStore = useStatusStore()
 onMounted(async () => {
   // 主题
-  document.body.dataset.theme = localStorage.getItem('theme') as
-    | string
-    | undefined
+  document.body.dataset.theme = statusStore.currentTheme
 
   if (userStore.token) {
     await initUserStatus()

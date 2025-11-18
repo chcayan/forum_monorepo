@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import PostList from '../post/components/PostList.vue'
-
 import { getPostDetailAPI, getUserCollectPostAPI, getUserPostAPI } from '@/api'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import type { PostDetail } from '@forum-monorepo/types'
 import emitter from '@/utils/eventEmitter'
 import { useUserStore } from '@/stores'
@@ -16,6 +15,11 @@ const userCollectedPostMap = ref(new Map<string, PostDetail>())
 
 const userPostOrder = ref<string[]>([])
 const userCollectedPostOrder = ref<string[]>([])
+const userStore = useUserStore()
+
+const getUserInfo = async () => {
+  await userStore.getUserInfo()
+}
 
 const userPostList = computed(() =>
   userPostOrder.value
@@ -29,7 +33,6 @@ const userCollectedPost = computed(() =>
     .filter(Boolean)
 )
 
-const userStore = useUserStore()
 const limit = 10
 const showLoading = ref(false)
 
@@ -59,7 +62,6 @@ const getUserPostList = async (page: number) => {
     userPostMap.value.set(item.p_id, item)
   }
 }
-getUserPostList(userPostListPage.value)
 
 const getUserCollectedPostList = async (page: number) => {
   const res = await getUserCollectPostAPI({
@@ -81,7 +83,12 @@ const getUserCollectedPostList = async (page: number) => {
     userCollectedPostMap.value.set(item.p_id, item)
   }
 }
-getUserCollectedPostList(userCollectedPostListPage.value)
+
+onMounted(async () => {
+  await getUserInfo()
+  getUserPostList(userPostListPage.value)
+  getUserCollectedPostList(userCollectedPostListPage.value)
+})
 
 emitter.on('EVENT:DELETE_USER_POST_LIST', async (p_id: string) => {
   if (userPostMap.value.get(p_id)) {
@@ -139,11 +146,6 @@ emitter.on('EVENT:GET_MORE_POST', async () => {
     showLoading.value = false
   }
 })
-
-const getUserInfo = async () => {
-  await userStore.getUserInfo()
-}
-getUserInfo()
 
 const toggleStatus = ref(true)
 const changeStatus = () => {

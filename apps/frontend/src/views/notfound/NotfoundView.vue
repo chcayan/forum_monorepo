@@ -47,6 +47,7 @@ onUnmounted(() => {
   }
 
   button {
+    color: var(--theme-font-color);
     font-size: 18px;
     font-weight: bold;
     text-decoration: underline;
