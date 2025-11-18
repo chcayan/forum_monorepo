@@ -28,6 +28,7 @@ import {
   useTemplateRef,
   watch,
 } from 'vue'
+import SharePost from './components/SharePost.vue'
 
 const userStore = useUserStore()
 const friendList = ref<FriendInfo[]>([])
@@ -51,8 +52,13 @@ const closeChatBox = () => {
 }
 
 onDeactivated(() => {
-  closeChatBox()
-  message.value = ''
+  // closeChatBox()
+  // message.value = ''
+  const el = messageBoxRef.value
+  if (el) {
+    el.style.scrollBehavior = 'auto'
+  }
+
   showSearchBox.value = false
 })
 
@@ -138,25 +144,39 @@ const sendMessage = async (e: KeyboardEvent | PointerEvent) => {
     chatRecords[currentFriendUserId.value] = []
   }
 
-  chatRecords[currentFriendUserId.value].push({
+  chatRecords[currentFriendUserId.value]?.push({
     from: userStore.userInfo.user_id,
     message: msg,
+    is_share: '0',
   })
   message.value = ''
 }
 
-const chatRecords = reactive<Record<string, any>>({})
+type MsgType = {
+  from: string
+  message: string
+  is_share: '0' | '1'
+}
+const chatRecords = reactive<Record<string, MsgType[]>>({})
 const unreadCount = reactive<Record<string, any>>({})
 
 socket.on(
   'receiveMessage',
-  async ({ from, message }: { from: string; message: string }) => {
+  async ({
+    from,
+    message,
+    is_share,
+  }: {
+    from: string
+    message: string
+    is_share: '0' | '1'
+  }) => {
     const el = messageBoxRef.value
     if (el) {
       el.style.scrollBehavior = 'smooth'
     }
     if (!chatRecords[from]) chatRecords[from] = []
-    chatRecords[from].push({ from, message })
+    chatRecords[from].push({ from, message, is_share })
 
     if (currentFriendUserId.value !== from) {
       unreadCount[from] = (unreadCount[from] || 0) + 1
@@ -188,6 +208,19 @@ watch(currentFriendUserId, async (friend) => {
   chatRecords[friend] = history.map((msg: ChatInfo) => ({
     from: msg.sender,
     message: msg.content,
+    is_share: msg.is_share,
+  }))
+})
+
+emitter.on('EVENT:UPDATE_CHAT_RECORDS', async (friend: string) => {
+  const res = await getChatHistoryAPI(friend)
+  const history = res.data.data
+  if (!history) return
+
+  chatRecords[friend] = history.map((msg: ChatInfo) => ({
+    from: msg.sender,
+    message: msg.content,
+    is_share: msg.is_share,
   }))
 })
 
@@ -324,7 +357,13 @@ const navigateToUser = (userId: string) => {
               class="user-chat"
               v-if="msg.from === userStore.userInfo.user_id"
             >
-              <span v-html="lineBreakReplace(msg.message)"></span>
+              <span
+                v-if="msg.is_share === '0'"
+                v-html="lineBreakReplace(msg.message)"
+              ></span>
+              <div v-else class="post-msg">
+                <SharePost :post-id="msg.message" />
+              </div>
               <img :src="userStore.userInfo?.user_avatar" />
             </div>
             <div
@@ -332,7 +371,13 @@ const navigateToUser = (userId: string) => {
               v-if="msg.from !== userStore.userInfo.user_id"
             >
               <img :src="currentFriendAvatar" />
-              <span v-html="lineBreakReplace(msg.message)"></span>
+              <span
+                v-if="msg.is_share === '0'"
+                v-html="lineBreakReplace(msg.message)"
+              ></span>
+              <div v-else class="post-msg">
+                <SharePost :post-id="msg.message" />
+              </div>
             </div>
           </div>
         </div>

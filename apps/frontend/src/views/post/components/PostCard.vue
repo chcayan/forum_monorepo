@@ -3,9 +3,9 @@ import ViewSvg from '@/components/svgIcon/ViewSvg.vue'
 import CommentSvg from '@/components/svgIcon/CommentSvg.vue'
 import CollectSvg from '@/components/svgIcon/CollectSvg.vue'
 import ShareSvg from '@/components/svgIcon/ShareSvg.vue'
-import type { PostDetail } from '@forum-monorepo/types'
+import type { FriendInfo, PostDetail } from '@forum-monorepo/types'
 import { formatDateByYear } from '@forum-monorepo/utils'
-import { checkLoginStatus, lineBreakReplace, Toast } from '@/utils'
+import { checkLoginStatus, lineBreakReplace, socket, Toast } from '@/utils'
 import NGrid from './NGrid.vue'
 import { computed, onDeactivated, onUnmounted, ref, watch } from 'vue'
 import emitter from '@/utils/eventEmitter'
@@ -93,6 +93,12 @@ const changeCollectStatus = async () => {
     })
   }
 
+  updatePostStatus()
+
+  off = emitter.on('EVENT:TOGGLE_FLAG', setFlag)
+}
+
+function updatePostStatus() {
   if (
     route.path === RouterPath.base ||
     route.path.startsWith(RouterPath.my) ||
@@ -108,7 +114,6 @@ const changeCollectStatus = async () => {
     emitter.emit('EVENT:UPDATE_POST_LIST', post.p_id)
     emitter.emit('EVENT:UPDATE_USER_POST_LIST', post.p_id)
   }
-  off = emitter.on('EVENT:TOGGLE_FLAG', setFlag)
 }
 
 function setFlag() {
@@ -228,6 +233,33 @@ const onPublic = () => {
     },
   })
 }
+
+const showShareBox = ref(false)
+
+const friendList = ref<FriendInfo[]>(userStore.userFriendList || [])
+
+const onShare = () => {
+  showShareBox.value = !showShareBox.value
+}
+
+const share = async (friendId: string) => {
+  const payload = {
+    from: userStore.userInfo.user_id,
+    to: friendId,
+    message: post.p_id,
+    is_share: '1',
+  }
+
+  socket.emit('sendMessage', payload)
+  updatePostStatus()
+  emitter.emit('EVENT:UPDATE_CHAT_RECORDS', friendId)
+  Toast.show({
+    msg: '分享成功',
+    type: 'success',
+  })
+  flag = true
+  showShareBox.value = false
+}
 </script>
 
 <template>
@@ -236,6 +268,19 @@ const onPublic = () => {
     class="tab-focus-style post-card"
     @keydown.enter="navigateToPostDetail"
   >
+    <div class="share-box" :class="{ 'show-share-box': showShareBox }">
+      <p>请选择一位好友：</p>
+      <ul>
+        <li
+          @click="share(friend.follow_id)"
+          v-for="(friend, index) in friendList"
+          :key="index"
+        >
+          <img :src="friend.user_avatar" alt="avatar" />
+          <p class="name">{{ friend.username }}</p>
+        </li>
+      </ul>
+    </div>
     <header>
       <img
         v-loading
@@ -285,13 +330,20 @@ const onPublic = () => {
             post?.p_comment_count
           }}</span>
         </li>
-        <li @click="changeCollectStatus">
+        <li @click="changeCollectStatus" style="cursor: pointer">
           <CollectSvg :isCollect="isCollect" class="svg" /><span
+            style="cursor: pointer"
             title="收藏数"
             >{{ post?.p_collect_count }}</span
           >
         </li>
-        <li><ShareSvg class="svg" /><span title="分享数">0</span></li>
+        <li @click="onShare" style="cursor: pointer">
+          <ShareSvg class="svg" /><span
+            style="cursor: pointer"
+            title="分享数"
+            >{{ post?.p_share_count }}</span
+          >
+        </li>
       </ul>
     </footer>
   </article>
@@ -301,10 +353,74 @@ const onPublic = () => {
 .post-card {
   width: 100%;
   padding: $gap * 1;
+  height: 100%;
   border-radius: $gap;
   box-shadow: var(--theme-shadow-color);
   overflow: hidden;
   background-color: var(--theme-post-card-color);
+  position: relative;
+
+  .share-box {
+    // display: none;
+    position: absolute;
+    bottom: 52px;
+    right: 0;
+    padding: 10px;
+    background-color: var(--theme-color);
+    box-shadow: var(--theme-shadow-color);
+    border-radius: 10px;
+    width: 150px;
+    max-height: 200px;
+    height: calc(100% - 52px);
+    z-index: $share-box-z-index;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+    overflow: hidden;
+
+    ul {
+      height: 100%;
+      padding: 10px 0;
+      overflow-y: scroll;
+
+      &::-webkit-scrollbar {
+        width: 10px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        background-color: var(--theme-scrollbar-thumb-color);
+      }
+
+      li {
+        display: flex;
+        height: 40px;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+
+        .name {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+
+    p {
+      font-size: 14px;
+    }
+
+    img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      aspect-ratio: 1;
+    }
+  }
+
+  .show-share-box {
+    transform: translateX(0);
+  }
 
   header {
     display: flex;

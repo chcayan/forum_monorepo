@@ -6,6 +6,7 @@ export interface ChatInfo {
   content: string
   created_at: string
   is_read: number
+  is_share: number
 }
 
 // 未读信息

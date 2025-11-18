@@ -44,12 +44,19 @@ class ChatToast {
     return toast
   }
 
-  static show({ userAvatar, userId, username, message }: ChatToastParams) {
+  static show({
+    userAvatar,
+    userId,
+    username,
+    message,
+    is_share = '0',
+  }: ChatToastParams) {
     this.toast.show({
       userId,
       username,
       userAvatar,
       message,
+      is_share,
     })
   }
 }

@@ -15,15 +15,15 @@ export function createSocketConnection(io: Server, db: mysql.Connection) {
       console.log(`${username} 登录，绑定到 ${socket.id}`)
     })
 
-    socket.on('sendMessage', ({ from, to, message }) => {
+    socket.on('sendMessage', ({ from, to, message, is_share = '0' }) => {
       db.query(
-        'INSERT INTO messages (sender, receiver, content, is_read) VALUES (?, ?, ?, FALSE)',
-        [from, to, message]
+        'INSERT INTO messages (sender, receiver, content, is_read, is_share) VALUES (?, ?, ?, FALSE, ?)',
+        [from, to, message, is_share]
       )
 
       const toSocketId = users[to]
       if (toSocketId) {
-        io.to(toSocketId).emit('receiveMessage', { from, message })
+        io.to(toSocketId).emit('receiveMessage', { from, message, is_share })
       }
     })
 

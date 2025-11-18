@@ -12,4 +12,5 @@ export type ChatToastParams = {
   userAvatar: string
   userId: string
   message: string
+  is_share: '0' | '1'
 }

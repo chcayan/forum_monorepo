@@ -23,7 +23,15 @@ async function initUserStatus() {
 
   socket.on(
     'receiveMessage',
-    async ({ from, message }: { from: string; message: string }) => {
+    async ({
+      from,
+      message,
+      is_share,
+    }: {
+      from: string
+      message: string
+      is_share: '0' | '1'
+    }) => {
       if (route.path.startsWith(RouterPath.chat)) return
       const res = await getUserInfoAPI({ userId: from })
       const userInfo = res.data?.data[0] as userInfo
@@ -32,6 +40,7 @@ async function initUserStatus() {
         userAvatar: userInfo.user_avatar,
         username: userInfo.username,
         message,
+        is_share,
       })
     }
   )

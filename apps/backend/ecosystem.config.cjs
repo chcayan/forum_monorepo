@@ -2,13 +2,13 @@
 module.exports = {
   apps: [
     {
-      name: "backend",
-      script: "index.js",
+      name: 'backend',
+      script: 'index.js',
 
-      env_file: ".env.production",
+      env_file: '.env.production',
       env_production: {
-        NODE_ENV: "production"
+        NODE_ENV: 'production',
       },
-    }
-  ]
+    },
+  ],
 }

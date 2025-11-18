@@ -9,6 +9,7 @@ import { ChatToastParams } from './types'
 import { escapeHTML } from '@/utils/format'
 import router, { RouterPath } from '@/router'
 import { markAsReadAPI } from '@/api'
+import SharePost from '@/views/chat/components/SharePost.vue'
 
 const y = ref('-200px')
 const toastRef = useTemplateRef('toast')
@@ -31,7 +32,12 @@ const _userId = ref('')
 const avatar = ref('')
 const sendMsg = ref('')
 
-const chatRecords = reactive<Record<string, string[]>>({})
+type MsgType = {
+  postId: string
+  message: string
+  isShare: '0' | '1'
+}
+const chatRecords = reactive<Record<string, MsgType[]>>({})
 const userList = ref<Map<string, UserInfo>>(new Map())
 
 type UserInfo = {
@@ -80,8 +86,12 @@ const sendMessage = async (e: PointerEvent | KeyboardEvent) => {
 class ChatToast {
   static isShowing = false
 
+  /**
+   * 显示聊天弹窗
+   * @param userInfo 用户头像，id，用户名，接收的信息
+   */
   static show(userInfo: ChatToastParams) {
-    const { userAvatar, userId, username, message } = userInfo
+    const { userAvatar, userId, username, message, is_share } = userInfo
 
     if (!userList.value.get(userId)) {
       userList.value.set(userId, {
@@ -99,7 +109,11 @@ class ChatToast {
       chatRecords[_userId.value] = []
     }
 
-    chatRecords[_userId.value]?.push(message)
+    chatRecords[_userId.value]?.push({
+      message,
+      isShare: is_share,
+      postId: is_share === '1' ? message : '',
+    })
 
     if (!ChatToast.isShowing) {
       ChatToast.isShowing = true
@@ -173,7 +187,6 @@ defineExpose({
       </li>
     </ul>
     <div class="user-info">
-      <!-- <img v-if="avatar" v-loading :src="avatar" /> -->
       <span>{{ _username }}</span>
       <CloseSvg class="ico" @click="closeChatToast" />
       <JumpSvg class="ico" @click="navigateToChat" />
@@ -185,7 +198,14 @@ defineExpose({
         :key="index"
       >
         <img v-if="avatar" v-loading :src="avatar" />
-        <div class="msg" v-html="lineBreakReplace(item as string)"></div>
+        <span
+          v-if="item.isShare === '0'"
+          class="msg"
+          v-html="lineBreakReplace(item.message)"
+        ></span>
+        <div v-else>
+          <SharePost style="text-align: start" :post-id="item.postId" />
+        </div>
       </div>
     </div>
     <form class="ipt" @submit.prevent>
@@ -300,12 +320,14 @@ $main-gap: 20px;
       display: flex;
       gap: 10px;
 
-      div {
+      .msg {
         padding: 10px;
         border-radius: 10px;
         background-color: var(--theme-chat-speech-bubble-color);
-        max-width: 50%;
+        max-width: 200px;
         color: var(--theme-font-color);
+        text-align: start;
+        word-break: break-all;
       }
 
       img {
@@ -315,10 +337,6 @@ $main-gap: 20px;
         border-radius: 50%;
       }
     }
-  }
-
-  .msg {
-    text-align: start;
   }
 
   .ipt {
