@@ -236,9 +236,12 @@ const onPublic = () => {
 
 const showShareBox = ref(false)
 
-const friendList = ref<FriendInfo[]>(userStore.userFriendList || [])
+const friendList = computed<FriendInfo[]>(() => {
+  return userStore.userFriendList
+})
 
 const onShare = () => {
+  if (!checkLoginStatus()) return
   showShareBox.value = !showShareBox.value
 }
 

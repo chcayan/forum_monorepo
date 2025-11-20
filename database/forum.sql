@@ -1,17 +1,17 @@
 /*
  Navicat Premium Dump SQL
 
- Source Server         : NewSQL
+ Source Server         : forum
  Source Server Type    : MySQL
- Source Server Version : 80039 (8.0.39)
+ Source Server Version : 80043 (8.0.43)
  Source Host           : localhost:3306
- Source Schema         : libra_management
+ Source Schema         : forum
 
  Target Server Type    : MySQL
- Target Server Version : 80039 (8.0.39)
+ Target Server Version : 80043 (8.0.43)
  File Encoding         : 65001
 
- Date: 19/04/2025 16:51:31
+ Date: 20/11/2025 11:15:58
 */
 
 SET NAMES utf8mb4;
@@ -26,7 +26,7 @@ CREATE TABLE `collection`  (
   `p_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `collect_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_id`, `p_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for comments
@@ -39,7 +39,7 @@ CREATE TABLE `comments`  (
   `c_content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`comment_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 93 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 137 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for follows
@@ -50,7 +50,7 @@ CREATE TABLE `follows`  (
   `follow_id` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `follow_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_id`, `follow_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for messages
@@ -63,8 +63,9 @@ CREATE TABLE `messages`  (
   `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `is_read` tinyint(1) NULL DEFAULT 0,
+  `is_share` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '0',
   PRIMARY KEY (`msg_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 967 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1577 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for post
@@ -82,7 +83,7 @@ CREATE TABLE `post`  (
   `publish_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `is_public` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT 'true',
   PRIMARY KEY (`p_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for users
@@ -102,7 +103,7 @@ CREATE TABLE `users`  (
   `background_img` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '/uploads/default/default_bg.jpg',
   PRIMARY KEY (`user_id`) USING BTREE,
   UNIQUE INDEX `user_email`(`user_email` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Triggers structure for table collection
@@ -192,6 +193,23 @@ CREATE TRIGGER `decrease_fans` AFTER DELETE ON `follows` FOR EACH ROW BEGIN
     UPDATE users
     SET fans = fans - 1 
     WHERE user_id = old.follow_id;
+END
+;;
+delimiter ;
+
+-- ----------------------------
+-- Triggers structure for table messages
+-- ----------------------------
+DROP TRIGGER IF EXISTS `trigger_add_share_count`;
+delimiter ;;
+CREATE TRIGGER `trigger_add_share_count` AFTER INSERT ON `messages` FOR EACH ROW BEGIN
+    -- 逻辑判断：只有当新插入的这条消息 is_share = 1 时，才执行更新
+    IF NEW.is_share = 1 THEN
+        UPDATE post
+        SET p_share_count = p_share_count + 1
+        -- 关键点：通过 messages 表里的 post_id 找到 post 表里对应的记录
+        WHERE p_id = NEW.content;
+    END IF;
 END
 ;;
 delimiter ;

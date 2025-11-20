@@ -18,13 +18,16 @@ import { authMiddleware } from '@middleware/auth'
 
 const app = express()
 
+const origin = [
+  process.env.CORS_ORIGIN,
+  process.env.CORS_ORIGIN_1,
+  process.env.CORS_ORIGIN_2,
+  process.env.CORS_ORIGIN_3,
+]
+
 app.use(
   cors({
-    origin: [
-      process.env.CORS_ORIGIN,
-      process.env.CORS_ORIGIN_1,
-      process.env.CORS_ORIGIN_2,
-    ],
+    origin,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     credentials: true,
   })
@@ -38,11 +41,7 @@ const server = http.createServer(app)
 
 const io = new Server(server, {
   cors: {
-    origin: [
-      process.env.CORS_ORIGIN,
-      process.env.CORS_ORIGIN_1,
-      process.env.CORS_ORIGIN_2,
-    ],
+    origin,
     methods: ['GET', 'POST'],
     credentials: true,
   },

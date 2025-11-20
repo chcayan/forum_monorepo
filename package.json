@@ -12,7 +12,8 @@
     "commit": "git-cz",
     "prepare": "husky",
     "precommit": "lint-staged",
-    "dev": "concurrently \"pnpm --filter utils build\" \"pnpm --filter backend dev\" \"pnpm --filter frontend dev\""
+    "dev": "concurrently \"pnpm --filter utils build\" \"pnpm --filter backend dev\" \"pnpm --filter frontend dev\"",
+    "upload": "bash ./script/upload.sh"
   },
   "config": {
     "commitizen": {

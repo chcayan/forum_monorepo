@@ -14,11 +14,7 @@ import { useTempStore, useUserStore } from '@/stores'
 import { debounce, lineBreakReplace, socket, Toast } from '@/utils'
 import emitter from '@/utils/eventEmitter'
 import { escapeHTML } from '@/utils/format'
-import type {
-  ChatInfo,
-  FriendInfo,
-  UserBySearchInfo,
-} from '@forum-monorepo/types'
+import type { ChatInfo, UserBySearchInfo } from '@forum-monorepo/types'
 import {
   onActivated,
   onDeactivated,
@@ -31,12 +27,6 @@ import {
 import SharePost from './components/SharePost.vue'
 
 const userStore = useUserStore()
-const friendList = ref<FriendInfo[]>([])
-
-const getFriendList = () => {
-  friendList.value = userStore.userFriendList
-}
-getFriendList()
 
 const showChatBox = ref(false)
 
@@ -201,27 +191,23 @@ watch(currentFriendUserId, async (friend) => {
   await markAsReadAPI({ from: friend })
   unreadCount[friend] = 0
 
-  const res = await getChatHistoryAPI(friend)
-  const history = res.data.data
-  if (!history) return
-
-  chatRecords[friend] = history.map((msg: ChatInfo) => ({
-    from: msg.sender,
-    message: msg.content,
-    is_share: msg.is_share,
-  }))
+  await getChatHistory(friend)
 })
 
-emitter.on('EVENT:UPDATE_CHAT_RECORDS', async (friend: string) => {
-  const res = await getChatHistoryAPI(friend)
+async function getChatHistory(friendId: string) {
+  const res = await getChatHistoryAPI(friendId)
   const history = res.data.data
   if (!history) return
 
-  chatRecords[friend] = history.map((msg: ChatInfo) => ({
+  chatRecords[friendId] = history.map((msg: ChatInfo) => ({
     from: msg.sender,
     message: msg.content,
-    is_share: msg.is_share,
+    is_share: msg.is_share ?? '0',
   }))
+}
+
+emitter.on('EVENT:UPDATE_CHAT_RECORDS', async (friend: string) => {
+  await getChatHistory(friend)
 })
 
 onActivated(async () => {

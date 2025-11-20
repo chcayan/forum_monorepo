@@ -42,6 +42,8 @@ DB_PASSWORD=yourpwd
 DB_NAME=yourdbname
 ```
 
+导入数据库文件：/database/forum.sql
+
 启动服务
 
 ```bash

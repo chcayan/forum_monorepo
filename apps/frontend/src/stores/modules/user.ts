@@ -35,6 +35,7 @@ export const useUserStore = defineStore('user', () => {
     userCollectListOfPostId.value = []
     userFollowList.value = []
     userFollowIdList.value = []
+    userFriendList.value = []
     localStorage.removeItem('token')
   }
 
