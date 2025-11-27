@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { getAiChatResultAPI } from '@/api'
-import { Toast } from '@/utils'
 import { AiChatInfo } from '@forum-monorepo/types'
 import { onMounted, ref, useTemplateRef } from 'vue'
 
@@ -34,9 +33,10 @@ onMounted(() => {
 let timer: number | undefined
 function triggerShock() {
   resetMoods()
-  if (container.value && body.value && bubble.value) {
+  if (container.value && body.value && bubble.value && sendBtn.value) {
     container.value.classList.add('shock')
     body.value.parentElement!.style.backgroundColor = '#333'
+    sendBtn.value.style.background = '#333'
     bubble.value.textContent = 'CHUUUU!!!'
     bubble.value.classList.add('show')
   }
@@ -44,9 +44,16 @@ function triggerShock() {
 
   if (timer) clearTimeout(timer)
   timer = setTimeout(() => {
-    if (container.value && body.value && bubble.value && thunderDiv.value) {
+    if (
+      container.value &&
+      body.value &&
+      bubble.value &&
+      thunderDiv.value &&
+      sendBtn.value
+    ) {
       container.value.classList.remove('shock')
       body.value.parentElement!.style.backgroundColor = '#87CEEB'
+      sendBtn.value.style.background = '#87CEEB'
       thunderDiv.value.innerHTML = ''
       bubble.value.classList.remove('show')
     }
@@ -81,17 +88,17 @@ function resetMoods() {
 }
 
 // Send Message Logic
+let text: string
 async function sendMessage() {
   if (input.value && sendBtn.value && bubble.value) {
     if (!context.value) {
-      Toast.show({
-        msg: '请输入内容',
-        type: 'error',
-      })
+      text = ''
+      triggerShock()
       return
     }
 
     // UI Updates
+    text = context.value
     context.value = ''
     input.value.disabled = true
     sendBtn.value.disabled = true
@@ -101,11 +108,11 @@ async function sendMessage() {
     bubble.value.classList.add('show')
   }
 
-  resetMoods()
+  // resetMoods()
 
   try {
     const prompt = `
-      你是皮卡丘。用户说：“${context.value}”。
+      你是皮卡丘。用户说：“${text}”。
       使用下面格式回复（不要用json)：
       1. "message"：你的回复文本。主要使用"皮卡"、"皮卡丘"、"皮"等音效，但需括号内附上翻译。保持简短可爱。
       2. "mood"：可选值包括["happy", "angry", "shocked", "sad", "neutral", "attack"]。
@@ -160,19 +167,23 @@ function applyMood(mood: string) {
   resetMoods()
   const m = mood.toLowerCase()
 
-  if (container.value && body.value) {
+  if (container.value && body.value && sendBtn.value) {
     if (m.includes('happy')) {
       container.value.classList.add('happy')
       body.value.parentElement!.style.backgroundColor = '#FFFACD' // Light yellow bg
+      sendBtn.value.style.background = '#FFFACD'
     } else if (m.includes('angry')) {
       container.value.classList.add('angry')
       body.value.parentElement!.style.backgroundColor = '#FFB6C1' // Light red bg
+      sendBtn.value.style.background = '#FFB6C1'
     } else if (m.includes('shock')) {
       container.value.classList.add('shocked')
       body.value.parentElement!.style.backgroundColor = '#E0FFFF' // Light cyan
+      sendBtn.value.style.background = '#E0FFFF'
     } else if (m.includes('sad')) {
       container.value.classList.add('sad')
       body.value.parentElement!.style.backgroundColor = '#D3D3D3' // Grey
+      sendBtn.value.style.background = '#D3D3D3'
     } else if (m.includes('attack')) {
       triggerShock()
     }
@@ -226,7 +237,7 @@ function applyMood(mood: string) {
       placeholder="Chat with Pikachu..."
       autocomplete="off"
     />
-    <button id="sendBtn" ref="sendBtn">➤</button>
+    <button id="sendBtn" title="发送" ref="sendBtn">➤</button>
   </div>
 </template>
 
@@ -266,7 +277,7 @@ $input-bg: rgba(255, 255, 255, 0.9);
   position: fixed;
   bottom: 30px;
   width: 90%;
-  max-width: 400px;
+  max-width: 300px;
   display: flex;
   gap: 10px;
   z-index: 100;

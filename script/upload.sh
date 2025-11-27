@@ -6,11 +6,13 @@ SERVER_IP="211.159.186.18"
 LOCAL_FILES=(
   "./apps/backend/dist"
   "./apps/frontend/dist"
+  "./apps/backend/.env.production"
 )
 
 REMOTE_DIRS=(
   "/home/ubuntu/forum/backend/"
   "/home/ubuntu/forum/frontend/"
+  "/home/ubuntu/forum/backend/"
 )
 
 for i in "${!LOCAL_FILES[@]}"; do
