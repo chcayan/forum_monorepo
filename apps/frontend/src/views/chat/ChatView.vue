@@ -274,7 +274,6 @@ const onPikachuChat = () => {
   closeChatBox()
   openChatBox()
   isPikachuChat.value = true
-  // showChatBox.value = true
 }
 </script>
 
@@ -310,7 +309,7 @@ const onPikachuChat = () => {
           <li>没有找到用户</li>
         </ul>
       </div>
-      <ul v-if="userStore.userFriendList.length">
+      <ul>
         <li
           tabindex="0"
           class="tab-focus-style"
@@ -345,7 +344,6 @@ const onPikachuChat = () => {
           </div>
         </li>
       </ul>
-      <div v-else class="f-tip">你还未有好友</div>
     </div>
     <div class="right" :class="{ 'right-up': showChatBox }">
       <div class="chat-box" v-if="currentFriendUsername || isPikachuChat">

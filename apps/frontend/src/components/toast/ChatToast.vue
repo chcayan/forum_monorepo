@@ -136,7 +136,7 @@ class ChatToast {
         },
       ],
       {
-        duration: 1000,
+        duration: 700,
         easing: 'ease',
         fill: 'forwards',
       }
