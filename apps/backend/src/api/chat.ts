@@ -113,4 +113,46 @@ export function registerChatAPI(app: Express, db: mysql.Connection) {
       })
     })
   })
+
+  // ai聊天
+  app.post('/chat/ai/chat-mode', authMiddleware, async (req, res) => {
+    const { prompt } = req.body
+
+    const url = 'https://open.bigmodel.cn/api/paas/v4/chat/completions'
+
+    const apiKey = process.env.API_KEY
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'glm-4.5-flash',
+        messages: [
+          {
+            role: 'user',
+            content: prompt,
+          },
+        ],
+        thinking: {
+          type: 'disabled',
+        },
+        temperature: 0.7,
+        max_tokens: 50,
+        stream: false,
+      }),
+    })
+
+    if (!response.ok) console.error('API Error')
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const data = (await response.json()) as any
+
+    res.json({
+      code: 0,
+      data: data.choices[0],
+    })
+  })
 }

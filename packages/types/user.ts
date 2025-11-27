@@ -5,8 +5,8 @@ export interface UserInfo {
   user_avatar: string
   user_email: string
   registration: string
-  follows: number
-  fans: number
+  follows: string
+  fans: string
   background_img: string
   sex: string
   signature: string

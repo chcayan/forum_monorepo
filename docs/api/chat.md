@@ -17,3 +17,10 @@
 
 - POST /chat/mark-as-read (body)
   - from: string
+
+## ai聊天
+
+- POST /chat/ai/chat-mode (body)
+- prompt: string
+
+数据结构：AiChatInfo

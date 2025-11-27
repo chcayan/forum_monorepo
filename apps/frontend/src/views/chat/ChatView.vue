@@ -14,6 +14,7 @@ import { useTempStore, useUserStore } from '@/stores'
 import { debounce, lineBreakReplace, socket, Toast } from '@/utils'
 import emitter from '@/utils/eventEmitter'
 import { escapeHTML } from '@/utils/format'
+import pikachuImg from '@/assets/pikachu.jpg'
 import type { ChatInfo, UserBySearchInfo } from '@forum-monorepo/types'
 import {
   onActivated,
@@ -25,6 +26,7 @@ import {
   watch,
 } from 'vue'
 import SharePost from './components/SharePost.vue'
+import PikachuAi from './components/PikachuAi.vue'
 
 const userStore = useUserStore()
 
@@ -35,6 +37,7 @@ const openChatBox = () => {
 }
 
 const closeChatBox = () => {
+  isPikachuChat.value = false
   currentFriendUserId.value = ''
   currentFriendUsername.value = ''
   currentFriendAvatar.value = ''
@@ -56,6 +59,7 @@ const currentFriendUsername = ref('')
 const currentFriendAvatar = ref('')
 const currentFriendUserId = ref('')
 const selectFriend = (username: string, avatar: string, userId: string) => {
+  isPikachuChat.value = false
   openChatBox()
   showSearchBox.value = false
   currentFriendUsername.value = username
@@ -263,6 +267,15 @@ const navigateToUser = (userId: string) => {
 
   router.push(`${RouterPath.user}/${userId}`)
 }
+
+const isPikachuChat = ref(false)
+
+const onPikachuChat = () => {
+  closeChatBox()
+  openChatBox()
+  isPikachuChat.value = true
+  // showChatBox.value = true
+}
 </script>
 
 <template>
@@ -301,6 +314,16 @@ const navigateToUser = (userId: string) => {
         <li
           tabindex="0"
           class="tab-focus-style"
+          :class="{ active: isPikachuChat }"
+          @click="onPikachuChat"
+          @keydown.enter="onPikachuChat"
+        >
+          <img :src="pikachuImg" alt="avatar" />
+          <div>皮卡丘</div>
+        </li>
+        <li
+          tabindex="0"
+          class="tab-focus-style"
           :class="{ active: friend.follow_id === currentFriendUserId }"
           v-for="friend in userStore.userFriendList"
           :key="friend.follow_id"
@@ -325,15 +348,26 @@ const navigateToUser = (userId: string) => {
       <div v-else class="f-tip">你还未有好友</div>
     </div>
     <div class="right" :class="{ 'right-up': showChatBox }">
-      <div class="chat-box" v-if="currentFriendUsername">
-        <header>
+      <div class="chat-box" v-if="currentFriendUsername || isPikachuChat">
+        <header v-if="!isPikachuChat">
           <img :src="currentFriendAvatar" />
           <div>{{ currentFriendUsername }}</div>
           <div class="close-box" @click="closeChatBox">
             <CloseSvg class="close" />
           </div>
         </header>
-        <div class="main tab-focus-style" ref="messageBoxEl">
+        <header v-else>
+          <img :src="pikachuImg" />
+          <div>皮卡丘</div>
+          <div class="close-box" @click="closeChatBox">
+            <CloseSvg class="close" />
+          </div>
+        </header>
+        <div
+          v-if="!isPikachuChat"
+          class="main tab-focus-style"
+          ref="messageBoxEl"
+        >
           <div
             class="text"
             v-for="(msg, index) in chatRecords[currentFriendUserId] || []"
@@ -367,7 +401,10 @@ const navigateToUser = (userId: string) => {
             </div>
           </div>
         </div>
-        <footer>
+        <div class="main main-pikachu" v-else>
+          <PikachuAi />
+        </div>
+        <footer v-if="!isPikachuChat">
           <form class="chat-input" @submit.prevent>
             <textarea
               v-disableEnter
@@ -583,6 +620,21 @@ const navigateToUser = (userId: string) => {
         }
       }
 
+      .main-pikachu {
+        $bg-color: #87ceeb;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: $bg-color;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        overflow: hidden;
+        transition: background-color 0.5s;
+      }
+
       .main {
         width: 100%;
         flex: 1 1 0;
@@ -590,7 +642,7 @@ const navigateToUser = (userId: string) => {
         flex-direction: column;
         gap: 10px;
         flex: 1;
-        padding: 20;
+        // padding: 20px;
         overflow-y: scroll;
         padding: 10px;
 

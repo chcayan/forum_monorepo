@@ -368,7 +368,7 @@ const share = async (friendId: string) => {
     position: absolute;
     bottom: 52px;
     right: 0;
-    padding: 10px;
+    padding: 10px 0 10px 10px;
     background-color: var(--theme-color);
     box-shadow: var(--theme-shadow-color);
     border-radius: 10px;
@@ -376,7 +376,7 @@ const share = async (friendId: string) => {
     max-height: 200px;
     height: calc(100% - 52px);
     z-index: $share-box-z-index;
-    transform: translateX(100%);
+    transform: translateX(110%);
     transition: all 0.3s ease;
     overflow: hidden;
 

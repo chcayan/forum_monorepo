@@ -24,3 +24,7 @@ export function getChatUnreadAPI() {
 export function markAsReadAPI(data: { from: string }) {
   return request.post('/chat/mark-as-read', data)
 }
+
+export function getAiChatResultAPI(data: { prompt: string }) {
+  return request.post('/chat/ai/chat-mode', data)
+}
