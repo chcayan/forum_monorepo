@@ -43,6 +43,7 @@ function triggerShock() {
   createLightning()
 
   if (timer) clearTimeout(timer)
+  if (timer1) clearInterval(timer1)
   timer = setTimeout(() => {
     if (
       container.value &&
@@ -75,7 +76,7 @@ function createLightning() {
 
 // Helper to reset CSS mood classes
 function resetMoods() {
-  if (container.value && body.value) {
+  if (container.value && body.value && sendBtn.value) {
     container.value.classList.remove(
       'happy',
       'angry',
@@ -84,11 +85,13 @@ function resetMoods() {
       'shock'
     )
     body.value.parentElement!.style.backgroundColor = '#87CEEB'
+    sendBtn.value.style.background = '#87CEEB'
   }
 }
 
 // Send Message Logic
 let text: string
+let timer1: number | undefined
 async function sendMessage() {
   if (input.value && sendBtn.value && bubble.value) {
     if (!context.value) {
@@ -150,7 +153,9 @@ async function sendMessage() {
     }
 
     // Hide bubble after a few seconds
-    setTimeout(() => {
+    if (timer) clearTimeout(timer)
+    if (timer1) clearTimeout(timer1)
+    timer1 = setTimeout(() => {
       if (
         bubble.value &&
         container.value &&
