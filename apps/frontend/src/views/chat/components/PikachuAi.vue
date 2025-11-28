@@ -57,6 +57,12 @@ function triggerShock() {
       sendBtn.value.style.background = '#87CEEB'
       thunderDiv.value.innerHTML = ''
       bubble.value.classList.remove('show')
+
+      if (input.value && sendBtn.value) {
+        input.value.disabled = false
+        sendBtn.value.disabled = false
+        input.value.focus()
+      }
     }
   }, 1500)
 }
@@ -111,8 +117,6 @@ async function sendMessage() {
     bubble.value.classList.add('show')
   }
 
-  // resetMoods()
-
   try {
     const prompt = `
       你是皮卡丘。用户说：“${text}”。
@@ -135,6 +139,7 @@ async function sendMessage() {
     if (bubble.value) {
       // Apply logic based on Gemini result
       bubble.value.classList.remove('typing-dots')
+      bubble.value.classList.add('show')
       bubble.value.textContent = message
     }
 
