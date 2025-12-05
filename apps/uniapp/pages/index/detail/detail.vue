@@ -94,6 +94,7 @@ const onCommentInput = () => {
   box-sizing: border-box;
   gap: 10px;
   border-radius: 10px;
+  min-height: calc(100vh - var(--window-top) - var(--window-bottom));
 
   .post {
     box-shadow: $theme-light-shadow-color;

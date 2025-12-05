@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, useTemplateRef } from 'vue'
+import { ref } from 'vue'
 import type { ColorType, ToastParams } from './types'
 
 const y = ref('-100px')
-const toastRef = useTemplateRef('toast')
+const toast = ref(null)
 
 const _msg = ref<string>()
 const btnType = ref<ColorType>('normal')
@@ -112,12 +112,12 @@ defineExpose({
 </script>
 
 <template>
-  <div class="toast" :class="btnType" ref="toast">
-    <span ref="msgEl">{{ _msg }}</span>
-    <button @click="handleEvent" v-if="confirmBtnVisible">
+  <view class="toast" :class="btnType" ref="toast">
+    <text ref="msgEl">{{ _msg }}</text>
+    <button class="toast-btn" @click="handleEvent" v-if="confirmBtnVisible">
       &nbsp;&nbsp;确定（{{ count }}）
     </button>
-  </div>
+  </view>
 </template>
 
 <style scoped lang="scss">
@@ -134,10 +134,10 @@ defineExpose({
   text-align: center;
   border-radius: 10px;
   background-color: white;
-  box-shadow: var(--theme-shadow-color);
+  box-shadow: $theme-light-shadow-color;
   transform: translateY(v-bind(y)) translateX(-50%);
 
-  button {
+  .toast-btn {
     margin-left: 10px;
     font-weight: bold;
     text-decoration: underline;

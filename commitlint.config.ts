@@ -43,7 +43,7 @@ export default {
       { value: 'revert', name: '回滚：代码回滚' },
       { value: 'style', name: '样式：格式调整' },
     ],
-    scopes: ['root', 'backend', 'frontend', 'utils'],
+    scopes: ['root', 'backend', 'frontend', 'uniapp', 'utils'],
     allowCustomScopes: true,
     skipQuestions: ['body', 'footerPrefix', 'footer', 'breaking'],
     messages: {

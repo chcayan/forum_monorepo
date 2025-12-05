@@ -115,8 +115,8 @@ const navigateToPostDetail = async (postId: string) => {
     height: 40px;
 
     .avatar {
-      width: 32px;
-      height: 32px;
+      width: 40px;
+      height: 40px;
       border-radius: 9999px;
       margin-right: 10px;
     }

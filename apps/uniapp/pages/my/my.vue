@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import { useStatusStore } from '@/stores'
+const statusStore = useStatusStore()
+
 // #ifdef MP-WEIXIN
 import { onShow } from '@dcloudio/uni-app'
 import { navigateInterceptor } from '@/utils'
-import { useStatusStore } from '@/stores'
 
-const statusStore = useStatusStore()
 onShow(() => {
   navigateInterceptor()
 })

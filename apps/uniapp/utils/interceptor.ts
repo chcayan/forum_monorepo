@@ -22,7 +22,7 @@ export function navigateInterceptor() {
 
         if (needAuth(url) && !checkLogin()) {
           uni.navigateTo({
-            url: RouterPath.login,
+            url: `${RouterPath.login}?redirect=${url}`,
           })
           return false
         }
@@ -39,7 +39,7 @@ export function navigateInterceptor() {
 
   if (needAuth(currentRoute) && !checkLogin()) {
     uni.redirectTo({
-      url: RouterPath.login,
+      url: `${RouterPath.login}?redirect=${currentRoute}`,
     })
   }
   // #endif

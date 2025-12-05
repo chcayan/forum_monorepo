@@ -107,7 +107,7 @@ $main-gap: 20px;
   width: calc(100vw - 20px);
   position: fixed;
   left: 10px;
-  bottom: calc(var(--window-bottom) + 10px);
+  bottom: calc(var(--window-bottom) + 20px);
   box-shadow: $theme-light-shadow-color;
   border-radius: 10px;
   overflow: hidden;

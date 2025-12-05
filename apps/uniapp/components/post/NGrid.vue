@@ -47,7 +47,6 @@ function preview(url: string) {
     height: 100%;
     max-width: 100%;
     max-height: 100%;
-    max-height: 380px;
     aspect-ratio: 1;
     border-radius: $gap * 0.5;
   }
@@ -62,6 +61,13 @@ function preview(url: string) {
 
 .size1 {
   grid-template-columns: 1fr;
+
+  .img {
+    // min-width: 300px;
+    // width: initial;
+    max-height: 600px;
+    // object-fit: cover;
+  }
 }
 
 .size2,

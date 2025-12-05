@@ -1,8 +1,7 @@
-// import BaseToast from '@/components/toast/BaseToast.vue'
-// import _ChatToast from '@/components/toast/ChatToast.vue'
-// import { createApp } from 'vue'
-// import type { ChatToastParams, ToastParams } from '@/components/toast/types'
-// import { directives } from './directives'
+import BaseToast from '@/components/toast/BaseToast.vue'
+import _ChatToast from '@/components/toast/ChatToast.vue'
+import { createApp } from 'vue'
+import type { ChatToastParams, ToastParams } from '@/components/toast/types'
 
 // class Toast {
 //   private static toast = Toast.mount()
@@ -13,12 +12,12 @@
 //     document.body.appendChild(container)
 
 //     const toast = toastInstance.mount(container) as unknown as {
-//       show: (options: ToastParams) => void
+//       show : (options : ToastParams) => void
 //     }
 //     return toast
 //   }
 
-//   static show({ msg, type, duration = 2000, eventFn }: ToastParams) {
+//   static show({ msg, type, duration = 2000, eventFn } : ToastParams) {
 //     this.toast.show({
 //       msg,
 //       type,
@@ -39,7 +38,7 @@
 //     document.body.appendChild(container)
 
 //     const toast = toastInstance.mount(container) as unknown as {
-//       show: (options: ChatToastParams) => void
+//       show : (options : ChatToastParams) => void
 //     }
 //     return toast
 //   }
@@ -50,7 +49,7 @@
 //     username,
 //     message,
 //     is_share = '0',
-//   }: ChatToastParams) {
+//   } : ChatToastParams) {
 //     this.toast.show({
 //       userId,
 //       username,
@@ -61,4 +60,4 @@
 //   }
 // }
 
-// export { Toast, ChatToast }
+export { Toast }
