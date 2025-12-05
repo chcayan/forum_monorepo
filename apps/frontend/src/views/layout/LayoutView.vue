@@ -10,7 +10,7 @@ import Dark from '@/components/svgIcon/DarkSvg.vue'
 import { ref } from 'vue'
 
 import type { Component } from 'vue'
-import { useUserStore } from '@/stores'
+import { useUserStore, useStatusStore } from '@/stores'
 import router, { RouterPath } from '@/router'
 import emitter from '@/utils/eventEmitter'
 import BackSvg from '@/components/svgIcon/BackSvg.vue'
@@ -18,7 +18,6 @@ import { useRoute } from 'vue-router'
 import SendSvg from '@/components/svgIcon/SendSvg.vue'
 import { debounce, Toast } from '@/utils'
 import LogoutSvg from '@/components/svgIcon/LogoutSvg.vue'
-import { useStatusStore } from '@/stores/modules/status'
 
 const userStore = useUserStore()
 

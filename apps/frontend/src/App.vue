@@ -2,11 +2,10 @@
 import { onMounted, watch } from 'vue'
 import { ChatToast, socket, Toast } from './utils'
 import emitter from '@/utils/eventEmitter'
-import { useUserStore } from './stores'
+import { useUserStore, useStatusStore } from './stores'
 import router, { RouterPath } from './router'
 import { useRoute } from 'vue-router'
 import { getUserInfoAPI } from './api'
-import { useStatusStore } from './stores/modules/status'
 
 const userStore = useUserStore()
 const route = useRoute()

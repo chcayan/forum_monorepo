@@ -67,6 +67,7 @@ const config: Linter.Config[] = defineConfig(
     '**/node_modules/**',
     'scripts/**',
     '**/*.d.ts',
+    '**/uniapp/**',
   ])
 )
 

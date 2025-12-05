@@ -356,7 +356,6 @@ const share = async (friendId: string) => {
 .post-card {
   width: 100%;
   padding: $gap * 1;
-  height: 100%;
   border-radius: $gap;
   box-shadow: var(--theme-shadow-color);
   overflow: hidden;

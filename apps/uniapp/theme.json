@@ -1,0 +1,52 @@
+{
+  "light": {
+    "tabBgColor": "#ffffff",
+    "tabBorderStyle": "black",
+    "bgColor": "#ffd6c0",
+    "navBarBgColor": "#ffd6c0",
+    "navTextColor": "black",
+    "post": "/static/post/post_light.png",
+    "selectedPost": "/static/post/post_focus_light.png",
+    "chat": "/static/chat/chat_light.png",
+    "selectedChat": "/static/chat/chat_focus_light.png",
+    "publish": "/static/publish/publish_light.png",
+    "selectedPublish": "/static/publish/publish_focus_light.png",
+    "my": "/static/my/my_light.png",
+    "selectedMy": "/static/my/my_focus_light.png",
+    "setting": "/static/setting/setting_light.png",
+    "selectedSetting": "/static/setting/setting_focus_light.png"
+  },
+  "dark": {
+    "tabBgColor": "#000000",
+    "tabBorderStyle": "white",
+    "bgColor": "#000000",
+    "navBarBgColor": "#000000",
+    "navTextColor": "white",
+    "post": "/static/post/post_dark.png",
+    "selectedPost": "/static/post/post_focus_dark.png",
+    "chat": "/static/chat/chat_dark.png",
+    "selectedChat": "/static/chat/chat_focus_dark.png",
+    "publish": "/static/publish/publish_dark.png",
+    "selectedPublish": "/static/publish/publish_focus_dark.png",
+    "my": "/static/my/my_dark.png",
+    "selectedMy": "/static/my/my_focus_dark.png",
+    "setting": "/static/setting/setting_dark.png",
+    "selectedSetting": "/static/setting/setting_focus_dark.png"
+
+    // "tabBgColor": "#ffffff",
+    // "tabBorderStyle": "black",
+    // "bgColor": "#ffd6c0",
+    // "navBarBgColor": "#ffd6c0",
+    // "navTextColor": "black",
+    // "post": "/static/post/post_light.png",
+    // "selectedPost": "/static/post/post_focus_light.png",
+    // "chat": "/static/chat/chat_light.png",
+    // "selectedChat": "/static/chat/chat_focus_light.png",
+    // "publish": "/static/publish/publish_light.png",
+    // "selectedPublish": "/static/publish/publish_focus_light.png",
+    // "my": "/static/my/my_light.png",
+    // "selectedMy": "/static/my/my_focus_light.png",
+    // "setting": "/static/setting/setting_light.png",
+    // "selectedSetting": "/static/setting/setting_focus_light.png"
+  }
+}

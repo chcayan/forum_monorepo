@@ -162,6 +162,12 @@ importers:
         specifier: ^3.1.0
         version: 3.1.1(typescript@5.9.3)
 
+  apps/uniapp:
+    dependencies:
+      '@dcloudio/types':
+        specifier: ^3.4.28
+        version: 3.4.28
+
   packages/types: {}
 
   packages/utils: {}
@@ -376,6 +382,9 @@ packages:
   '@commitlint/types@20.0.0':
     resolution: {integrity: sha512-bVUNBqG6aznYcYjTjnc3+Cat/iBgbgpflxbIBTnsHTX0YVpnmINPEkSRWymT2Q8aSH3Y7aKnEbunilkYe8TybA==}
     engines: {node: '>=v18'}
+
+  '@dcloudio/types@3.4.28':
+    resolution: {integrity: sha512-uVIRp1VLBkrL0LaGLgIS/sT3bl1zzVTKZQbfqJEQcSAvBffRdirbSh5OvOHfA1WV5lmCAGfjhKsUQouNEVUQHg==}
 
   '@epic-web/invariant@1.0.0':
     resolution: {integrity: sha512-lrTPqgvfFQtR/eY/qkIzp98OGdNJu0m5ji3q/nJI8v3SXkRKEnWiOxMmbvcSoAIzv/cGiuvRy57k4suKQSAdwA==}
@@ -3418,6 +3427,8 @@ snapshots:
     dependencies:
       '@types/conventional-commits-parser': 5.0.1
       chalk: 5.6.2
+
+  '@dcloudio/types@3.4.28': {}
 
   '@epic-web/invariant@1.0.0': {}
 

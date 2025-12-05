@@ -1,0 +1,111 @@
+{
+  "pages": [
+    //pages数组中第一项表示应用启动页，参考：https://doc.dcloud.net.cn/uni-app-x/collocation/pagesjson.html
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "论坛",
+        "backgroundColor": "#ffd6c0",
+        "navigationBarBackgroundColor": "#ffd6c0",
+        "navigationBarTextStyle": "black",
+        "onReachBottomDistance": 150
+      }
+    },
+    {
+      "path": "pages/chat/chat",
+      "style": {
+        "navigationBarTitleText": "聊天",
+        "backgroundColor": "#ffd6c0",
+        "navigationBarBackgroundColor": "#ffd6c0",
+        "navigationBarTextStyle": "black"
+      }
+    },
+    {
+      "path": "pages/publish/publish",
+      "style": {
+        "navigationBarTitleText": "发布",
+        "backgroundColor": "#ffd6c0",
+        "navigationBarBackgroundColor": "#ffd6c0",
+        "navigationBarTextStyle": "black"
+      }
+    },
+    {
+      "path": "pages/my/my",
+      "style": {
+        "navigationBarTitleText": "我的",
+        "backgroundColor": "#ffd6c0",
+        "navigationBarBackgroundColor": "#ffd6c0",
+        "navigationBarTextStyle": "black"
+      }
+    },
+    {
+      "path": "pages/setting/setting",
+      "style": {
+        "navigationBarTitleText": "设置",
+        "backgroundColor": "#ffd6c0",
+        "navigationBarBackgroundColor": "#ffd6c0",
+        "navigationBarTextStyle": "black"
+      }
+    },
+    {
+      "path": "pages/login/login",
+      "style": {
+        "navigationBarTitleText": "登录/注册",
+        "backgroundColor": "#ffd6c0",
+        "navigationBarBackgroundColor": "#ffd6c0",
+        "navigationBarTextStyle": "black"
+      }
+    }
+  ],
+  "subPackages": [
+    {
+      "root": "pages/index/detail",
+      "pages": [
+        {
+          "path": "detail",
+          "style": {
+            "navigationBarTitleText": "帖子详情",
+            "backgroundColor": "#ffd6c0",
+            "navigationBarBackgroundColor": "#ffd6c0",
+            "navigationBarTextStyle": "black"
+          }
+        }
+      ]
+    }
+  ],
+  "tabBar": {
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "iconWidth": "40px",
+    "height": "60px",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "/static/post/post_light.png",
+        "selectedIconPath": "/static/post/post_focus_light.png"
+      },
+      {
+        "pagePath": "pages/chat/chat",
+        "iconPath": "/static/chat/chat_light.png",
+        "selectedIconPath": "/static/chat/chat_focus_light.png"
+      },
+      {
+        "pagePath": "pages/publish/publish",
+        "iconPath": "/static/publish/publish_light.png",
+        "selectedIconPath": "/static/publish/publish_focus_light.png"
+      },
+      {
+        "pagePath": "pages/my/my",
+        "iconPath": "/static/my/my_light.png",
+        "selectedIconPath": "/static/my/my_focus_light.png"
+      },
+      {
+        "pagePath": "pages/setting/setting",
+        "iconPath": "/static/setting/setting_light.png",
+        "selectedIconPath": "/static/setting/setting_focus_light.png"
+      }
+    ]
+  },
+  "globalStyle": {},
+  "uniIdRouter": {}
+}

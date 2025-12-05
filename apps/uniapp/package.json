@@ -1,0 +1,9 @@
+{
+  "name": "@forum-monorepo/uniapp",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@dcloudio/types": "^3.4.28"
+  }
+}

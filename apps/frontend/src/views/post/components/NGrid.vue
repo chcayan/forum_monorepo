@@ -57,6 +57,11 @@ onMounted(() => {
 
 .size1 {
   grid-template-columns: 1fr;
+
+  img {
+    height: auto;
+    aspect-ratio: initial;
+  }
 }
 
 .size2,

@@ -23,7 +23,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.18.1",
+  "packageManager": "pnpm@10.24.0",
   "dependencies": {
     "@forum-monorepo/types": "workspace:*",
     "@forum-monorepo/utils": "workspace:*"

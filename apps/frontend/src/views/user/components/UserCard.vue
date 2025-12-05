@@ -2,7 +2,7 @@
 import { updateUserInfoAPI } from '@/api'
 import CloseSvg from '@/components/svgIcon/CloseSvg.vue'
 import EditSvg from '@/components/svgIcon/EditSvg.vue'
-import SavaSvg from '@/components/svgIcon/SavaSvg.vue'
+import SaveSvg from '@/components/svgIcon/SaveSvg.vue'
 import { RouterPath } from '@/router'
 import { useUserStore } from '@/stores'
 import { Toast } from '@/utils'
@@ -253,7 +253,7 @@ onUnmounted(() => {
           @keydown.enter="edit"
         />
         <div v-else>
-          <SavaSvg
+          <SaveSvg
             tabindex="0"
             class="tab-focus-style"
             @click="save"

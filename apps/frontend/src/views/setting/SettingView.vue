@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import ToggleBtn from '@/components/button/ToggleBtn.vue'
 import router, { RouterPath } from '@/router'
-import { useUserStore } from '@/stores'
-import { useStatusStore } from '@/stores/modules/status'
+import { useUserStore, useStatusStore } from '@/stores'
 import { Toast } from '@/utils'
 import { useRoute } from 'vue-router'
 
