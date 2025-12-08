@@ -4,12 +4,31 @@ import {
   getUserFriendAPI,
   getUserInfoAPI,
 } from '@/api'
+import { RouterPath } from '@/router'
 import type { FriendInfo, UserInfo } from '@forum-monorepo/types'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { useRoute } from 'vue-router'
 
 export const useUserStore = defineStore('user', () => {
   const token = ref<string>(localStorage.getItem('token') || '')
+
+  const CN_VERSION = ref(import.meta.env.VITE_CN_VERSION || 'disabled')
+
+  const route = useRoute()
+  let timer: number | undefined
+  const setCN_VERSION = (status: 'disabled' | 'enabled') => {
+    if (import.meta.env.VITE_CN_VERSION === 'disabled') {
+      return
+    }
+    CN_VERSION.value = status
+    if (timer) clearTimeout(timer)
+    timer = setTimeout(() => {
+      if (!route.path.startsWith(RouterPath.login)) {
+        CN_VERSION.value = 'enabled'
+      }
+    }, 5000)
+  }
 
   const defaultUserInfo = {
     user_id: '',
@@ -84,5 +103,7 @@ export const useUserStore = defineStore('user', () => {
     getUserFollowList,
     userFriendList,
     getUserFriendList,
+    CN_VERSION,
+    setCN_VERSION,
   }
 })

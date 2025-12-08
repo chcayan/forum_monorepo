@@ -7,7 +7,7 @@ type Options = {
   header?: any
   method?: 'GET' | 'POST' | 'DELETE' | 'PATCH' | 'PUT'
   timeout?: number
-  beforeRequest?: (requestInstance: Request) => void
+  beforeRequest?: (requestInstance: Request) => Request
   afterRequest?: (res: any) => void
 }
 
@@ -18,7 +18,7 @@ class Request {
   header?: any
   method?: 'GET' | 'POST' | 'DELETE' | 'PATCH' | 'PUT'
   timeout?: number
-  beforeRequest?: (requestInstance: Request) => void
+  beforeRequest?: (requestInstance: Request) => Request
   afterRequest?: (res: any) => void
 
   constructor(options: Options) {
@@ -110,7 +110,6 @@ request.beforeRequest = function (requestInstance: Request) {
   if (token) {
     requestInstance.header['Authorization'] = `Bearer ${token}`
   }
-  console.log(requestInstance.header)
   return requestInstance
 }
 

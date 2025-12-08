@@ -1,65 +1,48 @@
 <script setup lang="ts">
 import { publishCommentAPI } from '@/api'
 import SendIcon from '@/components/icon/SendIcon.vue'
-import { useTempStore, useStatusStore } from '@/stores'
-// import { checkLoginStatus, Toast } from '@/utils'
+import { useStatusStore } from '@/stores'
+import { checkLoginStatus } from '@/utils'
 import emitter from '@/utils/eventEmitter'
-import { onMounted, onUnmounted, ref } from 'vue'
+import { ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
+
+const postId = ref('')
+onLoad((options) => {
+  postId.value = options.postId
+})
+
 const statusStore = useStatusStore()
 
-const tempStore = useTempStore()
-function navigateToLogin() {
-  if (textarea.value) {
-    tempStore.setTempComment(textarea.value)
-  }
-  router.replace(`${RouterPath.login}?redirect=${route.path}`)
-}
-
 const textarea = ref<string>('')
-const sendComment = async (e: KeyboardEvent | MouseEvent) => {
-  if (e instanceof KeyboardEvent) {
-    if (e.key === 'Enter' && e.shiftKey) return
-  }
-  if (!checkLoginStatus(navigateToLogin)) return
+const sendComment = async () => {
+  if (!checkLoginStatus()) return
 
   const trimmed = textarea.value.replace(/\s+$/, '')
   textarea.value = trimmed.trim().length ? trimmed : ''
   if (!textarea.value) {
-    Toast.show({
-      msg: '请输入内容',
-      type: 'error',
+    uni.showToast({
+      icon: 'none',
+      title: '请输入内容',
     })
     return
   }
 
-  const postId = route.params.postId as string
   await publishCommentAPI({
-    postId,
+    postId: postId.value,
     content: textarea.value,
   })
-  Toast.show({
-    msg: '发布成功',
-    type: 'success',
+
+  uni.showToast({
+    icon: 'none',
+    title: '发布成功',
   })
-  emitter.emit('EVENT:UPDATE_COMMENT_LIST')
-  emitter.emit('EVENT:UPDATE_POST_DETAIL', postId)
-  emitter.emit('EVENT:UPDATE_POST_LIST', postId)
+
+  emitter.emit('EVENT:UPDATE_COMMENT_LIST', postId.value)
+  emitter.emit('EVENT:UPDATE_POST_DETAIL', postId.value)
+  emitter.emit('EVENT:UPDATE_POST_LIST', postId.value)
   textarea.value = ''
 }
-
-const textareaEl = ref(null)
-let off = emitter.on('EVENT:FOCUS_COMMENT_INPUT', () => {
-  textareaEl.value?.focus()
-})
-
-onMounted(() => {
-  textarea.value = tempStore.tempComment
-  tempStore.removeTempComment()
-})
-
-onUnmounted(() => {
-  off?.()
-})
 </script>
 
 <template>

@@ -41,23 +41,19 @@ onLoad((options) => {
   getCommentList(options.postId)
 })
 
-const onCommentInput = () => {
-  emitter.emit('EVENT:FOCUS_COMMENT_INPUT')
-}
+let off1 = emitter.on('EVENT:UPDATE_POST_DETAIL', async (postId: string) => {
+  await getPostDetail(postId)
+  emitter.emit('EVENT:TOGGLE_FLAG')
+})
 
-// let off1 = emitter.on('EVENT:UPDATE_POST_DETAIL', async () => {
-//   await getPostDetail()
-//   emitter.emit('EVENT:TOGGLE_FLAG')
-// })
+let off2 = emitter.on('EVENT:UPDATE_COMMENT_LIST', (postId: string) => {
+  getCommentList(postId)
+})
 
-// let off2 = emitter.on('EVENT:UPDATE_COMMENT_LIST', () => {
-//   getCommentList()
-// })
-
-// onUnmounted(() => {
-//   off1?.()
-//   off2?.()
-// })
+onUnmounted(() => {
+  off1?.()
+  off2?.()
+})
 </script>
 
 <template>
@@ -90,7 +86,7 @@ const onCommentInput = () => {
 .post-detail {
   display: flex;
   flex-direction: column;
-  padding: 10px 10px 80px;
+  padding: 10px 10px 90px;
   box-sizing: border-box;
   gap: 10px;
   border-radius: 10px;

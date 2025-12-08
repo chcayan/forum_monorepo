@@ -34,7 +34,7 @@ const onLogout = () => {
 
 <template>
   <view class="setting-view" :class="{ theme: statusStore.isDarkMode }">
-    <h3 class="h3">个人</h3>
+    <text class="h3">个人</text>
     <view class="item">
       <text class="p">账号状态</text>
       <button
@@ -69,7 +69,7 @@ const onLogout = () => {
 }
 
 .setting-view {
-  min-height: calc(100vh - var(--window-top) - var(--window-bottom));
+  min-height: calc(100vh - var(--window-top) - var(--window-bottom) - 20px);
   background-color: $theme-light-color;
   padding: 10px;
 

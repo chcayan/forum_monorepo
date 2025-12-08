@@ -2,10 +2,10 @@
 import { publishCommentAPI } from '@/api'
 import SendSvg from '@/components/svgIcon/SendSvg.vue'
 import router, { RouterPath } from '@/router'
-import { useTempStore } from '@/stores'
+import { useTempStore, useUserStore } from '@/stores'
 import { checkLoginStatus, Toast } from '@/utils'
 import emitter from '@/utils/eventEmitter'
-import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
+import { onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
@@ -59,8 +59,23 @@ onMounted(() => {
   tempStore.removeTempComment()
 })
 
+let timer: number | undefined
+const userStore = useUserStore()
+watch(textarea, () => {
+  if (textarea.value === '卖掉了') {
+    timer = setTimeout(() => {
+      Toast.show({
+        msg: '觉醒了神秘的黑暗力量😶‍🌫️',
+        type: 'normal',
+      })
+      userStore.setCN_VERSION('disabled')
+    }, 5000)
+  }
+})
+
 onUnmounted(() => {
   off?.()
+  if (timer) clearTimeout(timer)
 })
 </script>
 

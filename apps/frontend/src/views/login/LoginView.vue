@@ -5,6 +5,7 @@ import type { Component } from 'vue'
 import Login from './components/LoginBox.vue'
 import Signup from './components/SignupBox.vue'
 import emitter from '@/utils/eventEmitter'
+import { useUserStore } from '@/stores'
 
 const currentTab = ref('Login')
 const tabs: Record<string, Component> = {
@@ -20,13 +21,16 @@ let off = emitter.on('TAB:LOGIN', () => {
   toggle()
 })
 
+const userStore = useUserStore()
+
 onUnmounted(() => {
   off?.()
+  userStore.setCN_VERSION('enabled')
 })
 </script>
 
 <template>
-  <section class="login-view">
+  <section class="login-view" v-if="userStore.CN_VERSION === 'disabled'">
     <component :is="tabs[currentTab]"></component>
     <footer>
       <div v-if="currentTab === 'Login'">
@@ -39,9 +43,22 @@ onUnmounted(() => {
       </div>
     </footer>
   </section>
+  <section class="login-view cn" v-else>
+    <p>暂时不支持登录/注册😶‍🌫️</p>
+  </section>
 </template>
 
 <style scoped lang="scss">
+.cn {
+  justify-content: center;
+  height: 200px;
+
+  p {
+    font-size: 20px;
+    font-weight: bold;
+  }
+}
+
 .login-view {
   display: flex;
   flex-direction: column;
