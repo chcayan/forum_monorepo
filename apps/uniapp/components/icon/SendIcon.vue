@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import sendLightIcon from '@/static/icon/send_light.png'
-import sendDarkIcon from '@/static/icon/send_Dark.png'
+import sendDarkIcon from '@/static/icon/send_dark.png'
 import { useStatusStore } from '@/stores'
 
 const statusStore = useStatusStore()

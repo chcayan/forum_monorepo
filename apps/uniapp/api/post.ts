@@ -41,15 +41,18 @@ type PostPublish = {
  * @returns
  */
 export function publishPostAPI(data: PostPublish) {
-  const formData = new FormData()
-  formData.append('content', escapeHTML(data.content) as string)
-  formData.append('isPublic', data.isPublic)
-  if (data.postImages) {
-    data.postImages.forEach((file) => {
-      formData.append('postImages', file)
-    })
-  }
-  return request.post('/post/publish', formData)
+  // const formData = new FormData()
+  // formData.append('content', escapeHTML(data.content) as string)
+  // formData.append('isPublic', data.isPublic)
+  // if (data.postImages) {
+  // data.postImages.forEach((file) => {
+  // formData.append('postImages', file)
+  // })
+  // }
+  return request.post('/post/publish', {
+    content: escapeHTML(data.content),
+    isPublic: data.isPublic,
+  })
 }
 
 /**

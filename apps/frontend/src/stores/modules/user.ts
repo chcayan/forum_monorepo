@@ -18,7 +18,7 @@ export const useUserStore = defineStore('user', () => {
   const route = useRoute()
   let timer: number | undefined
   const setCN_VERSION = (status: 'disabled' | 'enabled') => {
-    if (import.meta.env.VITE_CN_VERSION === 'disabled') {
+    if (import.meta.env.VITE_CN_VERSION === 'disabled' || token.value) {
       return
     }
     CN_VERSION.value = status

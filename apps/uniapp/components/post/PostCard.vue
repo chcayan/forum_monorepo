@@ -5,6 +5,7 @@ import {
   getCurrentRoute,
   lineBreakReplace,
   getImgUrl,
+  checkLoginStatus,
 } from '@/utils/index'
 import { PostDetail } from '@/types/index'
 import ViewIcon from '@/components/icon/ViewIcon.vue'
@@ -12,7 +13,7 @@ import CommentIcon from '@/components/icon/CommentIcon.vue'
 import CollectIcon from '@/components/icon/CollectIcon.vue'
 import ShareIcon from '@/components/icon/ShareIcon.vue'
 import NGrid from '@/components/post/NGrid.vue'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import emitter from '@/utils/eventEmitter'
 import {
   deleteUserPostAPI,
@@ -22,6 +23,7 @@ import {
   updateUserPostToPrivateAPI,
   updateUserPostToPublicAPI,
 } from '@/api'
+import { useUserStore } from '../../stores'
 
 const props = defineProps<{
   post: PostDetail
@@ -29,7 +31,84 @@ const props = defineProps<{
 }>()
 
 const isCollect = ref(false)
-const changeCollectStatus = () => {}
+
+const userStore = useUserStore()
+
+watch(
+  () => userStore.userCollectListOfPostId,
+  () => {
+    if (userStore.userCollectListOfPostId.includes(props.post?.p_id)) {
+      isCollect.value = true
+    } else {
+      isCollect.value = false
+    }
+  },
+  {
+    immediate: true,
+  }
+)
+
+let flag = true
+let off: () => void | null
+const changeCollectStatus = async () => {
+  if (!flag) return
+  flag = false
+  if (!checkLoginStatus()) {
+    flag = true
+    return
+  }
+
+  try {
+    if (!isCollect.value) {
+      await updateUserAddCollectAPI({
+        postId: props.post.p_id,
+      })
+      await userStore.getUserCollectListOfPostId()
+      uni.showToast({
+        icon: 'none',
+        title: '收藏成功',
+      })
+    } else {
+      await updateUserDelCollectAPI({
+        postId: props.post.p_id,
+      })
+      await userStore.getUserCollectListOfPostId()
+      uni.showToast({
+        icon: 'none',
+        title: '取消收藏成功',
+      })
+    }
+    updatePostStatus()
+  } catch {
+  } finally {
+    off = emitter.on('EVENT:TOGGLE_FLAG', setFlag)
+  }
+}
+
+function updatePostStatus() {
+  const route = getCurrentRoute()
+
+  if (
+    route === RouterPath.index ||
+    route.startsWith(RouterPath.my) ||
+    route.startsWith(RouterPath.user) ||
+    route.startsWith(RouterPath.search)
+  ) {
+    emitter.emit('EVENT:UPDATE_POST_LIST', props.post.p_id)
+    emitter.emit('EVENT:UPDATE_USER_POST_LIST', props.post.p_id)
+  }
+
+  if (route.startsWith(RouterPath.detail)) {
+    emitter.emit('EVENT:UPDATE_POST_DETAIL', props.post.p_id)
+    emitter.emit('EVENT:UPDATE_POST_LIST', props.post.p_id)
+    emitter.emit('EVENT:UPDATE_USER_POST_LIST', props.post.p_id)
+  }
+}
+
+function setFlag() {
+  flag = true
+}
+
 const onShare = () => {}
 
 const navigateToPostDetail = async (postId: string) => {

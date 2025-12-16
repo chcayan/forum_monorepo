@@ -25,7 +25,6 @@ class EventEmitter {
     'API:BAD_REQUEST': new Set(),
     'TAB:LOGIN': new Set(),
     'TAB:CLOSE_AVATAR_WIDGET': new Set(),
-    'EVENT:FOCUS_COMMENT_INPUT': new Set(),
     'EVENT:UPDATE_COMMENT_LIST': new Set(),
     'EVENT:UPDATE_POST_LIST': new Set(),
     'EVENT:UPDATE_POST_DETAIL': new Set(),

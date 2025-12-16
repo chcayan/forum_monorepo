@@ -1,4 +1,5 @@
 import { useUserStore } from '../stores'
+import emitter from './eventEmitter'
 
 type Options = {
   baseUrl: string
@@ -80,13 +81,20 @@ class Request {
           header: this.header,
           timeout: this.timeout,
           success: (res: any) => {
+            if (res.statusCode === 401) {
+              console.log(555)
+              emitter.emit('API:UN_AUTH', res.data.message)
+              reject(res)
+              return
+            } else if (res.statusCode === 400) {
+              emitter.emit('API:BAD_REQUEST', res.data.message)
+              reject(res)
+              return
+            }
             resolve(res)
           },
           fail: (err: any) => {
             reject(err)
-          },
-          complete: (res: any) => {
-            this.afterRequest?.(res)
           },
         })
       }
@@ -94,12 +102,10 @@ class Request {
   }
 }
 
-const baseUrl = 'https://chcaya.site/api'
-// const baseUrl = 'http://localhost:3000'
+// const baseUrl = 'https://chcaya.site/api'
+const baseUrl = 'http://localhost:3000'
 // const baseUrl = 'http://10.0.2.2:3000'
 const request = new Request({
-  // baseUrl: 'http://localhost:3000',
-  // baseUrl: 'http://10.0.2.2:3000',
   baseUrl,
   url: '',
 })
@@ -107,14 +113,13 @@ const request = new Request({
 request.beforeRequest = function (requestInstance: Request) {
   const userStore = useUserStore()
   const token = userStore.token
+
+  requestInstance.header = requestInstance.header || {}
+
   if (token) {
     requestInstance.header['Authorization'] = `Bearer ${token}`
   }
   return requestInstance
-}
-
-request.afterRequest = function (res: any) {
-  // console.log(res)
 }
 
 export { baseUrl, request }

@@ -32,16 +32,18 @@ const sendComment = async () => {
     postId: postId.value,
     content: textarea.value,
   })
+    .then(() => {
+      uni.showToast({
+        icon: 'none',
+        title: '发布成功',
+      })
 
-  uni.showToast({
-    icon: 'none',
-    title: '发布成功',
-  })
-
-  emitter.emit('EVENT:UPDATE_COMMENT_LIST', postId.value)
-  emitter.emit('EVENT:UPDATE_POST_DETAIL', postId.value)
-  emitter.emit('EVENT:UPDATE_POST_LIST', postId.value)
-  textarea.value = ''
+      emitter.emit('EVENT:UPDATE_COMMENT_LIST', postId.value)
+      emitter.emit('EVENT:UPDATE_POST_DETAIL', postId.value)
+      emitter.emit('EVENT:UPDATE_POST_LIST', postId.value)
+      textarea.value = ''
+    })
+    .catch(() => {})
 }
 </script>
 

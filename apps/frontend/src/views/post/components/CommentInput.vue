@@ -62,6 +62,7 @@ onMounted(() => {
 let timer: number | undefined
 const userStore = useUserStore()
 watch(textarea, () => {
+  if (userStore.token) return
   if (textarea.value === '卖掉了') {
     timer = setTimeout(() => {
       Toast.show({

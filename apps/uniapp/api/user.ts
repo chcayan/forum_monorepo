@@ -89,7 +89,7 @@ export function updateUserAddCollectAPI(data: { postId: string }) {
  * @returns
  */
 export function updateUserDelCollectAPI(data: { postId: string }) {
-  return request.delete('/user/collect/del', { data })
+  return request.delete('/user/collect/del', data)
 }
 
 /**
@@ -98,7 +98,7 @@ export function updateUserDelCollectAPI(data: { postId: string }) {
  * @returns
  */
 export function deleteUserPostAPI(data: { postId: string }) {
-  return request.delete('/user/post/del', { data })
+  return request.delete('/user/post/del', data)
 }
 
 /**
@@ -142,7 +142,7 @@ export function updateUserAddFollowAPI(data: { followId: string }) {
  * @returns
  */
 export function updateUserDelFollowAPI(data: { followId: string }) {
-  return request.delete('/user/follow/del', { data })
+  return request.delete('/user/follow/del', data)
 }
 
 /**

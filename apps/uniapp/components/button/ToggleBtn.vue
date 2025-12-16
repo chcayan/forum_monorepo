@@ -1,32 +1,61 @@
 <script setup lang="ts">
-const { status } = defineProps<{
+import { useStatusStore } from '@/stores'
+const statusStore = useStatusStore()
+const props = defineProps<{
   status: boolean
 }>()
 </script>
 
 <template>
   <button
-    :class="{ 'toggle-active': !status }"
-    class="tab-focus-style toggle-btn"
+    :class="{
+      'toggle-active': !props.status,
+      'theme-toggle-btn': statusStore.isDarkMode,
+      'theme-toggle-active': statusStore.isDarkMode && !props.status,
+    }"
+    class="toggle-btn"
   >
-    <span><slot name="first">按钮1</slot></span>
-    <span><slot name="second">按钮2</slot></span>
+    <text>
+      <slot name="first">按钮1</slot>
+    </text>
+    <text>
+      <slot name="second">按钮2</slot>
+    </text>
   </button>
 </template>
 
 <style scoped lang="scss">
-.toggle-btn {
-  // width: 120px;
-  width: 100%;
-  height: 35px;
+.theme-toggle-btn {
   background: linear-gradient(
     to right,
-    var(--theme-send-button-color) 50%,
-    var(--theme-color) 50%
+    $theme-dark-send-button-color 50%,
+    $theme-dark-color 50%
+  ) !important;
+  color: $theme-dark-font-color !important;
+  box-shadow: $theme-dark-shadow-color !important;
+}
+
+.theme-toggle-active {
+  background: linear-gradient(
+    to left,
+    $theme-dark-send-button-color 50%,
+    $theme-dark-color 50%
+  ) !important;
+}
+
+.toggle-btn {
+  width: 100%;
+  height: 35px;
+  font-size: 14px;
+  padding: 0;
+  background: linear-gradient(
+    to right,
+    $theme-light-send-button-color 50%,
+    $theme-light-color 50%
   );
 
-  color: var(--theme-font-color);
-  box-shadow: var(--theme-shadow-color);
+  color: $theme-light-font-color;
+  box-shadow: $theme-light-shadow-color;
   border-radius: 10px;
   font-weight: bold;
   display: flex;
@@ -37,8 +66,8 @@ const { status } = defineProps<{
 .toggle-active {
   background: linear-gradient(
     to left,
-    var(--theme-send-button-color) 50%,
-    var(--theme-color) 50%
+    $theme-light-send-button-color 50%,
+    $theme-light-color 50%
   );
 }
 </style>
