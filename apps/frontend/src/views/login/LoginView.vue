@@ -27,6 +27,10 @@ onUnmounted(() => {
   off?.()
   userStore.setCN_VERSION('enabled')
 })
+
+const icpHtml = import.meta.env.VITE_ICP_HTML
+const icpHtml1 = import.meta.env.VITE_ICP_HTML_1
+console.log(icpHtml)
 </script>
 
 <template>
@@ -46,9 +50,31 @@ onUnmounted(() => {
   <section class="login-view cn" v-else>
     <p>暂时不支持登录/注册😶‍🌫️</p>
   </section>
+  <section
+    class="icp"
+    v-if="userStore.CN_VERSION !== 'disabled'"
+    v-html="`${icpHtml}#${icpHtml1}`"
+  ></section>
 </template>
 
 <style scoped lang="scss">
+.icp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 60px;
+  width: 280px;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0px;
+  @media (max-width: 425px) {
+    bottom: 60px;
+  }
+}
+
 .cn {
   justify-content: center;
   height: 200px;
