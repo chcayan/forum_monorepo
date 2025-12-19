@@ -93,7 +93,8 @@ function preview(url: string) {
     'a d e'
     'f g g';
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  aspect-ratio: 1;
 
   .img:nth-child(1) {
     grid-area: a;

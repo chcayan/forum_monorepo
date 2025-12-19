@@ -1,4 +1,5 @@
-import { request } from '@/utils'
+import { useUserStore } from '../stores'
+import { baseUrl, request } from '@/utils'
 import { escapeHTML } from '@/utils/format'
 
 /**
@@ -40,19 +41,54 @@ type PostPublish = {
  * @param data 帖子内容、公开/隐藏、图片(max = 9)
  * @returns
  */
-export function publishPostAPI(data: PostPublish) {
-  // const formData = new FormData()
-  // formData.append('content', escapeHTML(data.content) as string)
-  // formData.append('isPublic', data.isPublic)
-  // if (data.postImages) {
-  // data.postImages.forEach((file) => {
-  // formData.append('postImages', file)
-  // })
-  // }
-  return request.post('/post/publish', {
-    content: escapeHTML(data.content),
-    isPublic: data.isPublic,
-  })
+export async function publishPostAPI(data: PostPublish) {
+  if (data.postImages?.length === 0) {
+    return request.post('/post/publish', {
+      content: escapeHTML(data.content),
+      isPublic: data.isPublic,
+    })
+  } else {
+    const userStore = useUserStore()
+    const token = userStore.token
+    if (!token) {
+      console.error('unauth')
+      return
+    }
+    const res = await request.post('/post/create', {
+      content: escapeHTML(data.content),
+      isPublic: data.isPublic,
+    })
+    const p_id = res.data.p_id
+    for (const file of data.postImages) {
+      await new Promise((resolve, reject) => {
+        uni.uploadFile({
+          url: baseUrl + '/post/upload-image',
+          header: {
+            Authorization: `Bearer ${token}`,
+          },
+          filePath: file?.path || file?.url,
+          name: 'postImages',
+          formData: { p_id: p_id },
+          success: (res) => resolve(res),
+          fail: (err) => reject(err),
+        })
+      })
+    }
+    // data.postImages?.forEach(file => {
+    //   console.log(file);
+    //   uni.uploadFile({
+    //     url: baseUrl + '/post/upload-image',
+    //     header: {
+    //       Authorization: `Bearer ${token}`
+    //     },
+    //     filePath: file?.path || file?.url,
+    //     name: 'postImages',
+    //     formData: {
+    //       p_id: p_id
+    //     },
+    //   })
+    // })
+  }
 }
 
 /**

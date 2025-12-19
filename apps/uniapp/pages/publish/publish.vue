@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { useStatusStore } from '@/stores'
 const statusStore = useStatusStore()
-import { ref } from 'vue'
+import { ref, toRaw } from 'vue'
 import ToggleBtn from '@/components/button/ToggleBtn.vue'
 import emitter from '@/utils/eventEmitter'
 import { publishPostAPI } from '@/api'
+import uniFilePicker from '@/uni_modules/uni-file-picker/components/uni-file-picker/uni-file-picker.vue'
 
 const context = ref('')
 const isPublic = ref(true)
@@ -13,12 +14,21 @@ const changeStatus = () => {
   isPublic.value = !isPublic.value
 }
 
+const files = ref(null)
+
+function toRawArray(filesList: Array) {
+  let array = []
+  filesList.forEach((item: Object) => {
+    array.push(toRaw(item.file))
+  })
+  return array
+}
+
 let flag = true
 const publishPost = async () => {
   if (!flag) return
   const trimmed = context.value.replace(/\s+$/, '')
   context.value = trimmed.trim().length ? trimmed : ''
-  console.log(context.value)
   if (!context.value) {
     uni.showToast({
       icon: 'none',
@@ -32,10 +42,11 @@ const publishPost = async () => {
     const res = await publishPostAPI({
       content: context.value as string,
       isPublic: isPublic.value ? 'true' : 'false',
-      // postImages: getPostImages(),
+      postImages: toRawArray(files.value.filesList),
     })
 
     context.value = ''
+    files.value.clearFiles()
 
     uni.showToast({
       icon: 'none',
@@ -48,6 +59,10 @@ const publishPost = async () => {
   } finally {
     flag = true
   }
+}
+
+const select = (e) => {
+  console.log(e)
 }
 
 // #ifdef MP-WEIXIN
@@ -73,8 +88,18 @@ onShow(() => {
         v-model="context"
         placeholder="请输入内容..."
       ></textarea>
-      <text class="h3">图片：</text>
-      <!-- <ImgUpload ref="ImgUploadEl" /> -->
+      <view>
+        <text class="h3">图片：</text>
+        <uni-file-picker
+          class="img"
+          ref="files"
+          fileMediatype="image"
+          mode="grid"
+          @select="select"
+          :limit="9"
+          :auto-upload="false"
+        />
+      </view>
       <view class="visible">
         <text class="h3">可见性：</text>
         <view class="btn">
@@ -138,6 +163,7 @@ onShow(() => {
 
     .publish {
       position: fixed;
+      z-index: 100;
       bottom: calc(var(--window-bottom) + 10px);
       width: calc(100% - 20px);
       border-radius: 10px;
@@ -149,6 +175,10 @@ onShow(() => {
     .h3 {
       margin-top: 20px;
       font-weight: bold;
+    }
+
+    .img {
+      margin-top: 20px;
     }
 
     .content {

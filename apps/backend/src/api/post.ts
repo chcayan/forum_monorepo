@@ -284,4 +284,56 @@ export function registerPostAPI(app: Express, db: mysql.Connection) {
       )
     }
   )
+
+  // 发送帖子接口 uniapp(APP)
+  app.post('/post/create', authMiddleware, (req, res) => {
+    const { content, isPublic } = req.body
+    const userId = req.user?.id
+
+    if (!userId || !content || !isPublic) {
+      return res.status(400).json({ message: '参数错误' })
+    }
+
+    db.query(
+      `SELECT p_id FROM post ORDER BY p_id DESC LIMIT 1`,
+      (err, rows) => {
+        let nextId = 'p00000'
+        if (rows.length) {
+          const num = parseInt(rows[0].p_id.slice(1)) + 1
+          nextId = `p${num.toString().padStart(5, '0')}`
+        }
+
+        db.query(
+          `INSERT INTO post (p_id, user_id, p_content, p_images, is_public)
+         VALUES (?, ?, ?, ?, ?)`,
+          [nextId, userId, content, '[]', isPublic],
+          () => res.json({ p_id: nextId })
+        )
+      }
+    )
+  })
+
+  app.post(
+    '/post/upload-image',
+    authMiddleware,
+    upload.single('postImages'),
+    (req, res) => {
+      const { p_id } = req.body
+      const file = req.file
+
+      if (file) {
+        const imagePath = `/uploads/${file.filename}`
+
+        db.query(
+          `
+          UPDATE post
+          SET p_images = JSON_ARRAY_APPEND(
+          IFNULL(p_images, JSON_ARRAY()),'$', ?)
+          WHERE p_id = ?`,
+          [imagePath, p_id],
+          () => res.json({ message: 'ok' })
+        )
+      }
+    }
+  )
 }
