@@ -7,6 +7,7 @@ import CommentInput from '@/components/post/CommentInput.vue'
 import CommentCard from '@/components/post/CommentCard.vue'
 import emitter from '@/utils/eventEmitter'
 import { onLoad } from '@dcloudio/uni-app'
+import { RouterPath } from '../../../utils'
 
 const postDetail = ref<PostDetail>({
   is_public: '',
@@ -25,8 +26,15 @@ const postDetail = ref<PostDetail>({
 })
 
 const getPostDetail = async (postId: string) => {
-  const res = await getPostDetailAPI(postId)
-  postDetail.value = res.data.data[0]
+  await getPostDetailAPI(postId)
+    .then((res) => {
+      postDetail.value = res.data.data[0]
+    })
+    .catch(() => {
+      uni.navigateTo({
+        url: RouterPath.notFound,
+      })
+    })
 }
 
 const commentList = ref<CommentList[]>()
@@ -76,7 +84,7 @@ onUnmounted(() => {
       class="comment-list"
       style="text-align: center; padding: 10px 0"
     >
-      <text>暂时没有评论</text>
+      <text style="font-size: 16px">暂时没有评论</text>
     </view>
     <CommentInput />
   </view>

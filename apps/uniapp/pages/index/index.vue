@@ -4,7 +4,7 @@ import { getPostListAPI, getPostDetailAPI } from '@/api/index'
 import { computed, ref } from 'vue'
 import SearchIcon from '@/components/icon/SearchIcon.vue'
 import PostList from '@/components/post/PostList.vue'
-import { onReachBottom } from '@dcloudio/uni-app'
+import { onReachBottom, onPullDownRefresh } from '@dcloudio/uni-app'
 import emitter from '@/utils/eventEmitter'
 import { RouterPath, getCurrentRoute } from '@/utils'
 import { useStatusStore } from '@/stores'
@@ -44,10 +44,7 @@ emitter.on('EVENT:UPDATE_POST_LIST', async (p_id: string) => {
     if (currentRoute === RouterPath.index) {
       emitter.emit('EVENT:TOGGLE_FLAG')
     }
-  } catch {
-    console.log(555)
-    // router.replace(RouterPath.notFound)
-  }
+  } catch {}
 })
 
 const result = ref('')
@@ -63,11 +60,22 @@ const result = ref('')
 //   router.push(`${RouterPath.search}?result=${result}`)
 // }
 
+onPullDownRefresh(async () => {
+  postMap.value.clear()
+  postListPage.value = 1
+  await getPostList(postListPage.value)
+  uni.stopPullDownRefresh()
+})
+
 onReachBottom(async () => {
   postListPage.value++
   showLoading.value = true
-  await getPostList(postListPage.value).catch()
-  showLoading.value = false
+  try {
+    await getPostList(postListPage.value)
+  } catch {
+  } finally {
+    showLoading.value = false
+  }
 })
 </script>
 

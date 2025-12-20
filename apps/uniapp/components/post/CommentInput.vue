@@ -38,6 +38,7 @@ const sendComment = async () => {
         title: '发布成功',
       })
 
+      emitter.emit('EVENT:UPDATE_USER_POST_LIST', postId.value)
       emitter.emit('EVENT:UPDATE_COMMENT_LIST', postId.value)
       emitter.emit('EVENT:UPDATE_POST_DETAIL', postId.value)
       emitter.emit('EVENT:UPDATE_POST_LIST', postId.value)
@@ -59,14 +60,14 @@ const sendComment = async () => {
       :class="{ 'theme-textarea-input': statusStore.isDarkMode }"
       placeholder="Please input your comment..."
     ></textarea>
-    <button
+    <view
       class="send-btn"
       :class="{ 'theme-send-btn': statusStore.isDarkMode }"
       @click="sendComment"
       title="发送"
     >
       <SendIcon />
-    </button>
+    </view>
   </view>
 </template>
 
@@ -113,7 +114,7 @@ $main-gap: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 65px;
+    width: 75px;
     height: 60px;
     outline: none;
     border-radius: 0;

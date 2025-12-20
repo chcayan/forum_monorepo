@@ -81,20 +81,25 @@ const save = async () => {
 
   if (!flag) return
   flag = false
-  await updateUserInfoAPI({
-    username: name.value.trim() || userInfo.username,
-    sex: userInfo.sex,
-    signature: signature.value.trim() || userInfo.signature,
-    avatar: avatarInputRef.value?.files?.[0] || null,
-    bgImg: bgInputRef.value?.files?.[0] || null,
-  }).catch()
-  await userStore.getUserInfo().catch().catch()
-  Toast.show({
-    msg: '更新成功',
-    type: 'success',
-  })
-  close(false)
-  flag = true
+  try {
+    await updateUserInfoAPI({
+      username: name.value.trim() || userInfo.username,
+      sex: userInfo.sex,
+      signature: signature.value.trim() || userInfo.signature,
+      avatar: avatarInputRef.value?.files?.[0] || null,
+      bgImg: bgInputRef.value?.files?.[0] || null,
+    })
+    await userStore.getUserInfo()
+    Toast.show({
+      msg: '更新成功',
+      type: 'success',
+    })
+    // eslint-disable-next-line no-empty
+  } catch {
+  } finally {
+    close(false)
+    flag = true
+  }
 }
 
 const close = (isOldImgRecovery: boolean) => {

@@ -9,9 +9,14 @@ timer = setInterval(() => {
   if (count.value > 1) {
     count.value--
   } else {
-    router.push(RouterPath.base)
+    navigateToHome()
   }
 }, 1000)
+
+const navigateToHome = () => {
+  router.push(RouterPath.base)
+  clearInterval(timer)
+}
 
 onUnmounted(() => {
   clearInterval(timer)
@@ -23,10 +28,7 @@ onUnmounted(() => {
     <NotFoundSvg />
     <p>也许你正在寻找的，是连绝望都避之不及的未知深渊...</p>
     <p>
-      {{ count }}秒后自动<button
-        @click="router.push(RouterPath.base)"
-        title="回到首页"
-      >
+      {{ count }}秒后自动<button @click="navigateToHome" title="回到首页">
         回到首页
       </button>
     </p>

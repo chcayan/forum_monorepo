@@ -88,7 +88,7 @@ onMounted(() => {
     'f g g';
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  align-self: 1;
+  aspect-ratio: 1;
 
   img:nth-child(1) {
     grid-area: a;
@@ -96,6 +96,7 @@ onMounted(() => {
 
   img:nth-child(7) {
     grid-area: g;
+    aspect-ratio: 2 / 1;
   }
 }
 

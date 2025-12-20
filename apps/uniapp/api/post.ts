@@ -74,20 +74,6 @@ export async function publishPostAPI(data: PostPublish) {
         })
       })
     }
-    // data.postImages?.forEach(file => {
-    //   console.log(file);
-    //   uni.uploadFile({
-    //     url: baseUrl + '/post/upload-image',
-    //     header: {
-    //       Authorization: `Bearer ${token}`
-    //     },
-    //     filePath: file?.path || file?.url,
-    //     name: 'postImages',
-    //     formData: {
-    //       p_id: p_id
-    //     },
-    //   })
-    // })
   }
 }
 

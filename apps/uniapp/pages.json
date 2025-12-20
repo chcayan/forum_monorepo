@@ -8,7 +8,8 @@
         "backgroundColor": "@bgColor",
         "navigationBarBackgroundColor": "@navBarBgColor",
         "navigationBarTextStyle": "@navTextColor",
-        "onReachBottomDistance": 150
+        "onReachBottomDistance": 150,
+        "enablePullDownRefresh": true
       }
     },
     {
@@ -65,6 +66,34 @@
           "path": "detail",
           "style": {
             "navigationBarTitleText": "帖子详情",
+            "backgroundColor": "@bgColor",
+            "navigationBarBackgroundColor": "@navBarBgColor",
+            "navigationBarTextStyle": "@navTextColor"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/my/edit",
+      "pages": [
+        {
+          "path": "edit",
+          "style": {
+            "navigationBarTitleText": "编辑个人信息",
+            "backgroundColor": "@bgColor",
+            "navigationBarBackgroundColor": "@navBarBgColor",
+            "navigationBarTextStyle": "@navTextColor"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/index/notfound",
+      "pages": [
+        {
+          "path": "notfound",
+          "style": {
+            "navigationBarTitleText": "未知世界",
             "backgroundColor": "@bgColor",
             "navigationBarBackgroundColor": "@navBarBgColor",
             "navigationBarTextStyle": "@navTextColor"

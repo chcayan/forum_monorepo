@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { navigateInterceptor } from './utils'
+import { RouterPath, navigateInterceptor } from './utils'
 import emitter from './utils/eventEmitter'
 import { useStatusStore, useUserStore } from '@/stores/index'
 import { onLaunch } from '@dcloudio/uni-app'
@@ -34,6 +34,9 @@ onLaunch(async () => {
       title: message,
     })
     userStore.removeToken()
+    uni.switchTab({
+      url: RouterPath.index,
+    })
   })
 
   emitter.on('API:BAD_REQUEST', (message: string) => {

@@ -12,8 +12,11 @@ import ViewIcon from '@/components/icon/ViewIcon.vue'
 import CommentIcon from '@/components/icon/CommentIcon.vue'
 import CollectIcon from '@/components/icon/CollectIcon.vue'
 import ShareIcon from '@/components/icon/ShareIcon.vue'
+import DelIcon from '@/components/icon/DelIcon.vue'
+import PublicIcon from '@/components/icon/PublicIcon.vue'
+import PrivateIcon from '@/components/icon/PrivateIcon.vue'
 import NGrid from '@/components/post/NGrid.vue'
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import emitter from '@/utils/eventEmitter'
 import {
   deleteUserPostAPI,
@@ -23,12 +26,31 @@ import {
   updateUserPostToPrivateAPI,
   updateUserPostToPublicAPI,
 } from '@/api'
-import { useUserStore } from '../../stores'
+import { useUserStore } from '@/stores'
+import { onShow } from '@dcloudio/uni-app'
 
 const props = defineProps<{
   post: PostDetail
   isRestrictLine: Boolean
 }>()
+
+const user_avatar = computed(() => {
+  if (!props.post) return
+  if (props.post.user_id === userStore.userInfo.user_id) {
+    return getImgUrl(userStore.userInfo.user_avatar)
+  } else {
+    return getImgUrl(props.post.user_avatar)
+  }
+})
+
+const username = computed(() => {
+  if (!props.post) return
+  if (props.post.user_id === userStore.userInfo.user_id) {
+    return userStore.userInfo.username
+  } else {
+    return props.post.username
+  }
+})
 
 const isCollect = ref(false)
 
@@ -126,41 +148,137 @@ const navigateToPostDetail = async (postId: string) => {
 
   await updatePostViewAPI(postId)
     .then(() => {
-      console.log(333)
       emitter.emit('EVENT:UPDATE_POST_LIST', postId)
       emitter.emit('EVENT:UPDATE_USER_POST_LIST', postId)
     })
     .catch(() => {
-      console.log(666)
-      // router.replace(RouterPath.notFound)
       return
     })
 }
+
+const deletePost = () => {
+  uni.showModal({
+    content: '确定要删除吗',
+    confirmText: '删除',
+    confirmColor: '#ff0000',
+    async success(result: string | boolean) {
+      if (result.confirm) {
+        await deleteUserPostAPI({
+          postId: props.post.p_id,
+        })
+          .then(() => {
+            uni.showToast({
+              icon: 'none',
+              title: '删除成功',
+            })
+          })
+          .catch(() => {
+            uni.showToast({
+              icon: 'none',
+              title: '删除失败',
+            })
+          })
+      }
+    },
+  })
+}
+
+const onPublic = () => {
+  uni.showModal({
+    content: '确定要设置为公开可见吗',
+    async success(result: string | boolean) {
+      if (result.confirm) {
+        await updateUserPostToPublicAPI({
+          postId: props.post.p_id,
+        })
+          .then(() => {
+            uni.showToast({
+              icon: 'none',
+              title: '设置成功',
+            })
+            emitter.emit('EVENT:UPDATE_USER_POST_LIST', props.post.p_id)
+          })
+          .catch(() => {
+            uni.showToast({
+              icon: 'none',
+              title: '设置失败',
+            })
+          })
+      }
+    },
+  })
+}
+
+const onPrivate = () => {
+  uni.showModal({
+    content: '确定要设置为公开可见吗',
+    async success(result: string | boolean) {
+      if (result.confirm) {
+        await updateUserPostToPrivateAPI({
+          postId: props.post.p_id,
+        })
+          .then(() => {
+            uni.showToast({
+              icon: 'none',
+              title: '设置成功',
+            })
+            emitter.emit('EVENT:UPDATE_USER_POST_LIST', props.post.p_id)
+          })
+          .catch(() => {
+            uni.showToast({
+              icon: 'none',
+              title: '设置失败',
+            })
+          })
+      }
+    },
+  })
+}
+
+let route = getCurrentRoute()
+onShow(() => {
+  route = getCurrentRoute()
+  // console.log(route);
+  // console.log(props.post?.user_id === userStore.userInfo.user_id &&
+  // route === RouterPath.my);
+  console.log(route === RouterPath.my)
+})
 </script>
 
 <template>
   <view class="post-card">
     <view class="header">
-      <image
-        class="avatar"
-        :src="getImgUrl(props.post?.user_avatar)"
-        mode="aspectFill"
-      />
+      <image class="avatar" :src="user_avatar" mode="aspectFill" />
       <view class="post-info">
-        <text>{{ props.post?.username }}</text>
+        <text style="font-size: 16px">{{ username }}</text>
         <text class="date">{{
           formatDateByYear(props.post?.publish_time)
         }}</text>
       </view>
+      <view
+        class="func-widget"
+        v-if="
+          props.post?.user_id === userStore.userInfo.user_id &&
+          route === RouterPath.my
+        "
+      >
+        <DelIcon @click="deletePost" />
+        <PublicIcon
+          @click="onPrivate"
+          v-if="props.post?.is_public === 'true'"
+        />
+        <PrivateIcon @click="onPublic" v-else />
+      </view>
     </view>
     <view class="main">
       <rich-text
+        style="font-size: 16px"
         @click="navigateToPostDetail(props.post.p_id)"
         :class="{ 'restrict-line': isRestrictLine }"
         :nodes="lineBreakReplace(props.post?.p_content)"
         class="text"
       ></rich-text>
-      <NGrid :images="props.post?.p_images"></NGrid>
+      <NGrid class="imgs" :images="props.post?.p_images"></NGrid>
     </view>
     <view class="footer">
       <view class="icon-list">
@@ -206,14 +324,27 @@ const navigateToPostDetail = async (postId: string) => {
 
       .date {
         margin-top: 2px;
-        font-size: 10px;
+        font-size: 11px;
         opacity: 0.8;
       }
+    }
+
+    .func-widget {
+      display: flex;
+      gap: 10px;
+      margin-left: auto;
+      margin-right: 5px;
     }
   }
 
   .main {
-    margin: 10px 0;
+    margin: 10px 0 0;
+
+    .imgs {
+      max-height: 500px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
 
     .text {
       display: -webkit-box;

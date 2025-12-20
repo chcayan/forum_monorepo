@@ -10,8 +10,6 @@ const statusStore = useStatusStore()
 const props = defineProps<{
   isCollect: boolean
 }>()
-
-console.log(props.isCollect)
 </script>
 
 <template>

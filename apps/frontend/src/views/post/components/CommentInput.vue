@@ -43,6 +43,7 @@ const sendComment = async (e: KeyboardEvent | MouseEvent) => {
     msg: '发布成功',
     type: 'success',
   })
+  emitter.emit('EVENT:UPDATE_USER_POST_LIST', postId)
   emitter.emit('EVENT:UPDATE_COMMENT_LIST')
   emitter.emit('EVENT:UPDATE_POST_DETAIL', postId)
   emitter.emit('EVENT:UPDATE_POST_LIST', postId)

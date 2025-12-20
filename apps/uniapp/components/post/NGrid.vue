@@ -24,7 +24,7 @@ function preview(url: string) {
 </script>
 
 <template>
-  <view class="box" :class="active">
+  <view v-if="JSON.parse(images)?.length" class="box one" :class="active">
     <image
       class="img"
       v-for="image in parseImages"
@@ -60,14 +60,8 @@ function preview(url: string) {
 }
 
 .size1 {
-  grid-template-columns: 1fr;
-
-  .img {
-    // min-width: 300px;
-    // width: initial;
-    max-height: 600px;
-    // object-fit: cover;
-  }
+  display: flex;
+  align-items: center;
 }
 
 .size2,

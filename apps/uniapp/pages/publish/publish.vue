@@ -114,16 +114,11 @@ onShow(() => {
         </view>
       </view>
       <view
+        :class="{ 'theme-publish': statusStore.isDarkMode }"
+        class="publish"
         @click="publishPost"
-        @keydown.enter="publishPost"
-        style="margin-top: 10px"
       >
-        <button
-          :class="{ 'theme-publish': statusStore.isDarkMode }"
-          class="publish"
-        >
-          发布
-        </button>
+        发布
       </view>
     </view>
   </view>
@@ -166,8 +161,12 @@ onShow(() => {
       z-index: 100;
       bottom: calc(var(--window-bottom) + 10px);
       width: calc(100% - 20px);
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
       border-radius: 10px;
       font-weight: bold;
+      font-size: 16px;
       box-shadow: $theme-light-shadow-color;
       background-color: $theme-light-button-color;
     }

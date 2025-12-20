@@ -1,5 +1,5 @@
 <template>
-  <view class="uni-file-picker__container">
+  <view class="uni-file-picker__container" :class="{ one: limit == 1 }">
     <view
       class="file-picker__box"
       v-for="(item, index) in filesList"
@@ -215,6 +215,10 @@ export default {
   /* #endif */
   flex-wrap: wrap;
   margin: -5px;
+}
+
+.one {
+  justify-content: flex-end !important;
 }
 
 .file-picker__box {

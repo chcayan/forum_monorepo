@@ -14,7 +14,7 @@ const { comment } = defineProps<{
       <image
         class="comment-card-img"
         :src="getImgUrl(comment.user_avatar)"
-        alt="avatar"
+        mode="aspectFill"
       />
       <view class="comment-card-info">
         <text>{{ comment?.username }}</text>
@@ -22,7 +22,10 @@ const { comment } = defineProps<{
       </view>
     </view>
     <view class="main">
-      <rich-text :nodes="lineBreakReplace(comment?.c_content)"></rich-text>
+      <rich-text
+        style="font-size: 16px"
+        :nodes="lineBreakReplace(comment?.c_content)"
+      ></rich-text>
     </view>
   </view>
 </template>

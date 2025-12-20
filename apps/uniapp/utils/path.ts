@@ -18,7 +18,8 @@ class RouterPath {
   static my: string = '/pages/my/my'
   static user: string = '/pages/user/user'
   static setting: string = '/pages/setting/setting'
-  static notFound: string = '/pages/notfound/notfound'
+  static notFound: string = '/pages/index/notfound/notfound'
+  static edit: string = '/pages/my/edit/edit'
 }
 
 export { RouterPath }

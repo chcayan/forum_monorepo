@@ -37,22 +37,22 @@ const onLogout = () => {
     <text class="h3">个人</text>
     <view class="item">
       <text class="p">账号状态</text>
-      <button
+      <view
         class="login"
         :class="{ 'theme-login': statusStore.isDarkMode }"
         @click="onLogout"
         v-if="userStore.token"
       >
         退出登录
-      </button>
-      <button
+      </view>
+      <view
         class="login"
         :class="{ 'theme-login': statusStore.isDarkMode }"
         @click="onLogin"
         v-else
       >
         登录
-      </button>
+      </view>
     </view>
   </view>
 </template>

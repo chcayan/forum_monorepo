@@ -7,7 +7,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <button
+  <view
     :class="{
       'toggle-active': !props.status,
       'theme-toggle-btn': statusStore.isDarkMode,
@@ -21,7 +21,7 @@ const props = defineProps<{
     <text>
       <slot name="second">按钮2</slot>
     </text>
-  </button>
+  </view>
 </template>
 
 <style scoped lang="scss">

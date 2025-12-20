@@ -1,4 +1,5 @@
-import { request } from '@/utils'
+import { useUserStore } from '../stores'
+import { baseUrl, request } from '@/utils'
 
 /**
  * 用户信息 - 数据结构：UserInfo[]
@@ -35,19 +36,60 @@ type UserInfo = {
  * @param data 用户姓名、性别、个人介绍、头像、背景图片
  * @returns
  */
-export function updateUserInfoAPI(data: UserInfo) {
-  const formData = new FormData()
-  formData.append('username', data.username)
-  formData.append('sex', data.sex)
-  formData.append('signature', data.signature)
-  if (data.avatar) {
-    formData.append('avatar', data.avatar)
-  }
-  if (data.bgImg) {
-    formData.append('bgImg', data.bgImg)
-  }
+export async function updateUserInfoAPI(data: UserInfo) {
+  if (!data.avatar && !data.bgImg) {
+    return request.post('/user/update', {
+      username: data.username,
+      sex: data.sex,
+      signature: data.signature,
+    })
+  } else {
+    const userStore = useUserStore()
+    const token = userStore.token
+    if (!token) {
+      console.error('unauth')
+      return
+    }
+    if (data.avatar) {
+      await new Promise((resolve, reject) => {
+        uni.uploadFile({
+          url: baseUrl + '/user/update',
+          header: {
+            Authorization: `Bearer ${token}`,
+          },
+          filePath: data.avatar?.path || data.avatar?.url,
+          name: 'avatar',
+          formData: {
+            username: data.username,
+            sex: data.sex,
+            signature: data.signature,
+          },
+          success: (res) => resolve(res),
+          fail: (err) => reject(err),
+        })
+      })
+    }
 
-  return request.post('/user/update', formData)
+    if (data.bgImg) {
+      await new Promise((resolve, reject) => {
+        uni.uploadFile({
+          url: baseUrl + '/user/update',
+          header: {
+            Authorization: `Bearer ${token}`,
+          },
+          filePath: data.bgImg?.path || data.bgImg?.url,
+          name: 'bgImg',
+          formData: {
+            username: data.username,
+            sex: data.sex,
+            signature: data.signature,
+          },
+          success: (res) => resolve(res),
+          fail: (err) => reject(err),
+        })
+      })
+    }
+  }
 }
 
 type PostInfo = {
