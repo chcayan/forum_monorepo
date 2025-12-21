@@ -1,18 +1,17 @@
 <script setup lang="ts">
-import PostList from '../post/components/PostList.vue'
+import PostList from '@/components/post/PostList.vue'
 import { getPostDetailAPI, getUserCollectPostAPI, getUserPostAPI } from '@/api'
-import { computed, ref, watch } from 'vue'
-import type { PostDetail } from '@forum-monorepo/types'
+import { computed, ref } from 'vue'
+import type { PostDetail } from '@/types'
 import emitter from '@/utils/eventEmitter'
 import { usePostStore } from '@/stores'
-import { useRoute } from 'vue-router'
-import router, { RouterPath } from '@/router'
-import UserCard from './components/UserCard.vue'
+import UserCard from '@/components/user/UserCard.vue'
 import ToggleBtn from '@/components/button/ToggleBtn.vue'
+import { onLoad, onReachBottom, onShow, onHide } from '@dcloudio/uni-app'
+import { useStatusStore } from '@/stores'
+import { RouterPath, getCurrentRoute } from '@/utils'
 
-const tempMap = new Map()
-
-const route = useRoute()
+const statusStore = useStatusStore()
 
 const userPostMap = ref(new Map<string, PostDetail>())
 const userCollectedPostMap = ref(new Map<string, PostDetail>())
@@ -34,7 +33,7 @@ const userCollectedPostListPage = ref(1)
 
 const getUserPostList = async (page: number, userId: string) => {
   const res = await getUserPostAPI({
-    creatorUserId: userId || (route.params?.userId as string),
+    creatorUserId: userId || id.value,
     page,
     limit,
   })
@@ -48,13 +47,11 @@ const getUserPostList = async (page: number, userId: string) => {
   for (const item of data) {
     userPostMap.value.set(item.p_id, item)
   }
-
-  tempMap.set(route.params.userId, data)
 }
 
 const getUserCollectedPostList = async (page: number, userId: string) => {
   const res = await getUserCollectPostAPI({
-    creatorUserId: userId || (route.params?.userId as string),
+    creatorUserId: userId || id.value,
     page,
     limit,
   })
@@ -82,34 +79,35 @@ emitter.on('EVENT:UPDATE_USER_POST_LIST', async (p_id: string) => {
   }
 })
 
-emitter.on('EVENT:GET_MORE_POST', async () => {
-  if (!route.path.startsWith(RouterPath.user)) return
+onReachBottom(async () => {
   if (toggleStatus.value) {
     userPostListPage.value++
     showLoading.value = true
-    await getUserPostList(
-      userPostListPage.value,
-      route.params?.userId as string
-    ).catch()
-    showLoading.value = false
+    try {
+      await getUserPostList(userPostListPage.value, id.value)
+    } catch {
+    } finally {
+      showLoading.value = false
+    }
   } else {
     userCollectedPostListPage.value++
     showLoading.value = true
-    await getUserCollectedPostList(
-      userCollectedPostListPage.value,
-      route.params?.userId as string
-    ).catch()
-    showLoading.value = false
+    try {
+      await getUserCollectedPostList(userCollectedPostListPage.value, id.value)
+    } catch {
+    } finally {
+      showLoading.value = false
+    }
   }
 })
 
 const postStore = usePostStore()
 const getUserInfo = async (userId: string) => {
-  await postStore
-    .getUserInfo(userId || (route.params?.userId as string))
-    .catch(() => {
-      router.replace(RouterPath.notFound)
+  await postStore.getUserInfo(userId || id.value).catch(() => {
+    uni.redirectTo({
+      url: RouterPath.notFound,
     })
+  })
 }
 
 const toggleStatus = ref(true)
@@ -120,144 +118,94 @@ const changeStatus = () => {
 function init(userId: string) {
   getUserInfo(userId)
   getUserPostList(userPostListPage.value, userId).catch(() => {
-    router.replace(RouterPath.notFound)
+    uni.redirectTo({
+      url: RouterPath.notFound,
+    })
   })
   getUserCollectedPostList(userCollectedPostListPage.value, userId).catch(
     () => {
-      router.replace(RouterPath.notFound)
+      uni.redirectTo({
+        url: RouterPath.notFound,
+      })
     }
   )
 }
 
-function resetData() {
-  userPostMap.value.clear()
-  userCollectedPostMap.value.clear()
-  userPostListPage.value = 1
-  userCollectedPostListPage.value = 1
-  toggleStatus.value = true
-}
+const id = ref('')
+onLoad((options) => {
+  id.value = options.userId
+})
 
-// emitter.on('EVENT:REACTIVE_USER_VIEW', (userId: string) => {
-//   resetData()
-//   init(userId)
-// })
-
-watch(
-  () => route.params.userId,
-  () => {
-    resetData()
-    init(route.params?.userId as string)
-  },
-  {
-    immediate: true,
+onShow(() => {
+  if (id.value) {
+    init(id.value)
   }
-)
+})
 </script>
 
 <template>
-  <article class="user-view">
-    <header class="left">
+  <view class="user-view">
+    <view class="header">
       <UserCard :user-info="postStore.userInfo" />
-    </header>
-    <div class="right">
+    </view>
+    <view class="main">
       <ToggleBtn class="toggle" @click="changeStatus" :status="toggleStatus">
         <template #first>我的</template>
         <template #second>收藏</template>
       </ToggleBtn>
-      <div v-if="toggleStatus">
+      <view v-if="toggleStatus">
         <PostList
           v-if="userPostList.length > 0"
           :post-list="userPostList"
           :has-more="upHasMore"
-          :show-loading
+          :show-loading="showLoading"
         />
-        <div class="tip" v-else>该用户未发布帖子</div>
-      </div>
-      <div v-else>
+        <view class="tip" v-else>该用户未发布帖子</view>
+      </view>
+      <view v-else>
         <PostList
           v-if="userCollectedPost.length > 0"
           :post-list="userCollectedPost"
           :has-more="ucpHasMore"
-          :show-loading
+          :show-loading="showLoading"
         />
-        <div class="tip" v-else>该用户未收藏帖子</div>
-      </div>
-    </div>
-  </article>
+        <view class="tip" v-else>该用户未收藏帖子</view>
+      </view>
+    </view>
+  </view>
 </template>
 
 <style scoped lang="scss">
+.theme {
+  background-color: $theme-dark-color !important;
+}
+
 .user-view {
   display: flex;
-  justify-content: center;
-  margin-right: auto;
-  gap: $gap;
-  width: 100%;
+  flex-direction: column;
+  min-height: calc(100vh - var(--window-top) - var(--window-bottom));
+  background-color: $theme-light-color;
+  box-sizing: border-box;
 
-  header {
-    width: 400px;
-    height: 290px;
+  .header {
+    margin-bottom: 10px;
     padding: 10px 10px 0;
-    gap: initial;
-    position: sticky;
-    top: 80px;
-    z-index: $user-info-card-z-index;
   }
 
-  .right {
-    width: 400px;
-
+  .main {
     .tip {
       text-align: center;
       margin-top: 20px;
+      font-size: 16px;
     }
 
     .toggle {
+      margin-left: 10px;
+      width: calc(100% - 20px);
       margin-bottom: 10px;
       position: sticky;
-      top: 80px;
+      top: calc(var(--window-top) + 10px);
       z-index: $user-post-toggle-z-index;
-    }
-  }
-
-  @media (max-width: calc($mobile-size * 2 + 10px)) {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    header {
-      position: initial;
-    }
-  }
-
-  @media (max-width: $mobile-size) {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    header {
-      position: initial;
-      width: 100%;
-    }
-
-    .right {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-
-      .post {
-        width: 100%;
-      }
-
-      .toggle {
-        width: calc(100% - 20px);
-        margin-bottom: 0px;
-        top: 10px;
-        left: 10px;
-      }
     }
   }
 }

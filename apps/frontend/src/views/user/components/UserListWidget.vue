@@ -2,7 +2,7 @@
 import { getUserFansAPI, getUserFollowsAPI } from '@/api'
 import router, { RouterPath } from '@/router'
 import { useUserStore } from '@/stores'
-import emitter from '@/utils/eventEmitter'
+// import emitter from '@/utils/eventEmitter'
 import type { FriendInfo } from '@forum-monorepo/types'
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
@@ -50,7 +50,7 @@ const navigateToUser = (userId: string) => {
     router.push(RouterPath.my)
     return
   }
-  emitter.emit('EVENT:REACTIVE_USER_VIEW', userId)
+  // emitter.emit('EVENT:REACTIVE_USER_VIEW', userId)
   router.push(`${RouterPath.user}/${userId}`)
 }
 </script>

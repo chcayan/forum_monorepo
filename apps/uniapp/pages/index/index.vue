@@ -49,16 +49,18 @@ emitter.on('EVENT:UPDATE_POST_LIST', async (p_id: string) => {
 
 const result = ref('')
 
-// const search = (result : string) => {
-//   if (!result) {
-//     Toast.show({
-//       msg: '请输入内容',
-//       type: 'error',
-//     })
-//     return
-//   }
-//   router.push(`${RouterPath.search}?result=${result}`)
-// }
+const search = () => {
+  if (!result.value.trim()) {
+    uni.showToast({
+      icon: 'none',
+      title: '请输入内容',
+    })
+    return
+  }
+  uni.navigateTo({
+    url: `${RouterPath.search}?result=${result.value}`,
+  })
+}
 
 onPullDownRefresh(async () => {
   postMap.value.clear()
@@ -84,11 +86,13 @@ onReachBottom(async () => {
     <view class="search-input">
       <input
         type="text"
+        v-model="result"
         placeholder="搜索帖子"
         class="search"
         :class="{ 'theme-search': statusStore.isDarkMode }"
+        @keydown.enter="search"
       />
-      <SearchIcon class="icon"></SearchIcon>
+      <SearchIcon class="icon" @click="search"></SearchIcon>
     </view>
     <view class="blank"></view>
     <scroll-view style="flex: 1">

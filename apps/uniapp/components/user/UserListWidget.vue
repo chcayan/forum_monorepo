@@ -5,7 +5,7 @@ import emitter from '@/utils/eventEmitter'
 import type { FriendInfo } from '@/types'
 import { ref, watch } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
-import { getImgUrl } from '@/utils'
+import { RouterPath, getImgUrl } from '@/utils'
 import { useStatusStore } from '@/stores'
 
 const statusStore = useStatusStore()
@@ -51,12 +51,9 @@ watch(
 )
 
 const navigateToUser = (userId: string) => {
-  if (userId === userStore.userInfo.user_id) {
-    router.push(RouterPath.my)
-    return
-  }
-  emitter.emit('EVENT:REACTIVE_USER_VIEW', userId)
-  router.push(`${RouterPath.user}/${userId}`)
+  uni.navigateTo({
+    url: `${RouterPath.user}?userId=${userId}`,
+  })
 }
 </script>
 

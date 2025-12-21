@@ -106,17 +106,13 @@ const login = async () => {
       password: password.value,
     })
     userStore.setToken(res.data.token)
-    console.log(666)
     uni.showToast({
       icon: 'none',
       title: '登录成功',
     })
-    // uni.navigateBack()
     uni.switchTab({
       url: redirect.value || RouterPath.index,
     })
-    // const redirect = (route.query.redirect || RouterPath.base) as string
-    // router.replace(redirect)
   }
 }
 

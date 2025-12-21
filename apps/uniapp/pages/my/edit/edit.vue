@@ -150,11 +150,11 @@ const save = async () => {
 
   .avatar {
     position: relative;
-    height: 100px !important;
+    height: auto !important;
 
     .picker {
-      margin-top: 10px;
-      height: 100px;
+      // margin-top: 10px;
+      // height: 100px;
     }
   }
 

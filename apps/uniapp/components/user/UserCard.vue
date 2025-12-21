@@ -1,19 +1,26 @@
 <script setup lang="ts">
-import { updateUserInfoAPI } from '@/api'
+import {
+  updateUserAddFollowAPI,
+  updateUserDelFollowAPI,
+  updateUserInfoAPI,
+} from '@/api'
 import EditIcon from '@/components/icon/EditIcon.vue'
-import { useUserStore } from '@/stores'
-// import FollowButton from '@/views/post/components/FollowButton.vue'
+import FollowBtn from '@/components/button/FollowBtn.vue'
 import type { UserInfo } from '@/types'
 import UserListWidget from '@/components/user/UserListWidget.vue'
-import { getImgUrl, RouterPath } from '@/utils'
-import { ref } from 'vue'
-import { onHide } from '@dcloudio/uni-app'
+import { getCurrentRoute, getImgUrl, RouterPath } from '@/utils'
+import { computed, ref } from 'vue'
+import { onHide, onLoad } from '@dcloudio/uni-app'
+import { useStatusStore, usePostStore, useUserStore } from '@/stores'
+import { checkLoginStatus } from '@/utils'
+
+const statusStore = useStatusStore()
+const postStore = usePostStore()
+const userStore = useUserStore()
 
 const { userInfo } = defineProps<{
   userInfo: UserInfo
 }>()
-
-const userStore = useUserStore()
 
 const edit = () => {
   uni.navigateTo({
@@ -51,6 +58,53 @@ function preview(url: string) {
     urls: [url],
   })
 }
+
+const route = getCurrentRoute()
+
+const userId = ref('')
+onLoad((options) => {
+  userId.value = options.userId
+})
+
+const isFollow = computed(() => {
+  return userStore.userFollowIdList.includes(userId.value)
+})
+
+let flag = true
+const follow = async () => {
+  if (!checkLoginStatus()) return
+  if (!flag) return
+  flag = false
+  try {
+    if (isFollow.value) {
+      await updateUserDelFollowAPI({
+        followId: userId.value,
+      })
+      uni.showToast({
+        icon: 'none',
+        title: '已取消关注',
+      })
+    } else {
+      await updateUserAddFollowAPI({
+        followId: userId.value,
+      })
+      uni.showToast({
+        icon: 'none',
+        title: '关注成功',
+      })
+    }
+    await userStore.getUserFollowList()
+    await userStore.getUserFriendList()
+    await postStore.getUserInfoWithFans(userId.value)
+  } catch {
+    uni.showToast({
+      icon: 'none',
+      title: '操作失败',
+    })
+  } finally {
+    flag = true
+  }
+}
 </script>
 
 <template>
@@ -68,11 +122,23 @@ function preview(url: string) {
         :src="getImgUrl(userInfo.user_avatar)"
         mode="aspectFill"
       />
-      <view v-if="userInfo.user_id === userStore.userInfo?.user_id" class="btn">
+      <view
+        v-if="
+          userInfo.user_id === userStore.userInfo?.user_id &&
+          route?.startsWith(RouterPath.my)
+        "
+        class="btn"
+      >
         <EditIcon @click="edit" />
       </view>
       <view class="follow-btn" v-else>
-        <!-- <FollowButton class="f-btn" :isFollow="userStore.userFollowIdList.includes(userInfo.user_id)" /> -->
+        <text
+          v-if="userInfo.user_id !== userStore.userInfo?.user_id"
+          class="btn"
+          @click="follow"
+          :class="{ 'theme-follow-btn': statusStore.isDarkMode }"
+          >{{ isFollow ? '已关注' : '关注' }}</text
+        >
       </view>
     </view>
     <view class="main">
@@ -106,6 +172,10 @@ function preview(url: string) {
 $main-gap: 20px;
 $position-size: 200px;
 
+.theme-follow-btn {
+  background-color: $theme-dark-button-color !important;
+}
+
 .user-card {
   display: flex;
   flex-direction: column;
@@ -117,6 +187,17 @@ $position-size: 200px;
 
     .follow-btn {
       display: flex;
+
+      .btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 70px;
+        height: 32px;
+        font-size: 14px;
+        border-radius: $gap;
+        background-color: $theme-light-button-color;
+      }
 
       .f-btn {
         margin-left: auto;
@@ -162,7 +243,7 @@ $position-size: 200px;
 
     .main-item {
       display: flex;
-      margin-top: 3px;
+      margin-top: 2px;
 
       .follows {
         position: relative;

@@ -27,7 +27,7 @@ import {
   updateUserPostToPublicAPI,
 } from '@/api'
 import { useUserStore } from '@/stores'
-import { onShow } from '@dcloudio/uni-app'
+import { onShow, onLoad } from '@dcloudio/uni-app'
 
 const props = defineProps<{
   post: PostDetail
@@ -236,6 +236,19 @@ const onPrivate = () => {
   })
 }
 
+const id = ref('')
+onLoad((options) => {
+  id.value = options?.userId
+})
+
+const navigateToUser = () => {
+  if (id.value === props.post.user_id) return
+  // emitter.emit('EVENT:REACTIVE_USER_VIEW', post.user_id)
+  uni.navigateTo({
+    url: `${RouterPath.user}?userId=${props.post.user_id}`,
+  })
+}
+
 const isSelf = ref(false)
 onShow(() => {
   const route = getCurrentRoute()
@@ -248,9 +261,16 @@ onShow(() => {
 <template>
   <view class="post-card">
     <view class="header">
-      <image class="avatar" :src="user_avatar" mode="aspectFill" />
+      <image
+        class="avatar"
+        :src="user_avatar"
+        mode="aspectFill"
+        @click="navigateToUser()"
+      />
       <view class="post-info">
-        <text style="font-size: 16px">{{ username }}</text>
+        <text style="font-size: 16px" @click="navigateToUser()">{{
+          username
+        }}</text>
         <text class="date">{{
           formatDateByYear(props.post?.publish_time)
         }}</text>

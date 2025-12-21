@@ -152,7 +152,7 @@ const navigateToUser = () => {
     router.push(RouterPath.my)
     return
   }
-  emitter.emit('EVENT:REACTIVE_USER_VIEW', post.user_id)
+  // emitter.emit('EVENT:REACTIVE_USER_VIEW', post.user_id)
   router.push(`${RouterPath.user}/${post.user_id}`)
 }
 

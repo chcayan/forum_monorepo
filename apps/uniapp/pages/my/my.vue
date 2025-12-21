@@ -88,7 +88,6 @@ const getUserCollectedPostList = async (page: number) => {
 }
 
 onLoad(async () => {
-  console.log(666)
   await getUserInfo()
   getUserPostList(userPostListPage.value)
   getUserCollectedPostList(userCollectedPostListPage.value)

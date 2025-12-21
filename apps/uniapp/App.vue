@@ -24,6 +24,10 @@ watch(
 )
 
 onLaunch(async () => {
+  if (userStore.token) {
+    await initUserStatus()
+  }
+
   statusStore.initTheme()
   navigateInterceptor()
 
@@ -45,10 +49,6 @@ onLaunch(async () => {
       title: message,
     })
   })
-
-  if (userStore.token) {
-    await initUserStatus()
-  }
 })
 </script>
 

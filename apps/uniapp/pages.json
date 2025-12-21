@@ -88,6 +88,34 @@
       ]
     },
     {
+      "root": "pages/my/user",
+      "pages": [
+        {
+          "path": "user",
+          "style": {
+            "navigationBarTitleText": "用户",
+            "backgroundColor": "@bgColor",
+            "navigationBarBackgroundColor": "@navBarBgColor",
+            "navigationBarTextStyle": "@navTextColor"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/index/search",
+      "pages": [
+        {
+          "path": "search",
+          "style": {
+            "navigationBarTitleText": "搜索结果",
+            "backgroundColor": "@bgColor",
+            "navigationBarBackgroundColor": "@navBarBgColor",
+            "navigationBarTextStyle": "@navTextColor"
+          }
+        }
+      ]
+    },
+    {
       "root": "pages/index/notfound",
       "pages": [
         {

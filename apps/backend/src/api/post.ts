@@ -86,7 +86,8 @@ export function registerPostAPI(app: Express, db: mysql.Connection) {
         p_content, 
         p_images, 
         user_avatar, 
-        username 
+        username,
+        publish_time
       FROM 
         post p 
       left join 

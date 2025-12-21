@@ -10,16 +10,15 @@ export const getCurrentRoute = () => {
 class RouterPath {
   static index: string = '/pages/index/index'
   static detail: string = '/pages/index/detail/detail'
-  static search: string = '/pages/index/search/search'
-
   static chat: string = '/pages/chat/chat'
   static publish: string = '/pages/publish/publish'
   static login: string = '/pages/login/login'
   static my: string = '/pages/my/my'
-  static user: string = '/pages/user/user'
+  static user: string = '/pages/my/user/user'
   static setting: string = '/pages/setting/setting'
   static notFound: string = '/pages/index/notfound/notfound'
   static edit: string = '/pages/my/edit/edit'
+  static search: string = '/pages/index/search/search'
 }
 
 export { RouterPath }
