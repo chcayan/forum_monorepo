@@ -74,7 +74,7 @@ const onLogout = () => {
   padding: 10px;
 
   .h3 {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: bold;
     margin-top: 10px;
   }

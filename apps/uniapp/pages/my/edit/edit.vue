@@ -92,6 +92,7 @@ const save = async () => {
       <uni-file-picker
         ref="avatar"
         limit="1"
+        class="picker"
         :del-icon="false"
         disable-preview
         file-mediatype="image"
@@ -104,6 +105,7 @@ const save = async () => {
       <uni-file-picker
         ref="bg"
         limit="1"
+        class="picker"
         :del-icon="false"
         disable-preview
         file-mediatype="image"
@@ -149,6 +151,11 @@ const save = async () => {
   .avatar {
     position: relative;
     height: 100px !important;
+
+    .picker {
+      margin-top: 10px;
+      height: 100px;
+    }
   }
 
   .box {

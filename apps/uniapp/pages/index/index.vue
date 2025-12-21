@@ -125,7 +125,7 @@ onReachBottom(async () => {
   .search-input {
     position: fixed;
     left: 0;
-    z-index: $user-info-card-z-index;
+    z-index: 1;
     width: 100%;
     padding: 0 10px;
     background-color: transparent;

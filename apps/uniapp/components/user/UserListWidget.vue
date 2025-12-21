@@ -83,6 +83,10 @@ const navigateToUser = (userId: string) => {
 </template>
 
 <style scoped lang="scss">
+.theme {
+  background-color: $theme-dark-avatar-widget-color !important;
+}
+
 .user-list-widget {
   display: flex;
   flex-direction: column;

@@ -94,15 +94,15 @@ onLoad(async () => {
   getUserCollectedPostList(userCollectedPostListPage.value)
 })
 
-// emitter.on('EVENT:DELETE_USER_POST_LIST', async (p_id : string) => {
-//   if (userPostMap.value.get(p_id)) {
-//     userPostMap.value.delete(p_id)
-//   }
-//   if (userCollectedPostMap.value.get(p_id)) {
-//     userCollectedPostMap.value.delete(p_id)
-//   }
-//   await userStore.getUserCollectListOfPostId()
-// })
+emitter.on('EVENT:DELETE_USER_POST_LIST', async (p_id: string) => {
+  if (userPostMap.value.get(p_id)) {
+    userPostMap.value.delete(p_id)
+  }
+  if (userCollectedPostMap.value.get(p_id)) {
+    userCollectedPostMap.value.delete(p_id)
+  }
+  await userStore.getUserCollectListOfPostId()
+})
 
 emitter.on(
   'EVENT:UPDATE_USER_POST_LIST',
@@ -227,7 +227,7 @@ onShow(() => {
   box-sizing: border-box;
 
   .header {
-    height: 290px;
+    margin-bottom: 10px;
     padding: 10px 10px 0;
   }
 

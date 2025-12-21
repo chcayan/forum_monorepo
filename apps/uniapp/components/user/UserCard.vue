@@ -87,7 +87,7 @@ function preview(url: string) {
             :is-follow-or-fan="isFollowOrFan"
           />
         </view>
-        <text style="cursor: default">&nbsp;&nbsp;&nbsp;</text>
+        <text>&nbsp;&nbsp;&nbsp;</text>
         <view class="fans" @click="onShowFanList">
           <text class="text">{{ userInfo.fans }} 粉丝</text>
           <UserListWidget
@@ -162,7 +162,7 @@ $position-size: 200px;
 
     .main-item {
       display: flex;
-      margin-top: 5px;
+      margin-top: 3px;
 
       .follows {
         position: relative;
@@ -184,6 +184,7 @@ $position-size: 200px;
 
       .text {
         opacity: 0.6;
+        font-size: 15px;
       }
     }
 
@@ -195,7 +196,7 @@ $position-size: 200px;
       overflow: hidden;
       text-overflow: ellipsis;
       margin-top: 5px;
-      font-size: 14px;
+      font-size: 15px;
       opacity: 0.8;
     }
 

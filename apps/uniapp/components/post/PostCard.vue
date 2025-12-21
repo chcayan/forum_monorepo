@@ -171,6 +171,7 @@ const deletePost = () => {
               icon: 'none',
               title: '删除成功',
             })
+            emitter.emit('EVENT:DELETE_USER_POST_LIST', props.post.p_id)
           })
           .catch(() => {
             uni.showToast({
@@ -235,13 +236,12 @@ const onPrivate = () => {
   })
 }
 
-let route = getCurrentRoute()
+const isSelf = ref(false)
 onShow(() => {
-  route = getCurrentRoute()
-  // console.log(route);
-  // console.log(props.post?.user_id === userStore.userInfo.user_id &&
-  // route === RouterPath.my);
-  console.log(route === RouterPath.my)
+  const route = getCurrentRoute()
+  isSelf.value =
+    props.post?.user_id === userStore.userInfo.user_id &&
+    route === RouterPath.my
 })
 </script>
 
@@ -255,13 +255,7 @@ onShow(() => {
           formatDateByYear(props.post?.publish_time)
         }}</text>
       </view>
-      <view
-        class="func-widget"
-        v-if="
-          props.post?.user_id === userStore.userInfo.user_id &&
-          route === RouterPath.my
-        "
-      >
+      <view class="func-widget" v-if="isSelf">
         <DelIcon @click="deletePost" />
         <PublicIcon
           @click="onPrivate"
@@ -283,17 +277,23 @@ onShow(() => {
     <view class="footer">
       <view class="icon-list">
         <view class="icon-item">
-          <ViewIcon class="svg" /><text>{{ post?.p_view_count }}</text>
+          <ViewIcon class="svg" /><text class="count">{{
+            post?.p_view_count
+          }}</text>
         </view>
         <view class="icon-item">
-          <CommentIcon class="svg" /><text>{{ post?.p_comment_count }}</text>
+          <CommentIcon class="svg" /><text class="count">{{
+            post?.p_comment_count
+          }}</text>
         </view>
         <view @click="changeCollectStatus" class="icon-item">
           <CollectIcon :isCollect="isCollect" class="svg" />
-          <text>{{ post?.p_collect_count }}</text>
+          <text class="count">{{ post?.p_collect_count }}</text>
         </view>
         <view @click="onShare" class="icon-item">
-          <ShareIcon class="svg" /><text>{{ post?.p_share_count }}</text>
+          <ShareIcon class="svg" /><text class="count">{{
+            post?.p_share_count
+          }}</text>
         </view>
       </view>
     </view>
@@ -369,6 +369,10 @@ onShow(() => {
         display: flex;
         align-items: center;
         flex: 1;
+
+        .count {
+          font-size: 16px;
+        }
 
         .svg {
           display: flex;

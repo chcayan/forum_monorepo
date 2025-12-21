@@ -31,7 +31,7 @@ const getPostDetail = async (postId: string) => {
       postDetail.value = res.data.data[0]
     })
     .catch(() => {
-      uni.navigateTo({
+      uni.redirectTo({
         url: RouterPath.notFound,
       })
     })

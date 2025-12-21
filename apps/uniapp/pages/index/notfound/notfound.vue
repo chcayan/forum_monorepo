@@ -2,6 +2,7 @@
 import { onUnmounted, ref } from 'vue'
 import { useStatusStore } from '@/stores'
 import { RouterPath } from '@/utils'
+import { onBackPress } from '@dcloudio/uni-app'
 
 const statusStore = useStatusStore()
 const count = ref(5)
@@ -14,6 +15,10 @@ timer = setInterval(() => {
     navigateToHome()
   }
 }, 1000)
+
+onBackPress(() => {
+  clearInterval(timer)
+})
 
 function navigateToHome() {
   uni.switchTab({
