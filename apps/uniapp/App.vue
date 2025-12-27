@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RouterPath, navigateInterceptor } from './utils'
+import { RouterPath, navigateInterceptor, socket } from './utils'
 import emitter from './utils/eventEmitter'
 import { useStatusStore, useUserStore } from '@/stores/index'
 import { onLaunch } from '@dcloudio/uni-app'
@@ -10,6 +10,8 @@ const userStore = useUserStore()
 
 async function initUserStatus() {
   await userStore.getUserInfo()
+
+  socket.emit('login', userStore.userInfo?.user_id)
   await userStore.getUserCollectListOfPostId()
   await userStore.getUserFollowList()
   await userStore.getUserFriendList()
@@ -24,10 +26,6 @@ watch(
 )
 
 onLaunch(async () => {
-  if (userStore.token) {
-    await initUserStatus()
-  }
-
   statusStore.initTheme()
   navigateInterceptor()
 
@@ -37,6 +35,9 @@ onLaunch(async () => {
       icon: 'none',
       title: message,
     })
+    if (message === '用户不存在' || message === '用户名或密码错误') {
+      return
+    }
     userStore.removeToken()
     uni.switchTab({
       url: RouterPath.index,
@@ -49,6 +50,10 @@ onLaunch(async () => {
       title: message,
     })
   })
+
+  if (userStore.token) {
+    await initUserStatus()
+  }
 })
 </script>
 

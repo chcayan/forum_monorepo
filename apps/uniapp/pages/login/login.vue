@@ -179,7 +179,7 @@ const signup = async () => {
           }"
           v-model="password"
           @input="verifyPassword"
-          type="safe-password"
+          type="password"
           placeholder="请输入密码"
         />
       </label>
@@ -199,7 +199,7 @@ const signup = async () => {
           }"
           v-model="confirmPassword"
           @input="verifyConfirmPassword"
-          type="safe-password"
+          type="password"
           placeholder="请再次输入密码"
         />
       </label>

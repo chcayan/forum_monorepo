@@ -1,4 +1,6 @@
-// import { io } from 'socket.io-client'
-// import type { Socket } from 'socket.io-client'
+import { socketUrl } from './request'
+import io from '@hyoga/uni-socket.io'
 
-// export const socket: Socket = io(import.meta.env.VITE_SOCKET)
+export const socket = io(socketUrl, {
+  transports: ['websocket'],
+})

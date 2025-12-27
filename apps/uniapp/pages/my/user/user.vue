@@ -144,7 +144,7 @@ onShow(() => {
 </script>
 
 <template>
-  <view class="user-view">
+  <view class="user-view" :class="{ theme: statusStore.isDarkMode }">
     <view class="header">
       <UserCard :user-info="postStore.userInfo" />
     </view>

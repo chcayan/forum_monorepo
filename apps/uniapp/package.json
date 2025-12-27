@@ -4,6 +4,8 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@dcloudio/types": "^3.4.28"
+    "@dcloudio/types": "^3.4.28",
+    "@hyoga/uni-socket.io": "^3.0.4",
+    "socket.io-client": "^4.8.1"
   }
 }

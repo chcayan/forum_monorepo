@@ -5,7 +5,6 @@ import {
   updateUserInfoAPI,
 } from '@/api'
 import EditIcon from '@/components/icon/EditIcon.vue'
-import FollowBtn from '@/components/button/FollowBtn.vue'
 import type { UserInfo } from '@/types'
 import UserListWidget from '@/components/user/UserListWidget.vue'
 import { getCurrentRoute, getImgUrl, RouterPath } from '@/utils'
@@ -174,6 +173,7 @@ $position-size: 200px;
 
 .theme-follow-btn {
   background-color: $theme-dark-button-color !important;
+  color: black !important;
 }
 
 .user-card {

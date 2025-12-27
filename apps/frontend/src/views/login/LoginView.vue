@@ -30,7 +30,6 @@ onUnmounted(() => {
 
 const icpHtml = import.meta.env.VITE_ICP_HTML
 const icpHtml1 = import.meta.env.VITE_ICP_HTML_1
-console.log(icpHtml)
 </script>
 
 <template>

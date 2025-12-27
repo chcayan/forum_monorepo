@@ -10,9 +10,9 @@ import { useStatusStore } from '@/stores'
 
 const statusStore = useStatusStore()
 
-const postId = ref('')
+const userId = ref('')
 onLoad((options) => {
-  postId.value = options.postId
+  userId.value = options.userId
 })
 
 type UserListType = 'follow' | 'fan' | undefined
@@ -27,13 +27,13 @@ const userList = ref<FriendInfo[]>([])
 
 const getUserFollowList = async () => {
   const res = await getUserFollowsAPI(
-    postId.value || userStore.userInfo.user_id
+    userId.value || userStore.userInfo.user_id
   )
   userList.value = res.data.data
 }
 
 const getUserFanList = async () => {
-  const res = await getUserFansAPI(postId.value || userStore.userInfo.user_id)
+  const res = await getUserFansAPI(userId.value || userStore.userInfo.user_id)
   userList.value = res.data.data
 }
 
