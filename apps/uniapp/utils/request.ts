@@ -102,10 +102,8 @@ class Request {
   }
 }
 
-const socketUrl = 'wss://chcaya.site'
-const baseUrl = 'https://chcaya.site/api'
-// const socketUrl = 'ws://localhost:3000'
-// const baseUrl = 'http://localhost:3000'
+const socketUrl = 'ws://localhost:3000'
+const baseUrl = 'http://localhost:3000'
 // const baseUrl = 'http://10.0.2.2:3000'
 const request = new Request({
   baseUrl,

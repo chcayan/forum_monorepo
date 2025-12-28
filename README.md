@@ -6,6 +6,8 @@
 
 使用monorepo进行项目管理
 
+本项目包含web端和app端，app基于uniapp构建
+
 ## 技术栈
 
 ### 前端：
@@ -19,7 +21,13 @@
 - express
 - mysql
 
+### app端：
+
+- uniapp
+
 ## 运行
+
+### web端
 
 安装依赖
 
@@ -49,6 +57,18 @@ DB_NAME=yourdbname
 ```bash
 pnpm dev
 ```
+
+### app端
+
+启动后端服务
+
+在/backend下执行
+
+```bash
+pnpm dev
+```
+
+使用HBuilderX运行uniapp项目
 
 ## 版本
 
@@ -89,3 +109,19 @@ pnpm dev
 
 - 新增ai聊天
 - 优化部分样式
+
+### version 2.3.0 (251228)
+
+当前版本变更（web）：
+
+- 修复部分样式问题
+- 修改重复进入用户页面数据不刷新问题
+
+使用uniapp构建app端，版本与web端同步
+
+app端功能与web端差异如下：
+
+- app端主题只跟随系统
+- app端无法对弹窗信息进行回复
+- 两端部分场景下样式差异
+- app端没有皮卡丘?

@@ -100,6 +100,8 @@ export function registerUserAPI(app: Express, db: mysql.Connection) {
         c.user_id = ? 
       where 
         p.user_id = ? 
+      and
+        is_public = 'true' 
       order by 
         publish_time desc 
       LIMIT ? 

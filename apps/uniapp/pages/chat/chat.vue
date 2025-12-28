@@ -21,7 +21,7 @@ import emitter from '@/utils/eventEmitter'
 import { escapeHTML } from '@/utils/format'
 import type { ChatInfo, UserBySearchInfo } from '@/types'
 import { onActivated, reactive, ref, watch, nextTick } from 'vue'
-import { onPageScroll } from '@dcloudio/uni-app'
+import { onPageScroll, onShow } from '@dcloudio/uni-app'
 import SharePost from '@/components/chat/SharePost.vue'
 
 const userStore = useUserStore()
@@ -115,7 +115,7 @@ const sendMessage = async () => {
 
   await nextTick()
   uni.pageScrollTo({
-    duration: 300,
+    duration: 100,
     scrollTop: 999999999,
   })
 }
@@ -157,7 +157,7 @@ socket.on(
     if (route !== RouterPath.chat) return
     await nextTick()
     uni.pageScrollTo({
-      duration: 300,
+      duration: 100,
       scrollTop: 999999999,
     })
   }
@@ -238,7 +238,7 @@ function loadHistory() {
 
 const allList = ref([])
 const renderList = ref([])
-const pageSize = 20
+const pageSize = 30
 const startIndex = ref(0)
 
 async function getChatHistory(friendId: string) {
@@ -264,10 +264,7 @@ emitter.on('EVENT:UPDATE_CHAT_RECORDS', async (friend: string) => {
   await getChatHistory(friend)
 })
 
-onActivated(async () => {
-  Object.keys(unreadCount).forEach((sender) => {
-    unreadCount[sender] = 0
-  })
+onShow(async () => {
   await userStore.getUserFriendList()
   await fetchUnread()
 })
@@ -347,7 +344,7 @@ onShow(() => {
         </view>
       </view>
 
-      <view class="ul">
+      <view class="ul" :class="{ 'ul-show': showChatBox }">
         <view
           v-if="userStore.userFriendList.length !== 0"
           class="li"
@@ -525,6 +522,7 @@ onShow(() => {
   .left {
     padding: 10px;
     height: calc(100vh - var(--window-top) - var(--window-bottom) - 20px);
+    position: relative;
 
     .title {
       display: flex;
@@ -589,6 +587,10 @@ onShow(() => {
           opacity: 0.5;
         }
       }
+    }
+
+    .ul-show {
+      opacity: 0 !important;
     }
 
     .ul {

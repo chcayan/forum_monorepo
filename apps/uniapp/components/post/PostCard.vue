@@ -6,6 +6,7 @@ import {
   lineBreakReplace,
   getImgUrl,
   checkLoginStatus,
+  socket,
 } from '@/utils/index'
 import { PostDetail } from '@/types/index'
 import ViewIcon from '@/components/icon/ViewIcon.vue'
@@ -26,8 +27,10 @@ import {
   updateUserPostToPrivateAPI,
   updateUserPostToPublicAPI,
 } from '@/api'
-import { useUserStore } from '@/stores'
-import { onShow, onLoad } from '@dcloudio/uni-app'
+import { useStatusStore, useUserStore } from '@/stores'
+import { onShow, onLoad, onPageScroll } from '@dcloudio/uni-app'
+
+const statusStore = useStatusStore()
 
 const props = defineProps<{
   post: PostDetail
@@ -130,8 +133,6 @@ function updatePostStatus() {
 function setFlag() {
   flag = true
 }
-
-const onShare = () => {}
 
 const navigateToPostDetail = async (postId: string) => {
   const currentRoute = getCurrentRoute()
@@ -256,10 +257,69 @@ onShow(() => {
     props.post?.user_id === userStore.userInfo.user_id &&
     route === RouterPath.my
 })
+
+const showShareBox = ref(false)
+
+const friendList = computed<FriendInfo[]>(() => {
+  return userStore.userFriendList
+})
+
+const onShare = () => {
+  if (!checkLoginStatus()) return
+  showShareBox.value = !showShareBox.value
+}
+
+const share = async (friendId: string) => {
+  const payload = {
+    from: userStore.userInfo.user_id,
+    to: friendId,
+    message: props.post.p_id,
+    is_share: '1',
+  }
+
+  socket.emit('sendMessage', payload)
+  updatePostStatus()
+  emitter.emit('EVENT:UPDATE_CHAT_RECORDS', friendId)
+  uni.showToast({
+    icon: 'none',
+    title: '分享成功',
+  })
+  showShareBox.value = false
+}
+
+onPageScroll(() => {
+  if (!showShareBox.value) return
+  showShareBox.value = false
+})
 </script>
 
 <template>
   <view class="post-card">
+    <view
+      class="share-box"
+      :class="{
+        'show-share-box': showShareBox,
+        'theme-share-box': statusStore.isDarkMode,
+      }"
+    >
+      <text style="font-size: 12px">请选择一位好友：</text>
+      <view class="ul">
+        <view
+          class="li"
+          @click="share(friend.follow_id)"
+          v-for="(friend, index) in friendList"
+          :key="index"
+        >
+          <image
+            mode="aspectFill"
+            class="img"
+            :src="getImgUrl(friend.user_avatar)"
+          />
+          <text class="name">{{ friend.username }}</text>
+        </view>
+        <view style="height: 10px"></view>
+      </view>
+    </view>
     <view class="header">
       <image
         class="avatar"
@@ -321,10 +381,67 @@ onShow(() => {
 </template>
 
 <style scoped lang="scss">
+.theme-share-box {
+  background-color: $theme-dark-color !important;
+  box-shadow: $theme-dark-shadow-color !important;
+}
+
 .post-card {
   width: 100%;
   padding: 10px;
   box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+
+  .share-box {
+    position: absolute;
+    bottom: 52px;
+    right: 0;
+    padding: 5px 0 10px 10px;
+    background-color: $theme-light-color;
+    box-shadow: $theme-light-shadow-color;
+    border-radius: 10px;
+    width: 150px;
+    max-height: 200px;
+    height: calc(100% - 52px);
+    z-index: $share-box-z-index;
+    transform: translateX(110%);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    box-sizing: border-box;
+
+    .ul {
+      height: 100%;
+      padding: 10px 0;
+      box-sizing: border-box;
+      overflow-y: scroll;
+
+      .li {
+        display: flex;
+        height: 40px;
+        align-items: center;
+        gap: 10px;
+
+        .name {
+          font-size: 14px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+
+    .img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      aspect-ratio: 1;
+    }
+  }
+
+  .show-share-box {
+    transform: translateX(0);
+  }
 
   .header {
     display: flex;

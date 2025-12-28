@@ -74,7 +74,8 @@ emitter.on('EVENT:UPDATE_USER_POST_LIST', async (p_id: string) => {
     userCollectedPostMap.value.set(p_id, res.data.data[0])
   }
 
-  if (route.path.startsWith(RouterPath.user)) {
+  const route = getCurrentRoute()
+  if (route === RouterPath.user) {
     emitter.emit('EVENT:TOGGLE_FLAG')
   }
 })
