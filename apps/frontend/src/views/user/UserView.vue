@@ -145,6 +145,7 @@ function resetData() {
 watch(
   () => route.params.userId,
   () => {
+    if (!route.params.userId) return
     resetData()
     init(route.params?.userId as string)
   },
