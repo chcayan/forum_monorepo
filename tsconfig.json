@@ -3,7 +3,7 @@
     "baseUrl": ".",
     "module": "esnext",
     "target": "esnext",
-    "types": [],
+    "types": ["node"],
     "lib": ["esnext"],
     "sourceMap": true,
     "declaration": true,

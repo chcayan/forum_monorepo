@@ -7,6 +7,7 @@ import globals from 'globals'
 import eslintConfigPrettier from 'eslint-config-prettier/flat'
 import pluginVue from 'eslint-plugin-vue'
 import vueParser from 'vue-eslint-parser'
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 
 const config: Linter.Config[] = defineConfig(
   // 通用
@@ -57,6 +58,33 @@ const config: Linter.Config[] = defineConfig(
       globals: {
         ...globals.node,
       },
+    },
+  },
+
+  // backend-by-nest
+  {
+    files: ['apps/backend-by-nest/**/*.{ts,js}'],
+    extends: [
+      eslint.configs.recommended,
+      ...tseslint.configs.recommendedTypeChecked,
+      eslintPluginPrettierRecommended,
+    ],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.jest,
+      },
+      sourceType: 'commonjs',
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-floating-promises': 'warn',
+      '@typescript-eslint/no-unsafe-argument': 'warn',
+      'prettier/prettier': ['error', { endOfLine: 'auto' }],
     },
   },
 
