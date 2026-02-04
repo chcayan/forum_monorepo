@@ -24,8 +24,8 @@ export class Post {
   @Column()
   pContent!: string;
 
-  @Column()
-  pImages!: string;
+  @Column({ type: 'json', default: '[]' })
+  pImages!: string[];
 
   @Column()
   publishTime!: Date;

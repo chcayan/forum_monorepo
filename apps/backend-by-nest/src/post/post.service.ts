@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
-import { UpdatePostDto } from './dto/update-post.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
-import { Repository } from 'typeorm';
+import { Brackets, Repository } from 'typeorm';
 import { PostAlias, PostFields } from './post.constant';
 import { UserAlias, UserFields } from 'src/user/user.constant';
+import { SearchPostDTO } from './dto/search-post.dto';
 
 @Injectable()
 export class PostService {
@@ -15,8 +14,39 @@ export class PostService {
     private postRepository: Repository<Post>,
   ) {}
 
-  create(createPostDto: CreatePostDto) {
-    return 'This action adds a new post';
+  async create(dto: CreatePostDto, userId: string) {
+    const lastPost = await this.postRepository
+      .createQueryBuilder(PostAlias)
+      .orderBy(PostFields.pId, 'DESC')
+      .getOne();
+
+    let nextId = 'p00000';
+    if (lastPost) {
+      const num = parseInt(lastPost.pId.slice(1)) + 1;
+      nextId = `p${num.toString().padStart(5, '0')}`;
+    }
+
+    const post = this.postRepository.create({
+      pId: nextId,
+      pContent: dto.content,
+      isPublic: dto.isPublic,
+      pImages: [],
+      userId: userId,
+    });
+
+    await this.postRepository.save(post);
+  }
+
+  async addImage(pId: string, imagePath: string) {
+    await this.postRepository
+      .createQueryBuilder()
+      .update(Post)
+      .set({
+        pImages: () =>
+          `JSON_ARRAY_APPEND(IFNULL(p_images, JSON_ARRAY()), '$', '${imagePath}')`,
+      })
+      .where('p_id = :pId', { pId })
+      .execute();
   }
 
   async find(page: number, pageSize: number) {
@@ -43,15 +73,67 @@ export class PostService {
     //   take: pageSize,
     // });
 
-    return { data: formattedList, total };
+    return { list: formattedList, total };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} post`;
+  async search(dto: SearchPostDTO) {
+    const qb = this.postRepository.createQueryBuilder(PostAlias);
+    const [list, total] = await qb
+      .leftJoin(PostFields.user, UserAlias)
+      .addSelect([UserFields.userAvatar, UserFields.username])
+      .where(`${PostFields.isPublic} = :isPublic`, {
+        isPublic: 'true',
+      })
+      .andWhere(`${PostFields.pContent} like :result`, {
+        result: `%${dto.result}%`,
+      })
+      .orderBy(PostFields.publishTime, 'DESC')
+      .skip((dto.page - 1) * dto.limit)
+      .take(dto.limit)
+      .getManyAndCount();
+
+    const formattedList = list.map(({ user, ...post }) => ({
+      ...post,
+      username: user?.username,
+      userAvatar: user?.userAvatar,
+    }));
+
+    return { list: formattedList, total };
   }
 
-  update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
+  async findOne(pId: string, userId: string | null) {
+    const qb = this.postRepository.createQueryBuilder(PostAlias);
+    qb.leftJoin(PostFields.user, UserAlias)
+      .addSelect([UserFields.userAvatar, UserFields.username])
+      .where(`${PostFields.pId} = :pId`, { pId });
+
+    // 访问权限控制
+    if (userId) {
+      qb.andWhere(
+        new Brackets((qb) => {
+          qb.where(`${PostFields.isPublic} = :isPublic`, {
+            isPublic: 'true',
+          }).orWhere(`${PostFields.userId} = :userId`, { userId });
+        }),
+      );
+    } else {
+      qb.andWhere(`${PostFields.isPublic} = :isPublic`, { isPublic: 'true' });
+    }
+    const post = await qb.getOne();
+
+    if (!post) return null;
+
+    const { user, ...rest } = post;
+    return {
+      ...rest,
+      userId: user?.userId,
+      username: user?.username,
+      userAvatar: user?.userAvatar,
+    };
+  }
+
+  async updateViewCount(pId: string) {
+    await this.postRepository.increment({ pId }, 'pViewCount', 1);
   }
 
   remove(id: number) {
