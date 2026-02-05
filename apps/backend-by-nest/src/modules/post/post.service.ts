@@ -1,11 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { CreatePostDto } from './dto/create-post.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
 import { Brackets, Repository } from 'typeorm';
 import { PostAlias, PostFields } from './post.constant';
-import { UserAlias, UserFields } from 'src/user/user.constant';
-import { SearchPostDTO } from './dto/search-post.dto';
+import { UserAlias, UserFields } from 'src/modules/user/user.constant';
 
 @Injectable()
 export class PostService {
@@ -14,7 +12,7 @@ export class PostService {
     private postRepository: Repository<Post>,
   ) {}
 
-  async create(dto: CreatePostDto, userId: string) {
+  async create(content: string, isPublic: string, userId: string) {
     const lastPost = await this.postRepository
       .createQueryBuilder(PostAlias)
       .orderBy(PostFields.pId, 'DESC')
@@ -28,8 +26,8 @@ export class PostService {
 
     const post = this.postRepository.create({
       pId: nextId,
-      pContent: dto.content,
-      isPublic: dto.isPublic,
+      pContent: content,
+      isPublic: isPublic,
       pImages: [],
       userId: userId,
     });
@@ -54,6 +52,9 @@ export class PostService {
     const [list, total] = await qb
       .leftJoin(PostFields.user, UserAlias)
       .addSelect([UserFields.userAvatar, UserFields.username])
+      .where(`${PostFields.isPublic} = :isPublic`, {
+        isPublic: 'true',
+      })
       .orderBy(PostFields.publishTime, 'DESC')
       .skip((page - 1) * pageSize)
       .take(pageSize)
@@ -76,7 +77,7 @@ export class PostService {
     return { list: formattedList, total };
   }
 
-  async search(dto: SearchPostDTO) {
+  async search(result: string, page: number, pageSize: number) {
     const qb = this.postRepository.createQueryBuilder(PostAlias);
     const [list, total] = await qb
       .leftJoin(PostFields.user, UserAlias)
@@ -85,11 +86,11 @@ export class PostService {
         isPublic: 'true',
       })
       .andWhere(`${PostFields.pContent} like :result`, {
-        result: `%${dto.result}%`,
+        result: `%${result}%`,
       })
       .orderBy(PostFields.publishTime, 'DESC')
-      .skip((dto.page - 1) * dto.limit)
-      .take(dto.limit)
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
       .getManyAndCount();
 
     const formattedList = list.map(({ user, ...post }) => ({
@@ -121,7 +122,7 @@ export class PostService {
     }
     const post = await qb.getOne();
 
-    if (!post) return null;
+    if (!post) throw new NotFoundException('帖子不可见或已删除');
 
     const { user, ...rest } = post;
     return {

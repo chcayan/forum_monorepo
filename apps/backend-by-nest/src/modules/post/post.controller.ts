@@ -31,7 +31,7 @@ export class PostController {
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() dto: CreatePostDto, @Req() req: AuthRequest) {
-    await this.postService.create(dto, req.user.id);
+    await this.postService.create(dto.content, dto.isPublic, req.user.id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -39,7 +39,7 @@ export class PostController {
   @UseInterceptors(FileInterceptor('postImages', uploadOptions))
   async uploadImage(
     @Body() dto: UploadImageDto,
-    @UploadedFile() file: { filename: string },
+    @UploadedFile() file: Express.Multer.File,
   ) {
     if (!file) return;
     const imagePath = `/uploads/${file?.filename}`;
@@ -51,22 +51,22 @@ export class PostController {
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
   ) {
-    return this.postService.find(+page, +limit);
+    return this.postService.find(page, limit);
   }
 
   @Get('search')
   async search(@Query() dto: SearchPostDTO) {
-    return this.postService.search(dto);
+    return this.postService.search(dto.result, dto.page, dto.limit);
   }
 
   @Patch('/view/:postId')
-  updateViewCount(@Param('postId') postId: string) {
+  async updateViewCount(@Param('postId') postId: string) {
     return this.postService.updateViewCount(postId);
   }
 
   @UseGuards(OptionalJwtAuthGuard)
   @Get(':postId')
-  findOne(
+  async findOne(
     @Param('postId') postId: string,
     @OptionalUser() userId: string | null,
   ) {

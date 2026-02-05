@@ -1,4 +1,4 @@
-import { Post } from 'src/post/entities/post.entity';
+import { Post } from 'src/modules/post/entities/post.entity';
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 
 @Entity('users')
@@ -15,7 +15,7 @@ export class User {
   @Column()
   userEmail!: string;
 
-  @Column()
+  @Column({ select: false })
   userPassword!: string;
 
   @Column()
