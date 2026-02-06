@@ -5,12 +5,15 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
+import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import bcrypt from 'bcryptjs';
-import { JwtService } from '@nestjs/jwt';
-import { UserAlias, UserFields } from './user.constant';
+
+import { User } from './entities/user.entity';
 import { Post } from '../post/entities/post.entity';
+import { Collection } from './entities/collection.entity';
+
+import { UserAlias, UserFields } from './user.constant';
 import { PostAlias, PostFields } from '../post/post.constant';
 
 @Injectable()
@@ -18,6 +21,8 @@ export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
+    @InjectRepository(Collection)
+    private readonly collectionRepository: Repository<Collection>,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -111,6 +116,67 @@ export class UserService {
     }));
 
     return { list: formattedList, total };
+  }
+
+  async findUserCollectedPost(
+    viewerId: string,
+    page: number,
+    pageSize: number,
+    userId?: string,
+  ) {
+    console.log(userId);
+    const qb = this.collectionRepository
+      .createQueryBuilder('c')
+      .leftJoin('post', 'p', 'c.p_id = p.p_id')
+      .leftJoin('users', 'u', 'p.user_id = u.user_id')
+      .leftJoin(
+        'collection',
+        'c2',
+        'c2.p_id = c.p_id AND c2.user_id = :userId',
+        { userId },
+      )
+      .where('c.user_id = :viewerId', { viewerId })
+      .andWhere('(p.is_public = :isPublic OR p.user_id = :userId)', {
+        isPublic: 'true',
+        userId,
+      })
+      .select([
+        'p.p_id AS p_id',
+        'p.user_id AS user_id',
+        'p.p_view_count AS p_view_count',
+        'p.p_collect_count AS p_collect_count',
+        'p.p_share_count AS p_share_count',
+        'p.p_comment_count AS p_comment_count',
+        'p.p_content AS p_content',
+        'p.p_images AS p_images',
+        'p.is_public AS is_public',
+        'p.publish_time AS publish_time',
+        'u.user_avatar AS user_avatar',
+        'u.username AS username',
+      ])
+      .orderBy('c.collect_time', 'DESC')
+      .skip((page - 1) * pageSize)
+      .take(pageSize);
+
+    const list = await qb.getRawMany();
+
+    const total = await this.collectionRepository
+      .createQueryBuilder('c')
+      .leftJoin('post', 'p', 'c.p_id = p.p_id')
+      .leftJoin(
+        'collection',
+        'c2',
+        'c2.p_id = c.p_id AND c2.user_id = :userId',
+        { userId },
+      )
+      .where('c.user_id = :viewerId', { viewerId })
+      .andWhere('(p.is_public = :isPublic OR p.user_id = :userId)', {
+        isPublic: 'true',
+        userId,
+      })
+      .getCount();
+
+    return { list, total };
   }
 
   async update(

@@ -18,6 +18,7 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { uploadOptions } from 'src/common/config/upload.config';
 import { OptionalUser } from 'src/common/decorator/optional-user.decorator';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { OptionalJwtAuthGuard } from 'src/common/guard/optional-jwt-auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -40,6 +41,22 @@ export class UserController {
     @Query('limit', ParseIntPipe) limit: number,
   ) {
     return this.userService.findUserPost(userId, page, limit);
+  }
+
+  @Get('collect/:viewerId')
+  @UseGuards(OptionalJwtAuthGuard)
+  async findUserCollectedPost(
+    @Param('viewerId') viewerId: string,
+    @Query('page', ParseIntPipe) page: number,
+    @Query('limit', ParseIntPipe) limit: number,
+    @OptionalUser() userId: string,
+  ) {
+    return this.userService.findUserCollectedPost(
+      viewerId,
+      page,
+      limit,
+      userId,
+    );
   }
 
   @Get(':id')
