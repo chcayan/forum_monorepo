@@ -4,12 +4,15 @@ import { Post } from './entities/post.entity';
 import { Brackets, Repository } from 'typeorm';
 import { PostAlias, PostFields } from './post.constant';
 import { UserAlias, UserFields } from 'src/modules/user/user.constant';
+import { Comment } from './entities/comment.entity';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(Post)
-    private postRepository: Repository<Post>,
+    private readonly postRepository: Repository<Post>,
+    @InjectRepository(Comment)
+    private readonly commentRepository: Repository<Comment>,
   ) {}
 
   async create(content: string, isPublic: string, userId: string) {
@@ -134,10 +137,51 @@ export class PostService {
   }
 
   async updateViewCount(pId: string) {
-    await this.postRepository.increment({ pId }, 'pViewCount', 1);
+    const result = await this.postRepository.increment(
+      { pId },
+      'pViewCount',
+      1,
+    );
+
+    if (result.affected === 0) {
+      throw new NotFoundException('帖子不存在');
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} post`;
+  async publishComment(userId: string, postId: string, content: string) {
+    const exist = await this.postRepository.findOne({
+      where: { pId: postId },
+    });
+
+    if (!exist) {
+      throw new NotFoundException('未找到该帖子');
+    }
+
+    const comment = this.commentRepository.create({
+      userId,
+      pId: postId,
+      cContent: content,
+    });
+
+    await this.commentRepository.save(comment);
+  }
+
+  async findCommentsByPostId(postId: string) {
+    return this.commentRepository
+      .createQueryBuilder('c')
+      .select([
+        'c.comment_id AS commentId',
+        'c.user_id AS userId',
+        'c.p_id AS pId',
+        'c.c_content AS content',
+        'c.created_time AS createdTime',
+        'u.user_avatar AS userAvatar',
+        'u.username AS username',
+      ])
+      .leftJoin('post', 'p', 'c.p_id = p.p_id')
+      .leftJoin('users', 'u', 'c.user_id = u.user_id')
+      .where('c.p_id = :postId', { postId })
+      .orderBy('c.created_time', 'DESC')
+      .getRawMany();
   }
 }

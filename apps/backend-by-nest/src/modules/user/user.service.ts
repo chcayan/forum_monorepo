@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import bcrypt from 'bcryptjs';
 
 import { User } from './entities/user.entity';
@@ -15,6 +15,7 @@ import { Collection } from './entities/collection.entity';
 
 import { UserAlias, UserFields } from './user.constant';
 import { PostAlias, PostFields } from '../post/post.constant';
+import { Follow } from './entities/follow.entity';
 
 @Injectable()
 export class UserService {
@@ -23,6 +24,8 @@ export class UserService {
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
     @InjectRepository(Collection)
     private readonly collectionRepository: Repository<Collection>,
+    @InjectRepository(Follow)
+    private readonly followRepository: Repository<Follow>,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -93,7 +96,7 @@ export class UserService {
     return result;
   }
 
-  async findUserPost(userId: string, page: number, pageSize: number) {
+  async findUserPostByUserId(userId: string, page: number, pageSize: number) {
     const qb = this.postRepository.createQueryBuilder(PostAlias);
     const [list, total] = await qb
       .leftJoin(PostFields.user, UserAlias)
@@ -118,13 +121,12 @@ export class UserService {
     return { list: formattedList, total };
   }
 
-  async findUserCollectedPost(
+  async findCollectedPostByViewerId(
     viewerId: string,
     page: number,
     pageSize: number,
     userId?: string,
   ) {
-    console.log(userId);
     const qb = this.collectionRepository
       .createQueryBuilder('c')
       .leftJoin('post', 'p', 'c.p_id = p.p_id')
@@ -179,6 +181,223 @@ export class UserService {
     return { list, total };
   }
 
+  async findCollectedPostIdsByViewerId(userId: string) {
+    const rows: { p_id: string }[] = (await this.collectionRepository
+      .createQueryBuilder('c')
+      .select('c.p_id', 'p_id')
+      .innerJoin('post', 'p', 'p.p_id = c.p_id')
+      .where('c.user_id = :userId', { userId })
+      .andWhere('(p.is_public = :isPublic OR p.user_id = :userId)', {
+        isPublic: 'true',
+        userId,
+      })
+      .getRawMany()) as unknown as { p_id: string }[];
+
+    return rows.map((item) => item.p_id);
+  }
+
+  async addCollect(userId: string, postId: string) {
+    const existPost = await this.postRepository.findOne({
+      where: { pId: postId },
+    });
+
+    if (!existPost) {
+      throw new NotFoundException('未找到该帖子');
+    }
+
+    const existCollect = await this.collectionRepository.findOne({
+      where: { userId, pId: postId },
+    });
+
+    if (existCollect) {
+      throw new ConflictException('已收藏');
+    }
+
+    const collection = this.collectionRepository.create({
+      userId,
+      pId: postId,
+    });
+
+    await this.collectionRepository.save(collection);
+  }
+
+  async delCollect(userId: string, postId: string) {
+    const existPost = await this.postRepository.findOne({
+      where: { pId: postId },
+    });
+
+    if (!existPost) {
+      throw new NotFoundException('未找到该帖子');
+    }
+
+    const existCollect = await this.collectionRepository.findOne({
+      where: { userId, pId: postId },
+    });
+
+    if (!existCollect) {
+      throw new ConflictException('未收藏');
+    }
+
+    await this.collectionRepository.delete({
+      userId,
+      pId: postId,
+    });
+  }
+
+  async delPost(userId: string, postId: string) {
+    const existPost = await this.postRepository.findOne({
+      where: { userId, pId: postId },
+    });
+
+    if (!existPost) {
+      throw new NotFoundException('未找到该帖子');
+    }
+
+    await this.postRepository.delete({
+      userId,
+      pId: postId,
+    });
+  }
+
+  async setPostPublic(userId: string, postId: string) {
+    const existPost = await this.postRepository.findOne({
+      where: { userId, pId: postId },
+    });
+
+    if (!existPost) {
+      throw new NotFoundException('未找到该帖子');
+    }
+
+    await this.postRepository.update(
+      { pId: postId, userId },
+      { isPublic: 'true' },
+    );
+  }
+
+  async setPostPrivate(userId: string, postId: string) {
+    const existPost = await this.postRepository.findOne({
+      where: { userId, pId: postId },
+    });
+
+    if (!existPost) {
+      throw new NotFoundException('未找到该帖子');
+    }
+
+    await this.postRepository.update(
+      { pId: postId, userId },
+      { isPublic: 'false' },
+    );
+  }
+
+  async findUserFriend(userId: string) {
+    return this.followRepository
+      .createQueryBuilder('f1')
+      .select([
+        'f1.userId AS userId',
+        'f1.followId AS followId',
+        'u.username AS username',
+        'u.userAvatar AS userAvatar',
+      ])
+      .innerJoin(
+        'follows',
+        'f2',
+        'f1.followId = f2.userId AND f2.followId = :userId',
+        { userId },
+      )
+      .leftJoin('users', 'u', 'f1.followId = u.userId')
+      .where('f1.userId = :userId', { userId })
+      .getRawMany();
+  }
+
+  async addFollow(userId: string, followId: string) {
+    const existUser = await this.userRepository.findOne({
+      where: { userId: followId },
+    });
+
+    if (!existUser) {
+      throw new NotFoundException('未找到该用户');
+    }
+
+    const existFollow = await this.followRepository.findOne({
+      where: { userId, followId },
+    });
+
+    if (existFollow) {
+      throw new ConflictException('已关注');
+    }
+
+    const follow = this.followRepository.create({
+      userId,
+      followId,
+    });
+
+    await this.followRepository.save(follow);
+  }
+
+  async delFollow(userId: string, followId: string) {
+    const existUser = await this.userRepository.findOne({
+      where: { userId: followId },
+    });
+
+    if (!existUser) {
+      throw new NotFoundException('未找到该用户');
+    }
+
+    const existFollow = await this.followRepository.findOne({
+      where: { userId, followId },
+    });
+
+    if (!existFollow) {
+      throw new ConflictException('未关注');
+    }
+
+    await this.followRepository.delete({
+      userId,
+      followId,
+    });
+  }
+
+  async search(keyword: string) {
+    return this.userRepository.find({
+      select: {
+        userId: true,
+        username: true,
+        userAvatar: true,
+      },
+      where: {
+        username: Like(`%${keyword}%`),
+      },
+    });
+  }
+
+  async findUserFollows(userId: string) {
+    return this.followRepository
+      .createQueryBuilder('f')
+      .select([
+        'f.user_id AS userId',
+        'f.follow_id AS followId',
+        'u.username AS username',
+        'u.user_avatar AS userAvatar',
+      ])
+      .leftJoin('users', 'u', 'f.follow_id = u.user_id')
+      .where('f.user_id = :userId', { userId })
+      .getRawMany();
+  }
+
+  async findUserFans(userId: string) {
+    return this.followRepository
+      .createQueryBuilder('f')
+      .select([
+        'f.user_id AS userId',
+        'f.follow_id AS followId',
+        'u.username AS username',
+        'u.user_avatar AS userAvatar',
+      ])
+      .leftJoin('users', 'u', 'f.user_id = u.user_id')
+      .where('f.follow_id = :userId', { userId })
+      .getRawMany();
+  }
+
   async update(
     userId: string,
     username: string,
@@ -204,9 +423,5 @@ export class UserService {
     }
 
     await this.userRepository.update({ userId }, updateData);
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
   }
 }

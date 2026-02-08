@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   Query,
   ParseIntPipe,
   UseGuards,
@@ -23,6 +22,7 @@ import type { AuthRequest } from 'src/common/interface/auth-request.interface';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadImageDto } from './dto/upload-image.dto';
 import { uploadOptions } from 'src/common/config/upload.config';
+import { CommentDto } from './dto/comment.dto';
 
 @Controller('post')
 export class PostController {
@@ -64,6 +64,20 @@ export class PostController {
     return this.postService.updateViewCount(postId);
   }
 
+  @Post('comment')
+  @UseGuards(JwtAuthGuard)
+  async publishComment(
+    @OptionalUser() userId: string,
+    @Body() dto: CommentDto,
+  ) {
+    return this.postService.publishComment(userId, dto.postId, dto.content);
+  }
+
+  @Get('comment/:postId')
+  async findCommentsByPostId(@Param('postId') postId: string) {
+    return this.postService.findCommentsByPostId(postId);
+  }
+
   @UseGuards(OptionalJwtAuthGuard)
   @Get(':postId')
   async findOne(
@@ -71,10 +85,5 @@ export class PostController {
     @OptionalUser() userId: string | null,
   ) {
     return this.postService.findOne(postId, userId);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postService.remove(+id);
   }
 }

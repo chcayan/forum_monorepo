@@ -14,6 +14,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { Post } from './modules/post/entities/post.entity';
 import { User } from './modules/user/entities/user.entity';
 import { Collection } from './modules/user/entities/collection.entity';
+import { Follow } from './modules/user/entities/follow.entity';
+import { Comment } from './modules/post/entities/comment.entity';
 
 @Module({
   imports: [
@@ -32,7 +34,7 @@ import { Collection } from './modules/user/entities/collection.entity';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       charset: 'utf8mb4',
-      entities: [Post, User, Collection],
+      entities: [Post, User, Collection, Follow, Comment],
       namingStrategy: new SnakeNamingStrategy(),
     }),
     PostModule,
