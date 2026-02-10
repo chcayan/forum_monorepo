@@ -1,5 +1,13 @@
 import { Post } from 'src/modules/post/entities/post.entity';
-import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  PrimaryColumn,
+} from 'typeorm';
+import { Permission } from './permission.entity';
 
 @Entity('users')
 export class User {
@@ -36,6 +44,29 @@ export class User {
   @Column()
   backgroundImg!: string;
 
+  @Column()
+  userPermMask!: number;
+
+  @Column()
+  adminPermMask!: number;
+
+  @Column()
+  permVersion!: number;
+
   @OneToMany(() => Post, (post) => post.user)
   posts!: Post[];
+
+  @ManyToMany(() => Permission, (perm) => perm.users)
+  @JoinTable({
+    name: 'user_permission',
+    joinColumn: {
+      name: 'user_id',
+      referencedColumnName: 'userId',
+    },
+    inverseJoinColumn: {
+      name: 'permission_id',
+      referencedColumnName: 'id',
+    },
+  })
+  perms!: Permission[];
 }

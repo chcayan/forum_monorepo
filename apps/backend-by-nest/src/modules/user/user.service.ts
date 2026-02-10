@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
-import { Like, Repository } from 'typeorm';
+import { DataSource, Like, Repository } from 'typeorm';
 import bcrypt from 'bcryptjs';
 
 import { User } from './entities/user.entity';
@@ -16,6 +16,7 @@ import { Collection } from './entities/collection.entity';
 import { UserAlias, UserFields } from './user.constant';
 import { PostAlias, PostFields } from '../post/post.constant';
 import { Follow } from './entities/follow.entity';
+import { UserPermission } from './entities/user-permission.entity';
 
 @Injectable()
 export class UserService {
@@ -27,6 +28,7 @@ export class UserService {
     @InjectRepository(Follow)
     private readonly followRepository: Repository<Follow>,
     private readonly jwtService: JwtService,
+    private readonly dataSource: DataSource,
   ) {}
 
   async login(email: string, password: string) {
@@ -84,6 +86,19 @@ export class UserService {
     });
 
     await this.userRepository.save(newUser);
+
+    const permIds = [1, 2, 3];
+
+    await this.dataSource.transaction(async (manager) => {
+      const userPermissions = permIds.map((id) =>
+        manager.create(UserPermission, {
+          userId: nextId,
+          permissionId: id,
+        }),
+      );
+
+      await manager.insert(UserPermission, userPermissions);
+    });
   }
 
   async findOne(userId: string) {

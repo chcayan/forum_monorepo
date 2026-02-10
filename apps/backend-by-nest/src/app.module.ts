@@ -11,6 +11,7 @@ import { PostModule } from './modules/post/post.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ChatModule } from './modules/chat/chat.module';
+import { AdminModule } from './modules/admin/admin.module';
 
 import { Post } from './modules/post/entities/post.entity';
 import { User } from './modules/user/entities/user.entity';
@@ -18,6 +19,8 @@ import { Collection } from './modules/user/entities/collection.entity';
 import { Follow } from './modules/user/entities/follow.entity';
 import { Comment } from './modules/post/entities/comment.entity';
 import { Chat } from './modules/chat/entities/chat.entity';
+import { Permission } from './modules/user/entities/permission.entity';
+import { UserPermission } from './modules/user/entities/user-permission.entity';
 
 @Module({
   imports: [
@@ -36,13 +39,23 @@ import { Chat } from './modules/chat/entities/chat.entity';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       charset: 'utf8mb4',
-      entities: [Post, User, Collection, Follow, Comment, Chat],
+      entities: [
+        Post,
+        User,
+        Collection,
+        Follow,
+        Comment,
+        Chat,
+        Permission,
+        UserPermission,
+      ],
       namingStrategy: new SnakeNamingStrategy(),
     }),
     PostModule,
     UserModule,
     AuthModule,
     ChatModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],

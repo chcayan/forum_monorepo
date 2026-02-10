@@ -13,6 +13,7 @@
     "prepare": "husky",
     "precommit": "lint-staged",
     "dev": "concurrently \"pnpm --filter utils build\" \"pnpm --filter backend dev\" \"pnpm --filter frontend dev\"",
+    "dev-nest": "concurrently  \"pnpm --filter backend-by-nest start:dev\" \"pnpm --filter frontend dev\"",
     "upload": "pnpm --filter utils build && pnpm --filter backend build && pnpm --filter frontend build && bash ./script/upload.sh"
   },
   "config": {
