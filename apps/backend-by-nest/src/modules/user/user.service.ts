@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -17,6 +18,7 @@ import { UserAlias, UserFields } from './user.constant';
 import { PostAlias, PostFields } from '../post/post.constant';
 import { Follow } from './entities/follow.entity';
 import { UserPermission } from './entities/user-permission.entity';
+import { UserPermissionBit } from '../auth/auth.bit';
 
 @Injectable()
 export class UserService {
@@ -42,6 +44,11 @@ export class UserService {
       throw new UnauthorizedException('用户不存在');
     }
 
+    const userPermMask = user.userPermMask;
+    if ((userPermMask & UserPermissionBit.LOGIN) === 0) {
+      throw new ForbiddenException('账号封禁中');
+    }
+
     const isMatch = await bcrypt.compare(password, user.userPassword);
 
     if (!isMatch) {
@@ -50,6 +57,9 @@ export class UserService {
 
     const token = this.jwtService.sign({
       id: user.userId,
+      userPermMask: user.userPermMask,
+      adminPermMask: user.adminPermMask,
+      permVersion: user.permVersion,
     });
 
     return { token };

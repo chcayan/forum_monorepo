@@ -18,23 +18,11 @@ export const UserPermissionCodeToIdMap: Record<string, number> = {
   user_login: 3,
 };
 
-export interface UserPermissionCodeToIdMapInterface {
-  user_speak: number;
-  user_post: number;
-  user_login: number;
-}
-
 export const AdminPermissionCodeToIdMap: Record<string, number> = {
   audit_post: 4,
   edit_post: 5,
   edit_user: 6,
 };
-
-export interface AdminPermissionCodeToIdMapInterface {
-  audit_post: number;
-  edit_post: number;
-  edit_user: number;
-}
 
 export const UserPermissionIdToBitMap: Record<number, UserPermissionBit> = {
   1: UserPermissionBit.SPEAK,

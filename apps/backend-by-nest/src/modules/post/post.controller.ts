@@ -23,19 +23,23 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadImageDto } from './dto/upload-image.dto';
 import { uploadOptions } from 'src/common/config/upload.config';
 import { CommentDto } from './dto/comment.dto';
+import { UserPermissionGuard } from 'src/common/guard/permission.guard';
+import { UserPermission } from 'src/common/decorator/permission.decorator';
 
 @Controller('post')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post()
+  @UseGuards(JwtAuthGuard, UserPermissionGuard)
+  @UserPermission('user_post')
   async create(@Body() dto: CreatePostDto, @Req() req: AuthRequest) {
     await this.postService.create(dto.content, dto.isPublic, req.user.id);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('upload-image')
+  @UseGuards(JwtAuthGuard, UserPermissionGuard)
+  @UserPermission('user_post')
   @UseInterceptors(FileInterceptor('postImages', uploadOptions))
   async uploadImage(
     @Body() dto: UploadImageDto,
@@ -65,7 +69,8 @@ export class PostController {
   }
 
   @Post('comment')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, UserPermissionGuard)
+  @UserPermission('user_speak')
   async publishComment(
     @OptionalUser() userId: string,
     @Body() dto: CommentDto,

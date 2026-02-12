@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Observable } from 'rxjs';
-import { Request } from 'express';
-import { JwtPayload } from '../interface/jwt-payload.interface';
+import type { JwtPayload } from '../interface/jwt-payload.interface';
+import { AuthRequest } from '../interface/auth-request.interface';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -16,7 +16,7 @@ export class JwtAuthGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const req = context.switchToHttp().getRequest<Request>();
+    const req = context.switchToHttp().getRequest<AuthRequest>();
     const authHeader = req.headers['authorization'];
 
     if (!authHeader) throw new UnauthorizedException('未登录');

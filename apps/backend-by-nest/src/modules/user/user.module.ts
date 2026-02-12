@@ -24,5 +24,6 @@ import { UserPermission } from './entities/user-permission.entity';
   ],
   controllers: [UserController],
   providers: [UserService],
+  exports: [UserService],
 })
 export class UserModule {}
