@@ -22,14 +22,14 @@ const postList = computed(() => Array.from(postMap.value.values()))
 const getPostList = async (page: number) => {
   const res = await getPostListAPI(page, limit)
 
-  const data: PostDetail[] = res.data.data
+  const data: PostDetail[] = res.data.data.list
 
   if (data.length < limit) {
     hasMore.value = false
   }
 
   for (const item of data) {
-    postMap.value.set(item.p_id, item)
+    postMap.value.set(item.pId, item)
   }
 }
 
@@ -39,7 +39,7 @@ emitter.on('EVENT:UPDATE_POST_LIST', async (p_id: string) => {
   try {
     const res = await getPostDetailAPI(p_id)
 
-    postMap.value.set(p_id, res.data.data[0])
+    postMap.value.set(p_id, res.data.data)
     if (route.path === RouterPath.base) {
       emitter.emit('EVENT:TOGGLE_FLAG')
     }

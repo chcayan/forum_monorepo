@@ -12,7 +12,19 @@ import { MessageDto } from './dto/message.dto';
 import { Server, Socket } from 'socket.io';
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 
-@WebSocketGateway()
+@WebSocketGateway({
+  cors: {
+    origin: (origin, callback) => {
+      const allowedOrigins = process.env.CORS_ORIGIN;
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
+  },
+})
 @UsePipes(
   new ValidationPipe({
     whitelist: true,

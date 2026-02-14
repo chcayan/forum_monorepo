@@ -23,17 +23,13 @@ const follow = async () => {
   if (!flag) return
   flag = false
   if (isFollow) {
-    await updateUserDelFollowAPI({
-      followId: route.params.userId as string,
-    }).catch()
+    await updateUserDelFollowAPI(route.params.userId as string).catch()
     Toast.show({
       msg: '已取消关注',
       type: 'success',
     })
   } else {
-    await updateUserAddFollowAPI({
-      followId: route.params.userId as string,
-    }).catch()
+    await updateUserAddFollowAPI(route.params.userId as string).catch()
     Toast.show({
       msg: '关注成功',
       type: 'success',

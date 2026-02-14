@@ -1,22 +1,33 @@
 // 帖子列表
 export interface PostInfo {
-  p_id: string
-  user_id: string
-  p_view_count: string
-  p_collect_count: string
-  p_share_count: string
-  p_comment_count: string
-  p_content: string
-  p_images: string
-  publish_time: string
-  user_avatar: string
+  pId: string
+  userId: string
+  pViewCount: string
+  pCollectCount: string
+  pShareCount: string
+  pCommentCount: string
+  pContent: string
+  pImages: string[]
+  status: 0 | 1 | 2
+  publishTime: string
+  userAvatar: string
   username: string
-  is_collected: number
 }
 
 export type PostTotal = { total: number }
 
 // 帖子详情
 export interface PostDetail extends PostInfo {
-  is_public: string
+  isPublic: string
+}
+
+// 评论列表
+export interface CommentList {
+  commentId: string
+  userId: string
+  pId: string
+  cContent: string
+  createdTime: string
+  userAvatar: string
+  username: string
 }

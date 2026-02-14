@@ -151,8 +151,13 @@ export class UserController {
   }
 
   @Get(':id')
-  findOne(@Param('id') userId: string) {
-    return this.userService.findOne(userId);
+  @UseGuards(OptionalJwtAuthGuard)
+  findOne(@Param('id') userId: string, @OptionalUser() id: string) {
+    let _userId: string = userId;
+    if (userId === 'self') {
+      _userId = id;
+    }
+    return this.userService.findOne(_userId);
   }
 
   @Post()

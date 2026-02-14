@@ -31,14 +31,14 @@ export const useUserStore = defineStore('user', () => {
   }
 
   const defaultUserInfo = {
-    user_id: '',
+    userId: '',
     username: '',
-    user_avatar: '',
-    user_email: '',
+    userAvatar: '',
+    userEmail: '',
     registration: '',
     follows: '',
     fans: '',
-    background_img: '',
+    backgroundImg: '',
     sex: '',
     signature: '',
   }
@@ -59,16 +59,14 @@ export const useUserStore = defineStore('user', () => {
   }
 
   const getUserInfo = async () => {
-    const res = await getUserInfoAPI()
-    userInfo.value = res.data.data[0]
+    const res = await getUserInfoAPI('self')
+    userInfo.value = res.data.data
   }
 
   const userCollectListOfPostId = ref<string[]>([])
 
   const getUserCollectListOfPostId = async () => {
-    const res = await getUserCollectPostIdListAPI({
-      creatorUserId: userInfo.value.user_id as string,
-    })
+    const res = await getUserCollectPostIdListAPI()
     const arr = res.data?.data ?? []
     userCollectListOfPostId.value = arr.map(
       (item: { p_id: string }) => item.p_id
@@ -79,9 +77,9 @@ export const useUserStore = defineStore('user', () => {
   const userFollowIdList = ref<string[]>([])
 
   const getUserFollowList = async (userId?: string) => {
-    const res = await getUserFollowsAPI(userId || userInfo.value.user_id)
+    const res = await getUserFollowsAPI(userId || userInfo.value.userId)
     const list = res.data.data as FriendInfo[]
-    userFollowIdList.value = list.map((user) => user.follow_id)
+    userFollowIdList.value = list.map((user) => user.followId)
   }
 
   const userFriendList = ref<FriendInfo[]>([])

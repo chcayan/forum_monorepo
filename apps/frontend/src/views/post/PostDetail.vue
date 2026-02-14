@@ -10,25 +10,25 @@ import emitter from '@/utils/eventEmitter'
 
 const route = useRoute()
 const postDetail = ref<PostDetail>({
-  is_public: '',
-  p_id: '',
-  user_id: '',
-  p_view_count: '',
-  p_collect_count: '',
-  p_share_count: '',
-  p_comment_count: '',
-  p_content: '',
-  p_images: '',
-  publish_time: '',
-  user_avatar: '',
+  isPublic: '',
+  pId: '',
+  userId: '',
+  pViewCount: '',
+  pCollectCount: '',
+  pShareCount: '',
+  pCommentCount: '',
+  pContent: '',
+  pImages: [],
+  publishTime: '',
+  status: 1,
+  userAvatar: '',
   username: '',
-  is_collected: 0,
 })
 
 const getPostDetail = async () => {
   const postId = route.params.postId as string
   const res = await getPostDetailAPI(postId)
-  postDetail.value = res.data.data[0]
+  postDetail.value = res.data.data
 }
 getPostDetail()
 
@@ -61,7 +61,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <article v-if="postDetail.p_id" class="post-detail">
+  <article v-if="postDetail.pId" class="post-detail">
     <header class="left">
       <PostCard :post="postDetail" :is-restrict-line="false" />
     </header>
@@ -75,7 +75,7 @@ onUnmounted(() => {
           class="tab-focus-outline-style"
           v-if="commentList?.length"
         >
-          <li v-for="comment in commentList" :key="comment.comment_id">
+          <li v-for="comment in commentList" :key="comment.commentId">
             <CommentCard :comment />
           </li>
         </ul>

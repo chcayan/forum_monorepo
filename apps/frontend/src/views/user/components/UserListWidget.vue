@@ -20,14 +20,14 @@ const userList = ref<FriendInfo[]>([])
 const route = useRoute()
 const getUserFollowList = async () => {
   const res = await getUserFollowsAPI(
-    (route.params?.userId as string) || userStore.userInfo.user_id
+    (route.params?.userId as string) || userStore.userInfo.userId
   )
   userList.value = res.data.data
 }
 
 const getUserFanList = async () => {
   const res = await getUserFansAPI(
-    (route.params?.userId as string) || userStore.userInfo.user_id
+    (route.params?.userId as string) || userStore.userInfo.userId
   )
   userList.value = res.data.data
 }
@@ -46,7 +46,7 @@ watch(
 )
 
 const navigateToUser = (userId: string) => {
-  if (userId === userStore.userInfo.user_id) {
+  if (userId === userStore.userInfo.userId) {
     router.push(RouterPath.my)
     return
   }
@@ -59,14 +59,12 @@ const navigateToUser = (userId: string) => {
   <ul v-if="showUserListWidget && userList.length" class="user-list-widget">
     <li
       v-for="user in userList"
-      :key="user.follow_id"
+      :key="user.followId"
       @click="
-        navigateToUser(
-          isFollowOrFan === 'follow' ? user.follow_id : user.user_id
-        )
+        navigateToUser(isFollowOrFan === 'follow' ? user.followId : user.userId)
       "
     >
-      <img :src="user.user_avatar" alt="avatar" />
+      <img :src="user.userAvatar" alt="avatar" />
       <div>{{ user.username }}</div>
     </li>
   </ul>

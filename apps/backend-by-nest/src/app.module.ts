@@ -21,6 +21,8 @@ import { Comment } from './modules/post/entities/comment.entity';
 import { Chat } from './modules/chat/entities/chat.entity';
 import { Permission } from './modules/user/entities/permission.entity';
 import { UserPermission } from './modules/user/entities/user-permission.entity';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -50,6 +52,10 @@ import { UserPermission } from './modules/user/entities/user-permission.entity';
         UserPermission,
       ],
       namingStrategy: new SnakeNamingStrategy(),
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'uploads'),
+      serveRoot: '/uploads',
     }),
     PostModule,
     UserModule,

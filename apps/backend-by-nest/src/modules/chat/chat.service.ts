@@ -30,6 +30,15 @@ export class ChatService {
   async findChatHistory(userId: string, followId: string) {
     return this.chatRepository
       .createQueryBuilder('m')
+      .select([
+        'm.msg_id AS msgId',
+        'm.sender AS sender',
+        'm.receiver AS receiver',
+        'm.content AS content',
+        'm.created_at AS createdAt',
+        'm.is_read AS isRead',
+        'm.is_share AS isShare',
+      ])
       .where(
         '(m.sender = :userId AND m.receiver = :followId) ' +
           'OR (m.sender = :followId AND m.receiver = :userId)',

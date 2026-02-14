@@ -4,10 +4,10 @@ import { onMounted, ref } from 'vue'
 const active = ref('')
 const parseImages = ref<Array<string>>([])
 const { images } = defineProps<{
-  images: string
+  images: string[]
 }>()
-
-parseImages.value = JSON.parse(images)
+// console.log(images)
+parseImages.value = images
 
 onMounted(() => {
   active.value = `size${parseImages.value.length}`

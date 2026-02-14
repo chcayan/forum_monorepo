@@ -111,7 +111,7 @@ const sendMessage = async (e: KeyboardEvent | PointerEvent) => {
   await userStore.getUserFriendList()
   if (
     !userStore.userFriendList
-      .map((friend) => friend.follow_id)
+      .map((friend) => friend.followId)
       .includes(currentFriendUserId.value)
   ) {
     Toast.show({
@@ -127,7 +127,7 @@ const sendMessage = async (e: KeyboardEvent | PointerEvent) => {
   }
 
   const payload = {
-    from: userStore.userInfo.user_id,
+    from: userStore.userInfo.userId,
     to: currentFriendUserId.value,
     message: msg,
   }
@@ -139,9 +139,9 @@ const sendMessage = async (e: KeyboardEvent | PointerEvent) => {
   }
 
   chatRecords[currentFriendUserId.value]?.push({
-    from: userStore.userInfo.user_id,
+    from: userStore.userInfo.userId,
     message: msg,
-    is_share: '0',
+    isShare: '0',
   })
   message.value = ''
 }
@@ -149,7 +149,7 @@ const sendMessage = async (e: KeyboardEvent | PointerEvent) => {
 type MsgType = {
   from: string
   message: string
-  is_share: '0' | '1'
+  isShare: '0' | '1'
 }
 const chatRecords = reactive<Record<string, MsgType[]>>({})
 const unreadCount = reactive<Record<string, any>>({})
@@ -159,18 +159,18 @@ socket.on(
   async ({
     from,
     message,
-    is_share,
+    isShare,
   }: {
     from: string
     message: string
-    is_share: '0' | '1'
+    isShare: '0' | '1'
   }) => {
     const el = messageBoxRef.value
     if (el) {
       el.style.scrollBehavior = 'smooth'
     }
     if (!chatRecords[from]) chatRecords[from] = []
-    chatRecords[from].push({ from, message, is_share })
+    chatRecords[from].push({ from, message, isShare })
 
     if (currentFriendUserId.value !== from) {
       unreadCount[from] = (unreadCount[from] || 0) + 1
@@ -178,7 +178,7 @@ socket.on(
 
     if (currentFriendUserId.value === from) {
       await markAsReadAPI({
-        from,
+        followId: from,
       })
       unreadCount[from] = 0
     }
@@ -192,7 +192,7 @@ watch(currentFriendUserId, async (friend) => {
   if (el) {
     el.style.scrollBehavior = 'auto'
   }
-  await markAsReadAPI({ from: friend })
+  await markAsReadAPI({ followId: friend })
   unreadCount[friend] = 0
 
   await getChatHistory(friend)
@@ -206,7 +206,7 @@ async function getChatHistory(friendId: string) {
   chatRecords[friendId] = history.map((msg: ChatInfo) => ({
     from: msg.sender,
     message: msg.content,
-    is_share: msg.is_share ?? '0',
+    isShare: msg.isShare ?? '0',
   }))
 }
 
@@ -259,7 +259,7 @@ watch(result, (val) => {
 })
 
 const navigateToUser = (userId: string) => {
-  if (userId === userStore.userInfo.user_id) {
+  if (userId === userStore.userInfo.userId) {
     router.push(RouterPath.my)
     return
   }
@@ -294,8 +294,8 @@ const onPikachuChat = () => {
         <ul class="search-list" v-if="showSearchBox && searchUserList.length">
           <li
             v-for="user in searchUserList"
-            :key="user.user_id"
-            @click="navigateToUser(user.user_id)"
+            :key="user.userId"
+            @click="navigateToUser(user.userId)"
             :title="user.username"
           >
             <img :src="user.user_avatar" alt="avatar" />
@@ -323,24 +323,24 @@ const onPikachuChat = () => {
         <li
           tabindex="0"
           class="tab-focus-style"
-          :class="{ active: friend.follow_id === currentFriendUserId }"
+          :class="{ active: friend.followId === currentFriendUserId }"
           v-for="friend in userStore.userFriendList"
-          :key="friend.follow_id"
+          :key="friend.followId"
           @click="
-            selectFriend(friend.username, friend.user_avatar, friend.follow_id)
+            selectFriend(friend.username, friend.userAvatar, friend.followId)
           "
           @keydown.enter="
-            selectFriend(friend.username, friend.user_avatar, friend.follow_id)
+            selectFriend(friend.username, friend.userAvatar, friend.followId)
           "
         >
-          <img :src="friend.user_avatar" alt="avatar" />
+          <img :src="friend.userAvatar" alt="avatar" />
           <div>{{ friend.username }}</div>
           <div
-            v-if="unreadCount[friend.follow_id]"
-            :title="`${unreadCount[friend.follow_id]}条消息未读`"
+            v-if="unreadCount[friend.followId]"
+            :title="`${unreadCount[friend.followId]}条消息未读`"
             class="unread-count"
           >
-            {{ unreadCount[friend.follow_id] }}
+            {{ unreadCount[friend.followId] }}
           </div>
         </li>
       </ul>
@@ -373,24 +373,24 @@ const onPikachuChat = () => {
           >
             <div
               class="user-chat"
-              v-if="msg.from === userStore.userInfo.user_id"
+              v-if="msg.from === userStore.userInfo.userId"
             >
               <span
-                v-if="msg.is_share === '0'"
+                v-if="msg.isShare === '0'"
                 v-html="lineBreakReplace(msg.message)"
               ></span>
               <div v-else class="post-msg">
                 <SharePost :post-id="msg.message" />
               </div>
-              <img :src="userStore.userInfo?.user_avatar" />
+              <img :src="userStore.userInfo?.userAvatar" />
             </div>
             <div
               class="follow-chat"
-              v-if="msg.from !== userStore.userInfo.user_id"
+              v-if="msg.from !== userStore.userInfo.userId"
             >
               <img :src="currentFriendAvatar" />
               <span
-                v-if="msg.is_share === '0'"
+                v-if="msg.isShare === '0'"
                 v-html="lineBreakReplace(msg.message)"
               ></span>
               <div v-else class="post-msg">

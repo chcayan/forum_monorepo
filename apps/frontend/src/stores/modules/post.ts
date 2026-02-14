@@ -5,41 +5,37 @@ import type { UserInfo } from '@forum-monorepo/types'
 
 export const usePostStore = defineStore('post', () => {
   const userInfo = ref<UserInfo>({
-    user_id: '',
+    userId: '',
     username: '',
-    user_avatar: '',
-    user_email: '',
+    userAvatar: '',
+    userEmail: '',
     registration: '',
     follows: '',
     fans: '',
-    background_img: '',
+    backgroundImg: '',
     sex: '',
     signature: '',
   })
 
   const getUserInfo = async (userId: string) => {
     userInfo.value = {
-      user_id: '',
+      userId: '',
       username: '',
-      user_avatar: '',
-      user_email: '',
+      userAvatar: '',
+      userEmail: '',
       registration: '',
       follows: '',
       fans: '',
-      background_img: '',
+      backgroundImg: '',
       sex: '',
       signature: '',
     }
-    const res = await getUserInfoAPI({
-      userId,
-    })
+    const res = await getUserInfoAPI(userId)
     userInfo.value = res.data.data[0]
   }
 
   const getUserInfoWithFans = async (userId: string) => {
-    const res = await getUserInfoAPI({
-      userId,
-    })
+    const res = await getUserInfoAPI(userId)
     userInfo.value = res.data.data[0]
   }
 

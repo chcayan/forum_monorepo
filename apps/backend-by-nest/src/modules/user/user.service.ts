@@ -13,11 +13,11 @@ import bcrypt from 'bcryptjs';
 import { User } from './entities/user.entity';
 import { Post } from '../post/entities/post.entity';
 import { Collection } from './entities/collection.entity';
+import { UserPermission } from './entities/user-permission.entity';
+import { Follow } from './entities/follow.entity';
 
 import { UserAlias, UserFields } from './user.constant';
 import { PostAlias, PostFields } from '../post/post.constant';
-import { Follow } from './entities/follow.entity';
-import { UserPermission } from './entities/user-permission.entity';
 import { UserPermissionBit } from '../auth/auth.bit';
 
 @Injectable()
@@ -57,9 +57,6 @@ export class UserService {
 
     const token = this.jwtService.sign({
       id: user.userId,
-      userPermMask: user.userPermMask,
-      adminPermMask: user.adminPermMask,
-      permVersion: user.permVersion,
     });
 
     return { token };
@@ -132,6 +129,9 @@ export class UserService {
       .andWhere(`${PostFields.isPublic} = :isPublic`, {
         isPublic: 'true',
       })
+      .andWhere(`${PostFields.status} = :status`, {
+        status: 1,
+      })
       .orderBy(PostFields.publishTime, 'DESC')
       .skip((page - 1) * pageSize)
       .take(pageSize)
@@ -167,18 +167,22 @@ export class UserService {
         isPublic: 'true',
         userId,
       })
+      .andWhere(`p.status = :status`, {
+        status: 1,
+      })
       .select([
-        'p.p_id AS p_id',
-        'p.user_id AS user_id',
-        'p.p_view_count AS p_view_count',
-        'p.p_collect_count AS p_collect_count',
-        'p.p_share_count AS p_share_count',
-        'p.p_comment_count AS p_comment_count',
-        'p.p_content AS p_content',
-        'p.p_images AS p_images',
-        'p.is_public AS is_public',
-        'p.publish_time AS publish_time',
-        'u.user_avatar AS user_avatar',
+        'p.p_id AS pId',
+        'p.user_id AS userId',
+        'p.p_view_count AS pViewCount',
+        'p.p_collect_count AS pCollectCount',
+        'p.p_share_count AS pShareCount',
+        'p.p_comment_count AS pCommentCount',
+        'p.p_content AS pContent',
+        'p.p_images AS pImages',
+        'p.is_public AS isPublic',
+        'p.status as status',
+        'p.publish_time AS publishTime',
+        'u.user_avatar AS userAvatar',
         'u.username AS username',
       ])
       .orderBy('c.collect_time', 'DESC')
@@ -201,6 +205,9 @@ export class UserService {
         isPublic: 'true',
         userId,
       })
+      .andWhere(`p.status = :status`, {
+        status: 1,
+      })
       .getCount();
 
     return { list, total };
@@ -215,6 +222,9 @@ export class UserService {
       .andWhere('(p.is_public = :isPublic OR p.user_id = :userId)', {
         isPublic: 'true',
         userId,
+      })
+      .andWhere(`p.status = :status`, {
+        status: 1,
       })
       .getRawMany()) as unknown as { p_id: string }[];
 

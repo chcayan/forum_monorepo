@@ -38,7 +38,9 @@ const publishPost = async () => {
     content: context.value as string,
     isPublic: isPublic.value ? 'true' : 'false',
     postImages: getPostImages(),
-  }).catch()
+  }).catch((err) => {
+    console.log(err)
+  })
 
   context.value = ''
   Toast.show({
@@ -47,7 +49,9 @@ const publishPost = async () => {
   })
 
   emitter.emit('EVENT:RESET_POST_IMAGES')
-  emitter.emit('EVENT:UPDATE_USER_POST_LIST', res.data.p_id, true)
+  emitter.emit('EVENT:UPDATE_USER_POST_LIST', res.p_id, true)
+
+  // TODO
   flag = true
 }
 

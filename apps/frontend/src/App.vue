@@ -18,7 +18,7 @@ async function initUserStatus() {
   await userStore.getUserInfo()
 
   // websocket
-  socket.emit('login', userStore.userInfo?.user_id)
+  socket.emit('login', userStore.userInfo?.userId)
 
   socket.on(
     'receiveMessage',
@@ -32,8 +32,8 @@ async function initUserStatus() {
       is_share: '0' | '1'
     }) => {
       if (route.path.startsWith(RouterPath.chat)) return
-      const res = await getUserInfoAPI({ userId: from })
-      const userInfo = res.data?.data[0] as userInfo
+      const res = await getUserInfoAPI(from)
+      const userInfo = res.data?.data as userInfo
       ChatToast.show({
         userId: userInfo.user_id,
         userAvatar: userInfo.user_avatar,

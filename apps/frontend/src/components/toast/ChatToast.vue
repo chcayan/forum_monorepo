@@ -62,7 +62,7 @@ const sendMessage = async (e: PointerEvent | KeyboardEvent) => {
   const msg = escapeHTML(sendMsg.value.trim())
 
   const payload = {
-    from: userStore.userInfo.user_id,
+    from: userStore.userInfo.userId,
     to: _userId.value,
     message: msg,
   }
@@ -70,7 +70,7 @@ const sendMessage = async (e: PointerEvent | KeyboardEvent) => {
   socket.emit('sendMessage', payload)
 
   await markAsReadAPI({
-    from: _userId.value,
+    followId: _userId.value,
   })
 
   sendMsg.value = ''

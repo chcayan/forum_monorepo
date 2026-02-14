@@ -5,7 +5,7 @@ import { request } from '@/utils'
  * @param followId 好友id
  */
 export function getChatHistoryAPI(followId: string) {
-  return request.get(`/chat/history?followId=${followId}`)
+  return request.get(`/chat/history/${followId}`)
 }
 
 /**
@@ -21,10 +21,10 @@ export function getChatUnreadAPI() {
  * @param data from: 好友id
  * @returns
  */
-export function markAsReadAPI(data: { from: string }) {
+export function markAsReadAPI(data: { followId: string }) {
   return request.post('/chat/mark-as-read', data)
 }
 
 export function getAiChatResultAPI(data: { prompt: string }) {
-  return request.post('/chat/ai/chat-mode', data)
+  return request.post('/chat/ai/result', data)
 }

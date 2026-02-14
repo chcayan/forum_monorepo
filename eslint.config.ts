@@ -8,6 +8,8 @@ import eslintConfigPrettier from 'eslint-config-prettier/flat'
 import pluginVue from 'eslint-plugin-vue'
 import vueParser from 'vue-eslint-parser'
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
 
 const config: Linter.Config[] = defineConfig(
   // 通用
@@ -48,6 +50,20 @@ const config: Linter.Config[] = defineConfig(
       globals: {
         ...globals.browser,
       },
+    },
+  },
+
+  // admin
+  {
+    files: ['apps/admin/**/*.{ts,js,tsx,jsx}'],
+    extends: [
+      tseslint.configs.recommended,
+      reactHooks.configs.flat.recommended,
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
     },
   },
 

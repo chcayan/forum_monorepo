@@ -34,7 +34,7 @@ export class PostController {
   @UseGuards(JwtAuthGuard, UserPermissionGuard)
   @UserPermission('user_post')
   async create(@Body() dto: CreatePostDto, @Req() req: AuthRequest) {
-    await this.postService.create(dto.content, dto.isPublic, req.user.id);
+    return this.postService.create(dto.content, dto.isPublic, req.user.id);
   }
 
   @Post('upload-image')

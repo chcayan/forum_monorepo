@@ -184,7 +184,7 @@ const statusStore = useStatusStore()
         <img
           v-loading
           loading="lazy"
-          :src="userStore.userInfo?.user_avatar"
+          :src="userStore.userInfo?.userAvatar"
           alt="avatar"
           @click="toggleWidgetVisible"
           :title="userStore.userInfo?.username"
@@ -197,7 +197,7 @@ const statusStore = useStatusStore()
             @focusout="handleFocusOut"
           >
             <p class="info">{{ userStore.userInfo?.username }}</p>
-            <p class="info">{{ userStore.userInfo?.user_email }}</p>
+            <p class="info">{{ userStore.userInfo?.userEmail }}</p>
             <button title="个人中心" @click="navigateToUser">
               <p class="btn">个人中心</p>
               <MySvg class="btn-icon" title="个人中心" />

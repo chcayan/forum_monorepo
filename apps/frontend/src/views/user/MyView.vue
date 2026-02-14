@@ -44,43 +44,43 @@ const userCollectedPostListPage = ref(1)
 
 const getUserPostList = async (page: number) => {
   const res = await getUserPostAPI({
-    creatorUserId: userStore.userInfo?.user_id as string,
+    userId: userStore.userInfo?.userId as string,
     page,
     limit,
   })
 
-  const data: PostDetail[] = res.data.data
+  const data: PostDetail[] = res.data.data.list
 
   if (data.length < limit) {
     upHasMore.value = false
   }
 
   for (const item of data) {
-    if (!userPostMap.value.has(item.p_id)) {
-      userPostOrder.value.push(item.p_id)
+    if (!userPostMap.value.has(item.pId)) {
+      userPostOrder.value.push(item.pId)
     }
-    userPostMap.value.set(item.p_id, item)
+    userPostMap.value.set(item.pId, item)
   }
 }
 
 const getUserCollectedPostList = async (page: number) => {
   const res = await getUserCollectPostAPI({
-    creatorUserId: userStore.userInfo?.user_id as string,
+    userId: userStore.userInfo?.userId as string,
     page,
     limit,
   })
 
-  const data: PostDetail[] = res.data.data
+  const data: PostDetail[] = res.data.data.list
 
   if (data.length < limit) {
     ucpHasMore.value = false
   }
 
   for (const item of data) {
-    if (!userCollectedPostMap.value.has(item.p_id)) {
-      userCollectedPostOrder.value.push(item.p_id)
+    if (!userCollectedPostMap.value.has(item.pId)) {
+      userCollectedPostOrder.value.push(item.pId)
     }
-    userCollectedPostMap.value.set(item.p_id, item)
+    userCollectedPostMap.value.set(item.pId, item)
   }
 }
 
@@ -105,7 +105,7 @@ emitter.on(
   async (p_id: string, isNewPost: boolean) => {
     const res = await getPostDetailAPI(p_id)
     if (userPostMap.value.get(p_id)) {
-      userPostMap.value.set(p_id, res.data.data[0])
+      userPostMap.value.set(p_id, res.data.data)
     }
     if (isNewPost) {
       userPostMap.value.set(p_id, res.data.data[0])

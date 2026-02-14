@@ -13,7 +13,7 @@ const { postList } = defineProps<{
 <template>
   <section class="post-view">
     <ul class="post-list">
-      <li class="post-item" v-for="post in postList" :key="post?.p_id">
+      <li class="post-item" v-for="post in postList" :key="post?.pId">
         <PostCard :post :is-restrict-line="true" />
       </li>
       <li v-if="showLoading && hasMore" class="loading">

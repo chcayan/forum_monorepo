@@ -59,7 +59,7 @@ export async function publishPostAPI(data: PostPublish) {
       isPublic: data.isPublic,
     })
     const p_id = res.data.p_id
-    for (const file of data.postImages) {
+    for (const file of data.postImages!) {
       await new Promise((resolve, reject) => {
         uni.uploadFile({
           url: baseUrl + '/post/upload-image',

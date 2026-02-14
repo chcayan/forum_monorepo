@@ -36,6 +36,8 @@ export class PostService {
     });
 
     await this.postRepository.save(post);
+
+    return { postId: nextId };
   }
 
   async addImage(pId: string, imagePath: string) {
@@ -57,6 +59,9 @@ export class PostService {
       .addSelect([UserFields.userAvatar, UserFields.username])
       .where(`${PostFields.isPublic} = :isPublic`, {
         isPublic: 'true',
+      })
+      .andWhere(`${PostFields.status} = :status`, {
+        status: 1,
       })
       .orderBy(PostFields.publishTime, 'DESC')
       .skip((page - 1) * pageSize)
@@ -91,6 +96,9 @@ export class PostService {
       .andWhere(`${PostFields.pContent} like :result`, {
         result: `%${result}%`,
       })
+      .andWhere(`${PostFields.status} = :status`, {
+        status: 1,
+      })
       .orderBy(PostFields.publishTime, 'DESC')
       .skip((page - 1) * pageSize)
       .take(pageSize)
@@ -109,7 +117,10 @@ export class PostService {
     const qb = this.postRepository.createQueryBuilder(PostAlias);
     qb.leftJoin(PostFields.user, UserAlias)
       .addSelect([UserFields.userAvatar, UserFields.username])
-      .where(`${PostFields.pId} = :pId`, { pId });
+      .where(`${PostFields.pId} = :pId`, { pId })
+      .andWhere(`${PostFields.status} = :status`, {
+        status: 1,
+      });
 
     // 访问权限控制
     if (userId) {

@@ -36,11 +36,11 @@ const navigateToPostDetail = async (e: MouseEvent | KeyboardEvent) => {
   if (route.path.startsWith(RouterPath.post)) return
   const target = e.target as HTMLElement
   if (target && target.tagName === 'IMG') return
-  router.push(`${RouterPath.post}/${post.p_id}`)
-  await updatePostViewAPI(post.p_id)
+  router.push(`${RouterPath.post}/${post.pId}`)
+  await updatePostViewAPI(post.pId)
     .then(() => {
-      emitter.emit('EVENT:UPDATE_POST_LIST', post.p_id)
-      emitter.emit('EVENT:UPDATE_USER_POST_LIST', post.p_id)
+      emitter.emit('EVENT:UPDATE_POST_LIST', post.pId)
+      emitter.emit('EVENT:UPDATE_USER_POST_LIST', post.pId)
     })
     .catch(() => {
       router.replace(RouterPath.notFound)
@@ -53,7 +53,7 @@ const isCollect = ref(false)
 watch(
   () => userStore.userCollectListOfPostId,
   () => {
-    if (userStore.userCollectListOfPostId.includes(post?.p_id)) {
+    if (userStore.userCollectListOfPostId.includes(post?.pId)) {
       isCollect.value = true
     } else {
       isCollect.value = false
@@ -74,18 +74,14 @@ const changeCollectStatus = async () => {
     return
   }
   if (!isCollect.value) {
-    await updateUserAddCollectAPI({
-      postId: post.p_id,
-    }).catch()
+    await updateUserAddCollectAPI(post.pId).catch()
     await userStore.getUserCollectListOfPostId().catch()
     Toast.show({
       msg: '收藏成功',
       type: 'success',
     })
   } else {
-    await updateUserDelCollectAPI({
-      postId: post.p_id,
-    }).catch()
+    await updateUserDelCollectAPI(post.pId).catch()
     await userStore.getUserCollectListOfPostId().catch()
     Toast.show({
       msg: '取消收藏成功',
@@ -105,14 +101,14 @@ function updatePostStatus() {
     route.path.startsWith(RouterPath.user) ||
     route.path.startsWith(RouterPath.search)
   ) {
-    emitter.emit('EVENT:UPDATE_POST_LIST', post.p_id)
-    emitter.emit('EVENT:UPDATE_USER_POST_LIST', post.p_id)
+    emitter.emit('EVENT:UPDATE_POST_LIST', post.pId)
+    emitter.emit('EVENT:UPDATE_USER_POST_LIST', post.pId)
   }
 
   if (route.path.startsWith(RouterPath.post)) {
     emitter.emit('EVENT:UPDATE_POST_DETAIL')
-    emitter.emit('EVENT:UPDATE_POST_LIST', post.p_id)
-    emitter.emit('EVENT:UPDATE_USER_POST_LIST', post.p_id)
+    emitter.emit('EVENT:UPDATE_POST_LIST', post.pId)
+    emitter.emit('EVENT:UPDATE_USER_POST_LIST', post.pId)
   }
 }
 
@@ -130,16 +126,16 @@ onDeactivated(() => {
 
 const user_avatar = computed(() => {
   if (!post) return
-  if (post.user_id === userStore.userInfo.user_id) {
-    return userStore.userInfo.user_avatar
+  if (post.userId === userStore.userInfo.userId) {
+    return userStore.userInfo.userAvatar
   } else {
-    return post.user_avatar
+    return post.userAvatar
   }
 })
 
 const username = computed(() => {
   if (!post) return
-  if (post.user_id === userStore.userInfo.user_id) {
+  if (post.userId === userStore.userInfo.userId) {
     return userStore.userInfo.username
   } else {
     return post.username
@@ -147,13 +143,13 @@ const username = computed(() => {
 })
 
 const navigateToUser = () => {
-  if (route.params?.userId === post.user_id) return
-  if (post.user_id === userStore.userInfo.user_id) {
+  if (route.params?.userId === post.userId) return
+  if (post.userId === userStore.userInfo.userId) {
     router.push(RouterPath.my)
     return
   }
   // emitter.emit('EVENT:REACTIVE_USER_VIEW', post.user_id)
-  router.push(`${RouterPath.user}/${post.user_id}`)
+  router.push(`${RouterPath.user}/${post.userId}`)
 }
 
 const deletePost = () => {
@@ -162,9 +158,7 @@ const deletePost = () => {
     type: 'error',
     duration: 5000,
     eventFn: async () => {
-      await deleteUserPostAPI({
-        postId: post.p_id,
-      })
+      await deleteUserPostAPI(post.pId)
         .then(() => {
           Toast.show({
             msg: '删除成功',
@@ -177,7 +171,7 @@ const deletePost = () => {
             type: 'error',
           })
         })
-      emitter.emit('EVENT:DELETE_USER_POST_LIST', post.p_id)
+      emitter.emit('EVENT:DELETE_USER_POST_LIST', post.pId)
     },
   })
 }
@@ -188,9 +182,7 @@ const onPrivate = () => {
     type: 'error',
     duration: 5000,
     eventFn: async () => {
-      await updateUserPostToPrivateAPI({
-        postId: post.p_id,
-      })
+      await updateUserPostToPrivateAPI(post.pId)
         .then(() => {
           Toast.show({
             msg: '设置成功',
@@ -203,7 +195,7 @@ const onPrivate = () => {
             type: 'error',
           })
         })
-      emitter.emit('EVENT:UPDATE_USER_POST_LIST', post.p_id)
+      emitter.emit('EVENT:UPDATE_USER_POST_LIST', post.pId)
     },
   })
 }
@@ -214,9 +206,7 @@ const onPublic = () => {
     type: 'error',
     duration: 5000,
     eventFn: async () => {
-      await updateUserPostToPublicAPI({
-        postId: post.p_id,
-      })
+      await updateUserPostToPublicAPI(post.pId)
         .then(() => {
           Toast.show({
             msg: '设置成功',
@@ -229,7 +219,7 @@ const onPublic = () => {
             type: 'error',
           })
         })
-      emitter.emit('EVENT:UPDATE_USER_POST_LIST', post.p_id)
+      emitter.emit('EVENT:UPDATE_USER_POST_LIST', post.pId)
     },
   })
 }
@@ -247,9 +237,9 @@ const onShare = () => {
 
 const share = async (friendId: string) => {
   const payload = {
-    from: userStore.userInfo.user_id,
+    from: userStore.userInfo.userId,
     to: friendId,
-    message: post.p_id,
+    message: post.pId,
     is_share: '1',
   }
 
@@ -275,11 +265,11 @@ const share = async (friendId: string) => {
       <p>请选择一位好友：</p>
       <ul>
         <li
-          @click="share(friend.follow_id)"
+          @click="share(friend.followId)"
           v-for="(friend, index) in friendList"
           :key="index"
         >
-          <img :src="friend.user_avatar" alt="avatar" />
+          <img :src="friend.userAvatar" alt="avatar" />
           <p class="name">{{ friend.username }}</p>
         </li>
       </ul>
@@ -296,17 +286,17 @@ const share = async (friendId: string) => {
         <p class="name" @click="navigateToUser">
           {{ username }}
         </p>
-        <p class="time">{{ formatDateByYear(post?.publish_time) }}</p>
+        <p class="time">{{ formatDateByYear(post?.publishTime) }}</p>
       </div>
       <div
         class="func-widget"
         v-if="
-          post?.user_id === userStore.userInfo.user_id &&
+          post?.userId === userStore.userInfo.userId &&
           route.path === RouterPath.my
         "
       >
         <DeleteSvg @click="deletePost" />
-        <PublicSvg @click="onPrivate" v-if="post?.is_public === 'true'" />
+        <PublicSvg @click="onPrivate" v-if="post?.isPublic === 'true'" />
         <PrivateSvg @click="onPublic" v-else />
       </div>
     </header>
@@ -316,35 +306,35 @@ const share = async (friendId: string) => {
       @click="navigateToPostDetail"
     >
       <p
-        v-html="lineBreakReplace(post?.p_content)"
+        v-html="lineBreakReplace(post?.pContent)"
         :class="{ 'restrict-line': isRestrictLine }"
       ></p>
-      <NGrid class="n-grid" v-if="post?.p_images" :images="post?.p_images" />
+      <NGrid class="n-grid" v-if="post?.pImages" :images="post?.pImages" />
     </div>
     <footer>
       <ul>
         <li>
           <ViewSvg class="svg" /><span title="浏览数">{{
-            post?.p_view_count
+            post?.pViewCount
           }}</span>
         </li>
         <li>
           <CommentSvg class="svg" /><span title="评论数">{{
-            post?.p_comment_count
+            post?.pCommentCount
           }}</span>
         </li>
         <li @click="changeCollectStatus" style="cursor: pointer">
           <CollectSvg :isCollect="isCollect" class="svg" /><span
             style="cursor: pointer"
             title="收藏数"
-            >{{ post?.p_collect_count }}</span
+            >{{ post?.pCollectCount }}</span
           >
         </li>
         <li @click="onShare" style="cursor: pointer">
           <ShareSvg class="svg" /><span
             style="cursor: pointer"
             title="分享数"
-            >{{ post?.p_share_count }}</span
+            >{{ post?.pShareCount }}</span
           >
         </li>
       </ul>

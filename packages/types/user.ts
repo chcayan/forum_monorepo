@@ -1,28 +1,28 @@
 // 用户信息
 export interface UserInfo {
-  user_id: string
+  userId: string
   username: string
-  user_avatar: string
-  user_email: string
+  userAvatar: string
+  userEmail: string
   registration: string
   follows: string
   fans: string
-  background_img: string
+  backgroundImg: string
   sex: string
   signature: string
 }
 
 // 好友信息
 export interface FriendInfo {
-  user_id: string
-  follow_id: string
+  userId: string
+  followId: string
   username: string
-  user_avatar: string
+  userAvatar: string
 }
 
 // 搜索用户信息
 export interface UserBySearchInfo {
   username: string
   user_avatar: string
-  user_id: string
+  userId: string
 }

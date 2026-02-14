@@ -218,7 +218,7 @@ onUnmounted(() => {
           v-loading
           class="bg"
           :class="{ 'edit-img': isContenteditable }"
-          :src="userInfo.background_img"
+          :src="userInfo.backgroundImg"
           ref="bgEl"
           alt="bg"
           @dblclick="edit"
@@ -236,7 +236,7 @@ onUnmounted(() => {
           v-loading
           class="avatar"
           :class="{ 'edit-img': isContenteditable }"
-          :src="userInfo.user_avatar"
+          :src="userInfo.userAvatar"
           ref="avatarEl"
           alt="avatar"
           @dblclick="edit"
@@ -249,7 +249,7 @@ onUnmounted(() => {
           style="display: none"
         />
       </label>
-      <div v-if="userInfo.user_id === userStore.userInfo?.user_id" class="btn">
+      <div v-if="userInfo.userId === userStore.userInfo?.userId" class="btn">
         <EditSvg
           tabindex="0"
           class="tab-focus-style"
@@ -275,7 +275,7 @@ onUnmounted(() => {
       <div class="follow-btn" v-else>
         <FollowButton
           class="f-btn"
-          :isFollow="userStore.userFollowIdList.includes(userInfo.user_id)"
+          :isFollow="userStore.userFollowIdList.includes(userInfo.userId)"
         />
       </div>
     </div>
@@ -292,7 +292,7 @@ onUnmounted(() => {
         @dblclick="edit"
         >{{ userInfo.username }}</span
       >
-      <span class="id">{{ userInfo.user_id }}</span>
+      <span class="id">{{ userInfo.userId }}</span>
       <div class="main-item">
         <div class="follows" @click="onShowFollowList">
           <span class="text">{{ userInfo.follows }} 关注</span>

@@ -7,4 +7,5 @@ export const PostFields = {
   isPublic: `${PostAlias}.isPublic`,
   pId: `${PostAlias}.pId`,
   userId: `${PostAlias}.userId`,
+  status: `${PostAlias}.status`,
 } as const;
