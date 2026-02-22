@@ -9,7 +9,7 @@
       xmlns="http://www.w3.org/2000/svg"
       p-id="7325"
       xmlns:xlink="http://www.w3.org/1999/xlink"
-      width="28"
+      width="21"
       height="28"
     >
       <path

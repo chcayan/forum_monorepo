@@ -47,7 +47,7 @@ export class PostController {
   ) {
     if (!file) return;
     const imagePath = `/uploads/${file?.filename}`;
-    await this.postService.addImage(dto.pId, imagePath);
+    await this.postService.addImage(dto.pId, imagePath, parseInt(dto.index));
   }
 
   @Get()

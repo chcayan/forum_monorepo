@@ -68,9 +68,11 @@ export const useUserStore = defineStore('user', () => {
   const getUserCollectListOfPostId = async () => {
     const res = await getUserCollectPostIdListAPI()
     const arr = res.data?.data ?? []
-    userCollectListOfPostId.value = arr.map(
-      (item: { p_id: string }) => item.p_id
-    )
+    // userCollectListOfPostId.value = arr.map(
+    //   (item: { p_id: string }) => item.p_id
+    // )
+    userCollectListOfPostId.value = arr
+    // console.log(userCollectListOfPostId.value)
   }
 
   const userFollowList = ref<FriendInfo[]>([])

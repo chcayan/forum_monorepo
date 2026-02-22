@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Toast } from '@/utils'
 import emitter from '@/utils/eventEmitter'
 import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 
@@ -21,68 +22,125 @@ onMounted(() => {
     previewEl.innerHTML = ''
   })
 
+  // inputEl.addEventListener('change', () => {
+  //   const newFiles = Array.from(inputEl.files ?? [])
+
+  //   if (newFiles.length > 9) {
+  //     alert('最多只能上传 9 张图片！')
+  //     return
+  //   }
+
+  //   const availableSlots = 9 - allFiles.length - newFiles.length
+  //   if (availableSlots < 0) {
+  //     alert('最多只能上传 9 张图片！')
+  //     inputEl.value = ''
+  //     return
+  //   }
+
+  //   allFiles.push(...newFiles)
+
+  //   previewEl.innerHTML = ''
+
+  //   let loadedCount = 0
+  //   const frag = document.createDocumentFragment()
+
+  //   allFiles.forEach((file: File) => {
+  //     if (!file.type.startsWith('image/')) return
+
+  //     const reader = new FileReader()
+
+  //     reader.onload = (e: ProgressEvent<FileReader>) => {
+  //       const img = document.createElement('img')
+  //       img.src = e.target?.result as string
+  //       img.classList.add('del-img')
+  //       img.alt = 'post-img'
+  //       img.title = '删除？'
+  //       img.style.width = '100%'
+  //       img.style.height = '100%'
+  //       img.style.aspectRatio = '1'
+  //       img.style.objectFit = 'cover'
+  //       img.style.borderRadius = '10px'
+
+  //       img.addEventListener('click', () => {
+  //         const index = allFiles.indexOf(file)
+  //         if (index !== -1) allFiles.splice(index, 1)
+  //         img.remove()
+  //         isHide.value = false
+  //       })
+
+  //       frag.appendChild(img)
+
+  //       if (++loadedCount === allFiles.length) {
+  //         previewEl.appendChild(frag)
+  //       }
+  //     }
+  //     reader.readAsDataURL(file)
+  //   })
+
+  //   if (allFiles.length === 9) {
+  //     isHide.value = true
+  //   } else {
+  //     isHide.value = false
+  //   }
+
+  //   inputEl.value = ''
+  // })
+
   inputEl.addEventListener('change', () => {
     const newFiles = Array.from(inputEl.files ?? [])
 
-    if (newFiles.length > 9) {
-      alert('最多只能上传 9 张图片！')
-      return
-    }
-    const availableSlots = 9 - allFiles.length - newFiles.length
-    if (availableSlots < 0) {
-      alert('最多只能上传 9 张图片！')
+    if (allFiles.length + newFiles.length > 9) {
+      Toast.show({
+        msg: '最多只能上传 9 张图片！',
+        type: 'error',
+      })
       inputEl.value = ''
       return
     }
 
     allFiles.push(...newFiles)
 
-    previewEl.innerHTML = ''
-
-    let loadedCount = 0
-    const frag = document.createDocumentFragment()
-
-    allFiles.forEach((file: File) => {
-      if (!file.type.startsWith('image/')) return
-
-      const reader = new FileReader()
-
-      reader.onload = (e: ProgressEvent<FileReader>) => {
-        const img = document.createElement('img')
-        img.src = e.target?.result as string
-        img.classList.add('del-img')
-        img.alt = 'post-img'
-        img.title = '删除？'
-        img.style.width = '100%'
-        img.style.height = '100%'
-        img.style.aspectRatio = '1'
-        img.style.objectFit = 'cover'
-        img.style.borderRadius = '10px'
-
-        img.addEventListener('click', () => {
-          const index = allFiles.indexOf(file)
-          if (index !== -1) allFiles.splice(index, 1)
-          img.remove()
-          isHide.value = false
-        })
-
-        frag.appendChild(img)
-
-        if (++loadedCount === allFiles.length) {
-          previewEl.appendChild(frag)
-        }
-      }
-      reader.readAsDataURL(file)
-    })
-
-    if (allFiles.length === 9) {
-      isHide.value = true
-    } else {
-      isHide.value = false
-    }
+    renderPreview()
 
     inputEl.value = ''
   })
+
+  function renderPreview() {
+    if (!previewEl) return
+    previewEl.innerHTML = ''
+
+    const frag = document.createDocumentFragment()
+
+    allFiles.forEach((file, index) => {
+      if (!file.type.startsWith('image/')) return
+
+      const img = document.createElement('img')
+
+      img.src = URL.createObjectURL(file)
+
+      img.classList.add('del-img')
+      img.alt = 'post-img'
+      img.title = '删除？'
+
+      img.style.width = '100%'
+      img.style.height = '100%'
+      img.style.aspectRatio = '1'
+      img.style.objectFit = 'cover'
+      img.style.borderRadius = '10px'
+
+      img.onclick = () => {
+        allFiles.splice(index, 1)
+        renderPreview()
+        isHide.value = false
+      }
+
+      frag.appendChild(img)
+    })
+
+    previewEl.appendChild(frag)
+
+    isHide.value = allFiles.length === 9
+  }
 })
 
 onUnmounted(() => {

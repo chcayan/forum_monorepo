@@ -124,7 +124,7 @@ onDeactivated(() => {
   off?.()
 })
 
-const user_avatar = computed(() => {
+const userAvatar = computed(() => {
   if (!post) return
   if (post.userId === userStore.userInfo.userId) {
     return userStore.userInfo.userAvatar
@@ -278,7 +278,7 @@ const share = async (friendId: string) => {
       <img
         v-loading
         loading="lazy"
-        :src="user_avatar"
+        :src="userAvatar"
         alt="avatar"
         @click="navigateToUser"
       />
@@ -296,8 +296,10 @@ const share = async (friendId: string) => {
         "
       >
         <DeleteSvg @click="deletePost" />
-        <PublicSvg @click="onPrivate" v-if="post?.isPublic === 'true'" />
-        <PrivateSvg @click="onPublic" v-else />
+        <div v-if="post.status === 1">
+          <PublicSvg @click="onPrivate" v-if="post?.isPublic === 'true'" />
+          <PrivateSvg @click="onPublic" v-else />
+        </div>
       </div>
     </header>
     <div

@@ -26,7 +26,7 @@ export interface CommentList {
   commentId: string
   userId: string
   pId: string
-  cContent: string
+  content: string
   createdTime: string
   userAvatar: string
   username: string

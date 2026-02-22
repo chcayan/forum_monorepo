@@ -9,11 +9,13 @@ import { getUserInfoAPI } from './api'
 
 const userStore = useUserStore()
 const route = useRoute()
+
 type userInfo = {
-  user_id: string
+  userId: string
   username: string
-  user_avatar: string
+  userAvatar: string
 }
+
 async function initUserStatus() {
   await userStore.getUserInfo()
 
@@ -25,21 +27,21 @@ async function initUserStatus() {
     async ({
       from,
       message,
-      is_share,
+      isShare,
     }: {
       from: string
       message: string
-      is_share: '0' | '1'
+      isShare: '0' | '1'
     }) => {
       if (route.path.startsWith(RouterPath.chat)) return
       const res = await getUserInfoAPI(from)
       const userInfo = res.data?.data as userInfo
       ChatToast.show({
-        userId: userInfo.user_id,
-        userAvatar: userInfo.user_avatar,
+        userId: userInfo.userId,
+        userAvatar: userInfo.userAvatar,
         username: userInfo.username,
         message,
-        is_share,
+        isShare,
       })
     }
   )

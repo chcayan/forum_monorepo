@@ -65,6 +65,7 @@ const sendMessage = async (e: PointerEvent | KeyboardEvent) => {
     from: userStore.userInfo.userId,
     to: _userId.value,
     message: msg,
+    isShare: '0',
   }
 
   socket.emit('sendMessage', payload)
@@ -91,7 +92,7 @@ class ChatToast {
    * @param userInfo 用户头像，id，用户名，接收的信息
    */
   static show(userInfo: ChatToastParams) {
-    const { userAvatar, userId, username, message, is_share } = userInfo
+    const { userAvatar, userId, username, message, isShare } = userInfo
 
     if (!userList.value.get(userId)) {
       userList.value.set(userId, {
@@ -111,8 +112,8 @@ class ChatToast {
 
     chatRecords[_userId.value]?.push({
       message,
-      isShare: is_share,
-      postId: is_share === '1' ? message : '',
+      isShare: isShare,
+      postId: isShare === '1' ? message : '',
     })
 
     if (!ChatToast.isShowing) {
@@ -168,6 +169,8 @@ const navigateToChat = async () => {
 defineExpose({
   show: ChatToast.show,
 })
+
+console.log(userList.value)
 </script>
 
 <template>
@@ -278,7 +281,7 @@ $main-gap: 20px;
   .user-info {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 10px;
     margin-bottom: 10px;
 
     span {

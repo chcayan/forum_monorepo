@@ -6,7 +6,6 @@ const parseImages = ref<Array<string>>([])
 const { images } = defineProps<{
   images: string[]
 }>()
-// console.log(images)
 parseImages.value = images
 
 onMounted(() => {

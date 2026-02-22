@@ -6,19 +6,20 @@ import { formatDateByYear } from '@forum-monorepo/utils'
 const { comment } = defineProps<{
   comment: CommentList
 }>()
+console.log(comment)
 </script>
 
 <template>
   <div class="comment-card">
     <div class="header">
-      <img :src="comment.user_avatar" alt="avatar" />
+      <img :src="comment.userAvatar" alt="avatar" />
       <div>
         <span>{{ comment?.username }}</span>
-        <span class="time">{{ formatDateByYear(comment.created_time) }}</span>
+        <span class="time">{{ formatDateByYear(comment.createdTime) }}</span>
       </div>
     </div>
     <div class="main">
-      <div v-html="lineBreakReplace(comment?.c_content)"></div>
+      <div v-html="lineBreakReplace(comment?.content)"></div>
     </div>
   </div>
 </template>

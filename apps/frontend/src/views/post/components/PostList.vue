@@ -12,13 +12,16 @@ const { postList } = defineProps<{
 
 <template>
   <section class="post-view">
-    <ul class="post-list">
+    <ul class="post-list" v-if="postList.length !== 0">
       <li class="post-item" v-for="post in postList" :key="post?.pId">
         <PostCard :post :is-restrict-line="true" />
       </li>
       <li v-if="showLoading && hasMore" class="loading">
         <LoadingSvg />
       </li>
+    </ul>
+    <ul class="post-list" style="text-align: center; padding-top: 10px" v-else>
+      <li class="post-item">这个世界还没有任何帖子😶‍🌫️</li>
     </ul>
   </section>
 </template>

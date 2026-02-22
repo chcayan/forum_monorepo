@@ -130,7 +130,9 @@ const sendMessage = async (e: KeyboardEvent | PointerEvent) => {
     from: userStore.userInfo.userId,
     to: currentFriendUserId.value,
     message: msg,
+    isShare: '0',
   }
+  console.log(payload)
 
   socket.emit('sendMessage', payload)
 

@@ -22,14 +22,12 @@ const getUserInfo = async () => {
 }
 
 const userPostList = computed(() =>
-  userPostOrder.value
-    .map((p_id) => userPostMap.value.get(p_id)!)
-    .filter(Boolean)
+  userPostOrder.value.map((pId) => userPostMap.value.get(pId)!).filter(Boolean)
 )
 
 const userCollectedPost = computed(() =>
   userCollectedPostOrder.value
-    .map((p_id) => userCollectedPostMap.value.get(p_id)!)
+    .map((pId) => userCollectedPostMap.value.get(pId)!)
     .filter(Boolean)
 )
 
@@ -50,6 +48,7 @@ const getUserPostList = async (page: number) => {
   })
 
   const data: PostDetail[] = res.data.data.list
+  console.log(data)
 
   if (data.length < limit) {
     upHasMore.value = false
@@ -90,39 +89,42 @@ onMounted(async () => {
   getUserCollectedPostList(userCollectedPostListPage.value)
 })
 
-emitter.on('EVENT:DELETE_USER_POST_LIST', async (p_id: string) => {
-  if (userPostMap.value.get(p_id)) {
-    userPostMap.value.delete(p_id)
+emitter.on('EVENT:DELETE_USER_POST_LIST', async (pId: string) => {
+  if (userPostMap.value.get(pId)) {
+    userPostMap.value.delete(pId)
   }
-  if (userCollectedPostMap.value.get(p_id)) {
-    userCollectedPostMap.value.delete(p_id)
+  if (userCollectedPostMap.value.get(pId)) {
+    userCollectedPostMap.value.delete(pId)
   }
   await userStore.getUserCollectListOfPostId()
 })
 
 emitter.on(
   'EVENT:UPDATE_USER_POST_LIST',
-  async (p_id: string, isNewPost: boolean) => {
-    const res = await getPostDetailAPI(p_id)
-    if (userPostMap.value.get(p_id)) {
-      userPostMap.value.set(p_id, res.data.data)
+  async (pId: string, isNewPost: boolean) => {
+    const res = await getPostDetailAPI(pId)
+    const post = res.data.data
+    console.log(post)
+
+    if (userPostMap.value.get(pId)) {
+      userPostMap.value.set(pId, post)
     }
     if (isNewPost) {
-      userPostMap.value.set(p_id, res.data.data[0])
+      userPostMap.value.set(pId, post)
       userPostOrder.value = [
-        p_id,
-        ...userPostOrder.value.filter((id) => id !== p_id),
+        pId,
+        ...userPostOrder.value.filter((id) => id !== pId),
       ]
       return
     }
-    if (!userCollectedPostMap.value.get(p_id)) {
-      userCollectedPostMap.value.set(p_id, res.data.data[0])
+    if (!userCollectedPostMap.value.get(pId)) {
+      userCollectedPostMap.value.set(pId, post)
       userCollectedPostOrder.value = [
-        p_id,
-        ...userCollectedPostOrder.value.filter((id) => id !== p_id),
+        pId,
+        ...userCollectedPostOrder.value.filter((id) => id !== pId),
       ]
     } else {
-      userCollectedPostMap.value.set(p_id, res.data.data[0])
+      userCollectedPostMap.value.set(pId, post)
     }
 
     if (route.path.startsWith(RouterPath.my)) {

@@ -15,7 +15,10 @@ import { UsePipes, ValidationPipe } from '@nestjs/common';
 @WebSocketGateway({
   cors: {
     origin: (origin, callback) => {
-      const allowedOrigins = process.env.CORS_ORIGIN;
+      const allowedOrigins = [
+        process.env.CORS_ORIGIN,
+        process.env.CORS_ORIGIN_1,
+      ];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
@@ -61,6 +64,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('sendMessage')
   async sendMessage(@MessageBody() dto: MessageDto) {
+    console.log(dto);
     const { from, to, message, isShare } = dto;
 
     await this.chatService.saveMessage(from, to, message, isShare);

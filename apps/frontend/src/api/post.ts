@@ -72,12 +72,15 @@ export async function publishPostAPI(data: PostPublish) {
   const postId = res.data.data.postId
 
   if (data.postImages?.length !== 0) {
+    let index = 0
     for (const file of data.postImages!) {
       const formData = new FormData()
 
+      formData.append('index', index.toString())
       formData.append('pId', postId)
       formData.append('postImages', file)
 
+      index++
       await request.post('/post/upload-image', formData)
     }
   }

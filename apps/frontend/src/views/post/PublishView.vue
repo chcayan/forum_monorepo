@@ -49,9 +49,8 @@ const publishPost = async () => {
   })
 
   emitter.emit('EVENT:RESET_POST_IMAGES')
-  emitter.emit('EVENT:UPDATE_USER_POST_LIST', res.p_id, true)
+  emitter.emit('EVENT:UPDATE_USER_POST_LIST', res, true)
 
-  // TODO
   flag = true
 }
 

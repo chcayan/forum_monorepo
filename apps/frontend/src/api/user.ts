@@ -171,7 +171,7 @@ export function updateUserDelCollectAPI(postId: string) {
  * @returns
  */
 export function deleteUserPostAPI(postId: string) {
-  return request.delete(`/user/collect/${postId}`)
+  return request.delete(`/user/post/${postId}`)
 }
 
 /**

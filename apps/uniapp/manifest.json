@@ -102,7 +102,7 @@
   "quickapp": {},
   /* 小程序特有相关 */
   "mp-weixin": {
-    "appid": "wxeb9085ab6ad2c1b0",
+    "appid": "",
     "darkmode": true,
     "themeLocation": "theme.json",
     "setting": {

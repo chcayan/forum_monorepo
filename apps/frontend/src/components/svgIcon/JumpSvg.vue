@@ -8,7 +8,7 @@
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
       p-id="12349"
-      width="22"
+      width="18"
       height="22"
       xmlns:xlink="http://www.w3.org/1999/xlink"
     >

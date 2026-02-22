@@ -49,14 +49,14 @@ class ChatToast {
     userId,
     username,
     message,
-    is_share = '0',
+    isShare = '0',
   }: ChatToastParams) {
     this.toast.show({
       userId,
       username,
       userAvatar,
       message,
-      is_share,
+      isShare,
     })
   }
 }

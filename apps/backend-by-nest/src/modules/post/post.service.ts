@@ -40,13 +40,18 @@ export class PostService {
     return { postId: nextId };
   }
 
-  async addImage(pId: string, imagePath: string) {
+  async addImage(pId: string, imagePath: string, index: number) {
     await this.postRepository
       .createQueryBuilder()
       .update(Post)
       .set({
-        pImages: () =>
-          `JSON_ARRAY_APPEND(IFNULL(p_images, JSON_ARRAY()), '$', '${imagePath}')`,
+        pImages: () => `
+        JSON_SET(
+          IFNULL(p_images, JSON_ARRAY()),
+          '$[${index}]',
+          '${imagePath}'
+        )
+      `,
       })
       .where('p_id = :pId', { pId })
       .execute();
@@ -117,10 +122,7 @@ export class PostService {
     const qb = this.postRepository.createQueryBuilder(PostAlias);
     qb.leftJoin(PostFields.user, UserAlias)
       .addSelect([UserFields.userAvatar, UserFields.username])
-      .where(`${PostFields.pId} = :pId`, { pId })
-      .andWhere(`${PostFields.status} = :status`, {
-        status: 1,
-      });
+      .where(`${PostFields.pId} = :pId`, { pId });
 
     // 访问权限控制
     if (userId) {
@@ -141,7 +143,7 @@ export class PostService {
     const { user, ...rest } = post;
     return {
       ...rest,
-      userId: user?.userId,
+      userId: rest?.userId,
       username: user?.username,
       userAvatar: user?.userAvatar,
     };
