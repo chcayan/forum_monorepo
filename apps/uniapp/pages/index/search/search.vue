@@ -29,21 +29,21 @@ const getSearchPostList = async (page: number) => {
   if (!result.value) return
   const res = await searchPostAPI(result.value, page, limit)
 
-  const data: PostDetail[] = res.data.data
+  const data: PostDetail[] = res.data.data.list
 
   if (data.length < limit) {
     hasMore.value = false
   }
 
   for (const item of data) {
-    searchPostMap.value.set(item.p_id, item)
+    searchPostMap.value.set(item.pId, item)
   }
 }
 
-emitter.on('EVENT:UPDATE_POST_LIST', async (p_id: string) => {
+emitter.on('EVENT:UPDATE_POST_LIST', async (pId: string) => {
   try {
-    const res = await getPostDetailAPI(p_id)
-    searchPostMap.value.set(p_id, res.data.data[0])
+    const res = await getPostDetailAPI(pId)
+    searchPostMap.value.set(pId, res.data.data)
 
     const currentRoute = getCurrentRoute()
     if (currentRoute === RouterPath.search) {

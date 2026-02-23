@@ -300,7 +300,7 @@ const onPikachuChat = () => {
             @click="navigateToUser(user.userId)"
             :title="user.username"
           >
-            <img :src="user.user_avatar" alt="avatar" />
+            <img :src="user.userAvatar" alt="avatar" />
             <div>{{ user.username }}</div>
           </li>
         </ul>

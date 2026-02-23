@@ -82,7 +82,7 @@ const sendMessage = async () => {
   await userStore.getUserFriendList()
   if (
     !userStore.userFriendList
-      .map((friend) => friend.follow_id)
+      .map((friend) => friend.followId)
       .includes(currentFriendUserId.value)
   ) {
     uni.showToast({
@@ -94,10 +94,10 @@ const sendMessage = async () => {
 
   const payload = {
     type: 'chat',
-    from: userStore.userInfo.user_id,
+    from: userStore.userInfo.userId,
     to: currentFriendUserId.value,
     message: msg,
-    is_share: '0',
+    isShare: '0',
   }
 
   socket.emit('sendMessage', payload)
@@ -107,9 +107,9 @@ const sendMessage = async () => {
   }
 
   chatRecords[currentFriendUserId.value]?.push({
-    from: userStore.userInfo.user_id,
+    from: userStore.userInfo.userId,
     message: msg,
-    is_share: '0',
+    isShare: '0',
   })
   message.value = ''
 
@@ -123,8 +123,9 @@ const sendMessage = async () => {
 type MsgType = {
   from: string
   message: string
-  is_share: '0' | '1'
+  isShare: '0' | '1'
 }
+
 const chatRecords = reactive<Record<string, MsgType[]>>({})
 const unreadCount = reactive<Record<string, any>>({})
 
@@ -133,14 +134,14 @@ socket.on(
   async ({
     from,
     message,
-    is_share,
+    isShare,
   }: {
     from: string
     message: string
-    is_share: '0' | '1'
+    isShare: '0' | '1'
   }) => {
     if (!chatRecords[from]) chatRecords[from] = []
-    chatRecords[from].push({ from, message, is_share })
+    chatRecords[from].push({ from, message, isShare })
 
     if (currentFriendUserId.value !== from) {
       unreadCount[from] = (unreadCount[from] || 0) + 1
@@ -148,7 +149,7 @@ socket.on(
 
     if (currentFriendUserId.value === from) {
       await markAsReadAPI({
-        from,
+        followId: from,
       })
       unreadCount[from] = 0
     }
@@ -167,7 +168,7 @@ const scrollTop = ref(0)
 watch(currentFriendUserId, async (friend) => {
   if (!friend) return
 
-  await markAsReadAPI({ from: friend })
+  await markAsReadAPI({ followId: friend })
   unreadCount[friend] = 0
 
   await getChatHistory(friend)
@@ -223,7 +224,7 @@ function loadHistory() {
       const mapList = more.map((msg: ChatInfo) => ({
         from: msg.sender,
         message: msg.content,
-        is_share: msg.is_share ?? '0',
+        isShare: msg.isShare ?? '0',
       }))
 
       startIndex.value = newStart
@@ -256,7 +257,7 @@ async function getChatHistory(friendId: string) {
   chatRecords[friendId] = renderList.value.map((msg: ChatInfo) => ({
     from: msg.sender,
     message: msg.content,
-    is_share: msg.is_share ?? '0',
+    isShare: msg.isShare ?? '0',
   }))
 }
 
@@ -324,13 +325,13 @@ onShow(() => {
           <view
             class="s-item"
             v-for="user in searchUserList"
-            :key="user.user_id"
-            @click="navigateToUser(user.user_id)"
+            :key="user.userId"
+            @click="navigateToUser(user.userId)"
           >
             <image
               class="s-img"
               mode="aspectFill"
-              :src="getImgUrl(user.user_avatar)"
+              :src="getImgUrl(user.userAvatar)"
             />
             <text class="s-text">{{ user.username }}</text>
           </view>
@@ -349,26 +350,26 @@ onShow(() => {
           v-if="userStore.userFriendList.length !== 0"
           class="li"
           v-for="friend in userStore.userFriendList"
-          :key="friend.follow_id"
+          :key="friend.followId"
           @click="
-            selectFriend(friend.username, friend.user_avatar, friend.follow_id)
+            selectFriend(friend.username, friend.userAvatar, friend.followId)
           "
           @keydown.enter="
-            selectFriend(friend.username, friend.user_avatar, friend.follow_id)
+            selectFriend(friend.username, friend.userAvatar, friend.followId)
           "
         >
           <image
             class="u-img"
             mode="aspectFill"
-            :src="getImgUrl(friend.user_avatar)"
+            :src="getImgUrl(friend.userAvatar)"
           />
           <text class="u-text">{{ friend.username }}</text>
           <view
-            v-if="unreadCount[friend.follow_id]"
+            v-if="unreadCount[friend.followId]"
             class="unread-count"
             :class="{ 'theme-unread-count': statusStore.isDarkMode }"
           >
-            {{ unreadCount[friend.follow_id] }}
+            {{ unreadCount[friend.followId] }}
           </view>
         </view>
         <view class="box" v-else>
@@ -408,12 +409,12 @@ onShow(() => {
           >
             <view
               class="user-chat div"
-              v-if="msg.from === userStore.userInfo.user_id"
+              v-if="msg.from === userStore.userInfo.userId"
             >
               <rich-text
                 class="span"
                 :class="{ 'theme-span': statusStore.isDarkMode }"
-                v-if="msg.is_share === '0'"
+                v-if="msg.isShare === '0'"
                 :nodes="lineBreakReplace(msg.message)"
               ></rich-text>
               <view v-else class="post-msg">
@@ -422,12 +423,12 @@ onShow(() => {
               <image
                 class="m-img"
                 mode="aspectFill"
-                :src="getImgUrl(userStore.userInfo?.user_avatar)"
+                :src="getImgUrl(userStore.userInfo?.userAvatar)"
               />
             </view>
             <view
               class="follow-chat div"
-              v-if="msg.from !== userStore.userInfo.user_id"
+              v-if="msg.from !== userStore.userInfo.userId"
             >
               <image
                 class="m-img"
@@ -437,7 +438,7 @@ onShow(() => {
               <rich-text
                 class="span"
                 :class="{ 'theme-span': statusStore.isDarkMode }"
-                v-if="msg.is_share === '0'"
+                v-if="msg.isShare === '0'"
                 :nodes="lineBreakReplace(msg.message)"
               ></rich-text>
               <view v-else class="post-msg">

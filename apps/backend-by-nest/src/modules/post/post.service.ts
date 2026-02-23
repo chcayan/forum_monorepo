@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
 import { Brackets, Repository } from 'typeorm';
@@ -140,6 +144,9 @@ export class PostService {
 
     if (!post) throw new NotFoundException('帖子不可见或已删除');
 
+    if (post.status !== 1 && userId !== post.userId)
+      throw new NotFoundException('该帖子暂时不可见');
+
     const { user, ...rest } = post;
     return {
       ...rest,
@@ -168,6 +175,10 @@ export class PostService {
 
     if (!exist) {
       throw new NotFoundException('未找到该帖子');
+    }
+
+    if (exist.status !== 1) {
+      throw new ForbiddenException('该帖子未审核');
     }
 
     const comment = this.commentRepository.create({

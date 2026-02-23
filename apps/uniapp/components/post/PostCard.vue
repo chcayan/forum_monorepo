@@ -37,18 +37,18 @@ const props = defineProps<{
   isRestrictLine: Boolean
 }>()
 
-const user_avatar = computed(() => {
+const userAvatar = computed(() => {
   if (!props.post) return
-  if (props.post.user_id === userStore.userInfo.user_id) {
-    return getImgUrl(userStore.userInfo.user_avatar)
+  if (props.post.userId === userStore.userInfo.userId) {
+    return getImgUrl(userStore.userInfo.userAvatar)
   } else {
-    return getImgUrl(props.post.user_avatar)
+    return getImgUrl(props.post.userAvatar)
   }
 })
 
 const username = computed(() => {
   if (!props.post) return
-  if (props.post.user_id === userStore.userInfo.user_id) {
+  if (props.post.userId === userStore.userInfo.userId) {
     return userStore.userInfo.username
   } else {
     return props.post.username
@@ -62,7 +62,7 @@ const userStore = useUserStore()
 watch(
   () => userStore.userCollectListOfPostId,
   () => {
-    if (userStore.userCollectListOfPostId.includes(props.post?.p_id)) {
+    if (userStore.userCollectListOfPostId.includes(props.post?.pId)) {
       isCollect.value = true
     } else {
       isCollect.value = false
@@ -85,18 +85,14 @@ const changeCollectStatus = async () => {
 
   try {
     if (!isCollect.value) {
-      await updateUserAddCollectAPI({
-        postId: props.post.p_id,
-      })
+      await updateUserAddCollectAPI(props.post.pId)
       await userStore.getUserCollectListOfPostId()
       uni.showToast({
         icon: 'none',
         title: '收藏成功',
       })
     } else {
-      await updateUserDelCollectAPI({
-        postId: props.post.p_id,
-      })
+      await updateUserDelCollectAPI(props.post.pId)
       await userStore.getUserCollectListOfPostId()
       uni.showToast({
         icon: 'none',
@@ -119,14 +115,14 @@ function updatePostStatus() {
     route.startsWith(RouterPath.user) ||
     route.startsWith(RouterPath.search)
   ) {
-    emitter.emit('EVENT:UPDATE_POST_LIST', props.post.p_id)
-    emitter.emit('EVENT:UPDATE_USER_POST_LIST', props.post.p_id)
+    emitter.emit('EVENT:UPDATE_POST_LIST', props.post.pId)
+    emitter.emit('EVENT:UPDATE_USER_POST_LIST', props.post.pId)
   }
 
   if (route.startsWith(RouterPath.detail)) {
-    emitter.emit('EVENT:UPDATE_POST_DETAIL', props.post.p_id)
-    emitter.emit('EVENT:UPDATE_POST_LIST', props.post.p_id)
-    emitter.emit('EVENT:UPDATE_USER_POST_LIST', props.post.p_id)
+    emitter.emit('EVENT:UPDATE_POST_DETAIL', props.post.pId)
+    emitter.emit('EVENT:UPDATE_POST_LIST', props.post.pId)
+    emitter.emit('EVENT:UPDATE_USER_POST_LIST', props.post.pId)
   }
 }
 
@@ -164,15 +160,13 @@ const deletePost = () => {
     confirmColor: '#ff0000',
     async success(result: string | boolean) {
       if (result.confirm) {
-        await deleteUserPostAPI({
-          postId: props.post.p_id,
-        })
+        await deleteUserPostAPI(props.post.pId)
           .then(() => {
             uni.showToast({
               icon: 'none',
               title: '删除成功',
             })
-            emitter.emit('EVENT:DELETE_USER_POST_LIST', props.post.p_id)
+            emitter.emit('EVENT:DELETE_USER_POST_LIST', props.post.pId)
           })
           .catch(() => {
             uni.showToast({
@@ -190,15 +184,13 @@ const onPublic = () => {
     content: '确定要设置为公开可见吗',
     async success(result: string | boolean) {
       if (result.confirm) {
-        await updateUserPostToPublicAPI({
-          postId: props.post.p_id,
-        })
+        await updateUserPostToPublicAPI(props.post.pId)
           .then(() => {
             uni.showToast({
               icon: 'none',
               title: '设置成功',
             })
-            emitter.emit('EVENT:UPDATE_USER_POST_LIST', props.post.p_id)
+            emitter.emit('EVENT:UPDATE_USER_POST_LIST', props.post.pId)
           })
           .catch(() => {
             uni.showToast({
@@ -216,15 +208,13 @@ const onPrivate = () => {
     content: '确定要设置为公开可见吗',
     async success(result: string | boolean) {
       if (result.confirm) {
-        await updateUserPostToPrivateAPI({
-          postId: props.post.p_id,
-        })
+        await updateUserPostToPrivateAPI(props.post.pId)
           .then(() => {
             uni.showToast({
               icon: 'none',
               title: '设置成功',
             })
-            emitter.emit('EVENT:UPDATE_USER_POST_LIST', props.post.p_id)
+            emitter.emit('EVENT:UPDATE_USER_POST_LIST', props.post.pId)
           })
           .catch(() => {
             uni.showToast({
@@ -243,10 +233,10 @@ onLoad((options) => {
 })
 
 const navigateToUser = () => {
-  if (id.value === props.post.user_id) return
-  // emitter.emit('EVENT:REACTIVE_USER_VIEW', post.user_id)
+  if (id.value === props.post.userId) return
+  // emitter.emit('EVENT:REACTIVE_USER_VIEW', post.userId)
   uni.navigateTo({
-    url: `${RouterPath.user}?userId=${props.post.user_id}`,
+    url: `${RouterPath.user}?userId=${props.post.userId}`,
   })
 }
 
@@ -254,8 +244,7 @@ const isSelf = ref(false)
 onShow(() => {
   const route = getCurrentRoute()
   isSelf.value =
-    props.post?.user_id === userStore.userInfo.user_id &&
-    route === RouterPath.my
+    props.post?.userId === userStore.userInfo.userId && route === RouterPath.my
 })
 
 const showShareBox = ref(false)
@@ -271,9 +260,9 @@ const onShare = () => {
 
 const share = async (friendId: string) => {
   const payload = {
-    from: userStore.userInfo.user_id,
+    from: userStore.userInfo.userId,
     to: friendId,
-    message: props.post.p_id,
+    message: props.post.pId,
     is_share: '1',
   }
 
@@ -306,14 +295,14 @@ onPageScroll(() => {
       <view class="ul">
         <view
           class="li"
-          @click="share(friend.follow_id)"
+          @click="share(friend.followId)"
           v-for="(friend, index) in friendList"
           :key="index"
         >
           <image
             mode="aspectFill"
             class="img"
-            :src="getImgUrl(friend.user_avatar)"
+            :src="getImgUrl(friend.userAvatar)"
           />
           <text class="name">{{ friend.username }}</text>
         </view>
@@ -323,7 +312,7 @@ onPageScroll(() => {
     <view class="header">
       <image
         class="avatar"
-        :src="user_avatar"
+        :src="userAvatar"
         mode="aspectFill"
         @click="navigateToUser()"
       />
@@ -332,47 +321,49 @@ onPageScroll(() => {
           username
         }}</text>
         <text class="date">{{
-          formatDateByYear(props.post?.publish_time)
+          formatDateByYear(props.post?.publishTime)
         }}</text>
       </view>
       <view class="func-widget" v-if="isSelf">
         <DelIcon @click="deletePost" />
-        <PublicIcon
-          @click="onPrivate"
-          v-if="props.post?.is_public === 'true'"
-        />
-        <PrivateIcon @click="onPublic" v-else />
+        <view v-if="post.status === 1">
+          <PublicIcon
+            @click="onPrivate"
+            v-if="props.post?.isPublic === 'true'"
+          />
+          <PrivateIcon @click="onPublic" v-else />
+        </view>
       </view>
     </view>
     <view class="main">
       <rich-text
         style="font-size: 16px"
-        @click="navigateToPostDetail(props.post.p_id)"
+        @click="navigateToPostDetail(props.post.pId)"
         :class="{ 'restrict-line': isRestrictLine }"
-        :nodes="lineBreakReplace(props.post?.p_content)"
+        :nodes="lineBreakReplace(props.post?.pContent)"
         class="text"
       ></rich-text>
-      <NGrid class="imgs" :images="props.post?.p_images"></NGrid>
+      <NGrid class="imgs" :images="props.post?.pImages"></NGrid>
     </view>
-    <view class="footer">
+    <view class="footer" v-if="post.status === 1">
       <view class="icon-list">
         <view class="icon-item">
           <ViewIcon class="svg" /><text class="count">{{
-            post?.p_view_count
+            post?.pViewCount
           }}</text>
         </view>
         <view class="icon-item">
           <CommentIcon class="svg" /><text class="count">{{
-            post?.p_comment_count
+            post?.pCommentCount
           }}</text>
         </view>
         <view @click="changeCollectStatus" class="icon-item">
           <CollectIcon :isCollect="isCollect" class="svg" />
-          <text class="count">{{ post?.p_collect_count }}</text>
+          <text class="count">{{ post?.pCollectCount }}</text>
         </view>
         <view @click="onShare" class="icon-item">
           <ShareIcon class="svg" /><text class="count">{{
-            post?.p_share_count
+            post?.pShareCount
           }}</text>
         </view>
       </view>

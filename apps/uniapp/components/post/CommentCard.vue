@@ -13,18 +13,18 @@ const { comment } = defineProps<{
     <view class="header">
       <image
         class="comment-card-img"
-        :src="getImgUrl(comment.user_avatar)"
+        :src="getImgUrl(comment.userAvatar)"
         mode="aspectFill"
       />
       <view class="comment-card-info">
         <text>{{ comment?.username }}</text>
-        <text class="time">{{ formatDateByYear(comment.created_time) }}</text>
+        <text class="time">{{ formatDateByYear(comment.createdTime) }}</text>
       </view>
     </view>
     <view class="main">
       <rich-text
         style="font-size: 16px"
-        :nodes="lineBreakReplace(comment?.c_content)"
+        :nodes="lineBreakReplace(comment?.content)"
       ></rich-text>
     </view>
   </view>

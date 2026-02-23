@@ -22,22 +22,23 @@ const postList = computed(() => Array.from(postMap.value.values()))
 const getPostList = async (page: number) => {
   const res = await getPostListAPI(page, limit)
 
-  const data: PostDetail[] = res.data.data
+  const data: PostDetail[] = res.data.data.list
+
   if (data.length < limit) {
     hasMore.value = false
   }
 
   for (const item of data) {
-    postMap.value.set(item.p_id, item)
+    postMap.value.set(item.pId, item)
   }
 }
 
 getPostList(postListPage.value)
 
-emitter.on('EVENT:UPDATE_POST_LIST', async (p_id: string) => {
+emitter.on('EVENT:UPDATE_POST_LIST', async (pId: string) => {
   try {
-    const res = await getPostDetailAPI(p_id)
-    postMap.value.set(p_id, res.data.data[0])
+    const res = await getPostDetailAPI(pId)
+    postMap.value.set(pId, res.data.data)
 
     const currentRoute = getCurrentRoute()
 

@@ -33,45 +33,45 @@ const userCollectedPostListPage = ref(1)
 
 const getUserPostList = async (page: number, userId: string) => {
   const res = await getUserPostAPI({
-    creatorUserId: userId || id.value,
+    userId: userId || id.value,
     page,
     limit,
   })
 
-  const data: PostDetail[] = res.data.data
+  const data: PostDetail[] = res.data.data.list
 
   if (data.length < limit) {
     upHasMore.value = false
   }
 
   for (const item of data) {
-    userPostMap.value.set(item.p_id, item)
+    userPostMap.value.set(item.pId, item)
   }
 }
 
 const getUserCollectedPostList = async (page: number, userId: string) => {
   const res = await getUserCollectPostAPI({
-    creatorUserId: userId || id.value,
+    userId: userId || id.value,
     page,
     limit,
   })
 
-  const data: PostDetail[] = res.data.data
+  const data: PostDetail[] = res.data.data.list
 
   if (data.length < limit) {
     ucpHasMore.value = false
   }
 
   for (const item of data) {
-    userCollectedPostMap.value.set(item.p_id, item)
+    userCollectedPostMap.value.set(item.pId, item)
   }
 }
 
-emitter.on('EVENT:UPDATE_USER_POST_LIST', async (p_id: string) => {
-  const res = await getPostDetailAPI(p_id)
-  userPostMap.value.set(p_id, res.data.data[0])
-  if (userCollectedPostMap.value.get(p_id)) {
-    userCollectedPostMap.value.set(p_id, res.data.data[0])
+emitter.on('EVENT:UPDATE_USER_POST_LIST', async (pId: string) => {
+  const res = await getPostDetailAPI(pId)
+  userPostMap.value.set(pId, res.data.data)
+  if (userCollectedPostMap.value.get(pId)) {
+    userCollectedPostMap.value.set(pId, res.data.data)
   }
 
   const route = getCurrentRoute()

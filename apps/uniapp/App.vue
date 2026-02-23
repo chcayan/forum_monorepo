@@ -14,30 +14,36 @@ import { watch } from 'vue'
 const statusStore = useStatusStore()
 const userStore = useUserStore()
 
+type userInfo = {
+  userId: string
+  username: string
+  userAvatar: string
+}
+
 async function initUserStatus() {
   await userStore.getUserInfo()
 
-  socket.emit('login', userStore.userInfo?.user_id)
+  socket.emit('login', userStore.userInfo?.userId)
 
   socket.on(
     'receiveMessage',
     async ({
       from,
       message,
-      is_share,
+      isShare,
     }: {
       from: string
       message: string
-      is_share: '0' | '1'
+      isShare: '0' | '1'
     }) => {
       const route = getCurrentRoute()
       if (route === RouterPath.chat) return
-      const res = await getUserInfoAPI({ userId: from })
-      const userInfo = res.data?.data[0] as userInfo
-      console.log(is_share)
+      const res = await getUserInfoAPI(from)
+      const userInfo = res.data?.data as userInfo
+
       uni.showToast({
         icon: 'none',
-        title: `${userInfo.username}: ${is_share === '0' ? message : '分享了帖子'}`,
+        title: `${userInfo.username}: ${isShare === '0' ? message : '分享了帖子'}`,
         position: 'top',
       })
     }
@@ -76,6 +82,13 @@ onLaunch(async () => {
   })
 
   emitter.on('API:BAD_REQUEST', (message: string) => {
+    uni.showToast({
+      icon: 'none',
+      title: message,
+    })
+  })
+
+  emitter.on('API:FORBIDDEN', (message: string) => {
     uni.showToast({
       icon: 'none',
       title: message,

@@ -23,6 +23,6 @@ export interface FriendInfo {
 // 搜索用户信息
 export interface UserBySearchInfo {
   username: string
-  user_avatar: string
+  userAvatar: string
   userId: string
 }

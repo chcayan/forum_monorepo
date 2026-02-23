@@ -144,7 +144,7 @@ export function updateUserAddCollectAPI(postId: string) {
  * @returns
  */
 export function updateUserAddFollowAPI(followId: string) {
-  return request.post(`/user/collect/${followId}`)
+  return request.post(`/user/follow/${followId}`)
 }
 
 /**
@@ -153,7 +153,7 @@ export function updateUserAddFollowAPI(followId: string) {
  * @returns
  */
 export function updateUserDelFollowAPI(followId: string) {
-  return request.delete(`/user/collect/${followId}`)
+  return request.delete(`/user/follow/${followId}`)
 }
 
 /**

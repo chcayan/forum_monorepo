@@ -18,7 +18,7 @@ export function getChatUnreadAPI() {
 
 /**
  * 标记为已读
- * @param data from: 好友id
+ * @param data followId: 好友id
  * @returns
  */
 export function markAsReadAPI(data: { followId: string }) {

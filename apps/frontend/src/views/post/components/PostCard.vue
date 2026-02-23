@@ -313,7 +313,7 @@ const share = async (friendId: string) => {
       ></p>
       <NGrid class="n-grid" v-if="post?.pImages" :images="post?.pImages" />
     </div>
-    <footer>
+    <footer v-if="post.status === 1">
       <ul>
         <li>
           <ViewSvg class="svg" /><span title="浏览数">{{

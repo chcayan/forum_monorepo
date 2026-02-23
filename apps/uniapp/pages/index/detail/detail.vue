@@ -10,25 +10,26 @@ import { onLoad } from '@dcloudio/uni-app'
 import { RouterPath } from '../../../utils'
 
 const postDetail = ref<PostDetail>({
-  is_public: '',
-  p_id: '',
-  user_id: '',
-  p_view_count: '',
-  p_collect_count: '',
-  p_share_count: '',
-  p_comment_count: '',
-  p_content: '',
-  p_images: '',
-  publish_time: '',
-  user_avatar: '',
+  isPublic: '',
+  pId: '',
+  userId: '',
+  pViewCount: '',
+  pCollectCount: '',
+  pShareCount: '',
+  pCommentCount: '',
+  pContent: '',
+  pImages: [],
+  publishTime: '',
+  status: 1,
+  userAvatar: '',
   username: '',
-  is_collected: 0,
 })
 
 const getPostDetail = async (postId: string) => {
   await getPostDetailAPI(postId)
     .then((res) => {
-      postDetail.value = res.data.data[0]
+      console.log(res)
+      postDetail.value = res.data.data
     })
     .catch(() => {
       uni.redirectTo({
@@ -65,7 +66,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <view v-if="postDetail.p_id" class="post-detail">
+  <view v-if="postDetail.pId" class="post-detail">
     <view class="post">
       <PostCard :post="postDetail" :is-restrict-line="false" />
     </view>
@@ -74,7 +75,7 @@ onUnmounted(() => {
       <view
         class="comment-item"
         v-for="comment in commentList"
-        :key="comment.comment_id"
+        :key="comment.commentId"
       >
         <CommentCard :comment="comment" />
       </view>

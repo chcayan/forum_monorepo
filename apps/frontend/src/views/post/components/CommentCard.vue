@@ -6,7 +6,6 @@ import { formatDateByYear } from '@forum-monorepo/utils'
 const { comment } = defineProps<{
   comment: CommentList
 }>()
-console.log(comment)
 </script>
 
 <template>

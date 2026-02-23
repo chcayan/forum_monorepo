@@ -13,24 +13,24 @@ const { postId } = defineProps<{
 }>()
 
 const postInfo = ref<PostDetail>({
-  is_public: '',
-  p_id: '',
-  user_id: '',
-  p_view_count: '',
-  p_collect_count: '',
-  p_share_count: '',
-  p_comment_count: '',
-  p_content: '',
-  p_images: '',
-  publish_time: '',
-  user_avatar: '',
+  isPublic: '',
+  pId: '',
+  userId: '',
+  pViewCount: '',
+  pCollectCount: '',
+  pShareCount: '',
+  pCommentCount: '',
+  pContent: '',
+  pImages: [],
+  status: 1,
+  publishTime: '',
+  userAvatar: '',
   username: '',
-  is_collected: 0,
 })
 
 const getPostInfo = async () => {
   const res = await getPostDetailAPI(postId)
-  postInfo.value = res.data.data[0]
+  postInfo.value = res.data.data
 }
 getPostInfo()
 
@@ -63,11 +63,11 @@ const navigateToPostDetail = async () => {
       <image
         class="img"
         mode="aspectFill"
-        :src="getImgUrl(postInfo.user_avatar)"
+        :src="getImgUrl(postInfo.userAvatar)"
       />
       <text style="font-size: 14px">{{ postInfo.username }}</text>
     </view>
-    <view class="content">{{ postInfo.p_content }}</view>
+    <view class="content">{{ postInfo.pContent }}</view>
   </view>
 </template>
 

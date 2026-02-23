@@ -25,14 +25,12 @@ const getUserInfo = async () => {
 }
 
 const userPostList = computed(() =>
-  userPostOrder.value
-    .map((p_id) => userPostMap.value.get(p_id)!)
-    .filter(Boolean)
+  userPostOrder.value.map((pId) => userPostMap.value.get(pId)!).filter(Boolean)
 )
 
 const userCollectedPost = computed(() =>
   userCollectedPostOrder.value
-    .map((p_id) => userCollectedPostMap.value.get(p_id)!)
+    .map((pId) => userCollectedPostMap.value.get(pId)!)
     .filter(Boolean)
 )
 
@@ -47,43 +45,43 @@ const userCollectedPostListPage = ref(1)
 
 const getUserPostList = async (page: number) => {
   const res = await getUserPostAPI({
-    creatorUserId: userStore.userInfo?.user_id as string,
+    userId: userStore.userInfo?.userId as string,
     page,
     limit,
   })
 
-  const data: PostDetail[] = res.data.data
+  const data: PostDetail[] = res.data.data.list
 
   if (data.length < limit) {
     upHasMore.value = false
   }
 
   for (const item of data) {
-    if (!userPostMap.value.has(item.p_id)) {
-      userPostOrder.value.push(item.p_id)
+    if (!userPostMap.value.has(item.pId)) {
+      userPostOrder.value.push(item.pId)
     }
-    userPostMap.value.set(item.p_id, item)
+    userPostMap.value.set(item.pId, item)
   }
 }
 
 const getUserCollectedPostList = async (page: number) => {
   const res = await getUserCollectPostAPI({
-    creatorUserId: userStore.userInfo?.user_id as string,
+    userId: userStore.userInfo?.userId as string,
     page,
     limit,
   })
 
-  const data: PostDetail[] = res.data.data
+  const data: PostDetail[] = res.data.data.list
 
   if (data.length < limit) {
     ucpHasMore.value = false
   }
 
   for (const item of data) {
-    if (!userCollectedPostMap.value.has(item.p_id)) {
-      userCollectedPostOrder.value.push(item.p_id)
+    if (!userCollectedPostMap.value.has(item.pId)) {
+      userCollectedPostOrder.value.push(item.pId)
     }
-    userCollectedPostMap.value.set(item.p_id, item)
+    userCollectedPostMap.value.set(item.pId, item)
   }
 }
 
@@ -93,39 +91,40 @@ onLoad(async () => {
   getUserCollectedPostList(userCollectedPostListPage.value)
 })
 
-emitter.on('EVENT:DELETE_USER_POST_LIST', async (p_id: string) => {
-  if (userPostMap.value.get(p_id)) {
-    userPostMap.value.delete(p_id)
+emitter.on('EVENT:DELETE_USER_POST_LIST', async (pId: string) => {
+  if (userPostMap.value.get(pId)) {
+    userPostMap.value.delete(pId)
   }
-  if (userCollectedPostMap.value.get(p_id)) {
-    userCollectedPostMap.value.delete(p_id)
+  if (userCollectedPostMap.value.get(pId)) {
+    userCollectedPostMap.value.delete(pId)
   }
   await userStore.getUserCollectListOfPostId()
 })
 
 emitter.on(
   'EVENT:UPDATE_USER_POST_LIST',
-  async (p_id: string, isNewPost: boolean) => {
-    const res = await getPostDetailAPI(p_id)
-    if (userPostMap.value.get(p_id)) {
-      userPostMap.value.set(p_id, res.data.data[0])
+  async (pId: string, isNewPost: boolean) => {
+    const res = await getPostDetailAPI(pId)
+    const post = res.data.data
+    if (userPostMap.value.get(pId)) {
+      userPostMap.value.set(pId, post)
     }
     if (isNewPost) {
-      userPostMap.value.set(p_id, res.data.data[0])
+      userPostMap.value.set(pId, post)
       userPostOrder.value = [
-        p_id,
-        ...userPostOrder.value.filter((id) => id !== p_id),
+        pId,
+        ...userPostOrder.value.filter((id) => id !== pId),
       ]
       return
     }
-    if (!userCollectedPostMap.value.get(p_id)) {
-      userCollectedPostMap.value.set(p_id, res.data.data[0])
+    if (!userCollectedPostMap.value.get(pId)) {
+      userCollectedPostMap.value.set(pId, post)
       userCollectedPostOrder.value = [
-        p_id,
-        ...userCollectedPostOrder.value.filter((id) => id !== p_id),
+        pId,
+        ...userCollectedPostOrder.value.filter((id) => id !== pId),
       ]
     } else {
-      userCollectedPostMap.value.set(p_id, res.data.data[0])
+      userCollectedPostMap.value.set(pId, post)
     }
 
     const currentRoute = getCurrentRoute()

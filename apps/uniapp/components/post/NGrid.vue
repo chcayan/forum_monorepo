@@ -5,10 +5,10 @@ import { getImgUrl } from '@/utils'
 const active = ref('')
 const parseImages = ref<Array<string>>([])
 const { images } = defineProps<{
-  images: string | null
+  images: string[]
 }>()
 
-parseImages.value = JSON.parse(images)
+parseImages.value = images
 
 onMounted(() => {
   if (parseImages.value) {
@@ -24,7 +24,7 @@ function preview(url: string) {
 </script>
 
 <template>
-  <view v-if="JSON.parse(images)?.length" class="box one" :class="active">
+  <view v-if="images?.length" class="box one" :class="active">
     <image
       class="img"
       v-for="image in parseImages"

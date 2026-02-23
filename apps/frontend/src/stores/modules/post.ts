@@ -31,12 +31,12 @@ export const usePostStore = defineStore('post', () => {
       signature: '',
     }
     const res = await getUserInfoAPI(userId)
-    userInfo.value = res.data.data[0]
+    userInfo.value = res.data.data
   }
 
   const getUserInfoWithFans = async (userId: string) => {
     const res = await getUserInfoAPI(userId)
-    userInfo.value = res.data.data[0]
+    userInfo.value = res.data.data
   }
 
   return {

@@ -81,15 +81,17 @@ class Request {
           header: this.header,
           timeout: this.timeout,
           success: (res: any) => {
-            if (res.statusCode === 401) {
-              console.log(555)
-              emitter.emit('API:UN_AUTH', res.data.message)
-              reject(res)
-              return
-            } else if (res.statusCode === 400) {
+            if (res.statusCode === 400) {
               emitter.emit('API:BAD_REQUEST', res.data.message)
               reject(res)
               return
+            } else if (res.statusCode === 401) {
+              emitter.emit('API:UN_AUTH', res.data.message)
+              reject(res)
+              return
+            } else if (res.statusCode === 403) {
+              emitter.emit('API:FORBIDDEN', res.data.message)
+              reject(res)
             }
             resolve(res)
           },

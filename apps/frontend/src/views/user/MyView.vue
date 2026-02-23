@@ -48,7 +48,6 @@ const getUserPostList = async (page: number) => {
   })
 
   const data: PostDetail[] = res.data.data.list
-  console.log(data)
 
   if (data.length < limit) {
     upHasMore.value = false
@@ -104,7 +103,6 @@ emitter.on(
   async (pId: string, isNewPost: boolean) => {
     const res = await getPostDetailAPI(pId)
     const post = res.data.data
-    console.log(post)
 
     if (userPostMap.value.get(pId)) {
       userPostMap.value.set(pId, post)

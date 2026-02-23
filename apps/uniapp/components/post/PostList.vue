@@ -11,7 +11,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <view v-for="post in props.postList" :key="post?.p_id" class="post">
+  <view v-for="post in props.postList" :key="post?.pId" class="post">
     <PostCard :post="post" :is-restrict-line="true"></PostCard>
   </view>
   <view v-if="showLoading && hasMore" class="loading">

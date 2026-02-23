@@ -1,12 +1,12 @@
 // 聊天记录信息
 export interface ChatInfo {
-  msg_id: number
+  msgId: number
   sender: string
   receiver: string
   content: string
-  created_at: string
-  is_read: number
-  is_share: '0' | '1'
+  createdAt: string
+  isRead: number
+  isShare: '0' | '1'
 }
 
 // 未读信息

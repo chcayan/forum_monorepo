@@ -26,14 +26,12 @@ const userStore = useUserStore()
 const userList = ref<FriendInfo[]>([])
 
 const getUserFollowList = async () => {
-  const res = await getUserFollowsAPI(
-    userId.value || userStore.userInfo.user_id
-  )
+  const res = await getUserFollowsAPI(userId.value || userStore.userInfo.userId)
   userList.value = res.data.data
 }
 
 const getUserFanList = async () => {
-  const res = await getUserFansAPI(userId.value || userStore.userInfo.user_id)
+  const res = await getUserFansAPI(userId.value || userStore.userInfo.userId)
   userList.value = res.data.data
 }
 
@@ -66,14 +64,14 @@ const navigateToUser = (userId: string) => {
     <view
       class="li"
       v-for="user in userList"
-      :key="user.follow_id"
+      :key="user.followId"
       @click="
         navigateToUser(
-          props.isFollowOrFan === 'follow' ? user.follow_id : user.user_id
+          props.isFollowOrFan === 'follow' ? user.followId : user.userId
         )
       "
     >
-      <image class="img" :src="getImgUrl(user.user_avatar)" mode="aspectFill" />
+      <image class="img" :src="getImgUrl(user.userAvatar)" mode="aspectFill" />
       <text class="name">{{ user.username }}</text>
     </view>
   </view>

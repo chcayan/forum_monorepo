@@ -68,6 +68,13 @@ emitter.on('API:UN_AUTH', (message: string) => {
   userStore.removeToken()
 })
 
+emitter.on('API:FORBIDDEN', (message: string) => {
+  Toast.show({
+    msg: message,
+    type: 'error',
+  })
+})
+
 emitter.on('API:BAD_REQUEST', (message: string) => {
   Toast.show({
     msg: message,

@@ -76,17 +76,13 @@ const follow = async () => {
   flag = false
   try {
     if (isFollow.value) {
-      await updateUserDelFollowAPI({
-        followId: userId.value,
-      })
+      await updateUserDelFollowAPI(userId.value)
       uni.showToast({
         icon: 'none',
         title: '已取消关注',
       })
     } else {
-      await updateUserAddFollowAPI({
-        followId: userId.value,
-      })
+      await updateUserAddFollowAPI(userId.value)
       uni.showToast({
         icon: 'none',
         title: '关注成功',
@@ -111,19 +107,19 @@ const follow = async () => {
     <view class="header">
       <image
         class="bg"
-        @click="preview(getImgUrl(userInfo.background_img))"
-        :src="getImgUrl(userInfo.background_img)"
+        @click="preview(getImgUrl(userInfo.backgroundImg))"
+        :src="getImgUrl(userInfo.backgroundImg)"
         mode="aspectFill"
       />
       <image
         class="avatar"
-        @click="preview(getImgUrl(userInfo.user_avatar))"
-        :src="getImgUrl(userInfo.user_avatar)"
+        @click="preview(getImgUrl(userInfo.userAvatar))"
+        :src="getImgUrl(userInfo.userAvatar)"
         mode="aspectFill"
       />
       <view
         v-if="
-          userInfo.user_id === userStore.userInfo?.user_id &&
+          userInfo.userId === userStore.userInfo?.userId &&
           route?.startsWith(RouterPath.my)
         "
         class="btn"
@@ -132,7 +128,7 @@ const follow = async () => {
       </view>
       <view class="follow-btn" v-else>
         <text
-          v-if="userInfo.user_id !== userStore.userInfo?.user_id"
+          v-if="userInfo.userId !== userStore.userInfo?.userId"
           class="btn"
           @click="follow"
           :class="{ 'theme-follow-btn': statusStore.isDarkMode }"
@@ -142,7 +138,7 @@ const follow = async () => {
     </view>
     <view class="main">
       <text class="name">{{ userInfo.username }}</text>
-      <text class="id">{{ userInfo.user_id }}</text>
+      <text class="id">{{ userInfo.userId }}</text>
       <view class="main-item">
         <view class="follows" @click="onShowFollowList">
           <text class="text">{{ userInfo.follows }} 关注</text>

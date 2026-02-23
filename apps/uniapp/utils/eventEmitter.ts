@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
-type ApiEvent = 'API:UN_AUTH' | 'API:INVALID' | 'API:BAD_REQUEST'
+type ApiEvent =
+  | 'API:UN_AUTH'
+  | 'API:INVALID'
+  | 'API:BAD_REQUEST'
+  | 'API:FORBIDDEN'
 type TabEvent = 'TAB:LOGIN' | 'TAB:CLOSE_AVATAR_WIDGET'
 type BaseEvent =
   | 'EVENT:UPDATE_COMMENT_LIST'
@@ -22,6 +26,7 @@ class EventEmitter {
     'API:UN_AUTH': new Set(),
     'API:INVALID': new Set(),
     'API:BAD_REQUEST': new Set(),
+    'API:FORBIDDEN': new Set(),
     'TAB:LOGIN': new Set(),
     'TAB:CLOSE_AVATAR_WIDGET': new Set(),
     'EVENT:UPDATE_COMMENT_LIST': new Set(),

@@ -169,8 +169,6 @@ const navigateToChat = async () => {
 defineExpose({
   show: ChatToast.show,
 })
-
-console.log(userList.value)
 </script>
 
 <template>

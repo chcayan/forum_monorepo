@@ -26,11 +26,14 @@ instance.interceptors.response.use(
     return res
   },
   (err) => {
+    if (err.response?.status === 400) {
+      emitter.emit('API:BAD_REQUEST', err.response?.data.message)
+    }
     if (err.response?.status === 401) {
       emitter.emit('API:UN_AUTH', err.response?.data.message)
     }
-    if (err.response?.status === 400) {
-      emitter.emit('API:BAD_REQUEST', err.response?.data.message)
+    if (err.response?.status === 403) {
+      emitter.emit('API:FORBIDDEN', err.response?.data.message)
     }
     if (err.response?.status) return Promise.reject(err)
   }

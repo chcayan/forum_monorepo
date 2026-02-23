@@ -84,6 +84,15 @@ const navigateToUser = (userId: string) => {
   background-color: var(--theme-avatar-widget-color);
   box-shadow: var(--theme-shadow-color);
 
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: white;
+  }
+
   li {
     display: flex;
     align-items: center;
