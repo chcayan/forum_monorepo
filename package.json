@@ -14,7 +14,8 @@
     "precommit": "lint-staged",
     "dev": "concurrently \"pnpm --filter utils build\" \"pnpm --filter backend dev\" \"pnpm --filter frontend dev\"",
     "dev:nest": "concurrently  \"pnpm --filter backend-by-nest start:dev\" \"pnpm --filter frontend dev\"",
-    "upload": "pnpm --filter utils build && pnpm --filter backend build && pnpm --filter frontend build && bash ./script/upload.sh"
+    "build": "pnpm -F utils build && pnpm -F frontend build && pnpm -F backend-by-nest build",
+    "upload": "pnpm build && bash ./script/upload.sh"
   },
   "config": {
     "commitizen": {

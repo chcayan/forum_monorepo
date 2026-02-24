@@ -1,34 +1,31 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useTranslation } from 'react-i18next'
+import { useEffect } from 'react'
+import i18n from '@/i18n'
+import AppRouter from '@/router'
+import { useUserStore } from '@/stores'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { t } = useTranslation()
+  console.log(555)
+
+  const setPermissions = useUserStore((state) => state.setPermissions)
+
+  useEffect(() => {
+    setPermissions(['edit_post', 'edit_user'])
+  }, [setPermissions])
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div>
+      <h1>{t('common.hello')}</h1>
+      <p>{t('home.title')}</p>
+
+      <p>{t('home.description')}</p>
+
+      <button onClick={() => i18n.changeLanguage('zh')}>中文</button>
+
+      <button onClick={() => i18n.changeLanguage('en')}>English</button>
+      <AppRouter />
+    </div>
   )
 }
 
