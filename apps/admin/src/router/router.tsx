@@ -2,15 +2,25 @@ import AuditPost from '@/pages/auditPost'
 import EditPost from '@/pages/editPost'
 import EditUser from '@/pages/editUser'
 import Home from '@/pages/home'
+import Login from '@/pages/login/Login'
 import NotFound from '@/pages/notFound'
 import type { JSX } from 'react'
 
 export type Path = {
   '/': symbol
   '*': symbol
+  '/login': symbol
   '/audit-post': symbol
   '/edit-post': symbol
   '/edit-user': symbol
+}
+
+export const RoutePath = {
+  home: '/',
+  login: '/login',
+  auditPost: '/audit-post',
+  editPost: '/edit-post',
+  editUser: '/edit-user',
 }
 
 export type Permission = {
@@ -48,6 +58,7 @@ export const constantRoutes: AppRoute[] = [
     path: '/',
     element: <Home />,
   },
+  { path: '/login', element: <Login /> },
   {
     path: '*',
     element: <NotFound />,

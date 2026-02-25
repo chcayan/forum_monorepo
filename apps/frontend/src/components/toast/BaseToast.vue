@@ -77,6 +77,7 @@ class Toast {
       confirmBtnVisible.value = false
 
       if (timer) clearInterval(timer)
+      // TODO clearTimeout
       timer = setTimeout(() => {
         Toast.hide()
       }, duration)

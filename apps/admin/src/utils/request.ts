@@ -1,0 +1,41 @@
+import axios from 'axios'
+import emitter from './eventEmitter'
+import { useUserStore } from '@/stores'
+
+const baseURL = '/api'
+
+const instance = axios.create({
+  baseURL,
+  timeout: 30000,
+})
+
+instance.interceptors.request.use(
+  (config) => {
+    const token = useUserStore.getState().token
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`
+    }
+    return config
+  },
+  (err) => Promise.reject(err)
+)
+
+instance.interceptors.response.use(
+  (res) => {
+    return res
+  },
+  (err) => {
+    if (err.response?.status === 400) {
+      emitter.emit('API:BAD_REQUEST', err.response?.data.message)
+    }
+    if (err.response?.status === 401) {
+      emitter.emit('API:UN_AUTH', err.response?.data.message)
+    }
+    if (err.response?.status === 403) {
+      emitter.emit('API:FORBIDDEN', err.response?.data.message)
+    }
+    if (err.response?.status) return Promise.reject(err)
+  }
+)
+
+export { instance as request }

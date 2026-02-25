@@ -44,14 +44,19 @@ export class AdminService {
 
     const userPermMask = user.userPermMask;
     const adminPermMask = user.adminPermMask;
-    if ((userPermMask & UserPermissionBit.LOGIN) === 0) {
-      throw new ForbiddenException('账号封禁中');
-    }
 
     const isMatch = await bcrypt.compare(password, user.userPassword);
 
     if (!isMatch) {
       throw new UnauthorizedException('用户名或密码错误');
+    }
+
+    if ((userPermMask & UserPermissionBit.LOGIN) === 0) {
+      throw new ForbiddenException('账号封禁中');
+    }
+
+    if (adminPermMask === 0) {
+      throw new ForbiddenException('该用户没有管理员权限，请联系管理员');
     }
 
     const token = this.jwtService.sign({
@@ -95,7 +100,8 @@ export class AdminService {
     //   user: userPermission,
     //   admin: adminPermission,
     // };
-    return AdminPerm;
+
+    return adminPermission;
   }
 
   async addUserPermission(userId: string, permission: string) {

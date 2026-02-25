@@ -1,32 +1,46 @@
-import { useTranslation } from 'react-i18next'
 import { useEffect } from 'react'
-import i18n from '@/i18n'
-import AppRouter from '@/router'
-import { useUserStore } from '@/stores'
+import AppRouter from './router'
+import { useUserStore } from './stores'
+import { useNavigate } from 'react-router-dom'
+import { RoutePath } from './router/router'
+import emitter from './utils/eventEmitter'
+import { Toast } from './utils'
 
 function App() {
-  const { t } = useTranslation()
-  console.log(555)
-
-  const setPermissions = useUserStore((state) => state.setPermissions)
+  const navigate = useNavigate()
 
   useEffect(() => {
-    setPermissions(['edit_post', 'edit_user'])
-  }, [setPermissions])
+    const { token, removeToken, permissions, setPermissions } =
+      useUserStore.getState()
 
-  return (
-    <div>
-      <h1>{t('common.hello')}</h1>
-      <p>{t('home.title')}</p>
+    if (!token) {
+      removeToken()
+      navigate(RoutePath.login)
+      return
+    }
 
-      <p>{t('home.description')}</p>
+    setPermissions(permissions)
+  }, [navigate])
 
-      <button onClick={() => i18n.changeLanguage('zh')}>中文</button>
+  useEffect(() => {
+    const { removeToken } = useUserStore.getState()
+    emitter.on('API:UN_AUTH', (message: string) => {
+      Toast.show({
+        msg: message,
+        type: 'error',
+      })
+      removeToken()
+    })
 
-      <button onClick={() => i18n.changeLanguage('en')}>English</button>
-      <AppRouter />
-    </div>
-  )
+    emitter.on('API:FORBIDDEN', (message: string) => {
+      Toast.show({
+        msg: message,
+        type: 'error',
+      })
+    })
+  }, [])
+
+  return <AppRouter />
 }
 
 export default App
