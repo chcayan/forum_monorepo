@@ -8,5 +8,16 @@
   "home": {
     "title": "首页",
     "description": "这是首页"
+  },
+  "login": {
+    "title": "欢迎回来",
+    "titleError": "信息有误",
+    "email": "邮箱",
+    "password": "密码",
+    "displayPassword": "显示密码",
+    "hidePassword": "隐藏密码",
+    "loginBtn": "登 录",
+    "emailTip": "请检查您的邮箱格式是否正确",
+    "passwordTip": "密码只允许数字/字母/符号，禁止空格，长度6-16个字符"
   }
 }

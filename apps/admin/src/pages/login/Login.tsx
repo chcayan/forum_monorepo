@@ -2,13 +2,18 @@ import { useState, useEffect, useEffectEvent } from 'react'
 import styles from './login.module.scss'
 import { isValidEmail, isValidPassword, Toast } from '@/utils'
 import { loginAPI } from '@/api'
-import { useUserStore } from '@/stores'
+import { useStatusStore, useUserStore } from '@/stores'
 import { RoutePath } from '@/router/router'
 import { useNavigate } from 'react-router-dom'
+import ThemeToggleBtn from '@/components/button/ThemeToggleBtn'
+import LanguageToggleBtn from '@/components/button/LanguageToggleBtn'
+import { useTranslation } from 'react-i18next'
 
 const themeColor = '#ff9e6a'
 
 export default function Login() {
+  const { t } = useTranslation()
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -28,6 +33,8 @@ export default function Login() {
       resetAuthStatus()
     }
   }, [email, password])
+
+  const currentTheme = useStatusStore((state) => state.currentTheme)
 
   const setPermissions = useUserStore((state) => state.setPermissions)
   const setToken = useUserStore((state) => state.setToken)
@@ -63,10 +70,9 @@ export default function Login() {
   }, [navigate])
 
   const getErrorTip = (): string => {
-    if (!isValidEmail(email)) return '请检查您的邮箱格式是否正确'
-    if (!isValidPassword(password))
-      return '密码只允许数字/字母/符号，禁止空格，长度6-16个字符'
-    return '请检查您的邮箱或密码是否正确'
+    if (!isValidEmail(email)) return t('login.emailTip')
+    if (!isValidPassword(password)) return t('login.passwordTip')
+    return ''
   }
 
   const getEyeOffset = () => {
@@ -108,7 +114,10 @@ export default function Login() {
             authStatus === 'error' ? styles['status-error'] : ''
           }`}
         >
-          <svg viewBox="0 0 400 400" className={styles.svg}>
+          <svg
+            viewBox="0 0 400 400"
+            className={authStatus !== 'error' ? styles.svg : ''}
+          >
             {/* 紫色角色 */}
             <g style={characterBaseStyle}>
               <rect
@@ -146,12 +155,26 @@ export default function Login() {
                 y="160"
                 width="50"
                 height="160"
-                fill={getFillColor('#1A1A1A')}
+                fill={
+                  currentTheme === 'Light'
+                    ? getFillColor('#1A1A1A')
+                    : getFillColor('#eee')
+                }
                 rx="6"
               />
               <g style={eyeStyle}>
-                <circle cx="203" cy="185" r="4.5" fill="#FFF" />
-                <circle cx="217" cy="185" r="4.5" fill="#FFF" />
+                <circle
+                  cx="203"
+                  cy="185"
+                  r="4.5"
+                  fill={currentTheme === 'Light' ? '#FFF' : '#000'}
+                />
+                <circle
+                  cx="217"
+                  cy="185"
+                  r="4.5"
+                  fill={currentTheme === 'Light' ? '#FFF' : '#000'}
+                />
               </g>
             </g>
 
@@ -216,6 +239,10 @@ export default function Login() {
       </div>
 
       <div className={styles['right-panel']}>
+        <div className={styles.tools}>
+          <ThemeToggleBtn />
+          <LanguageToggleBtn />
+        </div>
         <div className={styles['form-wrapper']}>
           <div
             className={styles.logo}
@@ -238,15 +265,19 @@ export default function Login() {
             {authStatus === 'success'
               ? '登录成功'
               : authStatus === 'error'
-                ? '信息有误'
-                : '欢迎回来'}
+                ? t('login.titleError')
+                : t('login.title')}
           </h1>
-          <p className={styles.subtitle}>
+          <p
+            className={`${styles.subtitle} ${
+              authStatus === 'error' ? styles['status-error'] : ''
+            }`}
+          >
             {authStatus === 'error' ? getErrorTip() : 'Hi~ o(*￣▽￣*)ブ'}
           </p>
 
           <div className={styles['input-group']}>
-            <label className={styles.label}>邮箱</label>
+            <label className={styles.label}>{t('login.email')}</label>
             <div
               className={styles['input-wrapper']}
               style={{
@@ -275,7 +306,7 @@ export default function Login() {
           </div>
 
           <div className={styles['input-group']}>
-            <label className={styles.label}>密码</label>
+            <label className={styles.label}>{t('login.password')}</label>
             <div
               className={styles['input-wrapper']}
               style={{
@@ -304,7 +335,11 @@ export default function Login() {
                     color: showPassword ? themeColor : '#999',
                   }}
                   onClick={() => setShowPassword(!showPassword)}
-                  title={showPassword ? '隐藏密码' : '显示密码'}
+                  title={
+                    showPassword
+                      ? t('login.hidePassword')
+                      : t('login.displayPassword')
+                  }
                 >
                   {showPassword ? '( •̀ ω •́ )' : '( -_- )'}
                 </span>
@@ -328,11 +363,13 @@ export default function Login() {
                   ? '#EF4444'
                   : authStatus === 'success'
                     ? '#22C55E'
-                    : '#111827',
+                    : currentTheme === 'Light'
+                      ? '#111827'
+                      : '#eee',
             }}
             onClick={handleLogin}
           >
-            {authStatus === 'success' ? '跳转中...' : '登 录'}
+            {t('login.loginBtn')}
           </button>
         </div>
       </div>

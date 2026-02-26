@@ -19,6 +19,9 @@ body[data-theme='Dark'] {
   --theme-chat-item-bg-color: rgb(0, 0, 0);
   --theme-chat-item-bg-hover-color: rgba(88, 86, 86, 0.482);
   --theme-chat-speech-bubble-color: rgb(56, 56, 56);
+
+  --theme-login-bg-color: rgb(18, 16, 16);
+  --theme-login-font-color: rgb(255, 255, 255);
 }
 
 :root {
@@ -42,5 +45,7 @@ body[data-theme='Dark'] {
   --theme-chat-item-bg-color: rgba(255, 233, 221, 0.482);
   --theme-chat-item-bg-hover-color: rgb(255, 236, 225);
   --theme-chat-speech-bubble-color: rgb(255, 214, 192);
-  --t: #ff9e6a;
+
+  --theme-login-bg-color: rgb(238, 242, 246);
+  --theme-login-font-color: rgb(55, 65, 81);
 }

@@ -8,5 +8,16 @@
   "home": {
     "title": "Home Page",
     "description": "This is the home page"
+  },
+  "login": {
+    "title": "Welcome back",
+    "titleError": "Information is incorrect",
+    "email": "email",
+    "password": "password",
+    "displayPassword": "display password",
+    "hidePassword": "hide password",
+    "loginBtn": "login",
+    "emailTip": "Please check if your email format is correct",
+    "passwordTip": "Password only allows numbers/letters/symbols, no spaces, length 6-16 characters"
   }
 }

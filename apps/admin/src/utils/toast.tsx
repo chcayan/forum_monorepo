@@ -1,6 +1,6 @@
 import { createRef, type RefObject } from 'react'
 import { createRoot } from 'react-dom/client'
-import T from '@/components/toast/toast'
+import T from '@/components/toast/Toast'
 import type { ToastParams } from '@/components/toast/types'
 
 interface ToastRef {
