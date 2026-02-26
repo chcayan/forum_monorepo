@@ -1,13 +1,10 @@
 import { getAdminInfoAPI } from '@/api'
-import { filterRoutes } from '@/router/filterRoutes'
-import type { AppRoute, Permission } from '@/router/router'
-import { asyncRoutes, constantRoutes } from '@/router/router'
+import type { Permission } from '@/router'
 import type { UserInfo } from '@forum-monorepo/types'
 import { create } from 'zustand'
 
 interface UserState {
   permissions: (keyof Permission)[]
-  routes: AppRoute[]
   token: string
   userInfo: UserInfo
 
@@ -32,18 +29,13 @@ const defaultUserInfo = {
 
 export const useUserStore = create<UserState>((set, get) => ({
   permissions: JSON.parse(localStorage.getItem('perm') || '[]') || [],
-  routes: constantRoutes,
   token: localStorage.getItem('token') || '',
   userInfo: defaultUserInfo,
 
   setPermissions(permissions) {
-    const filtered = filterRoutes(asyncRoutes, permissions)
-
     set({
       permissions,
-      routes: [...constantRoutes, ...filtered],
     })
-
     localStorage.setItem('perm', JSON.stringify(get().permissions))
   },
 

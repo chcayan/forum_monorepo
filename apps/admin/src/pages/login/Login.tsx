@@ -3,7 +3,7 @@ import styles from './login.module.scss'
 import { isValidEmail, isValidPassword, Toast } from '@/utils'
 import { loginAPI } from '@/api'
 import { useStatusStore, useUserStore } from '@/stores'
-import { RoutePath } from '@/router/router'
+import { RoutePath } from '@/router/route'
 import { useNavigate } from 'react-router-dom'
 import ThemeToggleBtn from '@/components/button/ThemeToggleBtn'
 import LanguageToggleBtn from '@/components/button/LanguageToggleBtn'
@@ -59,13 +59,13 @@ export default function Login() {
       msg: '登录成功',
       type: 'success',
     })
-    navigate(RoutePath.home)
+    navigate(RoutePath.overview)
   }
 
   useEffect(() => {
     const { token } = useUserStore.getState()
     if (token) {
-      navigate(RoutePath.home)
+      navigate(RoutePath.overview)
     }
   }, [navigate])
 

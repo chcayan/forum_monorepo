@@ -51,7 +51,7 @@ const Toast = forwardRef((_, ref) => {
   return (
     <>
       <div className={`${styles.toast} ${styles[type]}`} ref={toastRef}>
-        <span>{msg}</span>
+        <p className={styles.p}>{msg}</p>
       </div>
     </>
   )

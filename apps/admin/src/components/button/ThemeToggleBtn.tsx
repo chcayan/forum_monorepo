@@ -8,6 +8,13 @@ export default function ThemeToggleBtn() {
   return (
     <>
       <div
+        tabIndex={0}
+        className="tab-focus-style toggle-btn"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            toggleTheme()
+          }
+        }}
         onClick={toggleTheme}
         style={{
           cursor: 'pointer',

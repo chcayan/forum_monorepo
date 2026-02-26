@@ -1,4 +1,4 @@
-import type { AppRoute, Permission } from './router'
+import type { AppRoute, Permission } from './index'
 
 export function filterRoutes(
   routes: AppRoute[],
