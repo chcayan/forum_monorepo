@@ -22,6 +22,10 @@ async function initUserStatus() {
   // websocket
   socket.emit('login', userStore.userInfo?.userId)
 
+  socket.on('receiveOnlineList', (list) => {
+    console.log(list)
+  })
+
   socket.on(
     'receiveMessage',
     async ({

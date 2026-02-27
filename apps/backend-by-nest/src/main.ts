@@ -13,7 +13,11 @@ async function bootstrap() {
     }),
   );
   app.enableCors({
-    origin: [process.env.CORS_ORIGIN, process.env.CORS_ORIGIN_1],
+    origin: [
+      process.env.CORS_ORIGIN,
+      process.env.CORS_ORIGIN_1,
+      process.env.CORS_ORIGIN_2,
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });

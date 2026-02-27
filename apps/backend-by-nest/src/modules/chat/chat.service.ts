@@ -2,12 +2,15 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Chat } from './entities/chat.entity';
 import { Repository } from 'typeorm';
+import { Follow } from '../user/entities/follow.entity';
 
 @Injectable()
 export class ChatService {
   constructor(
     @InjectRepository(Chat)
     private readonly chatRepository: Repository<Chat>,
+    @InjectRepository(Follow)
+    private readonly followRepository: Repository<Follow>,
   ) {}
 
   async saveMessage(
@@ -109,5 +112,20 @@ export class ChatService {
     };
 
     return data.choices[0];
+  }
+
+  async findUserFriendIds(userId: string) {
+    return this.followRepository
+      .createQueryBuilder('f1')
+      .select(['f1.followId AS followId'])
+      .innerJoin(
+        'follows',
+        'f2',
+        'f1.followId = f2.userId AND f2.followId = :userId',
+        { userId },
+      )
+      .leftJoin('users', 'u', 'f1.followId = u.userId')
+      .where('f1.userId = :userId', { userId })
+      .getRawMany();
   }
 }
