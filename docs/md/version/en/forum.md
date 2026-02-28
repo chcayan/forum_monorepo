@@ -1,6 +1,6 @@
 ## Version
 
-English | [中文](../zh/forum.zh.md)
+English | [中文](../zh/forum.md)
 
 ### 2.0.0 (251116)
 

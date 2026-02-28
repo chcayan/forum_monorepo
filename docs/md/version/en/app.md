@@ -1,6 +1,6 @@
 ## Version
 
-English | [中文](../zh/app.zh.md)
+English | [中文](../zh/app.md)
 
 ### 2.3.0 (251228)
 
