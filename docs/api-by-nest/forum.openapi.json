@@ -1,0 +1,4227 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "默认模块",
+    "description": "",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "post"
+    },
+    {
+      "name": "user"
+    },
+    {
+      "name": "chat"
+    },
+    {
+      "name": "admin"
+    }
+  ],
+  "paths": {
+    "/post": {
+      "get": {
+        "summary": "帖子列表",
+        "deprecated": false,
+        "description": "",
+        "tags": ["post"],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": 1,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": 10,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "list": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "pId": {
+                                "type": "string"
+                              },
+                              "userId": {
+                                "type": "string"
+                              },
+                              "pViewCount": {
+                                "type": "string"
+                              },
+                              "pCollectCount": {
+                                "type": "string"
+                              },
+                              "pShareCount": {
+                                "type": "string"
+                              },
+                              "pCommentCount": {
+                                "type": "string"
+                              },
+                              "pContent": {
+                                "type": "string"
+                              },
+                              "pImages": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "publishTime": {
+                                "type": "string"
+                              },
+                              "isPublic": {
+                                "type": "string"
+                              },
+                              "status": {
+                                "type": "integer"
+                              },
+                              "username": {
+                                "type": "string"
+                              },
+                              "userAvatar": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": ["list", "total"]
+                    }
+                  },
+                  "required": ["code", "message", "data"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success",
+                  "data": {
+                    "list": [
+                      {
+                        "pId": "p00076",
+                        "userId": "u00000",
+                        "pViewCount": "30",
+                        "pCollectCount": "0",
+                        "pShareCount": "1",
+                        "pCommentCount": "0",
+                        "pContent": "6666",
+                        "pImages": [
+                          "/uploads/2025-11-07_16-46-37_28cbbf3fac94510b.jpg",
+                          "/uploads/2025-11-07_16-46-37_3415d3cf7c183e03.jpg",
+                          "/uploads/2025-11-07_16-46-37_35e8676f15d78e7f.jpg",
+                          "/uploads/2025-11-07_16-46-37_58458711eae3fa71.jpg",
+                          "/uploads/2025-11-07_16-46-37_5687b7c61278a24a.jpg"
+                        ],
+                        "publishTime": "2025-11-07T08:46:37.000Z",
+                        "isPublic": "true",
+                        "status": 1,
+                        "username": "默认名字",
+                        "userAvatar": "/uploads/2025-12-20_19-07-36_38937f90635c9206.jpg"
+                      }
+                    ],
+                    "total": 1
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "post": {
+        "summary": "发布帖子",
+        "deprecated": false,
+        "description": "",
+        "tags": ["post"],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string"
+                  },
+                  "isPublic": {
+                    "type": "string"
+                  }
+                },
+                "required": ["content", "isPublic"]
+              },
+              "examples": {}
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["code", "message"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "权限不足",
+                  "error": "Forbidden",
+                  "statusCode": 403
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/post/search": {
+      "get": {
+        "summary": "搜索帖子",
+        "deprecated": false,
+        "description": "",
+        "tags": ["post"],
+        "parameters": [
+          {
+            "name": "result",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "666",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": 1,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": 10,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "list": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "pId": {
+                                "type": "string"
+                              },
+                              "userId": {
+                                "type": "string"
+                              },
+                              "pViewCount": {
+                                "type": "string"
+                              },
+                              "pCollectCount": {
+                                "type": "string"
+                              },
+                              "pShareCount": {
+                                "type": "string"
+                              },
+                              "pCommentCount": {
+                                "type": "string"
+                              },
+                              "pContent": {
+                                "type": "string"
+                              },
+                              "pImages": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "publishTime": {
+                                "type": "string"
+                              },
+                              "isPublic": {
+                                "type": "string"
+                              },
+                              "status": {
+                                "type": "integer"
+                              },
+                              "username": {
+                                "type": "string"
+                              },
+                              "userAvatar": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": ["list", "total"]
+                    }
+                  },
+                  "required": ["code", "message", "data"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success",
+                  "data": {
+                    "list": [
+                      {
+                        "pId": "p00076",
+                        "userId": "u00000",
+                        "pViewCount": "30",
+                        "pCollectCount": "0",
+                        "pShareCount": "1",
+                        "pCommentCount": "0",
+                        "pContent": "6666",
+                        "pImages": [
+                          "/uploads/2025-11-07_16-46-37_28cbbf3fac94510b.jpg",
+                          "/uploads/2025-11-07_16-46-37_3415d3cf7c183e03.jpg",
+                          "/uploads/2025-11-07_16-46-37_35e8676f15d78e7f.jpg",
+                          "/uploads/2025-11-07_16-46-37_58458711eae3fa71.jpg",
+                          "/uploads/2025-11-07_16-46-37_5687b7c61278a24a.jpg"
+                        ],
+                        "publishTime": "2025-11-07T08:46:37.000Z",
+                        "isPublic": "true",
+                        "status": 1,
+                        "username": "默认名字",
+                        "userAvatar": "/uploads/2025-12-20_19-07-36_38937f90635c9206.jpg"
+                      }
+                    ],
+                    "total": 1
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/post/{postId}": {
+      "get": {
+        "summary": "帖子详情",
+        "deprecated": false,
+        "description": "",
+        "tags": ["post"],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "pId": {
+                          "type": "string"
+                        },
+                        "pViewCount": {
+                          "type": "string"
+                        },
+                        "pCollectCount": {
+                          "type": "string"
+                        },
+                        "pShareCount": {
+                          "type": "string"
+                        },
+                        "pCommentCount": {
+                          "type": "string"
+                        },
+                        "pContent": {
+                          "type": "string"
+                        },
+                        "pImages": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "publishTime": {
+                          "type": "string"
+                        },
+                        "isPublic": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "integer"
+                        },
+                        "username": {
+                          "type": "string"
+                        },
+                        "userAvatar": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "pId",
+                        "pViewCount",
+                        "pCollectCount",
+                        "pShareCount",
+                        "pCommentCount",
+                        "pContent",
+                        "pImages",
+                        "publishTime",
+                        "isPublic",
+                        "status",
+                        "username",
+                        "userAvatar"
+                      ]
+                    }
+                  },
+                  "required": ["code", "message", "data"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success",
+                  "data": {
+                    "pId": "p00076",
+                    "pViewCount": "30",
+                    "pCollectCount": "0",
+                    "pShareCount": "1",
+                    "pCommentCount": "0",
+                    "pContent": "6666",
+                    "pImages": [
+                      "/uploads/2025-11-07_16-46-37_28cbbf3fac94510b.jpg",
+                      "/uploads/2025-11-07_16-46-37_3415d3cf7c183e03.jpg",
+                      "/uploads/2025-11-07_16-46-37_35e8676f15d78e7f.jpg",
+                      "/uploads/2025-11-07_16-46-37_58458711eae3fa71.jpg",
+                      "/uploads/2025-11-07_16-46-37_5687b7c61278a24a.jpg"
+                    ],
+                    "publishTime": "2025-11-07T08:46:37.000Z",
+                    "isPublic": "true",
+                    "status": 1,
+                    "username": "默认名字",
+                    "userAvatar": "/uploads/2025-12-20_19-07-36_38937f90635c9206.jpg"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "帖子不可见或已删除",
+                  "error": "Not Found",
+                  "statusCode": 404
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/post/comment/{postId}": {
+      "get": {
+        "summary": "查询帖子评论",
+        "deprecated": false,
+        "description": "",
+        "tags": ["post"],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "commentId": {
+                            "type": "integer"
+                          },
+                          "userId": {
+                            "type": "string"
+                          },
+                          "pId": {
+                            "type": "string"
+                          },
+                          "content": {
+                            "type": "string"
+                          },
+                          "createdTime": {
+                            "type": "string"
+                          },
+                          "userAvatar": {
+                            "type": "string"
+                          },
+                          "username": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "commentId",
+                          "userId",
+                          "pId",
+                          "content",
+                          "createdTime",
+                          "userAvatar",
+                          "username"
+                        ]
+                      }
+                    }
+                  },
+                  "required": ["code", "message", "data"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success",
+                  "data": [
+                    {
+                      "commentId": 155,
+                      "userId": "u00000",
+                      "pId": "p00117",
+                      "content": "5555",
+                      "createdTime": "2026-02-08T14:10:52.000Z",
+                      "userAvatar": "/uploads/2025-12-20_19-07-36_38937f90635c9206.jpg",
+                      "username": "默认名字"
+                    },
+                    {
+                      "commentId": 154,
+                      "userId": "u00000",
+                      "pId": "p00117",
+                      "content": "occaecat cupidatat in adipisicing",
+                      "createdTime": "2026-02-08T14:08:41.000Z",
+                      "userAvatar": "/uploads/2025-12-20_19-07-36_38937f90635c9206.jpg",
+                      "username": "默认名字"
+                    },
+                    {
+                      "commentId": 153,
+                      "userId": "u00000",
+                      "pId": "p00117",
+                      "content": "6",
+                      "createdTime": "2025-12-21T13:33:00.000Z",
+                      "userAvatar": "/uploads/2025-12-20_19-07-36_38937f90635c9206.jpg",
+                      "username": "默认名字"
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/post/comment": {
+      "post": {
+        "summary": "发布评论",
+        "deprecated": false,
+        "description": "",
+        "tags": ["post"],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "postId": {
+                    "type": "string"
+                  },
+                  "content": {
+                    "type": "string"
+                  }
+                },
+                "required": ["postId", "content"]
+              },
+              "examples": {}
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["code", "message"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": ["content should not be empty"],
+                  "error": "Bad Request",
+                  "statusCode": 400
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "权限不足",
+                  "error": "Forbidden",
+                  "statusCode": 403
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "未找到该帖子",
+                  "error": "Not Found",
+                  "statusCode": 404
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/post/upload-image": {
+      "post": {
+        "summary": "发布帖子（上传图片）",
+        "deprecated": false,
+        "description": "",
+        "tags": ["post"],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "pId": {
+                    "example": "",
+                    "type": "string"
+                  },
+                  "postImages": {
+                    "format": "binary",
+                    "type": "string",
+                    "example": ""
+                  },
+                  "index": {
+                    "type": "number",
+                    "example": 0
+                  }
+                },
+                "required": ["pId", "postImages", "index"]
+              },
+              "examples": {}
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/post/view/{postId}": {
+      "patch": {
+        "summary": "更新帖子浏览数",
+        "deprecated": false,
+        "description": "",
+        "tags": ["post"],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "帖子不存在",
+                  "error": "Not Found",
+                  "statusCode": 404
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/user/{userId}": {
+      "get": {
+        "summary": "查询用户信息",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "self"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {
+                          "type": "string"
+                        },
+                        "username": {
+                          "type": "string"
+                        },
+                        "userAvatar": {
+                          "type": "string"
+                        },
+                        "userEmail": {
+                          "type": "string"
+                        },
+                        "registrationTime": {
+                          "type": "string"
+                        },
+                        "follows": {
+                          "type": "string"
+                        },
+                        "fans": {
+                          "type": "string"
+                        },
+                        "sex": {
+                          "type": "string"
+                        },
+                        "signature": {
+                          "type": "string"
+                        },
+                        "backgroundImg": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "userId",
+                        "username",
+                        "userAvatar",
+                        "userEmail",
+                        "registrationTime",
+                        "follows",
+                        "fans",
+                        "sex",
+                        "signature",
+                        "backgroundImg"
+                      ]
+                    }
+                  },
+                  "required": ["code", "message", "data"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success",
+                  "data": {
+                    "userId": "u00000",
+                    "username": "asdf",
+                    "userAvatar": "/uploads/2025-12-20_19-07-36_38937f90635c9206.jpg",
+                    "userEmail": "chcaya@qq.com",
+                    "registrationTime": "2025-07-27T06:08:36.000Z",
+                    "follows": "4",
+                    "fans": "2",
+                    "sex": "boy",
+                    "signature": "hhhhhhhhhhhhh",
+                    "backgroundImg": "/uploads/2025-12-20_17-09-40_31e5daf42f2fa159.jpg"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "examples": {
+                  "2": {
+                    "summary": "异常示例",
+                    "value": {
+                      "message": "未找到该用户",
+                      "error": "Not Found",
+                      "statusCode": 404
+                    }
+                  },
+                  "3": {
+                    "summary": "成功示例",
+                    "value": {
+                      "code": 0,
+                      "message": "success",
+                      "data": {
+                        "userId": "u00000",
+                        "username": "asdf",
+                        "userAvatar": "/uploads/2025-12-20_19-07-36_38937f90635c9206.jpg",
+                        "userEmail": "chcaya@qq.com",
+                        "userPassword": "$2b$10$skMZ0PMvfdyzIkmX4FsZ1eWrsn6CXvPOFSkbN.ezy9nygfWc4XfEC",
+                        "registrationTime": "2025-07-27T06:08:36.000Z",
+                        "follows": "4",
+                        "fans": "2",
+                        "sex": "boy",
+                        "signature": "hhhhhhhhhhhhh",
+                        "backgroundImg": "/uploads/2025-12-20_17-09-40_31e5daf42f2fa159.jpg"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/user/post/{userId}": {
+      "get": {
+        "summary": "查询用户帖子",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "10",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "list": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "pId": {
+                                "type": "string"
+                              },
+                              "userId": {
+                                "type": "string"
+                              },
+                              "pViewCount": {
+                                "type": "string"
+                              },
+                              "pCollectCount": {
+                                "type": "string"
+                              },
+                              "pShareCount": {
+                                "type": "string"
+                              },
+                              "pCommentCount": {
+                                "type": "string"
+                              },
+                              "pContent": {
+                                "type": "string"
+                              },
+                              "pImages": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "publishTime": {
+                                "type": "string"
+                              },
+                              "isPublic": {
+                                "type": "string"
+                              },
+                              "status": {
+                                "type": "integer"
+                              },
+                              "username": {
+                                "type": "string"
+                              },
+                              "userAvatar": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": ["list", "total"]
+                    }
+                  },
+                  "required": ["code", "message", "data"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success",
+                  "data": {
+                    "list": [
+                      {
+                        "pId": "p00076",
+                        "userId": "u00000",
+                        "pViewCount": "30",
+                        "pCollectCount": "0",
+                        "pShareCount": "1",
+                        "pCommentCount": "0",
+                        "pContent": "6666",
+                        "pImages": [
+                          "/uploads/2025-11-07_16-46-37_28cbbf3fac94510b.jpg",
+                          "/uploads/2025-11-07_16-46-37_3415d3cf7c183e03.jpg",
+                          "/uploads/2025-11-07_16-46-37_35e8676f15d78e7f.jpg",
+                          "/uploads/2025-11-07_16-46-37_58458711eae3fa71.jpg",
+                          "/uploads/2025-11-07_16-46-37_5687b7c61278a24a.jpg"
+                        ],
+                        "publishTime": "2025-11-07T08:46:37.000Z",
+                        "isPublic": "true",
+                        "status": 1,
+                        "username": "默认名字",
+                        "userAvatar": "/uploads/2025-12-20_19-07-36_38937f90635c9206.jpg"
+                      }
+                    ],
+                    "total": 1
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/user/collect/{userId}": {
+      "get": {
+        "summary": "查询用户收藏帖子",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": 1,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": 10,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InUwMDAwMCIsImlhdCI6MTc3MDM4NzczMSwiZXhwIjoxNzcwNDc0MTMxfQ.oUew_GmcEqslmDGWliRkx42bp02Xr6oBEOoyC1XSeTw",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "list": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "pId": {
+                                "type": "string"
+                              },
+                              "userId": {
+                                "type": "string"
+                              },
+                              "pViewCount": {
+                                "type": "string"
+                              },
+                              "pCollectCount": {
+                                "type": "string"
+                              },
+                              "pShareCount": {
+                                "type": "string"
+                              },
+                              "pCommentCount": {
+                                "type": "string"
+                              },
+                              "pContent": {
+                                "type": "string"
+                              },
+                              "pImages": {
+                                "type": "string"
+                              },
+                              "isPublic": {
+                                "type": "string"
+                              },
+                              "status": {
+                                "type": "integer"
+                              },
+                              "publishTime": {
+                                "type": "string"
+                              },
+                              "userAvatar": {
+                                "type": "string"
+                              },
+                              "username": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": ["list", "total"]
+                    }
+                  },
+                  "required": ["code", "message", "data"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success",
+                  "data": {
+                    "list": [
+                      {
+                        "pId": "p00023",
+                        "userId": "u00000",
+                        "pViewCount": "0",
+                        "pCollectCount": "1",
+                        "pShareCount": "0",
+                        "pCommentCount": "0",
+                        "pContent": "4687687",
+                        "pImages": "[]",
+                        "isPublic": "true",
+                        "status": 1,
+                        "publishTime": "2025-10-31T11:55:11.000Z",
+                        "userAvatar": "/uploads/2025-12-20_19-07-36_38937f90635c9206.jpg",
+                        "username": "默认名字"
+                      }
+                    ],
+                    "total": 1
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/user/collect/ids": {
+      "get": {
+        "summary": "查询用户收藏帖子的id数组",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success",
+                  "data": ["p00023"]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/user/search": {
+      "get": {
+        "summary": "搜索用户",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "keyword",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "userId": {
+                            "type": "string"
+                          },
+                          "username": {
+                            "type": "string"
+                          },
+                          "userAvatar": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["code", "message", "data"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success",
+                  "data": [
+                    {
+                      "userId": "u00003",
+                      "username": "纳尼",
+                      "userAvatar": "/uploads/2025-11-09_21-33-50_87eea2f7f7f1332f.jpg"
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/user/friend": {
+      "get": {
+        "summary": "查询用户好友",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success",
+                  "data": [
+                    {
+                      "userId": "u00000",
+                      "followId": "u00001",
+                      "username": "超级飞侠",
+                      "userAvatar": "/uploads/default/default_avatar.jpg"
+                    },
+                    {
+                      "userId": "u00000",
+                      "followId": "u00002",
+                      "username": "高雅人士",
+                      "userAvatar": "/uploads/2025-11-09_14-42-42_dacb43ae3c952188.jpg"
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/user/follows/{userId}": {
+      "get": {
+        "summary": "查询用户关注",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "userId": {
+                            "type": "string"
+                          },
+                          "followId": {
+                            "type": "string"
+                          },
+                          "username": {
+                            "type": "string"
+                          },
+                          "userAvatar": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "userId",
+                          "followId",
+                          "username",
+                          "userAvatar"
+                        ]
+                      }
+                    }
+                  },
+                  "required": ["code", "message", "data"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success",
+                  "data": [
+                    {
+                      "userId": "u00000",
+                      "followId": "u00001",
+                      "username": "超级飞侠",
+                      "userAvatar": "/uploads/default/default_avatar.jpg"
+                    },
+                    {
+                      "userId": "u00000",
+                      "followId": "u00002",
+                      "username": "高雅人士",
+                      "userAvatar": "/uploads/2025-11-09_14-42-42_dacb43ae3c952188.jpg"
+                    },
+                    {
+                      "userId": "u00000",
+                      "followId": "u00003",
+                      "username": "纳尼",
+                      "userAvatar": "/uploads/2025-11-09_21-33-50_87eea2f7f7f1332f.jpg"
+                    },
+                    {
+                      "userId": "u00000",
+                      "followId": "u00007",
+                      "username": "默认名字",
+                      "userAvatar": "/uploads/default/default_avatar.jpg"
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/user/fans/{userId}": {
+      "get": {
+        "summary": "查询用户粉丝",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "userId": {
+                            "type": "string"
+                          },
+                          "followId": {
+                            "type": "string"
+                          },
+                          "username": {
+                            "type": "string"
+                          },
+                          "userAvatar": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "userId",
+                          "followId",
+                          "username",
+                          "userAvatar"
+                        ]
+                      }
+                    }
+                  },
+                  "required": ["code", "message", "data"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success",
+                  "data": [
+                    {
+                      "userId": "u00001",
+                      "followId": "u00000",
+                      "username": "超级飞侠",
+                      "userAvatar": "/uploads/default/default_avatar.jpg"
+                    },
+                    {
+                      "userId": "u00002",
+                      "followId": "u00000",
+                      "username": "高雅人士",
+                      "userAvatar": "/uploads/2025-11-09_14-42-42_dacb43ae3c952188.jpg"
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/user/login": {
+      "post": {
+        "summary": "登录",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": ["email", "password"]
+              },
+              "examples": {}
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "token": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["token"]
+                    }
+                  },
+                  "required": ["code", "message", "data"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success",
+                  "data": {
+                    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InUwMDAwMCIsImlhdCI6MTc3MDI4NTg3NiwiZXhwIjoxNzcwMzcyMjc2fQ.g2dVI6DbeGYVtukPI1q1x8LJa0gVG_Tka6n4Yfm8xdQ"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "用户名或密码错误",
+                  "error": "Unauthorized",
+                  "statusCode": 401
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "账号封禁中",
+                  "error": "Forbidden",
+                  "statusCode": 403
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/user/register": {
+      "post": {
+        "summary": "注册",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": ["email", "password"]
+              },
+              "examples": {}
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["code", "message"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "该邮箱已被注册",
+                  "error": "Conflict",
+                  "statusCode": 409
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/user": {
+      "post": {
+        "summary": "更新用户信息",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InUwMDAwMCIsImlhdCI6MTc3MDI5Nzg0NSwiZXhwIjoxNzcwMzg0MjQ1fQ.YZcYrol4hCCYiWYjoCyAM1OO_9aAtefzJI3fEaW3wlk",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "example": "",
+                    "type": "string"
+                  },
+                  "sex": {
+                    "example": "",
+                    "type": "string"
+                  },
+                  "signature": {
+                    "example": "",
+                    "type": "string"
+                  },
+                  "avatar": {
+                    "format": "binary",
+                    "type": "string",
+                    "example": ""
+                  },
+                  "bgImg": {
+                    "format": "binary",
+                    "type": "string",
+                    "example": ""
+                  }
+                },
+                "required": ["username", "sex", "signature"]
+              },
+              "examples": {}
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["code", "message"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": [
+                    "signature must be longer than or equal to 6 characters"
+                  ],
+                  "error": "Bad Request",
+                  "statusCode": 400
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "登录状态过期，请重新登录",
+                  "error": "Unauthorized",
+                  "statusCode": 401
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/user/collect/{postId}": {
+      "post": {
+        "summary": "用户添加收藏",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["code", "message"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "未找到该帖子",
+                  "error": "Not Found",
+                  "statusCode": 404
+                }
+              }
+            },
+            "headers": {}
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "已收藏",
+                  "error": "Conflict",
+                  "statusCode": 409
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "用户删除收藏",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "未找到该帖子",
+                  "error": "Not Found",
+                  "statusCode": 404
+                }
+              }
+            },
+            "headers": {}
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "未收藏",
+                  "error": "Conflict",
+                  "statusCode": 409
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/user/follow/{followId}": {
+      "post": {
+        "summary": "用户添加关注",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "followId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["code", "message"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "未找到该用户",
+                  "error": "Not Found",
+                  "statusCode": 404
+                }
+              }
+            },
+            "headers": {}
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "已关注",
+                  "error": "Conflict",
+                  "statusCode": 409
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "用户取消关注",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "followId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["code", "message"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "未找到该用户",
+                  "error": "Not Found",
+                  "statusCode": 404
+                }
+              }
+            },
+            "headers": {}
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "未关注",
+                  "error": "Conflict",
+                  "statusCode": 409
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/user/post/{postId}": {
+      "delete": {
+        "summary": "用户删除帖子",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["code", "message"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/user/post/public/{postId}": {
+      "patch": {
+        "summary": "用户设置帖子公开",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["code", "message"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "未找到该帖子",
+                  "error": "Not Found",
+                  "statusCode": 404
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/user/post/private/{postId}": {
+      "patch": {
+        "summary": "用户设置帖子隐藏",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["code", "message"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "未找到该帖子",
+                  "error": "Not Found",
+                  "statusCode": 404
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/chat/history/{followId}": {
+      "get": {
+        "summary": "查询用户聊天记录",
+        "deprecated": false,
+        "description": "",
+        "tags": ["chat"],
+        "parameters": [
+          {
+            "name": "followId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "msgId": {
+                            "type": "integer"
+                          },
+                          "sender": {
+                            "type": "string"
+                          },
+                          "receiver": {
+                            "type": "string"
+                          },
+                          "content": {
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "isRead": {
+                            "type": "integer"
+                          },
+                          "isShare": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "msgId",
+                          "sender",
+                          "receiver",
+                          "content",
+                          "createdAt",
+                          "isRead",
+                          "isShare"
+                        ]
+                      }
+                    }
+                  },
+                  "required": ["code", "message", "data"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success",
+                  "data": [
+                    {
+                      "m_msg_id": 967,
+                      "m_sender": "u00001",
+                      "m_receiver": "u00000",
+                      "m_content": "傻逼",
+                      "m_created_at": "2025-10-02T08:27:28.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 968,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "尼玛的",
+                      "m_created_at": "2025-10-02T08:27:34.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 969,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "666",
+                      "m_created_at": "2025-10-02T08:41:25.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 970,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "999",
+                      "m_created_at": "2025-10-02T08:41:29.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 971,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "555",
+                      "m_created_at": "2025-10-02T08:41:37.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 972,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "666",
+                      "m_created_at": "2025-10-02T08:47:00.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 973,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "4544",
+                      "m_created_at": "2025-10-02T08:47:13.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 974,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "333",
+                      "m_created_at": "2025-10-02T08:47:19.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 975,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "4654",
+                      "m_created_at": "2025-10-02T08:47:41.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 976,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "777",
+                      "m_created_at": "2025-10-02T08:50:02.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 977,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "88",
+                      "m_created_at": "2025-10-02T08:50:08.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 978,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "999",
+                      "m_created_at": "2025-10-02T08:50:26.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 979,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "爱得发疯",
+                      "m_created_at": "2025-10-02T09:10:29.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 980,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "644654",
+                      "m_created_at": "2025-10-02T09:11:13.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 981,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "你好",
+                      "m_created_at": "2025-10-02T09:11:20.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 982,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "我平时",
+                      "m_created_at": "2025-10-02T09:11:24.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 983,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "爱体哦啊五",
+                      "m_created_at": "2025-10-02T09:11:32.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1022,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "6",
+                      "m_created_at": "2025-11-14T08:12:21.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1023,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "7",
+                      "m_created_at": "2025-11-14T08:12:23.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1052,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "111",
+                      "m_created_at": "2025-11-14T11:58:09.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1053,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "111",
+                      "m_created_at": "2025-11-14T11:58:16.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1054,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "333",
+                      "m_created_at": "2025-11-14T11:58:19.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1055,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "555",
+                      "m_created_at": "2025-11-14T11:58:26.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1111,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "adsf",
+                      "m_created_at": "2025-11-14T12:31:00.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1125,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "333",
+                      "m_created_at": "2025-11-15T02:26:37.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1126,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "333",
+                      "m_created_at": "2025-11-15T02:28:00.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1499,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "p00096",
+                      "m_created_at": "2025-11-18T12:34:29.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "1"
+                    },
+                    {
+                      "m_msg_id": 1500,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "p00096",
+                      "m_created_at": "2025-11-18T12:34:50.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "1"
+                    },
+                    {
+                      "m_msg_id": 1509,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "p00096",
+                      "m_created_at": "2025-11-18T13:23:49.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "1"
+                    },
+                    {
+                      "m_msg_id": 1510,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "p00096",
+                      "m_created_at": "2025-11-18T13:23:52.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "1"
+                    },
+                    {
+                      "m_msg_id": 1513,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "p00096",
+                      "m_created_at": "2025-11-18T13:24:22.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "1"
+                    },
+                    {
+                      "m_msg_id": 1516,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "p00096",
+                      "m_created_at": "2025-11-18T13:36:57.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "1"
+                    },
+                    {
+                      "m_msg_id": 1528,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "p00096",
+                      "m_created_at": "2025-11-18T13:51:40.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "1"
+                    },
+                    {
+                      "m_msg_id": 1573,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "p00096",
+                      "m_created_at": "2025-11-18T14:32:42.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "1"
+                    },
+                    {
+                      "m_msg_id": 1574,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "p00078",
+                      "m_created_at": "2025-11-18T14:32:50.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "1"
+                    },
+                    {
+                      "m_msg_id": 1575,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "p00077",
+                      "m_created_at": "2025-11-18T14:33:02.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "1"
+                    },
+                    {
+                      "m_msg_id": 1576,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "p00096",
+                      "m_created_at": "2025-11-20T03:10:25.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "1"
+                    },
+                    {
+                      "m_msg_id": 1577,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "4",
+                      "m_created_at": "2025-12-27T08:22:53.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1578,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "4",
+                      "m_created_at": "2025-12-27T08:23:18.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1579,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "5",
+                      "m_created_at": "2025-12-27T08:23:45.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1580,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "4",
+                      "m_created_at": "2025-12-27T08:23:54.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1581,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "5",
+                      "m_created_at": "2025-12-27T08:24:36.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1582,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "6",
+                      "m_created_at": "2025-12-27T08:24:38.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1583,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "a",
+                      "m_created_at": "2025-12-27T08:24:43.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1584,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "7",
+                      "m_created_at": "2025-12-27T08:29:44.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1585,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "4",
+                      "m_created_at": "2025-12-27T08:39:17.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1586,
+                      "m_sender": "u00001",
+                      "m_receiver": "u00000",
+                      "m_content": "1",
+                      "m_created_at": "2025-12-27T08:43:01.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1587,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "5",
+                      "m_created_at": "2025-12-27T08:43:07.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1588,
+                      "m_sender": "u00001",
+                      "m_receiver": "u00000",
+                      "m_content": "6",
+                      "m_created_at": "2025-12-27T08:43:11.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1589,
+                      "m_sender": "u00001",
+                      "m_receiver": "u00000",
+                      "m_content": "7",
+                      "m_created_at": "2025-12-27T08:43:15.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1590,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "8",
+                      "m_created_at": "2025-12-27T08:43:20.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1591,
+                      "m_sender": "u00001",
+                      "m_receiver": "u00000",
+                      "m_content": "10",
+                      "m_created_at": "2025-12-27T08:43:41.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1592,
+                      "m_sender": "u00001",
+                      "m_receiver": "u00000",
+                      "m_content": "11",
+                      "m_created_at": "2025-12-27T08:45:23.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1593,
+                      "m_sender": "u00001",
+                      "m_receiver": "u00000",
+                      "m_content": "4",
+                      "m_created_at": "2025-12-27T08:46:17.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1594,
+                      "m_sender": "u00001",
+                      "m_receiver": "u00000",
+                      "m_content": "1",
+                      "m_created_at": "2025-12-27T08:46:26.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1595,
+                      "m_sender": "u00001",
+                      "m_receiver": "u00000",
+                      "m_content": "4",
+                      "m_created_at": "2025-12-27T08:46:32.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1596,
+                      "m_sender": "u00001",
+                      "m_receiver": "u00000",
+                      "m_content": "1",
+                      "m_created_at": "2025-12-27T08:47:17.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1597,
+                      "m_sender": "u00001",
+                      "m_receiver": "u00000",
+                      "m_content": "f",
+                      "m_created_at": "2025-12-27T08:47:39.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1598,
+                      "m_sender": "u00001",
+                      "m_receiver": "u00000",
+                      "m_content": "abc",
+                      "m_created_at": "2025-12-27T08:48:10.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1599,
+                      "m_sender": "u00001",
+                      "m_receiver": "u00000",
+                      "m_content": "efg",
+                      "m_created_at": "2025-12-27T08:48:43.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1600,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "456",
+                      "m_created_at": "2025-12-27T08:49:23.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1601,
+                      "m_sender": "u00001",
+                      "m_receiver": "u00000",
+                      "m_content": "1",
+                      "m_created_at": "2025-12-27T08:52:50.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1602,
+                      "m_sender": "u00001",
+                      "m_receiver": "u00000",
+                      "m_content": "4",
+                      "m_created_at": "2025-12-27T08:52:56.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1603,
+                      "m_sender": "u00001",
+                      "m_receiver": "u00000",
+                      "m_content": "fff",
+                      "m_created_at": "2025-12-27T08:55:14.000Z",
+                      "m_is_read": 1,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1604,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "44",
+                      "m_created_at": "2025-12-27T12:36:14.000Z",
+                      "m_is_read": 0,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1605,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "你好",
+                      "m_created_at": "2026-02-09T08:12:58.000Z",
+                      "m_is_read": 0,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1606,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "你好",
+                      "m_created_at": "2026-02-09T08:13:15.000Z",
+                      "m_is_read": 0,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1607,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "你好",
+                      "m_created_at": "2026-02-09T08:13:30.000Z",
+                      "m_is_read": 0,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1608,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "你好",
+                      "m_created_at": "2026-02-09T08:13:31.000Z",
+                      "m_is_read": 0,
+                      "m_is_share": "0"
+                    },
+                    {
+                      "m_msg_id": 1609,
+                      "m_sender": "u00000",
+                      "m_receiver": "u00001",
+                      "m_content": "你好",
+                      "m_created_at": "2026-02-09T08:13:38.000Z",
+                      "m_is_read": 0,
+                      "m_is_share": "0"
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/chat/unread": {
+      "get": {
+        "summary": "查询用户未读信息",
+        "deprecated": false,
+        "description": "",
+        "tags": ["chat"],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "sender": {
+                            "type": "string"
+                          },
+                          "count": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["code", "message", "data"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success",
+                  "data": [
+                    {
+                      "sender": "u00001",
+                      "count": "1"
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/chat/mark-as-read": {
+      "post": {
+        "summary": "标记为已读",
+        "deprecated": false,
+        "description": "",
+        "tags": ["chat"],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "followId": {
+                    "type": "string"
+                  }
+                },
+                "required": ["followId"]
+              },
+              "examples": {}
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["code", "message"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/chat/ai/result": {
+      "post": {
+        "summary": "获取ai聊天结果",
+        "deprecated": false,
+        "description": "",
+        "tags": ["chat"],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": {
+                    "type": "string"
+                  }
+                },
+                "required": ["prompt"]
+              },
+              "examples": {}
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "finish_reason": {
+                          "type": "string"
+                        },
+                        "index": {
+                          "type": "integer"
+                        },
+                        "message": {
+                          "type": "object",
+                          "properties": {
+                            "content": {
+                              "type": "string"
+                            },
+                            "role": {
+                              "type": "string"
+                            }
+                          },
+                          "required": ["content", "role"]
+                        }
+                      },
+                      "required": ["finish_reason", "index", "message"]
+                    }
+                  },
+                  "required": ["code", "message", "data"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success",
+                  "data": {
+                    "finish_reason": "stop",
+                    "index": 0,
+                    "message": {
+                      "content": "你好！很高兴见到你！有什么我可以帮助你的吗？",
+                      "role": "assistant"
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "AI API Error",
+                  "error": "Internal Server Error",
+                  "statusCode": 500
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/admin/login": {
+      "post": {
+        "summary": "登录",
+        "deprecated": false,
+        "description": "",
+        "tags": ["admin"],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": ["email", "password"]
+              },
+              "examples": {}
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "token": {
+                          "type": "string"
+                        },
+                        "permissions": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": ["token", "permissions"]
+                    }
+                  },
+                  "required": ["code", "message", "data"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success",
+                  "data": {
+                    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InUwMDAwMCIsImlhdCI6MTc3MjExNDE0MiwiZXhwIjoxNzcyMjAwNTQyfQ.PtwnmRNmDJmCBHVyL9xM2726oe51C0pz4nWQYtpQlqc",
+                    "permissions": ["audit_post", "edit_post", "edit_user"]
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/admin/user-perm": {
+      "post": {
+        "summary": "添加用户权限",
+        "deprecated": false,
+        "description": "",
+        "tags": ["admin"],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string"
+                  },
+                  "permission": {
+                    "type": "string"
+                  }
+                },
+                "required": ["userId", "permission"]
+              },
+              "examples": {}
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["code", "message"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "非法权限码",
+                  "error": "Bad Request",
+                  "statusCode": 400
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "登录状态过期，请重新登录",
+                  "error": "Unauthorized",
+                  "statusCode": 401
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "删除用户权限",
+        "deprecated": false,
+        "description": "",
+        "tags": ["admin"],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string"
+                  },
+                  "permission": {
+                    "type": "string"
+                  }
+                },
+                "required": ["userId", "permission"]
+              },
+              "examples": {}
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "非法权限码",
+                  "error": "Bad Request",
+                  "statusCode": 400
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/admin/admin-perm": {
+      "post": {
+        "summary": "添加管理员权限",
+        "deprecated": false,
+        "description": "",
+        "tags": ["admin"],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string"
+                  },
+                  "permission": {
+                    "type": "string"
+                  }
+                },
+                "required": ["userId", "permission"]
+              },
+              "examples": {}
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["code", "message"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "非法权限码",
+                  "error": "Bad Request",
+                  "statusCode": 400
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "删除管理员权限",
+        "deprecated": false,
+        "description": "",
+        "tags": ["admin"],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string"
+                  },
+                  "permission": {
+                    "type": "string"
+                  }
+                },
+                "required": ["userId", "permission"]
+              },
+              "examples": {}
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["code", "message"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "非法权限码",
+                  "error": "Bad Request",
+                  "statusCode": 400
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/admin/audit-post": {
+      "post": {
+        "summary": "审核帖子",
+        "deprecated": false,
+        "description": "",
+        "tags": ["admin"],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "postId": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "number",
+                    "enum": [0, 1, 2]
+                  }
+                },
+                "required": ["postId", "status"]
+              },
+              "examples": {}
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["code", "message"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "权限不足",
+                  "error": "Forbidden",
+                  "statusCode": 403
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "responses": {},
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "servers": [],
+  "security": []
+}

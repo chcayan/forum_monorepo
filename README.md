@@ -1,47 +1,49 @@
-# 个人前端项目
+# Personal Frontend Project
 
-个人练习...，类似论坛类网站...
+English | [中文](./README.zh.md)
 
-对之前项目进行优化重构 https://github.com/chcayan/forum
+Personal practice..., forum-type websites...
 
-使用monorepo进行项目管理
+Optimize and refactor previous projects: https://github.com/chcayan/forum
 
-本项目包含web端和app端，app基于uniapp构建
+Using Monorepo for Project Management.
 
-## 技术栈
+This project includes both web and app versions, with the app built on Uniapp.
 
-### 前端：
+---
+
+## Tech stack
+
+### frontend(forum):
 
 - vue
 - typescript
 
-### 后端：
+### frontend(admin):
+
+- react
+- typescript
+
+### backend:
 
 - node.js
-- express
+- nest.js
 - mysql
 
-### app端：
+### app:
 
 - uniapp
 
-## 运行
+## Run
 
-### web端
-
-安装依赖
+Install dependencies.
 
 ```bash
 pnpm i
-```
-
-安装全局依赖
-
-```bash
 pnpm i -g tsc tsc-alias
 ```
 
-修改后端配置(.env.development)
+Modify backend configuration (apps/backend-by-nest/.env.development).
 
 ```
 DB_HOST=localhost
@@ -50,78 +52,40 @@ DB_PASSWORD=yourpwd
 DB_NAME=yourdbname
 ```
 
-导入数据库文件：/database/forum.sql
+Import database file (database/forum.sql).
 
-启动服务
+### frontend(forum)
 
-```bash
-pnpm dev
-```
-
-### app端
-
-启动后端服务
-
-在/backend下执行
+Start the service.
 
 ```bash
-pnpm dev
+pnpm dev:forum
 ```
 
-使用HBuilderX运行uniapp项目
+### frontend(admin)
 
-## 版本
+Start the service.
 
-### version: 2.0.0 (251116)
+```bash
+pnpm dev:admin
+```
 
-重构版本，当前版本内容：
+### app
 
-- 帖子：发布，公开/非公开，删除，收藏，评论，搜索
-- 用户：登录，注册，关注，聊天，编辑个人信息
-- UI: 浅深切换
+Start backend service.
 
-重构版本优化内容：
+```bash
+pnpm start:backend
+```
 
-- 新的UI设计
-- 新增残废的无障碍支持
-- 优化聊天弹窗
-- 优化图片上传
-- 修复关注功能问题
-- 优化帖子信息更新逻辑
-- more...
+Run the Uniapp project using HBuilderX.
 
-### version: 2.0.1 (251118)
+## Tip
 
-当前版本变更：
+"apps/backend" has been deprecated, and the backend project is now "apps/backend-by-nest".
 
-- 修复在某些场景下获取不到帖子问题
-- 修复404页面按钮在深色模式下字体颜色问题
+## Version
 
-### version: 2.1.0 (251118)
-
-当前版本变更：
-
-- 新增分享功能
-
-### version: 2.2.0 (251127)
-
-当前版本变更：
-
-- 新增ai聊天
-- 优化部分样式
-
-### version 2.3.0 (251228)
-
-当前版本变更（web）：
-
-- 修复部分样式问题
-- 修改重复进入用户页面数据不刷新问题
-
-使用uniapp构建app端，版本与web端同步
-
-app端功能与web端差异如下：
-
-- app端主题只跟随系统
-- app端无法对弹窗信息进行回复
-- 两端部分场景下样式差异
-- app端没有皮卡丘?
+- [forum](./docs/md/version/en/forum.md)
+- [admin](./docs/md/version/en/admin.md)
+- [app](./docs/md/version/en/app.md)

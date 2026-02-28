@@ -90,6 +90,11 @@ export const useUserStore = defineStore('user', () => {
     userFriendList.value = res.data.data
   }
 
+  const onLineList = ref<string[]>([])
+  const setOnLineList = (list: string[]) => {
+    onLineList.value = list
+  }
+
   return {
     token,
     setToken,
@@ -105,5 +110,7 @@ export const useUserStore = defineStore('user', () => {
     getUserFriendList,
     CN_VERSION,
     setCN_VERSION,
+    onLineList,
+    setOnLineList,
   }
 })

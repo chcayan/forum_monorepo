@@ -319,7 +319,9 @@ const onPikachuChat = () => {
           @click="onPikachuChat"
           @keydown.enter="onPikachuChat"
         >
-          <img :src="pikachuImg" alt="avatar" />
+          <div class="avatar">
+            <img :src="pikachuImg" alt="avatar" />
+          </div>
           <div>皮卡丘</div>
         </li>
         <li
@@ -335,7 +337,11 @@ const onPikachuChat = () => {
             selectFriend(friend.username, friend.userAvatar, friend.followId)
           "
         >
-          <img :src="friend.userAvatar" alt="avatar" />
+          <div
+            :class="{ avatar: userStore.onLineList.includes(friend.followId) }"
+          >
+            <img :src="friend.userAvatar" alt="avatar" />
+          </div>
           <div>{{ friend.username }}</div>
           <div
             v-if="unreadCount[friend.followId]"
@@ -351,7 +357,16 @@ const onPikachuChat = () => {
       <div class="chat-box" v-if="currentFriendUsername || isPikachuChat">
         <header v-if="!isPikachuChat">
           <img :src="currentFriendAvatar" />
-          <div>{{ currentFriendUsername }}</div>
+          <div>
+            <p>{{ currentFriendUsername }}</p>
+            <p class="online">
+              {{
+                userStore.onLineList.includes(currentFriendUserId)
+                  ? '在线'
+                  : '离线'
+              }}
+            </p>
+          </div>
           <div class="close-box" @click="closeChatBox">
             <CloseSvg class="close" />
           </div>
@@ -446,6 +461,25 @@ const onPikachuChat = () => {
     ul {
       overflow-y: scroll;
       height: calc(100% - 60px);
+
+      .avatar {
+        position: relative;
+
+        img {
+          border: 4px solid var(--theme-avatar-border-color);
+        }
+
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: 2px;
+          right: 2px;
+          width: 12px;
+          height: 12px;
+          background-color: var(--theme-avatar-border-color);
+          border-radius: 50%;
+        }
+      }
 
       &::-webkit-scrollbar {
         width: 10px;
@@ -605,6 +639,13 @@ const onPikachuChat = () => {
         width: 100%;
         height: 60px;
         box-shadow: 0 1px 1px rgba(156, 164, 172, 0.3);
+
+        div {
+          .online {
+            font-size: 12px;
+            font-weight: bold;
+          }
+        }
 
         .close-box {
           align-self: flex-end;
