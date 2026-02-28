@@ -1,7 +1,10 @@
+import { useTranslation } from 'react-i18next'
+
 export default function LightSvg() {
+  const { t } = useTranslation()
   return (
     <>
-      <div className="icon" title="切换到深色模式">
+      <div className="icon" title={t('layout.toggle2dark')}>
         <svg
           viewBox="0 0 1024 1024"
           version="1.1"

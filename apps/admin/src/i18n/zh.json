@@ -1,14 +1,4 @@
 {
-  "common": {
-    "hello": "你好",
-    "welcome": "欢迎",
-    "login": "登录",
-    "logout": "退出登录"
-  },
-  "home": {
-    "title": "首页",
-    "description": "这是首页"
-  },
   "login": {
     "title": "欢迎回来",
     "titleError": "信息有误",
@@ -19,5 +9,19 @@
     "loginBtn": "登 录",
     "emailTip": "请检查您的邮箱格式是否正确",
     "passwordTip": "密码只允许数字/字母/符号，禁止空格，长度6-16个字符"
+  },
+  "layout": {
+    "overviewNav": "概述",
+    "auditPostNav": "帖子审核",
+    "editPostNav": "修改帖子状态",
+    "editUserNav": "修改用户状态",
+    "logout": "退出登录",
+    "toggle2light": "切换到浅色模式",
+    "toggle2dark": "切换到深色模式"
+  },
+  "auditPost": {
+    "content": "帖子内容",
+    "images": "帖子图片",
+    "action": "操作"
   }
 }

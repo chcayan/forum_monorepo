@@ -22,3 +22,7 @@ type AdminLogin = {
 export function loginAPI(data: AdminLogin) {
   return request.post('/admin/login', data)
 }
+
+export function getUnAuditPostAPI(page: number, limit: number) {
+  return request.get(`/admin/post?page=${page}&limit=${limit}`)
+}

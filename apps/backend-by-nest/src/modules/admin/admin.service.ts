@@ -20,6 +20,7 @@ import { AdminPermissionBit, UserPermissionBit } from '../auth/auth.bit';
 import bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { AdminPerm } from 'src/common/constant/permission.constant';
+import { PostAlias, PostFields } from '../post/post.constant';
 
 @Injectable()
 export class AdminService {
@@ -197,5 +198,27 @@ export class AdminService {
     }
 
     await this.postRepository.update({ pId: postId }, { status });
+  }
+
+  async findUnAuditPost(page: number, pageSize: number) {
+    const qb = this.postRepository.createQueryBuilder(PostAlias);
+    const [list, total] = await qb
+      .leftJoin(PostFields.user, UserAlias)
+      .addSelect([UserFields.userAvatar, UserFields.username])
+      .where(`${PostFields.status} = :status`, {
+        status: 0,
+      })
+      .orderBy(PostFields.publishTime, 'DESC')
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
+      .getManyAndCount();
+
+    const formattedList = list.map(({ user, ...post }) => ({
+      ...post,
+      username: user?.username,
+      userAvatar: user?.userAvatar,
+    }));
+
+    return { list: formattedList, total };
   }
 }

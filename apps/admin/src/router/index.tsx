@@ -1,14 +1,7 @@
 import { useRoutes } from 'react-router-dom'
-import AuditPost from '@/pages/auditPost/AuditPost'
-import EditPost from '@/pages/editPost/EditPost'
-import EditUser from '@/pages/editUser/EditUser'
-import Login from '@/pages/login/Login'
-import NotFound from '@/pages/notFound/NotFound'
-import type { JSX } from 'react'
-import Layout from '@/pages/layout/Layout'
+import { lazy, type JSX } from 'react'
 import { filterRoutes } from './filterRoutes'
 import { useUserStore } from '@/stores'
-import Overview from '@/pages/overview/Overview'
 
 export type Path = {
   '/': symbol
@@ -31,6 +24,14 @@ export interface AppRoute {
   permission?: keyof Permission
   children?: AppRoute[]
 }
+
+const AuditPost = lazy(() => import('@/pages/auditPost/AuditPost'))
+const EditPost = lazy(() => import('@/pages/editPost/EditPost'))
+const EditUser = lazy(() => import('@/pages/editUser/EditUser'))
+const Login = lazy(() => import('@/pages/login/Login'))
+const Overview = lazy(() => import('@/pages/overview/Overview'))
+const NotFound = lazy(() => import('@/pages/notFound/NotFound'))
+const Layout = lazy(() => import('@/pages/layout/Layout'))
 
 const asyncRoutes: AppRoute[] = [
   {

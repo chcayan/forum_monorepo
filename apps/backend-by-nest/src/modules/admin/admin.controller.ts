@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  ParseIntPipe,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { PermissionDto } from './dto/permission.dto';
 import { JwtAuthGuard } from 'src/common/guard/jwt-auth.guard';
@@ -49,5 +58,14 @@ export class AdminController {
   @AdminPermission('audit_post')
   async auditPost(@Body() dto: AuditPostDto) {
     return this.adminService.auditPost(dto.postId, dto.status);
+  }
+
+  @Get('post')
+  @UseGuards(JwtAuthGuard)
+  async findUnAuditPost(
+    @Query('page', ParseIntPipe) page: number,
+    @Query('limit', ParseIntPipe) limit: number,
+  ) {
+    return this.adminService.findUnAuditPost(page, limit);
   }
 }

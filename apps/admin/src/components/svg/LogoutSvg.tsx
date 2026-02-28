@@ -1,9 +1,11 @@
 import { RoutePath } from '@/router/route'
 import { useUserStore } from '@/stores'
 import { Toast } from '@/utils'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 export default function LogoutSvg() {
+  const { t } = useTranslation()
   const removeToken = useUserStore((state) => state.removeToken)
   const navigate = useNavigate()
 
@@ -17,7 +19,7 @@ export default function LogoutSvg() {
   }
   return (
     <>
-      <div onClick={logout} className="icon" title="退出登录">
+      <div onClick={logout} className="icon" title={t('layout.logout')}>
         <svg
           viewBox="0 0 1024 1024"
           version="1.1"
