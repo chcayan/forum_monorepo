@@ -1,6 +1,7 @@
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import styles from './toast.module.scss'
 import type { ColorType, ToastParams } from './types'
+import { useTranslation } from 'react-i18next'
 
 function isInt(time: number) {
   if (Number.isNaN(time) || time === Infinity || typeof time !== 'number') {
@@ -15,6 +16,7 @@ function isInt(time: number) {
 }
 
 const Toast = forwardRef((_, ref) => {
+  const { t } = useTranslation()
   const toastRef = useRef<HTMLDivElement>(null)
   const timerRef = useRef<number | null>(null)
 
@@ -39,10 +41,10 @@ const Toast = forwardRef((_, ref) => {
   }
 
   function hide() {
-    setMsg('拜拜😊')
+    setMsg(t('common.bye'))
     toastRef.current?.animate(
       [{ transform: 'translateY(-100px) translateX(-50%)' }],
-      { duration: 1000, easing: 'ease', fill: 'forwards' }
+      { duration: 1200, easing: 'ease', fill: 'forwards' }
     )
   }
 

@@ -1,11 +1,27 @@
-import { getUnAuditPostAPI } from '@/api'
+import {
+  createViolationReasonAPI,
+  getUnAuditPostAPI,
+  updatePostStatusAPI,
+} from '@/api'
 import type { PostDetail } from '@forum-monorepo/types'
 import { useEffect, useState } from 'react'
-import { Table, Image, type TableProps, Typography, Drawer } from 'antd'
+import {
+  Table,
+  Image,
+  type TableProps,
+  Typography,
+  Drawer,
+  Button,
+  Modal,
+  Input,
+} from 'antd'
 import { useTranslation } from 'react-i18next'
+import emitter from '@/utils/eventEmitter'
+import { Toast } from '@/utils'
 
 interface DataType {
   key: number
+  postId: string
   pContent: string
   pImages: string[]
 }
@@ -26,6 +42,96 @@ function ContentCell({ text }: { text: string }) {
       <Drawer open={open} size={600} onClose={() => setOpen(false)}>
         <div style={{ whiteSpace: 'pre-wrap' }}>{text}</div>
       </Drawer>
+    </>
+  )
+}
+
+function PassButton({ postId }: { postId: string }) {
+  const { t } = useTranslation()
+
+  const [open, setOpen] = useState(false)
+  const [confirmLoading, setConfirmLoading] = useState(false)
+
+  const showModal = () => {
+    setOpen(true)
+  }
+
+  const handleOk = async () => {
+    setConfirmLoading(true)
+    await updatePostStatusAPI({ postId, status: 1 })
+    setConfirmLoading(false)
+    setOpen(false)
+    emitter.emit('EVENT:UPDATE_AUDIT_POST')
+  }
+
+  const handleCancel = () => {
+    setOpen(false)
+  }
+
+  return (
+    <>
+      <Button color="cyan" variant="solid" onClick={showModal}>
+        {t('auditPost.pass')}
+      </Button>
+      <Modal
+        open={open}
+        onOk={handleOk}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+        centered
+      >
+        <p>{t('auditPost.isPass')}</p>
+      </Modal>
+    </>
+  )
+}
+
+function ViolateButton({ postId }: { postId: string }) {
+  const { t } = useTranslation()
+
+  const [open, setOpen] = useState(false)
+  const [confirmLoading, setConfirmLoading] = useState(false)
+  const [value, setValue] = useState('')
+
+  const handleOk = async () => {
+    setConfirmLoading(true)
+    if (value.trim() === '') {
+      Toast.show({
+        msg: t('auditPost.reasonInputErrorTip'),
+        type: 'error',
+      })
+      setConfirmLoading(false)
+      return
+    }
+    await updatePostStatusAPI({ postId, status: 2 })
+    await createViolationReasonAPI({
+      postId,
+      reason: value,
+    })
+    setConfirmLoading(false)
+    setOpen(false)
+    emitter.emit('EVENT:UPDATE_AUDIT_POST')
+  }
+
+  return (
+    <>
+      <Button danger onClick={() => setOpen(true)}>
+        {t('auditPost.violate')}
+      </Button>
+      <Modal
+        title={t('auditPost.inputReasonTip')}
+        open={open}
+        onOk={handleOk}
+        confirmLoading={confirmLoading}
+        onCancel={() => setOpen(false)}
+        centered
+      >
+        <Input
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          placeholder={t('auditPost.reason')}
+        />
+      </Modal>
     </>
   )
 }
@@ -67,7 +173,19 @@ export default function AuditPost() {
     },
     {
       title: t('auditPost.action'),
+      dataIndex: 'postId',
       key: 'action',
+      render: (postId: string) => (
+        <div
+          style={{
+            display: 'flex',
+            gap: '5px',
+          }}
+        >
+          <PassButton postId={postId} />
+          <ViolateButton postId={postId} />
+        </div>
+      ),
     },
   ]
 
@@ -82,11 +200,21 @@ export default function AuditPost() {
     async function getUnAuditPost() {
       const res = await getUnAuditPostAPI(page, pageSize)
       const data: PostDetail[] = res.data.data.list
+      const total = res.data.data.total
 
       setTotal(res.data.data.total)
+
+      const maxPage = Math.max(1, Math.ceil(total / pageSize))
+
+      if (page > maxPage) {
+        setPage(maxPage)
+        return
+      }
+
       const filterData = data.map(
         (item, index): DataType => ({
           key: index,
+          postId: item.pId,
           pContent: item.pContent,
           pImages: item.pImages,
         })
@@ -99,8 +227,16 @@ export default function AuditPost() {
 
     getUnAuditPost()
 
+    const off = emitter.on('EVENT:UPDATE_AUDIT_POST', () => {
+      // if(postList?.length === 0) {
+      // setPage()
+      // }
+      getUnAuditPost()
+    })
+
     return () => {
       ignore = true
+      off()
     }
   }, [page, pageSize])
 

@@ -1,4 +1,7 @@
 {
+  "common": {
+    "bye": "bye😊"
+  },
   "login": {
     "title": "Welcome back",
     "titleError": "Information is incorrect",
@@ -22,6 +25,12 @@
   "auditPost": {
     "content": "post content",
     "images": "post images",
-    "action": "action"
+    "action": "action",
+    "pass": "pass",
+    "violate": "violate",
+    "isPass": "Is pass?",
+    "inputReasonTip": "Please enter the reason for the violation:",
+    "reason": "Please enter the reason",
+    "reasonInputErrorTip": "The content is not empty."
   }
 }

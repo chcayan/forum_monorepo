@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   ParseIntPipe,
   Post,
   Query,
@@ -15,6 +16,7 @@ import { AdminPermissionGuard } from 'src/common/guard/permission.guard';
 import { AdminPermission } from 'src/common/decorator/permission.decorator';
 import { AuditPostDto } from './dto/audit-post.dto';
 import { LoginDto } from './dto/login.dto';
+import { CreateViolationReasonDto } from './dto/create-violation-reason.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -60,8 +62,19 @@ export class AdminController {
     return this.adminService.auditPost(dto.postId, dto.status);
   }
 
+  @Post('audit-post/:postId')
+  @UseGuards(JwtAuthGuard, AdminPermissionGuard)
+  @AdminPermission('audit_post')
+  async createViolationReason(
+    @Param('postId') postId: string,
+    @Body() dto: CreateViolationReasonDto,
+  ) {
+    return this.adminService.createViolationReason(postId, dto.reason);
+  }
+
   @Get('post')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AdminPermissionGuard)
+  @AdminPermission('audit_post')
   async findUnAuditPost(
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,

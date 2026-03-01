@@ -6,9 +6,18 @@ import { UserPermission } from '../user/entities/user-permission.entity';
 import { User } from '../user/entities/user.entity';
 import { UserModule } from '../user/user.module';
 import { Post } from '../post/entities/post.entity';
+import { AuditViolationReason } from './entities/audit-violation-reason.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserPermission, User, Post]), UserModule],
+  imports: [
+    TypeOrmModule.forFeature([
+      UserPermission,
+      User,
+      Post,
+      AuditViolationReason,
+    ]),
+    UserModule,
+  ],
   controllers: [AdminController],
   providers: [AdminService],
 })

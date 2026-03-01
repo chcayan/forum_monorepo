@@ -23,6 +23,7 @@ import { Permission } from './modules/user/entities/permission.entity';
 import { UserPermission } from './modules/user/entities/user-permission.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { AuditViolationReason } from './modules/admin/entities/audit-violation-reason.entity';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { join } from 'path';
         Chat,
         Permission,
         UserPermission,
+        AuditViolationReason,
       ],
       namingStrategy: new SnakeNamingStrategy(),
     }),

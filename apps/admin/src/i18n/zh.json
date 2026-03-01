@@ -1,4 +1,7 @@
 {
+  "common": {
+    "bye": "拜拜😊"
+  },
   "login": {
     "title": "欢迎回来",
     "titleError": "信息有误",
@@ -22,6 +25,12 @@
   "auditPost": {
     "content": "帖子内容",
     "images": "帖子图片",
-    "action": "操作"
+    "action": "操作",
+    "pass": "通过",
+    "violate": "违规",
+    "isPass": "是否通过?",
+    "inputReasonTip": "请输入违规原因：",
+    "reason": "请输入原因",
+    "reasonInputErrorTip": "内容不为空"
   }
 }

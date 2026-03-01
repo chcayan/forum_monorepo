@@ -21,6 +21,7 @@ import bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { AdminPerm } from 'src/common/constant/permission.constant';
 import { PostAlias, PostFields } from '../post/post.constant';
+import { AuditViolationReason } from './entities/audit-violation-reason.entity';
 
 @Injectable()
 export class AdminService {
@@ -29,6 +30,8 @@ export class AdminService {
     private readonly userPermissionRepository: Repository<UserPermission>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
+    @InjectRepository(AuditViolationReason)
+    private readonly auditViolationReasonRepository: Repository<AuditViolationReason>,
     private readonly authService: AuthService,
     private readonly jwtService: JwtService,
   ) {}
@@ -220,5 +223,29 @@ export class AdminService {
     }));
 
     return { list: formattedList, total };
+  }
+
+  async createViolationReason(postId: string, reason: string) {
+    const exist = await this.auditViolationReasonRepository.findOne({
+      where: { pId: postId },
+    });
+
+    if (exist) {
+      await this.auditViolationReasonRepository.update(
+        {
+          pId: postId,
+        },
+        {
+          reason,
+        },
+      );
+    } else {
+      const _reason = this.auditViolationReasonRepository.create({
+        pId: postId,
+        reason: reason,
+      });
+
+      await this.auditViolationReasonRepository.save(_reason);
+    }
   }
 }

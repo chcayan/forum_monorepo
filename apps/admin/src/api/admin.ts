@@ -26,3 +26,16 @@ export function loginAPI(data: AdminLogin) {
 export function getUnAuditPostAPI(page: number, limit: number) {
   return request.get(`/admin/post?page=${page}&limit=${limit}`)
 }
+
+export function updatePostStatusAPI(data: { postId: string; status: 1 | 2 }) {
+  return request.post('/admin/audit-post', data)
+}
+
+export function createViolationReasonAPI(data: {
+  postId: string
+  reason: string
+}) {
+  return request.post(`/admin/audit-post/${data.postId}`, {
+    reason: data.reason,
+  })
+}

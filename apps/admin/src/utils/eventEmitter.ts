@@ -6,7 +6,9 @@ type ApiEvent =
   | 'API:BAD_REQUEST'
   | 'API:FORBIDDEN'
 
-type EventNames = ApiEvent
+type BaseEvent = 'EVENT:UPDATE_AUDIT_POST'
+
+type EventNames = ApiEvent | BaseEvent
 
 class EventEmitter {
   private listeners: Record<EventNames, Set<Function>> = {
@@ -14,6 +16,7 @@ class EventEmitter {
     'API:INVALID': new Set(),
     'API:BAD_REQUEST': new Set(),
     'API:FORBIDDEN': new Set(),
+    'EVENT:UPDATE_AUDIT_POST': new Set(),
   }
 
   on(eventName: EventNames, listener: Function) {
