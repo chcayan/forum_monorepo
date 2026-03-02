@@ -10,6 +10,7 @@ import { Collection } from './entities/collection.entity';
 import { Follow } from './entities/follow.entity';
 import { Permission } from './entities/permission.entity';
 import { UserPermission } from './entities/user-permission.entity';
+import { UserSeedService } from './user-seed.service';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { UserPermission } from './entities/user-permission.entity';
     ]),
   ],
   controllers: [UserController],
-  providers: [UserService],
+  providers: [UserService, UserSeedService],
   exports: [UserService],
 })
 export class UserModule {}

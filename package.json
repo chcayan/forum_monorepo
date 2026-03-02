@@ -14,7 +14,7 @@
     "precommit": "lint-staged",
     "dev:forum": "concurrently  \"pnpm --filter backend-by-nest start:dev\" \"pnpm --filter frontend dev\"",
     "dev:admin": "concurrently  \"pnpm --filter backend-by-nest start:dev\" \"pnpm --filter admin dev\"",
-    "build": "pnpm -F utils build && pnpm -F frontend build && pnpm -F backend-by-nest build",
+    "build": "pnpm -F utils build && pnpm -F frontend build && pnpm -F admin build && pnpm -F backend-by-nest build",
     "upload": "pnpm build && bash ./script/upload.sh",
     "start:backend": "pnpm -F backend-by-nest start:dev"
   },

@@ -84,7 +84,8 @@ pnpm start:backend
 
 ## 提示
 
-apps/backend 已弃用，后端项目现为 apps/backend-by-nest
+- apps/backend 已弃用，后端项目现为 apps/backend-by-nest
+- 默认管理员账号：admin@forum.com，密码：admin123
 
 ## 版本
 

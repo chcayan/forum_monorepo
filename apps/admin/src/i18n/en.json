@@ -31,6 +31,7 @@
     "isPass": "Is pass?",
     "inputReasonTip": "Please enter the reason for the violation:",
     "reason": "Please enter the reason",
-    "reasonInputErrorTip": "The content is not empty."
+    "reasonInputErrorTip": "The content is not empty.",
+    "successTip": "Operation successful"
   }
 }

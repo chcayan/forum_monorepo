@@ -31,6 +31,7 @@
     "isPass": "是否通过?",
     "inputReasonTip": "请输入违规原因：",
     "reason": "请输入原因",
-    "reasonInputErrorTip": "内容不为空"
+    "reasonInputErrorTip": "内容不为空",
+    "successTip": "操作成功"
   }
 }

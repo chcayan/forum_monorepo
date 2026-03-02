@@ -82,7 +82,8 @@ Run the Uniapp project using HBuilderX.
 
 ## Tip
 
-"apps/backend" has been deprecated, and the backend project is now "apps/backend-by-nest".
+- "apps/backend" has been deprecated, and the backend project is now "apps/backend-by-nest".
+- Default administrator account: admin@forum.com, Password: admin123
 
 ## Version
 

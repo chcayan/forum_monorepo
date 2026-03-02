@@ -61,6 +61,10 @@ function PassButton({ postId }: { postId: string }) {
     await updatePostStatusAPI({ postId, status: 1 })
     setConfirmLoading(false)
     setOpen(false)
+    Toast.show({
+      msg: t('auditPost.successTip'),
+      type: 'success',
+    })
     emitter.emit('EVENT:UPDATE_AUDIT_POST')
   }
 
@@ -110,6 +114,10 @@ function ViolateButton({ postId }: { postId: string }) {
     })
     setConfirmLoading(false)
     setOpen(false)
+    Toast.show({
+      msg: t('auditPost.successTip'),
+      type: 'success',
+    })
     emitter.emit('EVENT:UPDATE_AUDIT_POST')
   }
 
