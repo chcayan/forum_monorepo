@@ -9,6 +9,7 @@ import { Brackets, Repository } from 'typeorm';
 import { PostAlias, PostFields } from './post.constant';
 import { UserAlias, UserFields } from 'src/modules/user/user.constant';
 import { Comment } from './entities/comment.entity';
+import { PostReport } from './entities/post-report.entity';
 
 @Injectable()
 export class PostService {
@@ -17,6 +18,8 @@ export class PostService {
     private readonly postRepository: Repository<Post>,
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
+    @InjectRepository(PostReport)
+    private readonly postReportRepository: Repository<PostReport>,
   ) {}
 
   async create(content: string, isPublic: string, userId: string) {
@@ -42,6 +45,38 @@ export class PostService {
     await this.postRepository.save(post);
 
     return { postId: nextId };
+  }
+
+  async modifyPostInfo(
+    content: string,
+    isPublic: string,
+    postId: string,
+    userId: string,
+  ) {
+    const exist = await this.postRepository.findOne({
+      where: {
+        pId: postId,
+        userId,
+      },
+    });
+
+    if (!exist) {
+      throw new NotFoundException('未找到该帖子');
+    }
+
+    await this.postRepository.update(
+      {
+        pId: postId,
+      },
+      {
+        pContent: content,
+        isPublic,
+        pImages: () => 'JSON_ARRAY()',
+        status: 0,
+      },
+    );
+
+    return { postId };
   }
 
   async addImage(pId: string, imagePath: string, index: number) {
@@ -178,7 +213,12 @@ export class PostService {
     }
 
     if (exist.status !== 1) {
-      throw new ForbiddenException('该帖子未审核');
+      if (exist.status === 0) {
+        throw new ForbiddenException('该帖子审核中');
+      }
+      if (exist.status === 2) {
+        throw new ForbiddenException('该帖子审核未通过');
+      }
     }
 
     const comment = this.commentRepository.create({
@@ -207,5 +247,25 @@ export class PostService {
       .where('c.p_id = :postId', { postId })
       .orderBy('c.created_time', 'DESC')
       .getRawMany();
+  }
+
+  async createPostReport(postId: string, reason: string) {
+    const exist = await this.postRepository.findOne({
+      where: {
+        pId: postId,
+        status: 1,
+      },
+    });
+
+    if (!exist) {
+      throw new NotFoundException('未找到该帖子或该帖子审核中/审核不通过');
+    }
+
+    const _reason = this.postReportRepository.create({
+      pId: postId,
+      reportReason: reason,
+    });
+
+    await this.postReportRepository.save(_reason);
   }
 }

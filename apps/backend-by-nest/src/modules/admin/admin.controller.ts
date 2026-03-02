@@ -81,4 +81,14 @@ export class AdminController {
   ) {
     return this.adminService.findUnAuditPost(page, limit);
   }
+
+  @Get('post-report')
+  @UseGuards(JwtAuthGuard, AdminPermissionGuard)
+  @AdminPermission('edit_post')
+  async findPostReports(
+    @Query('page', ParseIntPipe) page: number,
+    @Query('limit', ParseIntPipe) limit: number,
+  ) {
+    return this.adminService.findPostReports(page, limit);
+  }
 }

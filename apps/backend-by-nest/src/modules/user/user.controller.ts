@@ -150,9 +150,15 @@ export class UserController {
     return this.userService.findUserFans(userId);
   }
 
+  @Get('/violation-post/:postId')
+  @UseGuards(JwtAuthGuard)
+  async getViolationReason(@Param('postId') postId: string) {
+    return this.userService.getViolationReason(postId);
+  }
+
   @Get(':id')
   @UseGuards(OptionalJwtAuthGuard)
-  findOne(@Param('id') userId: string, @OptionalUser() id: string) {
+  async findOne(@Param('id') userId: string, @OptionalUser() id: string) {
     let _userId: string = userId;
     if (userId === 'self') {
       _userId = id;
@@ -171,7 +177,7 @@ export class UserController {
       uploadOptions,
     ),
   )
-  update(
+  async update(
     @OptionalUser() userId: string,
     @Body() dto: UpdateUserDto,
     @UploadedFiles()

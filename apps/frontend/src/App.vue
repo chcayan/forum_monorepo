@@ -24,7 +24,6 @@ async function initUserStatus() {
 
   socket.on('receiveOnlineList', (list: string[]) => {
     userStore.setOnLineList(list)
-    console.log(list)
   })
 
   socket.on(
@@ -74,6 +73,13 @@ emitter.on('API:UN_AUTH', (message: string) => {
 })
 
 emitter.on('API:FORBIDDEN', (message: string) => {
+  Toast.show({
+    msg: message,
+    type: 'error',
+  })
+})
+
+emitter.on('API:NOT_FOUND', (message: string) => {
   Toast.show({
     msg: message,
     type: 'error',

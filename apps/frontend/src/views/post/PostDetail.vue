@@ -7,6 +7,7 @@ import { getCommentListAPI, getPostDetailAPI } from '@/api'
 import CommentInput from './components/CommentInput.vue'
 import CommentCard from './components/CommentCard.vue'
 import emitter from '@/utils/eventEmitter'
+import router, { RouterPath } from '@/router'
 
 const route = useRoute()
 const postDetail = ref<PostDetail>({
@@ -27,8 +28,15 @@ const postDetail = ref<PostDetail>({
 
 const getPostDetail = async () => {
   const postId = route.params.postId as string
-  const res = await getPostDetailAPI(postId)
-  postDetail.value = res.data.data
+  try {
+    const res = await getPostDetailAPI(postId)
+    postDetail.value = res.data.data
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    emitter.emit('API:NOT_FOUND', err.response.data.message)
+    router.replace(RouterPath.notFound)
+    console.log(err)
+  }
 }
 getPostDetail()
 

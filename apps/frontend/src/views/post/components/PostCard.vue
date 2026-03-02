@@ -23,6 +23,11 @@ import { useUserStore } from '@/stores'
 import DeleteSvg from '@/components/svgIcon/DeleteSvg.vue'
 import PublicSvg from '@/components/svgIcon/PublicSvg.vue'
 import PrivateSvg from '@/components/svgIcon/PrivateSvg.vue'
+import AuditLabel from './AuditLabel.vue'
+import ViolationReason from './ViolationReason.vue'
+import ModifySvg from '@/components/svgIcon/ModifySvg.vue'
+import ReportSvg from '@/components/svgIcon/ReportSvg.vue'
+import ReportReasonModal from './ReportReasonModal.vue'
 
 const userStore = useUserStore()
 
@@ -253,6 +258,20 @@ const share = async (friendId: string) => {
   flag = true
   showShareBox.value = false
 }
+
+const navigateToPublish = () => {
+  router.push(`${RouterPath.publish}?edit-post=${post.pId}`)
+}
+
+const showReportModal = ref(false)
+
+const openReportModal = () => {
+  showReportModal.value = true
+}
+
+const closeReportModal = () => {
+  showReportModal.value = false
+}
 </script>
 
 <template>
@@ -263,7 +282,7 @@ const share = async (friendId: string) => {
   >
     <div class="share-box" :class="{ 'show-share-box': showShareBox }">
       <p>请选择一位好友：</p>
-      <ul>
+      <ul tabindex="-1">
         <li
           @click="share(friend.followId)"
           v-for="(friend, index) in friendList"
@@ -296,10 +315,22 @@ const share = async (friendId: string) => {
         "
       >
         <DeleteSvg @click="deletePost" />
+        <ModifySvg @click="navigateToPublish" />
         <div v-if="post.status === 1">
           <PublicSvg @click="onPrivate" v-if="post?.isPublic === 'true'" />
           <PrivateSvg @click="onPublic" v-else />
         </div>
+        <div v-else>
+          <AuditLabel :status="post.status" />
+        </div>
+      </div>
+      <div v-if="route.path.startsWith(RouterPath.post) && post.status === 1">
+        <ReportSvg @click="openReportModal" />
+        <ReportReasonModal
+          :postId="post.pId"
+          :isOpen="showReportModal"
+          @closeReportModal="closeReportModal"
+        />
       </div>
     </header>
     <div
@@ -307,6 +338,7 @@ const share = async (friendId: string) => {
       class="main"
       @click="navigateToPostDetail"
     >
+      <ViolationReason v-if="post.status === 2" :postId="post.pId" />
       <p
         v-html="lineBreakReplace(post?.pContent)"
         :class="{ 'restrict-line': isRestrictLine }"

@@ -115,13 +115,13 @@ emitter.on(
       ]
       return
     }
-    if (!userCollectedPostMap.value.get(pId)) {
+    if (!toggleStatus.value && !userCollectedPostMap.value.get(pId)) {
       userCollectedPostMap.value.set(pId, post)
       userCollectedPostOrder.value = [
         pId,
         ...userCollectedPostOrder.value.filter((id) => id !== pId),
       ]
-    } else {
+    } else if (!toggleStatus.value) {
       userCollectedPostMap.value.set(pId, post)
     }
 

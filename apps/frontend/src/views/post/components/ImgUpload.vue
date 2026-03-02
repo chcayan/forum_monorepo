@@ -8,8 +8,12 @@ const divRef = useTemplateRef('divEl')
 
 const isHide = ref(false)
 
-const allFiles: File[] = []
+type ImageItem = { type: 'file'; file: File } | { type: 'url'; url: string }
+
+const allImages: ImageItem[] = []
+
 let off: () => void
+let off1: () => void
 
 onMounted(() => {
   const inputEl = inputRef.value
@@ -18,78 +22,14 @@ onMounted(() => {
   if (!inputEl || !previewEl) return
 
   off = emitter.on('EVENT:RESET_POST_IMAGES', () => {
-    allFiles.length = 0
+    allImages.length = 0
     previewEl.innerHTML = ''
   })
-
-  // inputEl.addEventListener('change', () => {
-  //   const newFiles = Array.from(inputEl.files ?? [])
-
-  //   if (newFiles.length > 9) {
-  //     alert('最多只能上传 9 张图片！')
-  //     return
-  //   }
-
-  //   const availableSlots = 9 - allFiles.length - newFiles.length
-  //   if (availableSlots < 0) {
-  //     alert('最多只能上传 9 张图片！')
-  //     inputEl.value = ''
-  //     return
-  //   }
-
-  //   allFiles.push(...newFiles)
-
-  //   previewEl.innerHTML = ''
-
-  //   let loadedCount = 0
-  //   const frag = document.createDocumentFragment()
-
-  //   allFiles.forEach((file: File) => {
-  //     if (!file.type.startsWith('image/')) return
-
-  //     const reader = new FileReader()
-
-  //     reader.onload = (e: ProgressEvent<FileReader>) => {
-  //       const img = document.createElement('img')
-  //       img.src = e.target?.result as string
-  //       img.classList.add('del-img')
-  //       img.alt = 'post-img'
-  //       img.title = '删除？'
-  //       img.style.width = '100%'
-  //       img.style.height = '100%'
-  //       img.style.aspectRatio = '1'
-  //       img.style.objectFit = 'cover'
-  //       img.style.borderRadius = '10px'
-
-  //       img.addEventListener('click', () => {
-  //         const index = allFiles.indexOf(file)
-  //         if (index !== -1) allFiles.splice(index, 1)
-  //         img.remove()
-  //         isHide.value = false
-  //       })
-
-  //       frag.appendChild(img)
-
-  //       if (++loadedCount === allFiles.length) {
-  //         previewEl.appendChild(frag)
-  //       }
-  //     }
-  //     reader.readAsDataURL(file)
-  //   })
-
-  //   if (allFiles.length === 9) {
-  //     isHide.value = true
-  //   } else {
-  //     isHide.value = false
-  //   }
-
-  //   inputEl.value = ''
-  // })
 
   inputEl.addEventListener('change', () => {
     const newFiles = Array.from(inputEl.files ?? [])
 
-    if (allFiles.length + newFiles.length > 9) {
+    if (allImages.length + newFiles.length > 9) {
       Toast.show({
         msg: '最多只能上传 9 张图片！',
         type: 'error',
@@ -98,11 +38,53 @@ onMounted(() => {
       return
     }
 
-    allFiles.push(...newFiles)
+    allImages.push(
+      ...newFiles.map((file) => ({
+        type: 'file' as const,
+        file,
+      }))
+    )
 
     renderPreview()
 
     inputEl.value = ''
+  })
+
+  async function setImages(urls: string[]) {
+    allImages.length = 0
+
+    for (let i = 0; i < urls.length; i++) {
+      const res = await fetch(urls[i]!)
+      const blob = await res.blob()
+      const name = urls[i]!.split('/').pop() || 'image.jpg'
+      allImages.push({
+        type: 'file',
+        file: new File([blob], name, {
+          type: blob.type,
+        }),
+      })
+    }
+
+    // allImages.push(
+    //   ...urls.map((url): ImageItem => {
+    //     const res = await fetch(url)
+    //     const blob = await res.blob()
+    //     const name = item.url.split('/').pop() || 'image.jpg'
+
+    //     return {
+    //       type: 'file',
+    //       file: new File([blob], name, {
+    //         type: blob.type,
+    //       }),
+    //     }
+    //   })
+    // )
+
+    renderPreview()
+  }
+
+  off1 = emitter.on('EVENT:ECHO_POST_IMAGES', (images: string[]) => {
+    setImages(images)
   })
 
   function renderPreview() {
@@ -111,12 +93,18 @@ onMounted(() => {
 
     const frag = document.createDocumentFragment()
 
-    allFiles.forEach((file, index) => {
-      if (!file.type.startsWith('image/')) return
+    allImages.forEach((item, index) => {
+      // if (!item.type.startsWith('image/')) return
 
       const img = document.createElement('img')
 
-      img.src = URL.createObjectURL(file)
+      if (item.type === 'file') {
+        img.src = URL.createObjectURL(item.file)
+      } else {
+        img.src = item.url
+      }
+
+      // img.src = URL.createObjectURL(file)
 
       img.classList.add('del-img')
       img.alt = 'post-img'
@@ -129,7 +117,7 @@ onMounted(() => {
       img.style.borderRadius = '10px'
 
       img.onclick = () => {
-        allFiles.splice(index, 1)
+        allImages.splice(index, 1)
         renderPreview()
         isHide.value = false
       }
@@ -139,16 +127,17 @@ onMounted(() => {
 
     previewEl.appendChild(frag)
 
-    isHide.value = allFiles.length === 9
+    isHide.value = allImages.length === 9
   }
 })
 
 onUnmounted(() => {
   off?.()
+  off1?.()
 })
 
 defineExpose({
-  allFiles,
+  allImages,
 })
 </script>
 

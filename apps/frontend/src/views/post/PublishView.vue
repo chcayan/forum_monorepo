@@ -1,17 +1,56 @@
 <script setup lang="ts">
-import { onUnmounted, ref, useTemplateRef } from 'vue'
+import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 import ImgUpload from './components/ImgUpload.vue'
 import ToggleBtn from '@/components/button/ToggleBtn.vue'
 import emitter from '@/utils/eventEmitter'
-import { publishPostAPI } from '@/api'
+import { getPostDetailAPI, publishPostAPI, updatePostInfoAPI } from '@/api'
 import { Toast } from '@/utils'
+import { useRoute } from 'vue-router'
+import { PostDetail } from '@forum-monorepo/types'
+import { useUserStore } from '@/stores'
 
 const context = ref<string>('')
 
 const imgUploadRef = useTemplateRef('ImgUploadEl')
 
+const route = useRoute()
+const postId = route.query['edit-post']
+
+const userStore = useUserStore()
+onMounted(async () => {
+  if (postId) {
+    try {
+      const res = await getPostDetailAPI(postId as string)
+      const data: PostDetail = res.data.data
+      if (data.userId !== userStore.userInfo.userId) {
+        Toast.show({
+          msg: '不要修改别人的帖子哦',
+          type: 'error',
+        })
+        return
+      }
+
+      context.value = data.pContent
+      emitter.emit('EVENT:ECHO_POST_IMAGES', data.pImages)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      console.log(err)
+      emitter.emit('API:NOT_FOUND', err.response.data.message)
+    }
+  }
+})
+
 function getPostImages() {
-  return imgUploadRef.value?.$!.exposed!.allFiles
+  const images: { type: 'file'; file: File }[] =
+    imgUploadRef.value?.$!.exposed!.allImages
+
+  let files: File[] = []
+
+  images.forEach((item) => {
+    files.push(item.file)
+  })
+
+  return files
 }
 
 const isPublic = ref(true)
@@ -34,17 +73,28 @@ const publishPost = async () => {
   }
   flag = false
 
-  const res = await publishPostAPI({
-    content: context.value as string,
-    isPublic: isPublic.value ? 'true' : 'false',
-    postImages: getPostImages(),
-  }).catch((err) => {
-    console.log(err)
-  })
+  let res
+
+  if (postId) {
+    res = await updatePostInfoAPI({
+      content: context.value as string,
+      isPublic: isPublic.value ? 'true' : 'false',
+      postImages: getPostImages(),
+      postId: postId as string,
+    })
+  } else {
+    res = await publishPostAPI({
+      content: context.value as string,
+      isPublic: isPublic.value ? 'true' : 'false',
+      postImages: getPostImages(),
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
 
   context.value = ''
   Toast.show({
-    msg: '发布成功',
+    msg: postId ? '修改成功' : '发布成功',
     type: 'success',
   })
 
@@ -65,7 +115,7 @@ onUnmounted(() => {
   <form class="publish-view" @submit.prevent>
     <article>
       <header>
-        <h2>新帖子</h2>
+        <h2>{{ postId ? '编辑' : '新帖子' }}</h2>
       </header>
       <div class="main">
         <h3>内容：</h3>
@@ -92,7 +142,7 @@ onUnmounted(() => {
           @keydown.enter="publishPost"
           style="margin-top: 10px"
         >
-          <button class="publish">发布</button>
+          <button class="publish">{{ postId ? '修改' : '发布' }}</button>
         </div>
       </div>
     </article>

@@ -22,6 +22,9 @@
     "toggle2light": "切换到浅色模式",
     "toggle2dark": "切换到深色模式"
   },
+  "overview": {
+    "title": "暂时不知道写什么"
+  },
   "auditPost": {
     "content": "帖子内容",
     "images": "帖子图片",

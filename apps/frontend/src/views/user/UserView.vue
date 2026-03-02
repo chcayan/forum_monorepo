@@ -73,7 +73,7 @@ const getUserCollectedPostList = async (page: number, userId: string) => {
 emitter.on('EVENT:UPDATE_USER_POST_LIST', async (pId: string) => {
   const res = await getPostDetailAPI(pId)
   userPostMap.value.set(pId, res.data.data)
-  if (userCollectedPostMap.value.get(pId)) {
+  if (!toggleStatus.value && userCollectedPostMap.value.get(pId)) {
     userCollectedPostMap.value.set(pId, res.data.data)
   }
 

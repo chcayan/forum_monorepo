@@ -96,3 +96,45 @@ export async function publishPostAPI(data: PostPublish) {
 export function updatePostViewAPI(postId: string) {
   return request.patch(`/post/view/${postId}`)
 }
+
+type UpdatePostInfo = {
+  content: string
+  isPublic: string
+  postId: string
+  postImages: File[]
+}
+
+/**
+ * 修改帖子信息
+ * @param data 更新帖子信息
+ * @returns
+ */
+export async function updatePostInfoAPI(data: UpdatePostInfo) {
+  const res = await request.post('/post/modify', data)
+  const postId = res.data.data.postId
+
+  if (data.postImages?.length !== 0) {
+    let index = 0
+    for (const file of data.postImages!) {
+      const formData = new FormData()
+
+      formData.append('index', index.toString())
+      formData.append('pId', postId)
+      formData.append('postImages', file)
+
+      index++
+      await request.post('/post/upload-image', formData)
+    }
+  }
+
+  return postId
+}
+
+/**
+ * 添加帖子举报
+ * @param data postId, reason
+ * @returns
+ */
+export function createPostReportAPI(data: { postId: string; reason: string }) {
+  return request.post('/post/report', data)
+}

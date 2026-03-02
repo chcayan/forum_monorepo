@@ -22,6 +22,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AdminPerm } from 'src/common/constant/permission.constant';
 import { PostAlias, PostFields } from '../post/post.constant';
 import { AuditViolationReason } from './entities/audit-violation-reason.entity';
+import { PostReport } from '../post/entities/post-report.entity';
 
 @Injectable()
 export class AdminService {
@@ -32,6 +33,8 @@ export class AdminService {
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
     @InjectRepository(AuditViolationReason)
     private readonly auditViolationReasonRepository: Repository<AuditViolationReason>,
+    @InjectRepository(PostReport)
+    private readonly postReportRepository: Repository<PostReport>,
     private readonly authService: AuthService,
     private readonly jwtService: JwtService,
   ) {}
@@ -247,5 +250,16 @@ export class AdminService {
 
       await this.auditViolationReasonRepository.save(_reason);
     }
+  }
+
+  async findPostReports(page: number, pageSize: number) {
+    const qb = this.postReportRepository.createQueryBuilder('pr');
+    const [list, total] = await qb
+      .orderBy('pr.createdAt', 'DESC')
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
+      .getManyAndCount();
+
+    return { list, total };
   }
 }

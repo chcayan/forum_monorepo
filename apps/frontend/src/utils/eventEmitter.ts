@@ -5,6 +5,7 @@ type ApiEvent =
   | 'API:INVALID'
   | 'API:BAD_REQUEST'
   | 'API:FORBIDDEN'
+  | 'API:NOT_FOUND'
 type TabEvent = 'TAB:LOGIN' | 'TAB:CLOSE_AVATAR_WIDGET'
 type BaseEvent =
   | 'EVENT:FOCUS_COMMENT_INPUT'
@@ -21,6 +22,7 @@ type BaseEvent =
   | 'EVENT:REACTIVE_USER_VIEW'
   | 'EVENT:DELETE_USER_POST_LIST'
   | 'EVENT:UPDATE_CHAT_RECORDS'
+  | 'EVENT:ECHO_POST_IMAGES'
 type EventNames = ApiEvent | TabEvent | BaseEvent
 
 class EventEmitter {
@@ -45,6 +47,8 @@ class EventEmitter {
     'EVENT:REACTIVE_USER_VIEW': new Set(),
     'EVENT:DELETE_USER_POST_LIST': new Set(),
     'EVENT:UPDATE_CHAT_RECORDS': new Set(),
+    'EVENT:ECHO_POST_IMAGES': new Set(),
+    'API:NOT_FOUND': new Set(),
   }
 
   on(eventName: EventNames, listener: Function) {

@@ -22,6 +22,9 @@
     "toggle2light": "Switch to light color mode",
     "toggle2dark": "Switch to dark color mode"
   },
+  "overview": {
+    "title": "I don't know what to write at the moment."
+  },
   "auditPost": {
     "content": "post content",
     "images": "post images",

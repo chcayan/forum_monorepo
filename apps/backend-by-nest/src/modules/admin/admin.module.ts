@@ -7,6 +7,7 @@ import { User } from '../user/entities/user.entity';
 import { UserModule } from '../user/user.module';
 import { Post } from '../post/entities/post.entity';
 import { AuditViolationReason } from './entities/audit-violation-reason.entity';
+import { PostReport } from '../post/entities/post-report.entity';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { AuditViolationReason } from './entities/audit-violation-reason.entity';
       User,
       Post,
       AuditViolationReason,
+      PostReport,
     ]),
     UserModule,
   ],

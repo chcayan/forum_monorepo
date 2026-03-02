@@ -52,3 +52,11 @@ Current version changes:
 
 - Add online user display function.
 - Fix known issues.
+
+### 2.3.2 (260302)
+
+Current version changes:
+
+- Add editing post.
+- Add a new review mechanism.
+- Fixed the issue where when viewing post details, the post would be added to the user's favorites page.

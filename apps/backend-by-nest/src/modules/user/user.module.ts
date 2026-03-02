@@ -11,6 +11,7 @@ import { Follow } from './entities/follow.entity';
 import { Permission } from './entities/permission.entity';
 import { UserPermission } from './entities/user-permission.entity';
 import { UserSeedService } from './user-seed.service';
+import { AuditViolationReason } from '../admin/entities/audit-violation-reason.entity';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { UserSeedService } from './user-seed.service';
       Follow,
       Permission,
       UserPermission,
+      AuditViolationReason,
     ]),
   ],
   controllers: [UserController],

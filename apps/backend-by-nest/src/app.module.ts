@@ -24,6 +24,7 @@ import { UserPermission } from './modules/user/entities/user-permission.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AuditViolationReason } from './modules/admin/entities/audit-violation-reason.entity';
+import { PostReport } from './modules/post/entities/post-report.entity';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { AuditViolationReason } from './modules/admin/entities/audit-violation-r
         Permission,
         UserPermission,
         AuditViolationReason,
+        PostReport,
       ],
       namingStrategy: new SnakeNamingStrategy(),
     }),

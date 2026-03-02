@@ -5,9 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
 import { Comment } from './entities/comment.entity';
 import { UserModule } from '../user/user.module';
+import { PostReport } from './entities/post-report.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Post, Comment]), UserModule],
+  imports: [TypeOrmModule.forFeature([Post, Comment, PostReport]), UserModule],
   controllers: [PostController],
   providers: [PostService],
 })

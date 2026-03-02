@@ -25,16 +25,23 @@ import { uploadOptions } from 'src/common/config/upload.config';
 import { CommentDto } from './dto/comment.dto';
 import { UserPermissionGuard } from 'src/common/guard/permission.guard';
 import { UserPermission } from 'src/common/decorator/permission.decorator';
+import { UpdatePostDto } from './dto/update-post.dto';
+import { ReportDto } from './dto/report.dto';
 
 @Controller('post')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
-  @Post()
+  @Post('modify')
   @UseGuards(JwtAuthGuard, UserPermissionGuard)
   @UserPermission('user_post')
-  async create(@Body() dto: CreatePostDto, @Req() req: AuthRequest) {
-    return this.postService.create(dto.content, dto.isPublic, req.user.id);
+  async modifyPostInfo(@Body() dto: UpdatePostDto, @Req() req: AuthRequest) {
+    return this.postService.modifyPostInfo(
+      dto.content,
+      dto.isPublic,
+      dto.postId,
+      req.user.id,
+    );
   }
 
   @Post('upload-image')
@@ -50,17 +57,14 @@ export class PostController {
     await this.postService.addImage(dto.pId, imagePath, parseInt(dto.index));
   }
 
-  @Get()
-  async find(
-    @Query('page', ParseIntPipe) page: number,
-    @Query('limit', ParseIntPipe) limit: number,
-  ) {
-    return this.postService.find(page, limit);
-  }
-
   @Get('search')
   async search(@Query() dto: SearchPostDTO) {
     return this.postService.search(dto.result, dto.page, dto.limit);
+  }
+
+  @Get('comment/:postId')
+  async findCommentsByPostId(@Param('postId') postId: string) {
+    return this.postService.findCommentsByPostId(postId);
   }
 
   @Patch('/view/:postId')
@@ -78,9 +82,17 @@ export class PostController {
     return this.postService.publishComment(userId, dto.postId, dto.content);
   }
 
-  @Get('comment/:postId')
-  async findCommentsByPostId(@Param('postId') postId: string) {
-    return this.postService.findCommentsByPostId(postId);
+  @Post('report')
+  @UseGuards(JwtAuthGuard)
+  async createPostReport(@Body() dto: ReportDto) {
+    return this.postService.createPostReport(dto.postId, dto.reason);
+  }
+
+  @Post()
+  @UseGuards(JwtAuthGuard, UserPermissionGuard)
+  @UserPermission('user_post')
+  async create(@Body() dto: CreatePostDto, @Req() req: AuthRequest) {
+    return this.postService.create(dto.content, dto.isPublic, req.user.id);
   }
 
   @UseGuards(OptionalJwtAuthGuard)
@@ -90,5 +102,13 @@ export class PostController {
     @OptionalUser() userId: string | null,
   ) {
     return this.postService.findOne(postId, userId);
+  }
+
+  @Get()
+  async find(
+    @Query('page', ParseIntPipe) page: number,
+    @Query('limit', ParseIntPipe) limit: number,
+  ) {
+    return this.postService.find(page, limit);
   }
 }
