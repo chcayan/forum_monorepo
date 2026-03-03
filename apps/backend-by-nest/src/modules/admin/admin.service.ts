@@ -262,4 +262,18 @@ export class AdminService {
 
     return { list, total };
   }
+
+  async deletePostReport(id: number) {
+    const exist = await this.postReportRepository.findOne({
+      where: { id },
+    });
+
+    if (!exist) {
+      throw new NotFoundException('未找到该举报信息');
+    }
+
+    await this.postReportRepository.delete({
+      id,
+    });
+  }
 }

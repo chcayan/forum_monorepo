@@ -138,3 +138,11 @@ export async function updatePostInfoAPI(data: UpdatePostInfo) {
 export function createPostReportAPI(data: { postId: string; reason: string }) {
   return request.post('/post/report', data)
 }
+
+/**
+ * 查询审核通过的帖子id数组
+ * @returns
+ */
+export function getAuditPassIds() {
+  return request.get('/post/audit-pass-ids')
+}

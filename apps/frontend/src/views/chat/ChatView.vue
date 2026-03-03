@@ -1,6 +1,7 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
 import {
+  getAuditPassIds,
   getChatHistoryAPI,
   getChatUnreadAPI,
   markAsReadAPI,
@@ -42,6 +43,7 @@ const closeChatBox = () => {
   currentFriendUsername.value = ''
   currentFriendAvatar.value = ''
   showChatBox.value = false
+  chatPosition.value = 0
 }
 
 onDeactivated(() => {
@@ -132,8 +134,8 @@ const sendMessage = async (e: KeyboardEvent | PointerEvent) => {
     message: msg,
     isShare: '0',
   }
-  console.log(payload)
 
+  chatPosition.value = 0
   socket.emit('sendMessage', payload)
 
   if (!chatRecords[currentFriendUserId.value]) {
@@ -216,6 +218,7 @@ emitter.on('EVENT:UPDATE_CHAT_RECORDS', async (friend: string) => {
   await getChatHistory(friend)
 })
 
+const auditArr = ref<string[]>([])
 onActivated(async () => {
   if (tempStore.tempUserInfo.userId) {
     openChatBox()
@@ -233,11 +236,24 @@ onActivated(async () => {
   })
   await userStore.getUserFriendList()
   await fetchUnread()
+
+  const res = await getAuditPassIds()
+  auditArr.value = res.data.data
 })
 
 onUpdated(() => {
+  if (message.value) return
   scrollToBottom()
+  if (chatPosition.value !== 0 && messageBoxRef.value) {
+    messageBoxRef.value.scrollTop = chatPosition.value
+  }
 })
+
+const chatPosition = ref(0)
+const handleScroll = () => {
+  // console.log('当前滚动距离:', messageBoxRef.value?.scrollTop)
+  chatPosition.value = messageBoxRef.value?.scrollTop as number
+}
 
 const searchUserList = ref<UserBySearchInfo[]>([])
 const showSearchBox = ref(false)
@@ -382,6 +398,7 @@ const onPikachuChat = () => {
           v-if="!isPikachuChat"
           class="main tab-focus-style"
           ref="messageBoxEl"
+          @scroll="handleScroll"
         >
           <div
             class="text"
@@ -397,7 +414,9 @@ const onPikachuChat = () => {
                 v-html="lineBreakReplace(msg.message)"
               ></span>
               <div v-else class="post-msg">
-                <SharePost :post-id="msg.message" />
+                <SharePost
+                  :post-id="auditArr.includes(msg.message) ? msg.message : null"
+                />
               </div>
               <img :src="userStore.userInfo?.userAvatar" />
             </div>
@@ -411,7 +430,9 @@ const onPikachuChat = () => {
                 v-html="lineBreakReplace(msg.message)"
               ></span>
               <div v-else class="post-msg">
-                <SharePost :post-id="msg.message" />
+                <SharePost
+                  :post-id="auditArr.includes(msg.message) ? msg.message : null"
+                />
               </div>
             </div>
           </div>
@@ -678,6 +699,7 @@ const onPikachuChat = () => {
 
       .main {
         width: 100%;
+        height: 400px;
         flex: 1 1 0;
         display: flex;
         flex-direction: column;

@@ -268,4 +268,13 @@ export class PostService {
 
     await this.postReportRepository.save(_reason);
   }
+
+  async findAuditPassIds() {
+    const posts = await this.postRepository.find({
+      where: { status: 1 },
+      select: ['pId'],
+    });
+
+    return posts.map((p) => p.pId);
+  }
 }

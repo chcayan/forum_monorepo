@@ -11,16 +11,19 @@
     "hidePassword": "hide password",
     "loginBtn": "login",
     "emailTip": "Please check if your email format is correct",
-    "passwordTip": "Password only allows numbers/letters/symbols, no spaces, length 6-16 characters"
+    "passwordTip": "Password only allows numbers/letters/symbols, no spaces, length 6-16 characters",
+    "passwordHint": "please input password",
+    "loginSuccessTip": "Login successful"
   },
   "layout": {
     "overviewNav": "Overview",
-    "auditPostNav": "Audit post",
-    "editPostNav": "Edit post status",
-    "editUserNav": "Edit user status",
+    "auditPostNav": "Post review",
+    "editPostNav": "Post report review",
+    "editUserNav": "User status Modification",
     "logout": "Logout",
     "toggle2light": "Switch to light color mode",
-    "toggle2dark": "Switch to dark color mode"
+    "toggle2dark": "Switch to dark color mode",
+    "logoutSuccessTip": "Logout successful"
   },
   "overview": {
     "title": "I don't know what to write at the moment."
@@ -35,6 +38,20 @@
     "inputReasonTip": "Please enter the reason for the violation:",
     "reason": "Please enter the reason",
     "reasonInputErrorTip": "The content is not empty.",
-    "successTip": "Operation successful"
+    "successTip": "Operation successful",
+    "postContent": "Post content:"
+  },
+  "editPost": {
+    "postId": "post ID",
+    "ReportReason": "report reason",
+    "action": "action",
+    "pass": "pass",
+    "reject": "reject",
+    "isReject": "Is reject?",
+    "inputReasonTip": "Please enter the reason for the violation:",
+    "reason": "Please enter the reason",
+    "reasonInputErrorTip": "The content is not empty.",
+    "successTip": "Operation successful",
+    "postInfo": "Post information:"
   }
 }

@@ -91,4 +91,11 @@ export class AdminController {
   ) {
     return this.adminService.findPostReports(page, limit);
   }
+
+  @Delete('post-report/:id')
+  @UseGuards(JwtAuthGuard, AdminPermissionGuard)
+  @AdminPermission('edit_post')
+  async deletePostReport(@Param('id', ParseIntPipe) id: number) {
+    return this.adminService.deletePostReport(id);
+  }
 }

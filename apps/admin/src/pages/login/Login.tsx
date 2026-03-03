@@ -56,7 +56,7 @@ export default function Login() {
     setPermissions(Object.values(data.permissions))
 
     Toast.show({
-      msg: '登录成功',
+      msg: t('login.loginSuccessTip'),
       type: 'success',
     })
     navigate(RoutePath.overview)
@@ -317,7 +317,7 @@ export default function Login() {
               <div className={styles['password-container']}>
                 <input
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="please input password"
+                  placeholder={t('login.passwordHint')}
                   className={styles.input}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

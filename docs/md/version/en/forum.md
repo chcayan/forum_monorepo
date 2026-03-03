@@ -60,3 +60,11 @@ Current version changes:
 - Add editing post.
 - Add a new review mechanism.
 - Fixed the issue where when viewing post details, the post would be added to the user's favorites page.
+
+### 2.3.3 (260303)
+
+Current version changes:
+
+- Add post reporting function.
+- Fix display issues when chat sharing posts violate rules.
+- Optimize the user experience of the chat interface.

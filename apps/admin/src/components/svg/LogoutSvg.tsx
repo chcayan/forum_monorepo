@@ -13,13 +13,18 @@ export default function LogoutSvg() {
     removeToken()
     navigate(RoutePath.login)
     Toast.show({
-      msg: '退出成功',
+      msg: t('layout.logoutSuccessTip'),
       type: 'success',
     })
   }
   return (
     <>
-      <div onClick={logout} className="icon" title={t('layout.logout')}>
+      <div
+        style={{ cursor: 'pointer' }}
+        onClick={logout}
+        className="icon"
+        title={t('layout.logout')}
+      >
         <svg
           viewBox="0 0 1024 1024"
           version="1.1"

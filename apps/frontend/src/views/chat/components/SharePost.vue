@@ -6,7 +6,7 @@ import type { PostDetail } from '@forum-monorepo/types'
 import { ref } from 'vue'
 
 const { postId } = defineProps<{
-  postId: string
+  postId: string | null
 }>()
 
 const postInfo = ref<PostDetail>({
@@ -24,33 +24,48 @@ const postInfo = ref<PostDetail>({
   userAvatar: '',
   username: '',
 })
+
+let isHide = ref(false)
 const getPostInfo = async () => {
-  const res = await getPostDetailAPI(postId)
-  postInfo.value = res.data.data
+  if (postId) {
+    const res = await getPostDetailAPI(postId)
+    postInfo.value = res.data.data
+  } else {
+    isHide.value = true
+  }
 }
 getPostInfo()
 
 const navigateToPostDetail = async () => {
-  router.push(`${RouterPath.post}/${postId}`)
-  await updatePostViewAPI(postId)
-    .then(() => {
-      emitter.emit('EVENT:UPDATE_POST_LIST', postId)
-      emitter.emit('EVENT:UPDATE_USER_POST_LIST', postId)
-    })
-    .catch(() => {
-      router.replace(RouterPath.notFound)
-      return
-    })
+  if (postId) {
+    router.push(`${RouterPath.post}/${postId}`)
+    await updatePostViewAPI(postId)
+      .then(() => {
+        emitter.emit('EVENT:UPDATE_POST_LIST', postId)
+        emitter.emit('EVENT:UPDATE_USER_POST_LIST', postId)
+      })
+      .catch(() => {
+        router.replace(RouterPath.notFound)
+        return
+      })
+  }
 }
 </script>
 
 <template>
-  <div class="share-post" @click="navigateToPostDetail">
+  <div v-if="!isHide" class="share-post" @click="navigateToPostDetail">
     <div class="title">
       <img :src="postInfo.userAvatar" alt="avatar" />
       <span>{{ postInfo.username }}</span>
     </div>
     <div class="content">{{ postInfo.pContent }}</div>
+  </div>
+  <div
+    v-else
+    class="share-post"
+    style="height: 38px !important; cursor: default"
+  >
+    <p>该帖子暂时不可见</p>
   </div>
 </template>
 

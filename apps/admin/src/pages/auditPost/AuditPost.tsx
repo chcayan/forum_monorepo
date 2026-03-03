@@ -27,6 +27,7 @@ interface DataType {
 }
 
 function ContentCell({ text }: { text: string }) {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
 
   return (
@@ -40,6 +41,8 @@ function ContentCell({ text }: { text: string }) {
       </Typography.Paragraph>
 
       <Drawer open={open} size={600} onClose={() => setOpen(false)}>
+        <h2>{t('auditPost.postContent')}</h2>
+        <br />
         <div style={{ whiteSpace: 'pre-wrap' }}>{text}</div>
       </Drawer>
     </>
