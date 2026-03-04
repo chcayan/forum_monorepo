@@ -87,8 +87,6 @@ const publishPost = async () => {
       content: context.value as string,
       isPublic: isPublic.value ? 'true' : 'false',
       postImages: getPostImages(),
-    }).catch((err) => {
-      console.log(err)
     })
   }
 

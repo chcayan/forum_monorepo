@@ -17,6 +17,7 @@ import { AdminPermission } from 'src/common/decorator/permission.decorator';
 import { PostReviewDto } from './dto/post-review.dto';
 import { LoginDto } from './dto/login.dto';
 import { CreateViolationReasonDto } from './dto/create-violation-reason.dto';
+import { UserProhibitionDto } from './dto/user-prohibition.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -97,5 +98,16 @@ export class AdminController {
   @AdminPermission('report_review')
   async deletePostReport(@Param('id', ParseIntPipe) id: number) {
     return this.adminService.deletePostReport(id);
+  }
+
+  @Post('prohibition')
+  @UseGuards(JwtAuthGuard, AdminPermissionGuard)
+  @AdminPermission('report_review')
+  async setUserProhibition(@Body() dto: UserProhibitionDto) {
+    return this.adminService.setUserProhibition(
+      dto.userId,
+      dto.prohibition,
+      dto.days,
+    );
   }
 }

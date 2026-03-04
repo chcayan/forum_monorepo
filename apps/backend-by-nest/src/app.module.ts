@@ -25,6 +25,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ReviewViolationReason } from './modules/admin/entities/review-violation-reason.entity';
 import { PostReport } from './modules/post/entities/post-report.entity';
+import { UserLog } from './modules/admin/entities/user-log.entity';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { PostReport } from './modules/post/entities/post-report.entity';
         UserPermission,
         ReviewViolationReason,
         PostReport,
+        UserLog,
       ],
       namingStrategy: new SnakeNamingStrategy(),
     }),

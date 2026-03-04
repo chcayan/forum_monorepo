@@ -53,6 +53,15 @@ export class User {
   @Column()
   permVersion!: number;
 
+  @Column()
+  muteUntil!: Date;
+
+  @Column()
+  postProhibitUntil!: Date;
+
+  @Column()
+  loginProhibitUntil!: Date;
+
   @OneToMany(() => Post, (post) => post.user)
   posts!: Post[];
 

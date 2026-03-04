@@ -200,3 +200,7 @@ export function updateUserPostToPrivateAPI(postId: string) {
 export function getViolationReasonAPI(postId: string) {
   return request.get(`/user/violation-post/${postId}`)
 }
+
+export function checkIsLoginProhibit() {
+  return request.post('/user/check-login-prohibit')
+}

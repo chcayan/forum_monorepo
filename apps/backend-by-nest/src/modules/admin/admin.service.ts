@@ -23,6 +23,7 @@ import { AdminPerm } from 'src/common/constant/permission.constant';
 import { PostAlias, PostFields } from '../post/post.constant';
 import { ReviewViolationReason } from './entities/review-violation-reason.entity';
 import { PostReport } from '../post/entities/post-report.entity';
+import { UserProhibitionType } from './admin.constant';
 
 @Injectable()
 export class AdminService {
@@ -59,7 +60,7 @@ export class AdminService {
     }
 
     if ((userPermMask & UserPermissionBit.LOGIN) === 0) {
-      throw new ForbiddenException('账号封禁中');
+      throw new ForbiddenException('账号永久封禁中');
     }
 
     if (adminPermMask === 0) {
@@ -275,5 +276,44 @@ export class AdminService {
     await this.postReportRepository.delete({
       id,
     });
+  }
+
+  async setUserProhibition(
+    userId: string,
+    prohibition: UserProhibitionType,
+    days: number,
+  ) {
+    if (days <= 0) {
+      throw new BadRequestException('禁言天数必须大于 0');
+    }
+
+    const user = await this.userRepository.findOne({
+      where: { userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('用户不存在');
+    }
+
+    if (
+      prohibition !== 'muteUntil' &&
+      prohibition !== 'loginProhibitUntil' &&
+      prohibition !== 'postProhibitUntil'
+    ) {
+      throw new NotFoundException('未找到该权限');
+    }
+
+    const now = new Date();
+    const until = new Date(now);
+    until.setDate(now.getDate() + days);
+
+    await this.userRepository.update(userId, {
+      [`${prohibition}`]: until,
+    });
+
+    return {
+      message: `剩余${days}天解除限制`,
+      until: until,
+    };
   }
 }

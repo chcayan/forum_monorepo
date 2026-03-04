@@ -8,6 +8,7 @@ import { UserModule } from '../user/user.module';
 import { Post } from '../post/entities/post.entity';
 import { ReviewViolationReason } from './entities/review-violation-reason.entity';
 import { PostReport } from '../post/entities/post-report.entity';
+import { UserLog } from './entities/user-log.entity';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { PostReport } from '../post/entities/post-report.entity';
       Post,
       ReviewViolationReason,
       PostReport,
+      UserLog,
     ]),
     UserModule,
   ],

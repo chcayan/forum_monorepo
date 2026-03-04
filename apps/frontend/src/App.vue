@@ -5,7 +5,7 @@ import emitter from '@/utils/eventEmitter'
 import { useUserStore, useStatusStore } from './stores'
 import router, { RouterPath } from './router'
 import { useRoute } from 'vue-router'
-import { getUserInfoAPI } from './api'
+import { checkIsLoginProhibit, getUserInfoAPI } from './api'
 
 const userStore = useUserStore()
 const route = useRoute()
@@ -17,6 +17,7 @@ type userInfo = {
 }
 
 async function initUserStatus() {
+  await checkIsLoginProhibit()
   await userStore.getUserInfo()
 
   // websocket

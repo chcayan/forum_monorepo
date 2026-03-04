@@ -49,7 +49,7 @@ export class UserService {
 
     const userPermMask = user.userPermMask;
     if ((userPermMask & UserPermissionBit.LOGIN) === 0) {
-      throw new ForbiddenException('账号封禁中');
+      throw new ForbiddenException('账号永久封禁中');
     }
 
     const isMatch = await bcrypt.compare(password, user.userPassword);
