@@ -1,7 +1,8 @@
 export const RoutePath = {
   overview: '/',
   login: '/login',
-  auditPost: '/audit-post',
-  editPost: '/edit-post',
-  editUser: '/edit-user',
+  postReview: '/post-review',
+  postReportReview: '/post-report-review',
+  commentReportReview: '/comment-report-review',
+  userPermModify: '/user-perm-modify',
 }

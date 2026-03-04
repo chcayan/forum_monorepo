@@ -40,7 +40,6 @@ Install dependencies.
 
 ```bash
 pnpm i
-pnpm i -g tsc tsc-alias
 ```
 
 Modify backend configuration (apps/backend-by-nest/.env.development).

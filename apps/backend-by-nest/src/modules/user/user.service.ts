@@ -19,7 +19,7 @@ import { Follow } from './entities/follow.entity';
 import { UserAlias, UserFields } from './user.constant';
 import { PostAlias, PostFields } from '../post/post.constant';
 import { UserPermissionBit } from '../auth/auth.bit';
-import { AuditViolationReason } from '../admin/entities/audit-violation-reason.entity';
+import { ReviewViolationReason } from '../admin/entities/review-violation-reason.entity';
 
 @Injectable()
 export class UserService {
@@ -30,8 +30,8 @@ export class UserService {
     private readonly collectionRepository: Repository<Collection>,
     @InjectRepository(Follow)
     private readonly followRepository: Repository<Follow>,
-    @InjectRepository(AuditViolationReason)
-    private readonly auditViolationReasonRepository: Repository<AuditViolationReason>,
+    @InjectRepository(ReviewViolationReason)
+    private readonly reviewViolationReasonRepository: Repository<ReviewViolationReason>,
     private readonly jwtService: JwtService,
     private readonly dataSource: DataSource,
   ) {}
@@ -488,7 +488,7 @@ export class UserService {
   }
 
   async getViolationReason(postId: string) {
-    const reason = await this.auditViolationReasonRepository.findOne({
+    const reason = await this.reviewViolationReasonRepository.findOne({
       where: { pId: postId },
     });
 

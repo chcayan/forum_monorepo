@@ -143,6 +143,6 @@ export function createPostReportAPI(data: { postId: string; reason: string }) {
  * 查询审核通过的帖子id数组
  * @returns
  */
-export function getAuditPassIds() {
-  return request.get('/post/audit-pass-ids')
+export function getReviewPassIds() {
+  return request.get('/post/review-pass-ids')
 }

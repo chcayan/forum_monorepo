@@ -1,7 +1,7 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
 import {
-  getAuditPassIds,
+  getReviewPassIds,
   getChatHistoryAPI,
   getChatUnreadAPI,
   markAsReadAPI,
@@ -218,7 +218,7 @@ emitter.on('EVENT:UPDATE_CHAT_RECORDS', async (friend: string) => {
   await getChatHistory(friend)
 })
 
-const auditArr = ref<string[]>([])
+const reviewArr = ref<string[]>([])
 onActivated(async () => {
   if (tempStore.tempUserInfo.userId) {
     openChatBox()
@@ -237,8 +237,8 @@ onActivated(async () => {
   await userStore.getUserFriendList()
   await fetchUnread()
 
-  const res = await getAuditPassIds()
-  auditArr.value = res.data.data
+  const res = await getReviewPassIds()
+  reviewArr.value = res.data.data
 })
 
 onUpdated(() => {
@@ -415,7 +415,9 @@ const onPikachuChat = () => {
               ></span>
               <div v-else class="post-msg">
                 <SharePost
-                  :post-id="auditArr.includes(msg.message) ? msg.message : null"
+                  :post-id="
+                    reviewArr.includes(msg.message) ? msg.message : null
+                  "
                 />
               </div>
               <img :src="userStore.userInfo?.userAvatar" />
@@ -431,7 +433,9 @@ const onPikachuChat = () => {
               ></span>
               <div v-else class="post-msg">
                 <SharePost
-                  :post-id="auditArr.includes(msg.message) ? msg.message : null"
+                  :post-id="
+                    reviewArr.includes(msg.message) ? msg.message : null
+                  "
                 />
               </div>
             </div>

@@ -5,7 +5,7 @@ export interface UserPermissionCodeToIdMapInterface {
 }
 
 export interface AdminPermissionCodeToIdMapInterface {
-  audit_post: number;
-  edit_post: number;
-  edit_user: number;
+  post_review: number;
+  report_review: number;
+  user_perm_modify: number;
 }

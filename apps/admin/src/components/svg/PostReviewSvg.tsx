@@ -1,4 +1,4 @@
-export default function AuditPostSvg() {
+export default function PostReviewSvg() {
   return (
     <>
       <div className="icon">

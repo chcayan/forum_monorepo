@@ -5,14 +5,14 @@ const { status } = defineProps<{
 </script>
 
 <template>
-  <div class="audit">
-    <p v-if="status === 0" class="in-audit">审核中</p>
+  <div class="review">
+    <p v-if="status === 0" class="in-review">审核中</p>
     <p v-if="status === 2" class="violation">审核不通过</p>
   </div>
 </template>
 
 <style scoped>
-.audit {
+.review {
   cursor: default;
 
   p {
@@ -21,7 +21,7 @@ const { status } = defineProps<{
     font-size: 12px;
   }
 
-  .in-audit {
+  .in-review {
     color: var(--theme-font-color);
     border: 1px solid var(--theme-font-color);
     border-radius: 5px;

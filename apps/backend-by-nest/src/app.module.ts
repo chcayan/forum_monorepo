@@ -23,7 +23,7 @@ import { Permission } from './modules/user/entities/permission.entity';
 import { UserPermission } from './modules/user/entities/user-permission.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { AuditViolationReason } from './modules/admin/entities/audit-violation-reason.entity';
+import { ReviewViolationReason } from './modules/admin/entities/review-violation-reason.entity';
 import { PostReport } from './modules/post/entities/post-report.entity';
 
 @Module({
@@ -52,7 +52,7 @@ import { PostReport } from './modules/post/entities/post-report.entity';
         Chat,
         Permission,
         UserPermission,
-        AuditViolationReason,
+        ReviewViolationReason,
         PostReport,
       ],
       namingStrategy: new SnakeNamingStrategy(),

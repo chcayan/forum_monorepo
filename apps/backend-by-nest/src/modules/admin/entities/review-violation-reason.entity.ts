@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
-export class AuditViolationReason {
+export class ReviewViolationReason {
   @PrimaryColumn()
   pId!: string;
 

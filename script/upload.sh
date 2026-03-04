@@ -7,14 +7,14 @@ LOCAL_FILES=(
   "./apps/backend-by-nest/dist"
   "./apps/frontend/dist"
   "./apps/admin/dist"
-  "./apps/backend-by-nest/.env.production"
+  # "./apps/backend-by-nest/.env.production"
 )
 
 REMOTE_DIRS=(
   "/home/ubuntu/forum/backend/"
   "/home/ubuntu/forum/frontend/"
   "/home/ubuntu/forum/admin/"
-  "/home/ubuntu/forum/backend/"
+  # "/home/ubuntu/forum/backend/"
 )
 
 for i in "${!LOCAL_FILES[@]}"; do

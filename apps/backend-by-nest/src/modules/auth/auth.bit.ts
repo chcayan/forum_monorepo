@@ -5,7 +5,7 @@ export enum UserPermissionBit {
 }
 
 export enum AdminPermissionBit {
-  AUDIT_POST = 1 << 0, // 001 审核帖子
-  EDIT_POST = 1 << 1, // 010 修改帖子状态
-  EDIT_USER = 1 << 2, // 100 修改用户状态
+  POST_REVIEW = 1 << 0, // 001 审核帖子
+  REPORT_REVIEW = 1 << 1, // 010 审核帖子/评论举报
+  USER_PERM_MODIFY = 1 << 2, // 100 修改用户权限
 }

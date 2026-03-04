@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsNumber } from 'class-validator';
 
-export class AuditPostDto {
+export class PostReviewDto {
   @IsNotEmpty()
   postId!: string;
 

@@ -57,22 +57,22 @@ export class UserSeedService implements OnApplicationBootstrap {
 
       const perm4 = this.permissionRepository.create({
         id: 4,
-        code: AdminPerm.audit_post,
-        name: '审核',
+        code: AdminPerm.post_review,
+        name: '审核帖子',
         scope: 'admin',
       });
 
       const perm5 = this.permissionRepository.create({
         id: 5,
-        code: AdminPerm.edit_post,
-        name: '修改帖子状态',
+        code: AdminPerm.report_review,
+        name: '审核帖子/评论举报',
         scope: 'admin',
       });
 
       const perm6 = this.permissionRepository.create({
         id: 6,
-        code: AdminPerm.edit_user,
-        name: '修改用户状态',
+        code: AdminPerm.user_perm_modify,
+        name: '修改用户权限',
         scope: 'admin',
       });
 
@@ -98,17 +98,17 @@ export class UserSeedService implements OnApplicationBootstrap {
         permissionId: 3,
       });
 
-      const auditPostPerm = this.userPermRepository.create({
+      const postReviewPerm = this.userPermRepository.create({
         userId,
         permissionId: 4,
       });
 
-      const editPostPerm = this.userPermRepository.create({
+      const reportReviewPerm = this.userPermRepository.create({
         userId,
         permissionId: 5,
       });
 
-      const editUserPerm = this.userPermRepository.create({
+      const userPermModifyPerm = this.userPermRepository.create({
         userId,
         permissionId: 6,
       });
@@ -116,9 +116,9 @@ export class UserSeedService implements OnApplicationBootstrap {
       await this.userPermRepository.save(userSpeakPerm);
       await this.userPermRepository.save(userPostPerm);
       await this.userPermRepository.save(userLoginPerm);
-      await this.userPermRepository.save(auditPostPerm);
-      await this.userPermRepository.save(editPostPerm);
-      await this.userPermRepository.save(editUserPerm);
+      await this.userPermRepository.save(postReviewPerm);
+      await this.userPermRepository.save(reportReviewPerm);
+      await this.userPermRepository.save(userPermModifyPerm);
     }
   }
 }

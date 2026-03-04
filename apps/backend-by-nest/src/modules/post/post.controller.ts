@@ -95,9 +95,9 @@ export class PostController {
     return this.postService.create(dto.content, dto.isPublic, req.user.id);
   }
 
-  @Get('audit-pass-ids')
-  async findAuditPassIds() {
-    return this.postService.findAuditPassIds();
+  @Get('review-pass-ids')
+  async findReviewPassIds() {
+    return this.postService.findReviewPassIds();
   }
 
   @UseGuards(OptionalJwtAuthGuard)

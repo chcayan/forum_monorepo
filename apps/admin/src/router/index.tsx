@@ -7,15 +7,16 @@ export type Path = {
   '/': symbol
   '*': symbol
   '/login': symbol
-  'audit-post': symbol
-  'edit-post': symbol
-  'edit-user': symbol
+  'post-review': symbol
+  'post-report-review': symbol
+  'comment-report-review': symbol
+  'user-perm-modify': symbol
 }
 
 export type Permission = {
-  audit_post: symbol
-  edit_post: symbol
-  edit_user: symbol
+  post_review: symbol
+  report_review: symbol
+  user_perm_modify: symbol
 }
 
 export interface AppRoute {
@@ -25,9 +26,16 @@ export interface AppRoute {
   children?: AppRoute[]
 }
 
-const AuditPost = lazy(() => import('@/pages/auditPost/AuditPost'))
-const EditPost = lazy(() => import('@/pages/editPost/EditPost'))
-const EditUser = lazy(() => import('@/pages/editUser/EditUser'))
+const PostReview = lazy(() => import('@/pages/PostReview/PostReview'))
+const PostReportReview = lazy(
+  () => import('@/pages/postReportReview/PostReportReview')
+)
+const CommentReportReview = lazy(
+  () => import('@/pages/commentReportReview/CommentReportReview')
+)
+const UserPermModify = lazy(
+  () => import('@/pages/userPermModify/UserPermModify')
+)
 const Login = lazy(() => import('@/pages/login/Login'))
 const Overview = lazy(() => import('@/pages/overview/Overview'))
 const NotFound = lazy(() => import('@/pages/notFound/NotFound'))
@@ -35,19 +43,24 @@ const Layout = lazy(() => import('@/pages/layout/Layout'))
 
 const asyncRoutes: AppRoute[] = [
   {
-    path: 'audit-post',
-    element: <AuditPost />,
-    permission: 'audit_post',
+    path: 'post-review',
+    element: <PostReview />,
+    permission: 'post_review',
   },
   {
-    path: 'edit-post',
-    element: <EditPost />,
-    permission: 'edit_post',
+    path: 'post-report-review',
+    element: <PostReportReview />,
+    permission: 'report_review',
   },
   {
-    path: 'edit-user',
-    element: <EditUser />,
-    permission: 'edit_user',
+    path: 'comment-report-review',
+    element: <CommentReportReview />,
+    permission: 'report_review',
+  },
+  {
+    path: 'user-perm-modify',
+    element: <UserPermModify />,
+    permission: 'user_perm_modify',
   },
 ]
 

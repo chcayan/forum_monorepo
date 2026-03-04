@@ -10,7 +10,7 @@ export const UserPerm = {
 };
 
 export const AdminPerm = {
-  audit_post: 'audit_post',
-  edit_post: 'edit_post',
-  edit_user: 'edit_user',
+  post_review: 'post_review',
+  report_review: 'report_review',
+  user_perm_modify: 'user_perm_modify',
 };

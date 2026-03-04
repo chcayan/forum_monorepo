@@ -17,9 +17,10 @@
   },
   "layout": {
     "overviewNav": "Overview",
-    "auditPostNav": "Post review",
-    "editPostNav": "Post report review",
-    "editUserNav": "User status Modification",
+    "postReviewNav": "Post review",
+    "postReportReviewNav": "Post report review",
+    "commentReportReviewNav": "Comment report review",
+    "userPermModifyNav": "User permission Modification",
     "logout": "Logout",
     "toggle2light": "Switch to light color mode",
     "toggle2dark": "Switch to dark color mode",
@@ -28,7 +29,7 @@
   "overview": {
     "title": "I don't know what to write at the moment."
   },
-  "auditPost": {
+  "postReview": {
     "content": "post content",
     "images": "post images",
     "action": "action",
@@ -41,7 +42,7 @@
     "successTip": "Operation successful",
     "postContent": "Post content:"
   },
-  "editPost": {
+  "postReportReview": {
     "postId": "post ID",
     "ReportReason": "report reason",
     "action": "action",

@@ -6,7 +6,7 @@ import { UserPermission } from '../user/entities/user-permission.entity';
 import { User } from '../user/entities/user.entity';
 import { UserModule } from '../user/user.module';
 import { Post } from '../post/entities/post.entity';
-import { AuditViolationReason } from './entities/audit-violation-reason.entity';
+import { ReviewViolationReason } from './entities/review-violation-reason.entity';
 import { PostReport } from '../post/entities/post-report.entity';
 
 @Module({
@@ -15,7 +15,7 @@ import { PostReport } from '../post/entities/post-report.entity';
       UserPermission,
       User,
       Post,
-      AuditViolationReason,
+      ReviewViolationReason,
       PostReport,
     ]),
     UserModule,

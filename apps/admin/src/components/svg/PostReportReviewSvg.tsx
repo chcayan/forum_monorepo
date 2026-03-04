@@ -1,4 +1,4 @@
-export default function EditPostSvg() {
+export default function PostReportReviewSvg() {
   return (
     <>
       <div className="icon">

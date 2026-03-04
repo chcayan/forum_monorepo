@@ -21,7 +21,7 @@ import bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { AdminPerm } from 'src/common/constant/permission.constant';
 import { PostAlias, PostFields } from '../post/post.constant';
-import { AuditViolationReason } from './entities/audit-violation-reason.entity';
+import { ReviewViolationReason } from './entities/review-violation-reason.entity';
 import { PostReport } from '../post/entities/post-report.entity';
 
 @Injectable()
@@ -31,8 +31,8 @@ export class AdminService {
     private readonly userPermissionRepository: Repository<UserPermission>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
-    @InjectRepository(AuditViolationReason)
-    private readonly auditViolationReasonRepository: Repository<AuditViolationReason>,
+    @InjectRepository(ReviewViolationReason)
+    private readonly reviewViolationReasonRepository: Repository<ReviewViolationReason>,
     @InjectRepository(PostReport)
     private readonly postReportRepository: Repository<PostReport>,
     private readonly authService: AuthService,
@@ -91,16 +91,16 @@ export class AdminService {
     //   userPermission.push(UserPerm.user_login);
     // }
 
-    if ((adminPermMask & AdminPermissionBit.AUDIT_POST) !== 0) {
-      adminPermission.push(AdminPerm.audit_post);
+    if ((adminPermMask & AdminPermissionBit.POST_REVIEW) !== 0) {
+      adminPermission.push(AdminPerm.post_review);
     }
 
-    if ((adminPermMask & AdminPermissionBit.EDIT_POST) !== 0) {
-      adminPermission.push(AdminPerm.edit_post);
+    if ((adminPermMask & AdminPermissionBit.REPORT_REVIEW) !== 0) {
+      adminPermission.push(AdminPerm.report_review);
     }
 
-    if ((adminPermMask & AdminPermissionBit.EDIT_USER) !== 0) {
-      adminPermission.push(AdminPerm.edit_user);
+    if ((adminPermMask & AdminPermissionBit.USER_PERM_MODIFY) !== 0) {
+      adminPermission.push(AdminPerm.user_perm_modify);
     }
 
     // return {
@@ -194,7 +194,7 @@ export class AdminService {
     await this.authService.recalcUserPermission(userId);
   }
 
-  async auditPost(postId: string, status: 0 | 1 | 2) {
+  async reviewPost(postId: string, status: 0 | 1 | 2) {
     const existPost = await this.postRepository.findOne({
       where: { pId: postId },
     });
@@ -206,7 +206,7 @@ export class AdminService {
     await this.postRepository.update({ pId: postId }, { status });
   }
 
-  async findUnAuditPost(page: number, pageSize: number) {
+  async findUnreviewPost(page: number, pageSize: number) {
     const qb = this.postRepository.createQueryBuilder(PostAlias);
     const [list, total] = await qb
       .leftJoin(PostFields.user, UserAlias)
@@ -229,12 +229,12 @@ export class AdminService {
   }
 
   async createViolationReason(postId: string, reason: string) {
-    const exist = await this.auditViolationReasonRepository.findOne({
+    const exist = await this.reviewViolationReasonRepository.findOne({
       where: { pId: postId },
     });
 
     if (exist) {
-      await this.auditViolationReasonRepository.update(
+      await this.reviewViolationReasonRepository.update(
         {
           pId: postId,
         },
@@ -243,12 +243,12 @@ export class AdminService {
         },
       );
     } else {
-      const _reason = this.auditViolationReasonRepository.create({
+      const _reason = this.reviewViolationReasonRepository.create({
         pId: postId,
         reason: reason,
       });
 
-      await this.auditViolationReasonRepository.save(_reason);
+      await this.reviewViolationReasonRepository.save(_reason);
     }
   }
 

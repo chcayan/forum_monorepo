@@ -12,6 +12,7 @@ class RouterPath {
   static my: string = '/my'
   static user: string = '/user'
   static setting: string = '/setting'
+  static message: string = '/message'
   static notFound: string = '/404'
 }
 
@@ -60,6 +61,11 @@ const router = createRouter({
         {
           path: RouterPath.setting,
           component: () => import('@/views/setting/SettingView.vue'),
+        },
+        {
+          path: RouterPath.message,
+          component: () => import('@/views/message/MessageView.vue'),
+          meta: { requireAuth: true },
         },
         {
           path: '/:pathMatch(.*)*',

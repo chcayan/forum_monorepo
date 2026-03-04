@@ -42,7 +42,6 @@
 
 ```bash
 pnpm i
-pnpm i -g tsc tsc-alias
 ```
 
 修改后端配置 (apps/backend-by-nest/.env.development)

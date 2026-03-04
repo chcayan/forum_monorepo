@@ -269,7 +269,7 @@ export class PostService {
     await this.postReportRepository.save(_reason);
   }
 
-  async findAuditPassIds() {
+  async findReviewPassIds() {
     const posts = await this.postRepository.find({
       where: { status: 1 },
       select: ['pId'],

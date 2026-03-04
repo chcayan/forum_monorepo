@@ -1,4 +1,4 @@
-export default function EditUserSvg() {
+export default function UserPermModifySvg() {
   return (
     <>
       <div className="icon">

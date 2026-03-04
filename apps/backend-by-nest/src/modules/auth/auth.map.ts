@@ -7,9 +7,9 @@ export const UserPermissionMap: Record<string, UserPermissionBit> = {
 };
 
 export const AdminPermissionMap: Record<string, AdminPermissionBit> = {
-  audit_post: AdminPermissionBit.AUDIT_POST,
-  edit_post: AdminPermissionBit.EDIT_POST,
-  edit_user: AdminPermissionBit.EDIT_USER,
+  post_review: AdminPermissionBit.POST_REVIEW,
+  report_review: AdminPermissionBit.REPORT_REVIEW,
+  user_perm_modify: AdminPermissionBit.USER_PERM_MODIFY,
 };
 
 export const UserPermissionCodeToIdMap: Record<string, number> = {
@@ -19,9 +19,9 @@ export const UserPermissionCodeToIdMap: Record<string, number> = {
 };
 
 export const AdminPermissionCodeToIdMap: Record<string, number> = {
-  audit_post: 4,
-  edit_post: 5,
-  edit_user: 6,
+  post_review: 4,
+  report_review: 5,
+  user_perm_modify: 6,
 };
 
 export const UserPermissionIdToBitMap: Record<number, UserPermissionBit> = {
@@ -31,7 +31,7 @@ export const UserPermissionIdToBitMap: Record<number, UserPermissionBit> = {
 };
 
 export const AdminPermissionCodeToBitMap: Record<number, AdminPermissionBit> = {
-  4: AdminPermissionBit.AUDIT_POST,
-  5: AdminPermissionBit.EDIT_POST,
-  6: AdminPermissionBit.EDIT_USER,
+  4: AdminPermissionBit.POST_REVIEW,
+  5: AdminPermissionBit.REPORT_REVIEW,
+  6: AdminPermissionBit.USER_PERM_MODIFY,
 };

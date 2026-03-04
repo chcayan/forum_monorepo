@@ -9,9 +9,10 @@ import ThemeToggleBtn from '@/components/button/ThemeToggleBtn'
 import LanguageToggleBtn from '@/components/button/LanguageToggleBtn'
 import { useTranslation } from 'react-i18next'
 import OverviewSvg from '@/components/svg/OverviewSvg'
-import AuditPostSvg from '@/components/svg/AuditPostSvg'
-import EditPostSvg from '@/components/svg/EditPostSvg'
-import EditUserSvg from '@/components/svg/EditUserSvg'
+import PostReviewSvg from '@/components/svg/PostReviewSvg'
+import PostReportReviewSvg from '@/components/svg/PostReportReviewSvg'
+import UserPermModifySvg from '@/components/svg/UserPermModifySvg'
+import CommentReportReviewSvg from '@/components/svg/CommentReportReviewSvg'
 import { ConfigProvider, theme } from 'antd'
 
 export default function Layout() {
@@ -30,9 +31,10 @@ export default function Layout() {
 
   useEffect(() => {
     // init user
-    const { token, removeToken, setUserInfo } = useUserStore.getState()
+    const { token, permissions, removeToken, setUserInfo } =
+      useUserStore.getState()
 
-    if (!token) {
+    if (!token || permissions.length === 0) {
       removeToken()
       navigate(RoutePath.login)
     }
@@ -58,31 +60,40 @@ export default function Layout() {
               <OverviewSvg />
               {t('layout.overviewNav')}
             </li>
-            {permissions.includes('audit_post') && (
+            {permissions.includes('post_review') && (
               <li
-                className={`${styles.li} ${location.pathname === RoutePath.auditPost ? styles['active'] : ''}`}
-                onClick={() => navigateToXXX(RoutePath.auditPost)}
+                className={`${styles.li} ${location.pathname === RoutePath.postReview ? styles['active'] : ''}`}
+                onClick={() => navigateToXXX(RoutePath.postReview)}
               >
-                <AuditPostSvg />
-                {t('layout.auditPostNav')}
+                <PostReviewSvg />
+                {t('layout.postReviewNav')}
               </li>
             )}
-            {permissions.includes('edit_post') && (
+            {permissions.includes('report_review') && (
               <li
-                className={`${styles.li} ${location.pathname === RoutePath.editPost ? styles['active'] : ''}`}
-                onClick={() => navigateToXXX(RoutePath.editPost)}
+                className={`${styles.li} ${location.pathname === RoutePath.postReportReview ? styles['active'] : ''}`}
+                onClick={() => navigateToXXX(RoutePath.postReportReview)}
               >
-                <EditPostSvg />
-                {t('layout.editPostNav')}
+                <PostReportReviewSvg />
+                {t('layout.postReportReviewNav')}
               </li>
-            )}{' '}
-            {permissions.includes('edit_user') && (
+            )}
+            {permissions.includes('report_review') && (
               <li
-                className={`${styles.li} ${location.pathname === RoutePath.editUser ? styles['active'] : ''}`}
-                onClick={() => navigateToXXX(RoutePath.editUser)}
+                className={`${styles.li} ${location.pathname === RoutePath.commentReportReview ? styles['active'] : ''}`}
+                onClick={() => navigateToXXX(RoutePath.commentReportReview)}
               >
-                <EditUserSvg />
-                {t('layout.editUserNav')}
+                <CommentReportReviewSvg />
+                {t('layout.commentReportReviewNav')}
+              </li>
+            )}
+            {permissions.includes('user_perm_modify') && (
+              <li
+                className={`${styles.li} ${location.pathname === RoutePath.userPermModify ? styles['active'] : ''}`}
+                onClick={() => navigateToXXX(RoutePath.userPermModify)}
+              >
+                <UserPermModifySvg />
+                {t('layout.userPermModifyNav')}
               </li>
             )}
           </ul>

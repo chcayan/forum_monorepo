@@ -23,7 +23,7 @@ import { useUserStore } from '@/stores'
 import DeleteSvg from '@/components/svgIcon/DeleteSvg.vue'
 import PublicSvg from '@/components/svgIcon/PublicSvg.vue'
 import PrivateSvg from '@/components/svgIcon/PrivateSvg.vue'
-import AuditLabel from './AuditLabel.vue'
+import ReviewLabel from './ReviewLabel.vue'
 import ViolationReason from './ViolationReason.vue'
 import ModifySvg from '@/components/svgIcon/ModifySvg.vue'
 import ReportSvg from '@/components/svgIcon/ReportSvg.vue'
@@ -321,7 +321,7 @@ const closeReportModal = () => {
           <PrivateSvg @click="onPublic" v-else />
         </div>
         <div v-else>
-          <AuditLabel :status="post.status" />
+          <ReviewLabel :status="post.status" />
         </div>
       </div>
       <div v-if="route.path.startsWith(RouterPath.post) && post.status === 1">

@@ -3,7 +3,7 @@ import { updateUserInfoAPI } from '@/api'
 import CloseSvg from '@/components/svgIcon/CloseSvg.vue'
 import EditSvg from '@/components/svgIcon/EditSvg.vue'
 import SaveSvg from '@/components/svgIcon/SaveSvg.vue'
-import { RouterPath } from '@/router'
+import router, { RouterPath } from '@/router'
 import { useUserStore } from '@/stores'
 import { Toast } from '@/utils'
 import FollowButton from '@/views/post/components/FollowButton.vue'
@@ -12,6 +12,7 @@ import { nextTick, onUnmounted, ref, useTemplateRef } from 'vue'
 import { useRoute } from 'vue-router'
 import UserListWidget from './UserListWidget.vue'
 import emitter from '@/utils/eventEmitter'
+import MsgSvg from '@/components/svgIcon/MsgSvg.vue'
 
 const { userInfo } = defineProps<{
   userInfo: UserInfo
@@ -205,6 +206,10 @@ let off = emitter.on('TAB:CLOSE_AVATAR_WIDGET', () => {
   showFanList.value = false
 })
 
+const navigateToMessage = () => {
+  router.push(RouterPath.message)
+}
+
 onUnmounted(() => {
   off?.()
 })
@@ -250,6 +255,7 @@ onUnmounted(() => {
         />
       </label>
       <div v-if="userInfo.userId === userStore.userInfo?.userId" class="btn">
+        <MsgSvg v-if="!isContenteditable" @click="navigateToMessage" />
         <EditSvg
           tabindex="0"
           class="tab-focus-style"

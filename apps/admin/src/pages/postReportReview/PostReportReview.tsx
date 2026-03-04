@@ -57,12 +57,12 @@ function PostCell({ postId }: { postId: string }) {
         {postId}
       </p>
       <Drawer open={open} size={600} onClose={() => setOpen(false)}>
-        <h2>{t('editPost.postInfo')}</h2>
+        <h2>{t('postReportReview.postInfo')}</h2>
         <br />
         <div>{post?.pContent}</div>
         <br />
         <Image.PreviewGroup>
-          <Space size={8}>
+          <Space size={8} wrap>
             {post?.pImages.map((url, i) => (
               <Image
                 key={i}
@@ -100,7 +100,7 @@ function PassButton({
     setConfirmLoading(true)
     if (value.trim() === '') {
       Toast.show({
-        msg: t('editPost.reasonInputErrorTip'),
+        msg: t('postReportReview.reasonInputErrorTip'),
         type: 'error',
       })
       setConfirmLoading(false)
@@ -115,7 +115,7 @@ function PassButton({
     setConfirmLoading(false)
     setOpen(false)
     Toast.show({
-      msg: t('editPost.successTip'),
+      msg: t('postReportReview.successTip'),
       type: 'success',
     })
     emitter.emit('EVENT:UPDATE_POST_REPORT')
@@ -124,10 +124,10 @@ function PassButton({
   return (
     <>
       <Button color="cyan" variant="solid" onClick={() => setOpen(true)}>
-        {t('editPost.pass')}
+        {t('postReportReview.pass')}
       </Button>
       <Modal
-        title={t('editPost.inputReasonTip')}
+        title={t('postReportReview.inputReasonTip')}
         open={open}
         onOk={handleOk}
         confirmLoading={confirmLoading}
@@ -137,7 +137,7 @@ function PassButton({
         <Input
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder={t('editPost.reason')}
+          placeholder={t('postReportReview.reason')}
         />
       </Modal>
     </>
@@ -156,7 +156,7 @@ function RejectButton({ id }: { id: number }) {
     setConfirmLoading(false)
     setOpen(false)
     Toast.show({
-      msg: t('editPost.successTip'),
+      msg: t('postReportReview.successTip'),
       type: 'success',
     })
     emitter.emit('EVENT:UPDATE_POST_REPORT')
@@ -169,7 +169,7 @@ function RejectButton({ id }: { id: number }) {
   return (
     <>
       <Button danger onClick={() => setOpen(true)}>
-        {t('editPost.reject')}
+        {t('postReportReview.reject')}
       </Button>
 
       <Modal
@@ -179,13 +179,13 @@ function RejectButton({ id }: { id: number }) {
         onCancel={handleCancel}
         centered
       >
-        <p>{t('editPost.isReject')}</p>
+        <p>{t('postReportReview.isReject')}</p>
       </Modal>
     </>
   )
 }
 
-export default function EditPost() {
+export default function PostReportReview() {
   const { t } = useTranslation()
 
   const columns: TableProps<DataType>['columns'] = [
@@ -195,38 +195,18 @@ export default function EditPost() {
       key: 'id',
     },
     {
-      title: t('editPost.postId'),
+      title: t('postReportReview.postId'),
       dataIndex: 'postId',
       key: 'postId',
       render: (postId: string) => <PostCell postId={postId} />,
     },
     {
-      title: t('editPost.ReportReason'),
+      title: t('postReportReview.ReportReason'),
       dataIndex: 'reason',
       key: 'reason',
-      // render: (images?: string[]) => {
-      //   if (!images?.length) return '-'
-
-      //   return (
-      //     <Image.PreviewGroup>
-      //       {images.map((url, i) => (
-      //         <Image
-      //           key={i}
-      //           src={url}
-      //           width={40}
-      //           height={40}
-      //           style={{
-      //             borderRadius: '50%',
-      //             objectFit: 'cover',
-      //           }}
-      //         />
-      //       ))}
-      //     </Image.PreviewGroup>
-      //   )
-      // },
     },
     {
-      title: t('editPost.action'),
+      title: t('postReportReview.action'),
       dataIndex: 'id',
       key: 'action',
       render: (id: number, record: DataType) => (
@@ -238,6 +218,7 @@ export default function EditPost() {
         >
           <PassButton id={id} postId={record.postId} reason={record.reason} />
           <RejectButton id={id} />
+          &nbsp;
         </div>
       ),
     },

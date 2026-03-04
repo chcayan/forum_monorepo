@@ -29,8 +29,8 @@ export function loginAPI(data: AdminLogin) {
  * @param limit 每页数量
  * @returns
  */
-export function getUnAuditPostAPI(page: number, limit: number) {
-  return request.get(`/admin/post?page=${page}&limit=${limit}`)
+export function getUnreviewPostAPI(page: number, limit: number) {
+  return request.get(`/admin/unreview-post?page=${page}&limit=${limit}`)
 }
 
 /**
@@ -39,7 +39,7 @@ export function getUnAuditPostAPI(page: number, limit: number) {
  * @returns
  */
 export function updatePostStatusAPI(data: { postId: string; status: 1 | 2 }) {
-  return request.post('/admin/audit-post', data)
+  return request.post('/admin/post-review', data)
 }
 
 /**
@@ -51,7 +51,7 @@ export function createViolationReasonAPI(data: {
   postId: string
   reason: string
 }) {
-  return request.post(`/admin/audit-post/${data.postId}`, {
+  return request.post(`/admin/post-review/${data.postId}`, {
     reason: data.reason,
   })
 }

@@ -1,6 +1,6 @@
 import {
   createViolationReasonAPI,
-  getUnAuditPostAPI,
+  getUnreviewPostAPI,
   updatePostStatusAPI,
 } from '@/api'
 import type { PostDetail } from '@forum-monorepo/types'
@@ -41,7 +41,7 @@ function ContentCell({ text }: { text: string }) {
       </Typography.Paragraph>
 
       <Drawer open={open} size={600} onClose={() => setOpen(false)}>
-        <h2>{t('auditPost.postContent')}</h2>
+        <h2>{t('postReview.postContent')}</h2>
         <br />
         <div style={{ whiteSpace: 'pre-wrap' }}>{text}</div>
       </Drawer>
@@ -65,10 +65,10 @@ function PassButton({ postId }: { postId: string }) {
     setConfirmLoading(false)
     setOpen(false)
     Toast.show({
-      msg: t('auditPost.successTip'),
+      msg: t('postReview.successTip'),
       type: 'success',
     })
-    emitter.emit('EVENT:UPDATE_AUDIT_POST')
+    emitter.emit('EVENT:UPDATE_POST_REVIEW')
   }
 
   const handleCancel = () => {
@@ -78,7 +78,7 @@ function PassButton({ postId }: { postId: string }) {
   return (
     <>
       <Button color="cyan" variant="solid" onClick={showModal}>
-        {t('auditPost.pass')}
+        {t('postReview.pass')}
       </Button>
       <Modal
         open={open}
@@ -87,7 +87,7 @@ function PassButton({ postId }: { postId: string }) {
         onCancel={handleCancel}
         centered
       >
-        <p>{t('auditPost.isPass')}</p>
+        <p>{t('postReview.isPass')}</p>
       </Modal>
     </>
   )
@@ -104,7 +104,7 @@ function ViolateButton({ postId }: { postId: string }) {
     setConfirmLoading(true)
     if (value.trim() === '') {
       Toast.show({
-        msg: t('auditPost.reasonInputErrorTip'),
+        msg: t('postReview.reasonInputErrorTip'),
         type: 'error',
       })
       setConfirmLoading(false)
@@ -118,19 +118,19 @@ function ViolateButton({ postId }: { postId: string }) {
     setConfirmLoading(false)
     setOpen(false)
     Toast.show({
-      msg: t('auditPost.successTip'),
+      msg: t('postReview.successTip'),
       type: 'success',
     })
-    emitter.emit('EVENT:UPDATE_AUDIT_POST')
+    emitter.emit('EVENT:UPDATE_POST_REVIEW')
   }
 
   return (
     <>
       <Button danger onClick={() => setOpen(true)}>
-        {t('auditPost.violate')}
+        {t('postReview.violate')}
       </Button>
       <Modal
-        title={t('auditPost.inputReasonTip')}
+        title={t('postReview.inputReasonTip')}
         open={open}
         onOk={handleOk}
         confirmLoading={confirmLoading}
@@ -140,25 +140,25 @@ function ViolateButton({ postId }: { postId: string }) {
         <Input
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder={t('auditPost.reason')}
+          placeholder={t('postReview.reason')}
         />
       </Modal>
     </>
   )
 }
 
-export default function AuditPost() {
+export default function PostReview() {
   const { t } = useTranslation()
 
   const columns: TableProps<DataType>['columns'] = [
     {
-      title: t('auditPost.content'),
+      title: t('postReview.content'),
       dataIndex: 'pContent',
       key: 'pContent',
       render: (text: string) => <ContentCell text={text} />,
     },
     {
-      title: t('auditPost.images'),
+      title: t('postReview.images'),
       dataIndex: 'pImages',
       key: 'pImages',
       render: (images?: string[]) => {
@@ -183,7 +183,7 @@ export default function AuditPost() {
       },
     },
     {
-      title: t('auditPost.action'),
+      title: t('postReview.action'),
       dataIndex: 'postId',
       key: 'action',
       render: (postId: string) => (
@@ -195,6 +195,7 @@ export default function AuditPost() {
         >
           <PassButton postId={postId} />
           <ViolateButton postId={postId} />
+          &nbsp;
         </div>
       ),
     },
@@ -208,8 +209,8 @@ export default function AuditPost() {
   useEffect(() => {
     let ignore = false
 
-    async function getUnAuditPost() {
-      const res = await getUnAuditPostAPI(page, pageSize)
+    async function getUnreviewPost() {
+      const res = await getUnreviewPostAPI(page, pageSize)
       const data: PostDetail[] = res.data.data.list
       const total = res.data.data.total
 
@@ -236,13 +237,13 @@ export default function AuditPost() {
       }
     }
 
-    getUnAuditPost()
+    getUnreviewPost()
 
-    const off = emitter.on('EVENT:UPDATE_AUDIT_POST', () => {
+    const off = emitter.on('EVENT:UPDATE_POST_REVIEW', () => {
       // if(postList?.length === 0) {
       // setPage()
       // }
-      getUnAuditPost()
+      getUnreviewPost()
     })
 
     return () => {

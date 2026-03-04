@@ -6,7 +6,7 @@ type ApiEvent =
   | 'API:BAD_REQUEST'
   | 'API:FORBIDDEN'
 
-type BaseEvent = 'EVENT:UPDATE_AUDIT_POST' | 'EVENT:UPDATE_POST_REPORT'
+type BaseEvent = 'EVENT:UPDATE_POST_REVIEW' | 'EVENT:UPDATE_POST_REPORT'
 
 type EventNames = ApiEvent | BaseEvent
 
@@ -16,7 +16,7 @@ class EventEmitter {
     'API:INVALID': new Set(),
     'API:BAD_REQUEST': new Set(),
     'API:FORBIDDEN': new Set(),
-    'EVENT:UPDATE_AUDIT_POST': new Set(),
+    'EVENT:UPDATE_POST_REVIEW': new Set(),
     'EVENT:UPDATE_POST_REPORT': new Set(),
   }
 

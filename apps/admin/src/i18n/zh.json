@@ -17,9 +17,10 @@
   },
   "layout": {
     "overviewNav": "概述",
-    "auditPostNav": "帖子审核",
-    "editPostNav": "帖子举报审核",
-    "editUserNav": "用户状态修改",
+    "postReviewNav": "帖子审核",
+    "postReportReviewNav": "帖子举报审核",
+    "commentReportReviewNav": "评论举报审核",
+    "userPermModifyNav": "用户权限修改",
     "logout": "退出登录",
     "toggle2light": "切换到浅色模式",
     "toggle2dark": "切换到深色模式",
@@ -28,7 +29,7 @@
   "overview": {
     "title": "暂时不知道写什么"
   },
-  "auditPost": {
+  "postReview": {
     "content": "帖子内容",
     "images": "帖子图片",
     "action": "操作",
@@ -41,7 +42,7 @@
     "successTip": "操作成功",
     "postContent": "帖子内容："
   },
-  "editPost": {
+  "postReportReview": {
     "postId": "帖子ID",
     "ReportReason": "举报原因",
     "action": "操作",
