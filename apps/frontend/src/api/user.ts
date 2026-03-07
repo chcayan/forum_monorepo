@@ -201,6 +201,18 @@ export function getViolationReasonAPI(postId: string) {
   return request.get(`/user/violation-post/${postId}`)
 }
 
-export function checkIsLoginProhibit() {
+/**
+ * 检测用户是否被封禁
+ * @returns
+ */
+export function checkIsLoginProhibitAPI() {
   return request.post('/user/check-login-prohibit')
+}
+
+/**
+ * 查询用户信息
+ * @returns
+ */
+export function getUserMessageAPI() {
+  return request.get('/user/message')
 }

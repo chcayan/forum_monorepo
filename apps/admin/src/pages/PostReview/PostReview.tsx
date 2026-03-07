@@ -1,8 +1,4 @@
-import {
-  createViolationReasonAPI,
-  getUnreviewPostAPI,
-  updatePostStatusAPI,
-} from '@/api'
+import { getUnreviewPostAPI, updatePostStatusAPI } from '@/api'
 import type { PostDetail } from '@forum-monorepo/types'
 import { useEffect, useState } from 'react'
 import {
@@ -61,7 +57,11 @@ function PassButton({ postId }: { postId: string }) {
 
   const handleOk = async () => {
     setConfirmLoading(true)
-    await updatePostStatusAPI({ postId, status: 1 })
+    await updatePostStatusAPI({
+      postId,
+      status: 1,
+      reason: '帖子审核通过',
+    })
     setConfirmLoading(false)
     setOpen(false)
     Toast.show({
@@ -110,11 +110,7 @@ function ViolateButton({ postId }: { postId: string }) {
       setConfirmLoading(false)
       return
     }
-    await updatePostStatusAPI({ postId, status: 2 })
-    await createViolationReasonAPI({
-      postId,
-      reason: value,
-    })
+    await updatePostStatusAPI({ postId, status: 2, reason: value })
     setConfirmLoading(false)
     setOpen(false)
     Toast.show({

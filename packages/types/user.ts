@@ -26,3 +26,21 @@ export interface UserBySearchInfo {
   userAvatar: string
   userId: string
 }
+
+// 用户消息
+export interface UserMessage {
+  id: number
+  postId: string
+  userId: string
+  operatorId: string
+  content: string
+  status:
+    | 'post_review_pass'
+    | 'post_review_violate'
+    | 'user_mute'
+    | 'user_post_prohibit'
+    | 'user_login_prohibit'
+    | 'system_announcement'
+  createdAt: Date
+  punishTime: number
+}

@@ -14,12 +14,12 @@ This project includes both web and app versions, with the app built on Uniapp.
 
 ## Tech stack
 
-### frontend(forum):
+### frontend (forum):
 
 - vue
 - typescript
 
-### frontend(admin):
+### frontend (admin):
 
 - react
 - typescript
@@ -53,7 +53,15 @@ DB_NAME=yourdbname
 
 Import database file (database/forum.sql).
 
-### frontend(forum)
+### frontend/backend (forum + admin)
+
+Start the service.
+
+```bash
+pnpm dev
+```
+
+### frontend/backend (only forum)
 
 Start the service.
 
@@ -61,7 +69,7 @@ Start the service.
 pnpm dev:forum
 ```
 
-### frontend(admin)
+### frontend/backend (only admin)
 
 Start the service.
 

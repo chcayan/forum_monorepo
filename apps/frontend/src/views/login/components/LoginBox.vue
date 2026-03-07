@@ -4,6 +4,7 @@ import LogoSvg from '@/components/svgIcon/LogoSvg.vue'
 import router, { RouterPath } from '@/router'
 import { useUserStore } from '@/stores'
 import { debounce, isValidEmail, isValidPassword, Toast } from '@/utils'
+import eventEmitter from '@/utils/eventEmitter'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -36,19 +37,24 @@ const verifyPassword = debounce(() => {
 
 // 提交
 const submitForm = async () => {
-  if (isValidEmail(email.value) && isValidPassword(password.value)) {
-    const res = await loginAPI({
-      email: email.value,
-      password: password.value,
-    })
-    userStore.setToken(res.data.data.token)
-    Toast.show({
-      msg: '登录成功',
-      type: 'success',
-    })
+  try {
+    if (isValidEmail(email.value) && isValidPassword(password.value)) {
+      const res = await loginAPI({
+        email: email.value,
+        password: password.value,
+      })
+      userStore.setToken(res.data.data.token)
+      Toast.show({
+        msg: '登录成功',
+        type: 'success',
+      })
 
-    const redirect = (route.query.redirect || RouterPath.base) as string
-    router.replace(redirect)
+      const redirect = (route.query.redirect || RouterPath.base) as string
+      router.replace(redirect)
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    eventEmitter.emit('API:FORBIDDEN', err.response.data.message)
   }
 }
 </script>

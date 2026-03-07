@@ -17,7 +17,7 @@ export class UserLog {
   operatorId!: string;
 
   @Column()
-  postId!: string;
+  postId?: string;
 
   @Column()
   content!: string;
@@ -43,4 +43,7 @@ export class UserLog {
 
   @CreateDateColumn()
   createdAt!: Date;
+
+  @Column()
+  punishTime!: number;
 }

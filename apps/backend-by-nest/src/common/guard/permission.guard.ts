@@ -8,6 +8,7 @@ import { Reflector } from '@nestjs/core';
 import { AuthRequest } from '../interface/auth-request.interface';
 import { UserService } from 'src/modules/user/user.service';
 import { Permission } from '../constant/permission.constant';
+import { formatRemainTime } from '../utils/date.utils';
 
 @Injectable()
 export class UserPermissionGuard implements CanActivate {
@@ -35,6 +36,24 @@ export class UserPermissionGuard implements CanActivate {
 
     if ((userPermission & requiredPermission) === 0) {
       throw new ForbiddenException('权限不足');
+    }
+
+    if (
+      requiredPermission === 1 &&
+      user.muteUntil &&
+      new Date(user.muteUntil) > new Date()
+    ) {
+      const time = formatRemainTime(user.muteUntil);
+      throw new ForbiddenException(`你已被禁言，还剩${time}解除`);
+    }
+
+    if (
+      requiredPermission === 2 &&
+      user.postProhibitUntil &&
+      new Date(user.postProhibitUntil) > new Date()
+    ) {
+      const time = formatRemainTime(user.postProhibitUntil);
+      throw new ForbiddenException(`你已被禁止发贴，还剩${time}解除`);
     }
 
     return true;

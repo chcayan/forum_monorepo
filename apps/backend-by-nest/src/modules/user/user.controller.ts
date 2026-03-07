@@ -147,6 +147,12 @@ export class UserController {
     return this.userService.search(keyword);
   }
 
+  @Get('message')
+  @UseGuards(JwtAuthGuard)
+  async getUserMessage(@OptionalUser('userId') userId: string) {
+    return this.userService.getUserMessage(userId);
+  }
+
   @Get('follows/:userId')
   async findUserFollows(@Param('userId') userId: string) {
     return this.userService.findUserFollows(userId);
@@ -157,7 +163,7 @@ export class UserController {
     return this.userService.findUserFans(userId);
   }
 
-  @Get('/violation-post/:postId')
+  @Get('violation-post/:postId')
   @UseGuards(JwtAuthGuard)
   async getViolationReason(@Param('postId') postId: string) {
     return this.userService.getViolationReason(postId);

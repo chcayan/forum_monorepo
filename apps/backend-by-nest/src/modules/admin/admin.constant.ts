@@ -5,7 +5,10 @@ export const UserLogStatus = {
   userPostProhibit: 'user_post_prohibit',
   userLoginProhibit: 'user_login_prohibit',
   systemAnnouncement: 'system_announcement',
-};
+} as const;
+
+export type UserLogStatusType =
+  (typeof UserLogStatus)[keyof typeof UserLogStatus];
 
 const enum UserProhibition {
   userMute = 'muteUntil',

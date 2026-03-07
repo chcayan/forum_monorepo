@@ -1,4 +1,4 @@
-import { getAdminInfoAPI } from '@/api'
+import { checkIsLoginProhibitAPI, getAdminInfoAPI } from '@/api'
 import type { Permission } from '@/router'
 import type { UserInfo } from '@forum-monorepo/types'
 import { create } from 'zustand'
@@ -57,6 +57,9 @@ export const useUserStore = create<UserState>((set, get) => ({
   },
 
   async setUserInfo() {
+    if (get().token) {
+      await checkIsLoginProhibitAPI()
+    }
     const res = await getAdminInfoAPI('self')
     set({
       userInfo: res.data.data,

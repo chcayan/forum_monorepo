@@ -20,6 +20,8 @@ import { UserAlias, UserFields } from './user.constant';
 import { PostAlias, PostFields } from '../post/post.constant';
 import { UserPermissionBit } from '../auth/auth.bit';
 import { ReviewViolationReason } from '../admin/entities/review-violation-reason.entity';
+import { formatRemainTime } from 'src/common/utils/date.utils';
+import { UserLog } from '../admin/entities/user-log.entity';
 
 @Injectable()
 export class UserService {
@@ -32,6 +34,8 @@ export class UserService {
     private readonly followRepository: Repository<Follow>,
     @InjectRepository(ReviewViolationReason)
     private readonly reviewViolationReasonRepository: Repository<ReviewViolationReason>,
+    @InjectRepository(UserLog)
+    private readonly userLogRepository: Repository<UserLog>,
     private readonly jwtService: JwtService,
     private readonly dataSource: DataSource,
   ) {}
@@ -50,6 +54,14 @@ export class UserService {
     const userPermMask = user.userPermMask;
     if ((userPermMask & UserPermissionBit.LOGIN) === 0) {
       throw new ForbiddenException('账号永久封禁中');
+    }
+
+    if (
+      user.loginProhibitUntil &&
+      new Date(user.loginProhibitUntil) > new Date()
+    ) {
+      const time = formatRemainTime(user.loginProhibitUntil);
+      throw new ForbiddenException(`你已被禁止登录，还剩${time}解除`);
     }
 
     const isMatch = await bcrypt.compare(password, user.userPassword);
@@ -497,5 +509,18 @@ export class UserService {
     }
 
     return reason;
+  }
+
+  async getUserMessage(userId: string) {
+    const list = this.userLogRepository.find({
+      where: {
+        userId,
+      },
+      order: {
+        id: 'DESC',
+      },
+    });
+
+    return list;
   }
 }

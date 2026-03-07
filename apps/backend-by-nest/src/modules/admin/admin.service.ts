@@ -23,7 +23,8 @@ import { AdminPerm } from 'src/common/constant/permission.constant';
 import { PostAlias, PostFields } from '../post/post.constant';
 import { ReviewViolationReason } from './entities/review-violation-reason.entity';
 import { PostReport } from '../post/entities/post-report.entity';
-import { UserProhibitionType } from './admin.constant';
+import { UserLogStatusType, UserProhibitionType } from './admin.constant';
+import { UserLog } from './entities/user-log.entity';
 
 @Injectable()
 export class AdminService {
@@ -36,6 +37,8 @@ export class AdminService {
     private readonly reviewViolationReasonRepository: Repository<ReviewViolationReason>,
     @InjectRepository(PostReport)
     private readonly postReportRepository: Repository<PostReport>,
+    @InjectRepository(UserLog)
+    private readonly userLogRepository: Repository<UserLog>,
     private readonly authService: AuthService,
     private readonly jwtService: JwtService,
   ) {}
@@ -255,36 +258,58 @@ export class AdminService {
 
   async findPostReports(page: number, pageSize: number) {
     const qb = this.postReportRepository.createQueryBuilder('pr');
+
     const [list, total] = await qb
+      .leftJoinAndSelect('pr.post', 'p')
       .orderBy('pr.createdAt', 'DESC')
       .skip((page - 1) * pageSize)
       .take(pageSize)
       .getManyAndCount();
 
-    return { list, total };
+    const formatted = list.map(({ post, ...rest }) => ({
+      ...rest,
+      userId: post.userId,
+    }));
+
+    const grouped = Object.values(
+      formatted.reduce(
+        (acc, item) => {
+          if (!acc[item.pId]) {
+            acc[item.pId] = {
+              postId: item.pId,
+              userId: item.userId,
+              reasons: [],
+            };
+          }
+          acc[item.pId]!.reasons.push(item.reportReason);
+
+          return acc;
+        },
+        {} as Record<
+          string,
+          { postId: string; userId: string; reasons: string[] }
+        >,
+      ),
+    );
+
+    return { list: grouped, total };
   }
 
-  async deletePostReport(id: number) {
-    const exist = await this.postReportRepository.findOne({
-      where: { id },
-    });
+  async deletePostReport(postId: string) {
+    const res = await this.postReportRepository.delete({ pId: postId });
 
-    if (!exist) {
+    if (res.affected === 0) {
       throw new NotFoundException('未找到该举报信息');
     }
-
-    await this.postReportRepository.delete({
-      id,
-    });
   }
 
   async setUserProhibition(
     userId: string,
     prohibition: UserProhibitionType,
-    days: number,
+    hours: number,
   ) {
-    if (days <= 0) {
-      throw new BadRequestException('禁言天数必须大于 0');
+    if (hours < 1) {
+      throw new BadRequestException('禁言天数必须大于 1h');
     }
 
     const user = await this.userRepository.findOne({
@@ -305,15 +330,55 @@ export class AdminService {
 
     const now = new Date();
     const until = new Date(now);
-    until.setDate(now.getDate() + days);
+    until.setHours(now.getHours() + hours);
 
     await this.userRepository.update(userId, {
       [`${prohibition}`]: until,
     });
 
     return {
-      message: `剩余${days}天解除限制`,
-      until: until,
+      message: `已限制${hours}小时`,
     };
+  }
+
+  async setUserLog(
+    userId: string,
+    operatorId: string,
+    content: string,
+    status: UserLogStatusType,
+    punishTime: number,
+    postId?: string,
+  ) {
+    let log: UserLog;
+    if (postId) {
+      log = this.userLogRepository.create({
+        userId,
+        operatorId,
+        content,
+        status,
+        punishTime,
+        postId: postId,
+      });
+    } else {
+      log = this.userLogRepository.create({
+        userId,
+        operatorId,
+        content,
+        status,
+        punishTime,
+      });
+    }
+
+    await this.userLogRepository.save(log);
+  }
+
+  async findUserIdByPostId(postId: string) {
+    const post = await this.postRepository.findOne({
+      where: { pId: postId },
+    });
+
+    const userId = post?.userId;
+
+    return userId;
   }
 }

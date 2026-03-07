@@ -1,8 +1,8 @@
 import {
-  createViolationReasonAPI,
   deletePostReportAPI,
   getPostDetailAPI,
   getPostReportReasonAPI,
+  setUserPermProhibitTimeAPI,
   updatePostStatusAPI,
 } from '@/api'
 import { useEffect, useState } from 'react'
@@ -15,24 +15,27 @@ import {
   Modal,
   Input,
   Space,
+  Switch,
+  Radio,
+  type RadioChangeEvent,
 } from 'antd'
 import { useTranslation } from 'react-i18next'
 import emitter from '@/utils/eventEmitter'
 import { Toast } from '@/utils'
 import type { PostDetail } from '@forum-monorepo/types'
+import type { CheckboxGroupProps } from 'antd/es/checkbox'
 
 interface DataType {
   key: number
-  id: number
   postId: string
-  reason: string
+  userId: string
+  reasons: string[]
 }
 
 interface ReportType {
-  id: number
-  pId: string
-  reportReason: string
-  createdAt: Date
+  postId: string
+  userId: string
+  reasons: string[]
 }
 
 function PostCell({ postId }: { postId: string }) {
@@ -81,20 +84,12 @@ function PostCell({ postId }: { postId: string }) {
   )
 }
 
-function PassButton({
-  id,
-  postId,
-  reason,
-}: {
-  id: number
-  postId: string
-  reason: string
-}) {
+function PassButton({ postId, userId }: { postId: string; userId: string }) {
   const { t } = useTranslation()
 
   const [open, setOpen] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false)
-  const [value, setValue] = useState(reason)
+  const [value, setValue] = useState('')
 
   const handleOk = async () => {
     setConfirmLoading(true)
@@ -106,19 +101,57 @@ function PassButton({
       setConfirmLoading(false)
       return
     }
-    await updatePostStatusAPI({ postId, status: 2 })
-    await createViolationReasonAPI({
+    await updatePostStatusAPI({
       postId,
+      status: 2,
       reason: value,
+      punishTime: timeValue,
     })
-    await deletePostReportAPI(id)
+    if (forbiddenTimeRadioVisible) {
+      await setUserPermProhibitTimeAPI({
+        userId,
+        prohibition: 'postProhibitUntil',
+        hours: timeValue,
+        reason: value,
+        punishTime: timeValue,
+        postId,
+      })
+    }
+    await deletePostReportAPI(postId)
     setConfirmLoading(false)
-    setOpen(false)
+    onClose()
     Toast.show({
       msg: t('postReportReview.successTip'),
       type: 'success',
     })
     emitter.emit('EVENT:UPDATE_POST_REPORT')
+  }
+
+  const onClose = () => {
+    setOpen(false)
+    setTimeValue(1)
+    setForbiddenTimeRadioVisible(false)
+    setValue('')
+  }
+
+  const [forbiddenTimeRadioVisible, setForbiddenTimeRadioVisible] =
+    useState(false)
+  const onChange = (status: boolean) => {
+    setForbiddenTimeRadioVisible(status)
+  }
+
+  const [timeValue, setTimeValue] = useState<1 | 6 | 12 | 24>(1)
+
+  const options: CheckboxGroupProps<number>['options'] = [
+    { label: '1h', value: 1 },
+    { label: '6h', value: 6 },
+    { label: '12h', value: 12 },
+    { label: '1d', value: 24 },
+  ]
+
+  const getTimeValue = (e: RadioChangeEvent) => {
+    setTimeValue(e.target.value)
+    console.log(e.target.value)
   }
 
   return (
@@ -131,7 +164,7 @@ function PassButton({
         open={open}
         onOk={handleOk}
         confirmLoading={confirmLoading}
-        onCancel={() => setOpen(false)}
+        onCancel={onClose}
         centered
       >
         <Input
@@ -139,12 +172,38 @@ function PassButton({
           onChange={(e) => setValue(e.target.value)}
           placeholder={t('postReportReview.reason')}
         />
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            margin: '10px 0',
+            justifyContent: 'space-between',
+          }}
+        >
+          <p>{t('postReportReview.prohibitPublishPostHint')}</p>
+          <Switch value={forbiddenTimeRadioVisible} onChange={onChange} />
+        </div>
+        {forbiddenTimeRadioVisible && (
+          <>
+            <p style={{ marginBottom: '10px' }}>
+              {t('postReportReview.duration')}
+            </p>
+            <Radio.Group
+              block
+              options={options}
+              optionType="button"
+              buttonStyle="solid"
+              defaultValue={timeValue}
+              onChange={getTimeValue}
+            />
+          </>
+        )}
       </Modal>
     </>
   )
 }
 
-function RejectButton({ id }: { id: number }) {
+function RejectButton({ postId }: { postId: string }) {
   const { t } = useTranslation()
 
   const [open, setOpen] = useState(false)
@@ -152,7 +211,7 @@ function RejectButton({ id }: { id: number }) {
 
   const handleOk = async () => {
     setConfirmLoading(true)
-    await deletePostReportAPI(id)
+    await deletePostReportAPI(postId)
     setConfirmLoading(false)
     setOpen(false)
     Toast.show({
@@ -190,11 +249,6 @@ export default function PostReportReview() {
 
   const columns: TableProps<DataType>['columns'] = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-    },
-    {
       title: t('postReportReview.postId'),
       dataIndex: 'postId',
       key: 'postId',
@@ -202,22 +256,28 @@ export default function PostReportReview() {
     },
     {
       title: t('postReportReview.ReportReason'),
-      dataIndex: 'reason',
-      key: 'reason',
+      dataIndex: 'reasons',
+      key: 'reasons',
+      render: (reasons: string[]) =>
+        reasons.map((item, index) => (
+          <ol key={index}>
+            <li>-&nbsp;&nbsp;{item}</li>
+          </ol>
+        )),
     },
     {
       title: t('postReportReview.action'),
-      dataIndex: 'id',
+      dataIndex: 'postId',
       key: 'action',
-      render: (id: number, record: DataType) => (
+      render: (_, record: DataType) => (
         <div
           style={{
             display: 'flex',
             gap: '5px',
           }}
         >
-          <PassButton id={id} postId={record.postId} reason={record.reason} />
-          <RejectButton id={id} />
+          <PassButton postId={record.postId} userId={record.userId} />
+          <RejectButton postId={record.postId} />
           &nbsp;
         </div>
       ),
@@ -249,9 +309,9 @@ export default function PostReportReview() {
       const filterData = data.map(
         (item, index): DataType => ({
           key: index,
-          id: item.id,
-          postId: item.pId,
-          reason: item.reportReason,
+          postId: item.postId,
+          reasons: item.reasons,
+          userId: item.userId,
         })
       )
 

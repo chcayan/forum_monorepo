@@ -8,6 +8,15 @@ export class UserProhibitionDto {
   @IsIn(['muteUntil', 'postProhibitUntil', 'loginProhibitUntil'])
   prohibition!: UserProhibitionType;
 
+  @IsString()
+  reason!: string;
+
+  @IsString()
+  postId!: string;
+
   @IsInt()
-  days!: number;
+  hours!: number;
+
+  @IsInt()
+  punishTime!: number;
 }

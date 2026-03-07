@@ -2126,6 +2126,131 @@
         ]
       }
     },
+    "/user/message": {
+      "get": {
+        "summary": "查询用户消息",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "userId": {
+                            "type": "string"
+                          },
+                          "operatorId": {
+                            "type": "string"
+                          },
+                          "postId": {
+                            "type": "string"
+                          },
+                          "content": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "userId",
+                          "operatorId",
+                          "postId",
+                          "content",
+                          "status",
+                          "createdAt"
+                        ]
+                      }
+                    }
+                  },
+                  "required": ["code", "message", "data"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success",
+                  "data": [
+                    {
+                      "id": 3,
+                      "userId": "u00000",
+                      "operatorId": "u00000",
+                      "postId": "p00163",
+                      "content": "123",
+                      "status": "post_review_violate",
+                      "createdAt": "2026-03-07T11:38:31.000Z"
+                    },
+                    {
+                      "id": 4,
+                      "userId": "u00000",
+                      "operatorId": "u00000",
+                      "postId": "p00163",
+                      "content": "123",
+                      "status": "user_post_prohibit",
+                      "createdAt": "2026-03-07T11:38:31.000Z"
+                    },
+                    {
+                      "id": 5,
+                      "userId": "u00000",
+                      "operatorId": "u00000",
+                      "postId": "p00161",
+                      "content": "123",
+                      "status": "post_review_violate",
+                      "createdAt": "2026-03-07T11:39:02.000Z"
+                    },
+                    {
+                      "id": 6,
+                      "userId": "u00000",
+                      "operatorId": "u00000",
+                      "postId": "p00159",
+                      "content": "woc",
+                      "status": "post_review_violate",
+                      "createdAt": "2026-03-07T11:39:27.000Z"
+                    },
+                    {
+                      "id": 7,
+                      "userId": "u00000",
+                      "operatorId": "u00000",
+                      "postId": "p00158",
+                      "content": "帖子审核通过",
+                      "status": "post_review_pass",
+                      "createdAt": "2026-03-07T11:39:35.000Z"
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
     "/user/login": {
       "post": {
         "summary": "登录",
@@ -3110,6 +3235,74 @@
                   "message": "未找到该帖子",
                   "error": "Not Found",
                   "statusCode": 404
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/user/check-login-prohibit": {
+      "post": {
+        "summary": "检测用户是否被封禁",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["code", "message"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": "该账号被永久封禁",
+                  "error": "Unauthorized",
+                  "statusCode": 401
                 }
               }
             },
@@ -4539,9 +4732,12 @@
                   "status": {
                     "type": "number",
                     "enum": [1, 2]
+                  },
+                  "reason": {
+                    "type": "string"
                   }
                 },
-                "required": ["postId", "status"]
+                "required": ["postId", "status", "reason"]
               },
               "examples": {}
             }
@@ -4596,108 +4792,6 @@
                   "message": "权限不足",
                   "error": "Forbidden",
                   "statusCode": 403
-                }
-              }
-            },
-            "headers": {}
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      }
-    },
-    "/admin/post-review/{postId}": {
-      "post": {
-        "summary": "添加帖子违规原因",
-        "deprecated": false,
-        "description": "",
-        "tags": ["admin"],
-        "parameters": [
-          {
-            "name": "postId",
-            "in": "path",
-            "description": "",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "reason": {
-                    "type": "string"
-                  }
-                },
-                "required": ["reason"]
-              },
-              "examples": {}
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer"
-                    },
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": ["code", "message"]
-                },
-                "example": {
-                  "code": 0,
-                  "message": "success"
-                }
-              }
-            },
-            "headers": {}
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    },
-                    "error": {
-                      "type": "string"
-                    },
-                    "statusCode": {
-                      "type": "integer"
-                    }
-                  },
-                  "required": ["message", "error", "statusCode"]
-                },
-                "example": {
-                  "message": [
-                    "违规原因长度必须在 1 到 255 字符之间",
-                    "违规原因不能为空",
-                    "reason must be a string"
-                  ],
-                  "error": "Bad Request",
-                  "statusCode": 400
                 }
               }
             },
@@ -4770,13 +4864,17 @@
                               },
                               "createdAt": {
                                 "type": "string"
+                              },
+                              "userId": {
+                                "type": "string"
                               }
                             },
                             "required": [
                               "id",
                               "pId",
                               "reportReason",
-                              "createdAt"
+                              "createdAt",
+                              "userId"
                             ]
                           }
                         },
@@ -4795,67 +4893,77 @@
                   "data": {
                     "list": [
                       {
-                        "id": 13,
-                        "pId": "p00161",
-                        "reportReason": "magna do ex",
-                        "createdAt": "2026-03-02T13:45:43.000Z"
+                        "id": 17,
+                        "pId": "p00153",
+                        "reportReason": "hhh",
+                        "createdAt": "2026-03-07T09:21:22.000Z",
+                        "userId": "u00001"
                       },
                       {
-                        "id": 11,
-                        "pId": "p00161",
-                        "reportReason": "magna do ex",
-                        "createdAt": "2026-03-02T13:45:42.000Z"
-                      },
-                      {
-                        "id": 12,
-                        "pId": "p00161",
-                        "reportReason": "magna do ex",
-                        "createdAt": "2026-03-02T13:45:42.000Z"
-                      },
-                      {
-                        "id": 10,
-                        "pId": "p00161",
-                        "reportReason": "magna do ex",
-                        "createdAt": "2026-03-02T13:45:41.000Z"
+                        "id": 16,
+                        "pId": "p00163",
+                        "reportReason": "123",
+                        "createdAt": "2026-03-04T12:43:19.000Z",
+                        "userId": "u00000"
                       },
                       {
                         "id": 8,
                         "pId": "p00161",
                         "reportReason": "magna do ex",
-                        "createdAt": "2026-03-02T13:45:40.000Z"
+                        "createdAt": "2026-03-02T13:45:40.000Z",
+                        "userId": "u00000"
                       },
                       {
                         "id": 9,
                         "pId": "p00161",
                         "reportReason": "magna do ex",
-                        "createdAt": "2026-03-02T13:45:40.000Z"
+                        "createdAt": "2026-03-02T13:45:40.000Z",
+                        "userId": "u00000"
                       },
                       {
                         "id": 7,
                         "pId": "p00161",
                         "reportReason": "magna do ex",
-                        "createdAt": "2026-03-02T13:45:39.000Z"
+                        "createdAt": "2026-03-02T13:45:39.000Z",
+                        "userId": "u00000"
                       },
                       {
                         "id": 6,
                         "pId": "p00161",
                         "reportReason": "magna do ex",
-                        "createdAt": "2026-03-02T13:45:38.000Z"
+                        "createdAt": "2026-03-02T13:45:38.000Z",
+                        "userId": "u00000"
                       },
                       {
                         "id": 5,
                         "pId": "p00161",
                         "reportReason": "magna do ex",
-                        "createdAt": "2026-03-02T13:45:37.000Z"
+                        "createdAt": "2026-03-02T13:45:37.000Z",
+                        "userId": "u00000"
                       },
                       {
                         "id": 4,
                         "pId": "p00161",
                         "reportReason": "不是哥们",
-                        "createdAt": "2026-03-02T13:44:43.000Z"
+                        "createdAt": "2026-03-02T13:44:43.000Z",
+                        "userId": "u00000"
+                      },
+                      {
+                        "id": 3,
+                        "pId": "p00161",
+                        "reportReason": "不好",
+                        "createdAt": "2026-03-02T13:43:52.000Z",
+                        "userId": "u00000"
+                      },
+                      {
+                        "id": 2,
+                        "pId": "p00161",
+                        "reportReason": "magna do ex",
+                        "createdAt": "2026-03-02T13:29:45.000Z",
+                        "userId": "u00000"
                       }
                     ],
-                    "total": 13
+                    "total": 10
                   }
                 }
               }
@@ -5277,6 +5385,172 @@
                   "message": "未找到该举报信息",
                   "error": "Not Found",
                   "statusCode": 404
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/admin/prohibition": {
+      "post": {
+        "summary": "设置用户权限限制天数",
+        "deprecated": false,
+        "description": "",
+        "tags": ["admin"],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string"
+                  },
+                  "prohibition": {
+                    "type": "string",
+                    "enum": [
+                      "muteUntil",
+                      "postProhibitUntil",
+                      "loginProhibitUntil"
+                    ]
+                  },
+                  "hours": {
+                    "type": "number"
+                  },
+                  "reason": {
+                    "type": "string"
+                  },
+                  "postId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "userId",
+                  "prohibition",
+                  "hours",
+                  "reason",
+                  "postId"
+                ]
+              },
+              "examples": {}
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["message"]
+                    }
+                  },
+                  "required": ["code", "message", "data"]
+                },
+                "example": {
+                  "code": 0,
+                  "message": "success",
+                  "data": {
+                    "message": "已限制6小时"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "example": {
+                  "message": [
+                    "prohibition must be one of the following values: muteUntil, postProhibitUntil, loginProhibitUntil"
+                  ],
+                  "error": "Bad Request",
+                  "statusCode": 400
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "statusCode": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["message", "error", "statusCode"]
+                },
+                "examples": {
+                  "2": {
+                    "summary": "异常示例",
+                    "value": {
+                      "message": "用户不存在",
+                      "error": "Not Found",
+                      "statusCode": 404
+                    }
+                  },
+                  "3": {
+                    "summary": "异常示例",
+                    "value": {
+                      "message": "未找到该权限",
+                      "error": "Not Found",
+                      "statusCode": 404
+                    }
+                  }
                 }
               }
             },

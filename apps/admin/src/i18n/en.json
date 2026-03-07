@@ -53,6 +53,8 @@
     "reason": "Please enter the reason",
     "reasonInputErrorTip": "The content is not empty.",
     "successTip": "Operation successful",
-    "postInfo": "Post information:"
+    "postInfo": "Post information:",
+    "prohibitPublishPostHint": "Prohibit this user from posting?",
+    "duration": "Duration:"
   }
 }

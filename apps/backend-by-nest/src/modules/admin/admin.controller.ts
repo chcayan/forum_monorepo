@@ -16,8 +16,8 @@ import { AdminPermissionGuard } from 'src/common/guard/permission.guard';
 import { AdminPermission } from 'src/common/decorator/permission.decorator';
 import { PostReviewDto } from './dto/post-review.dto';
 import { LoginDto } from './dto/login.dto';
-import { CreateViolationReasonDto } from './dto/create-violation-reason.dto';
 import { UserProhibitionDto } from './dto/user-prohibition.dto';
+import { OptionalUser } from 'src/common/decorator/optional-user.decorator';
 
 @Controller('admin')
 export class AdminController {
@@ -59,18 +59,36 @@ export class AdminController {
   @Post('post-review')
   @UseGuards(JwtAuthGuard, AdminPermissionGuard)
   @AdminPermission('post_review')
-  async reviewPost(@Body() dto: PostReviewDto) {
-    return this.adminService.reviewPost(dto.postId, dto.status);
-  }
-
-  @Post('post-review/:postId')
-  @UseGuards(JwtAuthGuard, AdminPermissionGuard)
-  @AdminPermission('post_review')
-  async createViolationReason(
-    @Param('postId') postId: string,
-    @Body() dto: CreateViolationReasonDto,
+  async reviewPost(
+    @Body() dto: PostReviewDto,
+    @OptionalUser() adminId: string,
   ) {
-    return this.adminService.createViolationReason(postId, dto.reason);
+    const userId = await this.adminService.findUserIdByPostId(dto.postId);
+    if (dto.status === 1) {
+      if (userId) {
+        await this.adminService.setUserLog(
+          userId,
+          adminId,
+          '帖子审核通过',
+          'post_review_pass',
+          dto.punishTime,
+          dto.postId,
+        );
+      }
+    } else if (dto.status === 2) {
+      if (userId) {
+        await this.adminService.setUserLog(
+          userId,
+          adminId,
+          dto.reason,
+          'post_review_violate',
+          dto.punishTime,
+          dto.postId,
+        );
+        await this.adminService.createViolationReason(dto.postId, dto.reason);
+      }
+    }
+    return this.adminService.reviewPost(dto.postId, dto.status);
   }
 
   @Get('unreview-post')
@@ -93,21 +111,43 @@ export class AdminController {
     return this.adminService.findPostReports(page, limit);
   }
 
-  @Delete('post-report/:id')
+  @Delete('post-report/:postId')
   @UseGuards(JwtAuthGuard, AdminPermissionGuard)
   @AdminPermission('report_review')
-  async deletePostReport(@Param('id', ParseIntPipe) id: number) {
-    return this.adminService.deletePostReport(id);
+  async deletePostReport(@Param('postId') postId: string) {
+    return this.adminService.deletePostReport(postId);
   }
 
   @Post('prohibition')
   @UseGuards(JwtAuthGuard, AdminPermissionGuard)
   @AdminPermission('report_review')
-  async setUserProhibition(@Body() dto: UserProhibitionDto) {
+  async setUserProhibition(
+    @Body() dto: UserProhibitionDto,
+    @OptionalUser() adminId: string,
+  ) {
+    if (dto.prohibition === 'postProhibitUntil') {
+      await this.adminService.setUserLog(
+        dto.userId,
+        adminId,
+        dto.reason,
+        'user_post_prohibit',
+        dto.punishTime,
+        dto.postId,
+      );
+    } else if (dto.prohibition === 'muteUntil') {
+      await this.adminService.setUserLog(
+        dto.userId,
+        adminId,
+        dto.reason,
+        'user_mute',
+        dto.punishTime,
+        dto.postId,
+      );
+    }
     return this.adminService.setUserProhibition(
       dto.userId,
       dto.prohibition,
-      dto.days,
+      dto.hours,
     );
   }
 }

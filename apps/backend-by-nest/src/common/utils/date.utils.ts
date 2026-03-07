@@ -15,3 +15,21 @@ export function formatDate(dateString: Date | string) {
   const year = date.getFullYear();
   return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;
 }
+
+export function formatRemainTime(targetTime: Date | string | number) {
+  const diff = new Date(targetTime).getTime() - Date.now();
+
+  if (diff <= 0) return '0 分钟';
+
+  const day = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hour = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minute = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+  let result = '';
+
+  if (day > 0) result += ` ${day} 天`;
+  if (hour > 0) result += ` ${hour} 小时`;
+  if (minute > 0) result += ` ${minute} 分钟`;
+
+  return result;
+}

@@ -14,12 +14,12 @@
 
 ## 技术栈
 
-### 前端(forum)：
+### 前端 (forum)：
 
 - vue
 - typescript
 
-### 前端(admin):
+### 前端 (admin):
 
 - react
 - typescript
@@ -35,8 +35,6 @@
 - uniapp
 
 ## 运行
-
-### web端
 
 安装依赖
 
@@ -55,7 +53,15 @@ DB_NAME=yourdbname
 
 导入数据库文件 (database/forum.sql)
 
-### 前端(forum)
+### 前后端 (forum + admin)
+
+启动服务
+
+```bash
+pnpm dev
+```
+
+### 前后端 (仅启动 forum)
 
 启动服务
 
@@ -63,7 +69,7 @@ DB_NAME=yourdbname
 pnpm dev:forum
 ```
 
-### 前端(admin)
+### 前后端 (仅启动 admin)
 
 启动服务
 

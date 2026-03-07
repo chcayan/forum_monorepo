@@ -12,6 +12,7 @@ import { Permission } from './entities/permission.entity';
 import { UserPermission } from './entities/user-permission.entity';
 import { UserSeedService } from './user-seed.service';
 import { ReviewViolationReason } from '../admin/entities/review-violation-reason.entity';
+import { UserLog } from '../admin/entities/user-log.entity';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ReviewViolationReason } from '../admin/entities/review-violation-reason
       Permission,
       UserPermission,
       ReviewViolationReason,
+      UserLog,
     ]),
   ],
   controllers: [UserController],

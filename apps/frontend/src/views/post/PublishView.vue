@@ -75,31 +75,35 @@ const publishPost = async () => {
 
   let res
 
-  if (postId) {
-    res = await updatePostInfoAPI({
-      content: context.value as string,
-      isPublic: isPublic.value ? 'true' : 'false',
-      postImages: getPostImages(),
-      postId: postId as string,
+  try {
+    if (postId) {
+      res = await updatePostInfoAPI({
+        content: context.value as string,
+        isPublic: isPublic.value ? 'true' : 'false',
+        postImages: getPostImages(),
+        postId: postId as string,
+      })
+    } else {
+      res = await publishPostAPI({
+        content: context.value as string,
+        isPublic: isPublic.value ? 'true' : 'false',
+        postImages: getPostImages(),
+      })
+    }
+    context.value = ''
+    Toast.show({
+      msg: postId ? '修改成功' : '发布成功',
+      type: 'success',
     })
-  } else {
-    res = await publishPostAPI({
-      content: context.value as string,
-      isPublic: isPublic.value ? 'true' : 'false',
-      postImages: getPostImages(),
-    })
+
+    emitter.emit('EVENT:RESET_POST_IMAGES')
+    emitter.emit('EVENT:UPDATE_USER_POST_LIST', res, true)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    emitter.emit('API:FORBIDDEN', err?.response?.data?.message || '未知错误')
+  } finally {
+    flag = true
   }
-
-  context.value = ''
-  Toast.show({
-    msg: postId ? '修改成功' : '发布成功',
-    type: 'success',
-  })
-
-  emitter.emit('EVENT:RESET_POST_IMAGES')
-  emitter.emit('EVENT:UPDATE_USER_POST_LIST', res, true)
-
-  flag = true
 }
 
 let off = emitter.on('EVENT:PUBLISH_POST', publishPost)

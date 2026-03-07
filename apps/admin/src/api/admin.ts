@@ -35,24 +35,18 @@ export function getUnreviewPostAPI(page: number, limit: number) {
 
 /**
  * 更新帖子状态
- * @param data postId: 帖子id, status: 帖子状态（1通过，2不通过）
+ * @param data postId: 帖子id, status: 帖子状态（1通过，2不通过）, reason: 不通过原因
  * @returns
  */
-export function updatePostStatusAPI(data: { postId: string; status: 1 | 2 }) {
-  return request.post('/admin/post-review', data)
-}
-
-/**
- * 创建帖子违规原因
- * @param data postId: 帖子id, reason: 违规原因
- * @returns
- */
-export function createViolationReasonAPI(data: {
+export function updatePostStatusAPI(data: {
   postId: string
+  status: 1 | 2
   reason: string
+  punishTime?: number
 }) {
-  return request.post(`/admin/post-review/${data.postId}`, {
-    reason: data.reason,
+  return request.post('/admin/post-review', {
+    ...data,
+    punishTime: data.punishTime ?? 0,
   })
 }
 
@@ -66,6 +60,37 @@ export function getPostReportReasonAPI(page: number, limit: number) {
   return request.get(`/admin/post-report?page=${page}&limit=${limit}`)
 }
 
-export function deletePostReportAPI(id: number) {
-  return request.delete(`/admin/post-report/${id}`)
+/**
+ * 删除帖子举报
+ * @param postId
+ * @returns
+ */
+export function deletePostReportAPI(postId: string) {
+  return request.delete(`/admin/post-report/${postId}`)
+}
+
+/**
+ * 检测用户是否被封禁（这里用于检测jwt是否过期）
+ * @returns
+ */
+export function checkIsLoginProhibitAPI() {
+  return request.post('/user/check-login-prohibit')
+}
+
+type ProhibitionType = {
+  userId: string
+  prohibition: 'muteUntil' | 'postProhibitUntil' | 'loginProhibitUntil'
+  hours: number
+  reason: string
+  punishTime: number
+  postId: string
+}
+
+/**
+ * 设置用户权限限制天数
+ * @param
+ * @returns
+ */
+export function setUserPermProhibitTimeAPI(data: ProhibitionType) {
+  return request.post('/admin/prohibition', data)
 }

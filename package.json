@@ -12,6 +12,7 @@
     "commit": "git-cz",
     "prepare": "husky",
     "precommit": "lint-staged",
+    "dev": "concurrently  \"pnpm -F backend-by-nest start:dev\" \"pnpm -F frontend dev\" \"pnpm -F admin dev\"",
     "dev:forum": "concurrently  \"pnpm --filter backend-by-nest start:dev\" \"pnpm --filter frontend dev\"",
     "dev:admin": "concurrently  \"pnpm --filter backend-by-nest start:dev\" \"pnpm --filter admin dev\"",
     "build": "pnpm -F utils build && pnpm -F frontend build && pnpm -F admin build && pnpm -F backend-by-nest build",
