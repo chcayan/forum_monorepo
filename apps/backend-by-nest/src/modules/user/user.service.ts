@@ -172,64 +172,6 @@ export class UserService {
     pageSize: number,
     userId?: string,
   ) {
-    // const qb = this.collectionRepository
-    //   .createQueryBuilder('c')
-    //   .leftJoin('post', 'p', 'c.p_id = p.p_id')
-    //   .leftJoin('users', 'u', 'p.user_id = u.user_id')
-    //   .leftJoin(
-    //     'collection',
-    //     'c2',
-    //     'c2.p_id = c.p_id AND c2.user_id = :userId',
-    //     { userId },
-    //   )
-    //   .where('c.user_id = :viewerId', { viewerId })
-    //   .andWhere('(p.is_public = :isPublic OR p.user_id = :userId)', {
-    //     isPublic: 'true',
-    //     userId,
-    //   })
-    //   .andWhere(`p.status = :status`, {
-    //     status: 1,
-    //   })
-    //   .select([
-    //     'p.p_id AS pId',
-    //     'p.user_id AS userId',
-    //     'p.p_view_count AS pViewCount',
-    //     'p.p_collect_count AS pCollectCount',
-    //     'p.p_share_count AS pShareCount',
-    //     'p.p_comment_count AS pCommentCount',
-    //     'p.p_content AS pContent',
-    //     'p.p_images AS pImages',
-    //     'p.is_public AS isPublic',
-    //     'p.status as status',
-    //     'p.publish_time AS publishTime',
-    //     'u.user_avatar AS userAvatar',
-    //     'u.username AS username',
-    //   ])
-    //   .orderBy('c.collect_time', 'DESC')
-    //   .skip((page - 1) * pageSize)
-    //   .take(pageSize);
-
-    // const list = await qb.getRawMany();
-
-    // const total = await this.collectionRepository
-    //   .createQueryBuilder('c')
-    //   .leftJoin('post', 'p', 'c.p_id = p.p_id')
-    //   .leftJoin(
-    //     'collection',
-    //     'c2',
-    //     'c2.p_id = c.p_id AND c2.user_id = :userId',
-    //     { userId },
-    //   )
-    //   .where('c.user_id = :viewerId', { viewerId })
-    //   .andWhere('(p.is_public = :isPublic OR p.user_id = :userId)', {
-    //     isPublic: 'true',
-    //     userId,
-    //   })
-    //   .andWhere(`p.status = :status`, {
-    //     status: 1,
-    //   })
-    //   .getCount();
-
     const [list, total] = await this.collectionRepository
       .createQueryBuilder('c')
       .leftJoinAndSelect('c.post', 'p')

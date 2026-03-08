@@ -18,6 +18,7 @@ import { PostReviewDto } from './dto/post-review.dto';
 import { LoginDto } from './dto/login.dto';
 import { UserProhibitionDto } from './dto/user-prohibition.dto';
 import { OptionalUser } from 'src/common/decorator/optional-user.decorator';
+import { CommentReportDto } from './dto/comment-report.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -115,6 +116,28 @@ export class AdminController {
     return this.adminService.reviewPost(dto.postId, dto.status);
   }
 
+  @Post('comment-violate')
+  @UseGuards(JwtAuthGuard, AdminPermissionGuard)
+  @AdminPermission('post_review')
+  async setCommentViolate(
+    @Body() dto: CommentReportDto,
+    @OptionalUser() adminId: string,
+  ) {
+    const userId = await this.adminService.findUserIdByPostId(dto.postId);
+    if (userId) {
+      await this.adminService.setUserLog(
+        userId,
+        adminId,
+        dto.reason,
+        'comment_violate',
+        dto.punishTime,
+        dto.postId,
+        dto.commentId,
+      );
+    }
+    return this.adminService.setCommentViolate(dto.commentId);
+  }
+
   @Get('unreview-post')
   @UseGuards(JwtAuthGuard, AdminPermissionGuard)
   @AdminPermission('post_review')
@@ -135,11 +158,28 @@ export class AdminController {
     return this.adminService.findPostReports(page, limit);
   }
 
+  @Get('comment-report')
+  @UseGuards(JwtAuthGuard, AdminPermissionGuard)
+  @AdminPermission('report_review')
+  async findCommentReports(
+    @Query('page', ParseIntPipe) page: number,
+    @Query('limit', ParseIntPipe) limit: number,
+  ) {
+    return this.adminService.findCommentReports(page, limit);
+  }
+
   @Delete('post-report/:postId')
   @UseGuards(JwtAuthGuard, AdminPermissionGuard)
   @AdminPermission('report_review')
   async deletePostReport(@Param('postId') postId: string) {
     return this.adminService.deletePostReport(postId);
+  }
+
+  @Delete('comment-report/:commentId')
+  @UseGuards(JwtAuthGuard, AdminPermissionGuard)
+  @AdminPermission('report_review')
+  async deleteCommentReport(@Param('commentId') commentId: number) {
+    return this.adminService.deleteCommentReport(commentId);
   }
 
   @Post('prohibition')

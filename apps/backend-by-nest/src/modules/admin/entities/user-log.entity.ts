@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {
   Column,
   CreateDateColumn,
@@ -21,7 +20,7 @@ export class UserLog {
   postId?: string;
 
   @Column()
-  commentId?: string;
+  commentId?: number;
 
   @Column()
   content!: string;

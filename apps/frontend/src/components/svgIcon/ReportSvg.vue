@@ -3,7 +3,7 @@
 <template>
   <div
     class="icon tab-focus-style"
-    title="举报帖子"
+    title="举报"
     style="cursor: pointer"
     tabindex="0"
   >

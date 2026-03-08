@@ -136,7 +136,19 @@ export async function updatePostInfoAPI(data: UpdatePostInfo) {
  * @returns
  */
 export function createPostReportAPI(data: { postId: string; reason: string }) {
-  return request.post('/post/report', data)
+  return request.post('/post/post-report', data)
+}
+
+/**
+ * 添加评论举报
+ * @param data commentId, reason
+ * @returns
+ */
+export function createCommentReportAPI(data: {
+  commentId: number
+  reason: string
+}) {
+  return request.post('/post/comment-report', data)
 }
 
 /**

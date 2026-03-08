@@ -26,6 +26,7 @@ import { join } from 'path';
 import { ReviewViolationReason } from './modules/admin/entities/review-violation-reason.entity';
 import { PostReport } from './modules/post/entities/post-report.entity';
 import { UserLog } from './modules/admin/entities/user-log.entity';
+import { CommentReport } from './modules/post/entities/comment-report.entity';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { UserLog } from './modules/admin/entities/user-log.entity';
         ReviewViolationReason,
         PostReport,
         UserLog,
+        CommentReport,
       ],
       namingStrategy: new SnakeNamingStrategy(),
     }),

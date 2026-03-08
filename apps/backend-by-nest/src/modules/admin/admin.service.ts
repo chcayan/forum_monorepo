@@ -25,6 +25,8 @@ import { ReviewViolationReason } from './entities/review-violation-reason.entity
 import { PostReport } from '../post/entities/post-report.entity';
 import { UserLogStatusType, UserProhibitionType } from './admin.constant';
 import { UserLog } from './entities/user-log.entity';
+import { CommentReport } from '../post/entities/comment-report.entity';
+import { Comment } from '../post/entities/comment.entity';
 
 @Injectable()
 export class AdminService {
@@ -33,10 +35,14 @@ export class AdminService {
     private readonly userPermissionRepository: Repository<UserPermission>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
+    @InjectRepository(Comment)
+    private readonly commentRepository: Repository<Comment>,
     @InjectRepository(ReviewViolationReason)
     private readonly reviewViolationReasonRepository: Repository<ReviewViolationReason>,
     @InjectRepository(PostReport)
     private readonly postReportRepository: Repository<PostReport>,
+    @InjectRepository(CommentReport)
+    private readonly commentReportRepository: Repository<CommentReport>,
     @InjectRepository(UserLog)
     private readonly userLogRepository: Repository<UserLog>,
     private readonly authService: AuthService,
@@ -232,6 +238,10 @@ export class AdminService {
     return { list: formattedList, total };
   }
 
+  async setCommentViolate(commentId: number) {
+    await this.commentRepository.update({ commentId }, { isViolation: 1 });
+  }
+
   async createViolationReason(postId: string, reason: string) {
     const exist = await this.reviewViolationReasonRepository.findOne({
       where: { pId: postId },
@@ -295,8 +305,62 @@ export class AdminService {
     return { list: grouped, total };
   }
 
+  async findCommentReports(page: number, pageSize: number) {
+    const qb = this.commentReportRepository.createQueryBuilder('cr');
+
+    const [list, total] = await qb
+      .leftJoinAndSelect('cr.comment', 'c')
+      .orderBy('cr.createdAt', 'DESC')
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
+      .getManyAndCount();
+
+    const formatted = list.map(({ comment, ...rest }) => ({
+      ...rest,
+      userId: comment.userId,
+      postId: comment.pId,
+    }));
+
+    const grouped = Object.values(
+      formatted.reduce(
+        (acc, item) => {
+          if (!acc[item.commentId]) {
+            acc[item.commentId] = {
+              postId: item.postId,
+              commentId: item.commentId,
+              userId: item.userId,
+              reasons: [],
+            };
+          }
+          acc[item.commentId]!.reasons.push(item.reportReason);
+
+          return acc;
+        },
+        {} as Record<
+          string,
+          {
+            postId: string;
+            commentId: number;
+            userId: string;
+            reasons: string[];
+          }
+        >,
+      ),
+    );
+
+    return { list: grouped, total };
+  }
+
   async deletePostReport(postId: string) {
     const res = await this.postReportRepository.delete({ pId: postId });
+
+    if (res.affected === 0) {
+      throw new NotFoundException('未找到该举报信息');
+    }
+  }
+
+  async deleteCommentReport(commentId: number) {
+    const res = await this.commentReportRepository.delete({ commentId });
 
     if (res.affected === 0) {
       throw new NotFoundException('未找到该举报信息');
@@ -348,16 +412,27 @@ export class AdminService {
     status: UserLogStatusType,
     punishTime: number,
     postId?: string,
+    commentId?: number,
   ) {
     let log: UserLog;
-    if (postId) {
+    if (postId && commentId) {
       log = this.userLogRepository.create({
         userId,
         operatorId,
         content,
         status,
         punishTime,
-        postId: postId,
+        postId,
+        commentId,
+      });
+    } else if (postId) {
+      log = this.userLogRepository.create({
+        userId,
+        operatorId,
+        content,
+        status,
+        punishTime,
+        postId,
       });
     } else {
       log = this.userLogRepository.create({

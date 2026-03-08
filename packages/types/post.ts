@@ -23,7 +23,7 @@ export interface PostDetail extends PostInfo {
 
 // 评论列表
 export interface CommentList {
-  commentId: string
+  commentId: number
   userId: string
   pId: string
   content: string

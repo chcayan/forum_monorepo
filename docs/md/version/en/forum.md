@@ -69,9 +69,10 @@ Current version changes:
 - Fix display issues when chat sharing posts violate rules.
 - Optimize the user experience of the chat interface.
 
-### 2.7.0 (260303)
+### 2.7.0 (260308)
 
 Current version changes:
 
 - Add message function.
+- Add comment reporting function.
 - Optimize the reporting interface style.

@@ -26,7 +26,8 @@ import { CommentDto } from './dto/comment.dto';
 import { UserPermissionGuard } from 'src/common/guard/permission.guard';
 import { UserPermission } from 'src/common/decorator/permission.decorator';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { ReportDto } from './dto/report.dto';
+import { PostReportDto } from './dto/post-report.dto';
+import { CommentReportDto } from './dto/comment-report.dto';
 
 @Controller('post')
 export class PostController {
@@ -82,10 +83,16 @@ export class PostController {
     return this.postService.publishComment(userId, dto.postId, dto.content);
   }
 
-  @Post('report')
+  @Post('post-report')
   @UseGuards(JwtAuthGuard)
-  async createPostReport(@Body() dto: ReportDto) {
+  async createPostReport(@Body() dto: PostReportDto) {
     return this.postService.createPostReport(dto.postId, dto.reason);
+  }
+
+  @Post('comment-report')
+  @UseGuards(JwtAuthGuard)
+  async createCommentReport(@Body() dto: CommentReportDto) {
+    return this.postService.createCommentReport(dto.commentId, dto.reason);
   }
 
   @Post()

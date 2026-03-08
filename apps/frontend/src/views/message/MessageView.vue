@@ -54,6 +54,7 @@ const getUserMessage = async () => {
   const res = await getUserMessageAPI()
   const data: UserMessage[] = res.data.data
   userMsg.value = data
+  console.log(userMsg.value)
 }
 
 onActivated(() => {
@@ -61,7 +62,12 @@ onActivated(() => {
 })
 
 const navigateToPost = (status: UserMessage['status'], postId: string) => {
-  if (status === 'post_review_violate' || status === 'post_violate') {
+  if (
+    status === 'post_review_violate' ||
+    status === 'post_violate' ||
+    status === 'post_review_pass' ||
+    status === 'comment_violate'
+  ) {
     router.push(`${RouterPath.post}/${postId}`)
   }
 }
@@ -96,26 +102,27 @@ const navigateToPost = (status: UserMessage['status'], postId: string) => {
           v-if="
             item.status === 'post_review_violate' ||
             item.status === 'post_violate' ||
-            item.status === 'comment_violate'
+            item.status === 'comment_violate' ||
+            item.status === 'post_review_pass'
           "
         >
           <p
-            class="text"
-            :class="{
-              quote_cursor:
-                item.status === 'post_review_violate' ||
-                item.status === 'post_violate',
-            }"
+            class="text quote_cursor"
             @click="navigateToPost(item.status, item.postId)"
           >
-            原文：{{
+            原贴：{{
               item.status === 'post_review_violate' ||
-              item.status === 'post_violate'
+              item.status === 'post_violate' ||
+              item.status === 'post_review_pass' ||
+              item.status === 'comment_violate'
                 ? item.pContent
-                : item.status === 'comment_violate'
-                  ? item.cContent
-                  : ''
+                : ''
             }}
+          </p>
+        </div>
+        <div class="quote" v-if="item.status === 'comment_violate'">
+          <p class="text">
+            评论：{{ item.status === 'comment_violate' ? item.cContent : '' }}
           </p>
         </div>
       </li>
@@ -145,7 +152,7 @@ const navigateToPost = (status: UserMessage['status'], postId: string) => {
     gap: 10px;
 
     li {
-      width: calc(100% - 20px);
+      width: 400px;
       border-radius: 10px;
       padding: 15px;
       box-shadow: var(--theme-shadow-color);

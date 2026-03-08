@@ -6,9 +6,13 @@ import { Post } from './entities/post.entity';
 import { Comment } from './entities/comment.entity';
 import { UserModule } from '../user/user.module';
 import { PostReport } from './entities/post-report.entity';
+import { CommentReport } from './entities/comment-report.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Post, Comment, PostReport]), UserModule],
+  imports: [
+    TypeOrmModule.forFeature([Post, Comment, PostReport, CommentReport]),
+    UserModule,
+  ],
   controllers: [PostController],
   providers: [PostService],
 })

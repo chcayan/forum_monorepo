@@ -3,7 +3,7 @@ import { Column, Entity, PrimaryColumn } from 'typeorm';
 @Entity('comments')
 export class Comment {
   @PrimaryColumn()
-  commentId!: string;
+  commentId!: number;
 
   @Column()
   userId!: string;
@@ -16,4 +16,7 @@ export class Comment {
 
   @Column()
   createdTime!: Date;
+
+  @Column()
+  isViolation!: number;
 }

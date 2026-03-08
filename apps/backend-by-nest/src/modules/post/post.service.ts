@@ -10,6 +10,7 @@ import { PostAlias, PostFields } from './post.constant';
 import { UserAlias, UserFields } from 'src/modules/user/user.constant';
 import { Comment } from './entities/comment.entity';
 import { PostReport } from './entities/post-report.entity';
+import { CommentReport } from './entities/comment-report.entity';
 
 @Injectable()
 export class PostService {
@@ -20,6 +21,8 @@ export class PostService {
     private readonly commentRepository: Repository<Comment>,
     @InjectRepository(PostReport)
     private readonly postReportRepository: Repository<PostReport>,
+    @InjectRepository(CommentReport)
+    private readonly commentReportRepository: Repository<CommentReport>,
   ) {}
 
   async create(content: string, isPublic: string, userId: string) {
@@ -245,6 +248,7 @@ export class PostService {
       .leftJoin('post', 'p', 'c.p_id = p.p_id')
       .leftJoin('users', 'u', 'c.user_id = u.user_id')
       .where('c.p_id = :postId', { postId })
+      .andWhere('c.is_violation = :isViolation', { isViolation: 0 })
       .orderBy('c.created_time', 'DESC')
       .getRawMany();
   }
@@ -267,6 +271,23 @@ export class PostService {
     });
 
     await this.postReportRepository.save(_reason);
+  }
+
+  async createCommentReport(commentId: number, reason: string) {
+    const exist = await this.commentRepository.findOne({
+      where: { commentId },
+    });
+
+    if (!exist) {
+      throw new NotFoundException('未找到该评论');
+    }
+
+    const _reason = this.commentReportRepository.create({
+      commentId,
+      reportReason: reason,
+    });
+
+    await this.commentReportRepository.save(_reason);
   }
 
   async findReviewPassIds() {
