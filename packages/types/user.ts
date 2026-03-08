@@ -37,10 +37,14 @@ export interface UserMessage {
   status:
     | 'post_review_pass'
     | 'post_review_violate'
+    | 'post_violate'
+    | 'comment_violate'
     | 'user_mute'
     | 'user_post_prohibit'
     | 'user_login_prohibit'
     | 'system_announcement'
   createdAt: Date
   punishTime: number
+  pContent: string
+  cContent: string
 }

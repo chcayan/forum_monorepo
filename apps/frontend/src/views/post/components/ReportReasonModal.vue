@@ -44,11 +44,12 @@ const submitReport = async () => {
 
 <style scoped lang="scss">
 .modal {
-  width: 200px;
-  height: 135px;
+  width: 210px;
+  height: 145px;
   background-color: var(--theme-color);
+  // box-shadow: var(--theme-shadow-color);
   border-radius: 10px;
-  padding: 10px;
+  padding: 15px;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -79,16 +80,26 @@ const submitReport = async () => {
   }
 
   textarea {
-    resize: none;
+    margin: 0 0 5px;
     outline: none;
-    width: 180px;
+    border: none;
+    width: 100%;
     height: 50px;
-    font-family:
-      system-ui,
-      -apple-system;
-    border-radius: 5px;
-    padding: 5px;
-    margin-bottom: 5px;
+    resize: none;
+    padding: 10px;
+    border-radius: 10px;
+    color: var(--theme-font-color);
+    background-color: var(--theme-textarea-bg-color);
+    font-family: system-ui;
+
+    &::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      background-color: var(--theme-scrollbar-thumb-color);
+    }
   }
 }
 

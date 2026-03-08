@@ -46,14 +46,14 @@ Current version changes:
 - Fix some style issues.
 - Modifying duplicate user page data without refreshing the issue.
 
-### 2.3.1 (260228)
+### 2.4.0 (260228)
 
 Current version changes:
 
 - Add online user display function.
 - Fix known issues.
 
-### 2.3.2 (260302)
+### 2.5.0 (260302)
 
 Current version changes:
 
@@ -61,10 +61,17 @@ Current version changes:
 - Add a new review mechanism.
 - Fixed the issue where when viewing post details, the post would be added to the user's favorites page.
 
-### 2.3.3 (260303)
+### 2.6.0 (260303)
 
 Current version changes:
 
 - Add post reporting function.
 - Fix display issues when chat sharing posts violate rules.
 - Optimize the user experience of the chat interface.
+
+### 2.7.0 (260303)
+
+Current version changes:
+
+- Add message function.
+- Optimize the reporting interface style.

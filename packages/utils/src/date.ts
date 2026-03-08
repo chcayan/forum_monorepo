@@ -38,3 +38,34 @@ export function formatDateByYear(dateString: Date | string) {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
   }
 }
+
+export function formatTimeAgo(time: string | number | Date) {
+  const date = new Date(time).getTime()
+  const now = Date.now()
+  const diff = Math.floor((now - date) / 1000) // 秒
+
+  if (diff < 60) return '刚刚'
+
+  const minute = 60
+  const hour = 60 * minute
+  const day = 24 * hour
+  const year = 365 * day
+
+  if (diff < hour) {
+    return `${Math.floor(diff / minute)}分钟前`
+  }
+
+  if (diff < day) {
+    return `${Math.floor(diff / hour)}小时前`
+  }
+
+  if (diff < day * 2) {
+    return '昨天'
+  }
+
+  if (diff < year) {
+    return `${Math.floor(diff / day)}天前`
+  }
+
+  return `${Math.floor(diff / year)}年前`
+}

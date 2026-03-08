@@ -22,6 +22,7 @@ import { UserPermissionBit } from '../auth/auth.bit';
 import { ReviewViolationReason } from '../admin/entities/review-violation-reason.entity';
 import { formatRemainTime } from 'src/common/utils/date.utils';
 import { UserLog } from '../admin/entities/user-log.entity';
+import { Comment } from '../post/entities/comment.entity';
 
 @Injectable()
 export class UserService {
@@ -36,6 +37,8 @@ export class UserService {
     private readonly reviewViolationReasonRepository: Repository<ReviewViolationReason>,
     @InjectRepository(UserLog)
     private readonly userLogRepository: Repository<UserLog>,
+    @InjectRepository(Comment)
+    private readonly commentRepository: Repository<Comment>,
     private readonly jwtService: JwtService,
     private readonly dataSource: DataSource,
   ) {}
@@ -512,15 +515,28 @@ export class UserService {
   }
 
   async getUserMessage(userId: string) {
-    const list = this.userLogRepository.find({
-      where: {
-        userId,
-      },
-      order: {
-        id: 'DESC',
-      },
-    });
+    const qb = this.userLogRepository.createQueryBuilder('ul');
 
-    return list;
+    const list = await qb
+      .leftJoin('post', 'p', 'p.p_id = ul.post_id AND ul.post_id IS NOT NULL')
+      .leftJoin(
+        'comments',
+        'c',
+        'c.comment_id = ul.comment_id AND ul.comment_id IS NOT NULL',
+      )
+      .addSelect(['p.p_content', 'c.c_content'])
+      .where('ul.user_id = :userId', { userId })
+      .orderBy('ul.id', 'DESC')
+      .getRawAndEntities();
+
+    const result = list.entities.map((item, i) => ({
+      ...item,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      pContent: list.raw[i].p_content || '',
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      cContent: list.raw[i].c_content || '',
+    }));
+
+    return result;
   }
 }

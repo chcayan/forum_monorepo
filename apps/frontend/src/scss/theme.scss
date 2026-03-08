@@ -20,6 +20,7 @@ body[data-theme='Dark'] {
   --theme-chat-item-bg-hover-color: rgba(88, 86, 86, 0.482);
   --theme-chat-speech-bubble-color: rgb(56, 56, 56);
   --theme-avatar-border-color: rgb(255, 255, 255);
+  --theme-message-quote-bg-color: rgb(40, 40, 40);
 }
 
 :root {
@@ -44,4 +45,5 @@ body[data-theme='Dark'] {
   --theme-chat-item-bg-hover-color: rgb(255, 236, 225);
   --theme-chat-speech-bubble-color: rgb(255, 214, 192);
   --theme-avatar-border-color: rgb(255, 214, 192);
+  --theme-message-quote-bg-color: rgb(245, 245, 245);
 }

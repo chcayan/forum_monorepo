@@ -219,7 +219,14 @@ const statusStore = useStatusStore()
     <!-- <router-view /> -->
     <router-view v-slot="{ Component }">
       <keep-alive
-        :include="['PostView', 'MyView', 'UserView', 'ChatView', 'SearchView']"
+        :include="[
+          'PostView',
+          'MyView',
+          'UserView',
+          'ChatView',
+          'SearchView',
+          'MessageView',
+        ]"
       >
         <component :is="Component"></component>
       </keep-alive>

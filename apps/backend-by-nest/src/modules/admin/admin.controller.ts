@@ -91,6 +91,30 @@ export class AdminController {
     return this.adminService.reviewPost(dto.postId, dto.status);
   }
 
+  @Post('post-violate')
+  @UseGuards(JwtAuthGuard, AdminPermissionGuard)
+  @AdminPermission('post_review')
+  async setPostViolate(
+    @Body() dto: PostReviewDto,
+    @OptionalUser() adminId: string,
+  ) {
+    const userId = await this.adminService.findUserIdByPostId(dto.postId);
+    if (dto.status === 2) {
+      if (userId) {
+        await this.adminService.setUserLog(
+          userId,
+          adminId,
+          dto.reason,
+          'post_violate',
+          dto.punishTime,
+          dto.postId,
+        );
+        await this.adminService.createViolationReason(dto.postId, dto.reason);
+      }
+    }
+    return this.adminService.reviewPost(dto.postId, dto.status);
+  }
+
   @Get('unreview-post')
   @UseGuards(JwtAuthGuard, AdminPermissionGuard)
   @AdminPermission('post_review')

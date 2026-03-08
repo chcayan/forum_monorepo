@@ -51,6 +51,23 @@ export function updatePostStatusAPI(data: {
 }
 
 /**
+ * 设置帖子违规（举报）
+ * @param data postId: 帖子id, status: 帖子状态（2不通过）, reason: 不通过原因
+ * @returns
+ */
+export function setPostViolateAPI(data: {
+  postId: string
+  status: 2
+  reason: string
+  punishTime?: number
+}) {
+  return request.post('/admin/post-violate', {
+    ...data,
+    punishTime: data.punishTime ?? 0,
+  })
+}
+
+/**
  * 获取帖子举报列表
  * @param page 页数
  * @param limit 每页数量

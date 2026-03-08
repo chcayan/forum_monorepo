@@ -2,8 +2,8 @@ import {
   deletePostReportAPI,
   getPostDetailAPI,
   getPostReportReasonAPI,
+  setPostViolateAPI,
   setUserPermProhibitTimeAPI,
-  updatePostStatusAPI,
 } from '@/api'
 import { useEffect, useState } from 'react'
 import {
@@ -101,13 +101,14 @@ function PassButton({ postId, userId }: { postId: string; userId: string }) {
       setConfirmLoading(false)
       return
     }
-    await updatePostStatusAPI({
+    await setPostViolateAPI({
       postId,
       status: 2,
       reason: value,
-      punishTime: timeValue,
+      punishTime: forbiddenTimeRadioVisible ? timeValue : 0,
     })
     if (forbiddenTimeRadioVisible) {
+      console.log(555)
       await setUserPermProhibitTimeAPI({
         userId,
         prohibition: 'postProhibitUntil',
@@ -261,7 +262,21 @@ export default function PostReportReview() {
       render: (reasons: string[]) =>
         reasons.map((item, index) => (
           <ol key={index}>
-            <li>-&nbsp;&nbsp;{item}</li>
+            {/* <li>-&nbsp;&nbsp;{item}</li>
+             */}
+            <li style={{ display: 'flex', alignItems: 'flex-start' }}>
+              <span
+                style={{
+                  marginRight: '6px',
+                  fontWeight: 'bold',
+                }}
+              >
+                -
+              </span>
+              <span style={{ flex: 1, minWidth: 0, wordBreak: 'break-word' }}>
+                {item}
+              </span>
+            </li>
           </ol>
         )),
     },
