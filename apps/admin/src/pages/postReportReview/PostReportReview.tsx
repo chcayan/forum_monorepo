@@ -108,7 +108,6 @@ function PassButton({ postId, userId }: { postId: string; userId: string }) {
       punishTime: forbiddenTimeRadioVisible ? timeValue : 0,
     })
     if (forbiddenTimeRadioVisible) {
-      console.log(555)
       await setUserPermProhibitTimeAPI({
         userId,
         prohibition: 'postProhibitUntil',

@@ -35,19 +35,23 @@ const sendComment = async (e: KeyboardEvent | MouseEvent) => {
   }
 
   const postId = route.params.postId as string
+
   await publishCommentAPI({
     postId,
     content: textarea.value,
   })
-  Toast.show({
-    msg: '发布成功',
-    type: 'success',
-  })
-  emitter.emit('EVENT:UPDATE_USER_POST_LIST', postId)
-  emitter.emit('EVENT:UPDATE_COMMENT_LIST')
-  emitter.emit('EVENT:UPDATE_POST_DETAIL', postId)
-  emitter.emit('EVENT:UPDATE_POST_LIST', postId)
-  textarea.value = ''
+    .then(() => {
+      Toast.show({
+        msg: '发布成功',
+        type: 'success',
+      })
+      emitter.emit('EVENT:UPDATE_USER_POST_LIST', postId)
+      emitter.emit('EVENT:UPDATE_COMMENT_LIST')
+      emitter.emit('EVENT:UPDATE_POST_DETAIL', postId)
+      emitter.emit('EVENT:UPDATE_POST_LIST', postId)
+      textarea.value = ''
+    })
+    .catch(() => {})
 }
 
 const textareaRef = useTemplateRef('textareaEl')

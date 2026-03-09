@@ -20,7 +20,7 @@ const submitReport = async () => {
     Toast.show({ msg: '内容不为空', type: 'error' })
     return
   }
-  await createCommentReportAPI({ commentId, reason: reason.value })
+  await createCommentReportAPI({ commentId, reason: reason.value.trim() })
   Toast.show({
     msg: '提交成功，等待审核中',
     type: 'success',

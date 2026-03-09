@@ -54,7 +54,6 @@ const getUserMessage = async () => {
   const res = await getUserMessageAPI()
   const data: UserMessage[] = res.data.data
   userMsg.value = data
-  console.log(userMsg.value)
 }
 
 onActivated(() => {

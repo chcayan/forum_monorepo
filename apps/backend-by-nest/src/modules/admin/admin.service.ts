@@ -27,6 +27,7 @@ import { UserLogStatusType, UserProhibitionType } from './admin.constant';
 import { UserLog } from './entities/user-log.entity';
 import { CommentReport } from '../post/entities/comment-report.entity';
 import { Comment } from '../post/entities/comment.entity';
+import { formatRemainTime } from 'src/common/utils/date.utils';
 
 @Injectable()
 export class AdminService {
@@ -129,6 +130,10 @@ export class AdminService {
     });
     if (!user) throw new BadRequestException('未找到该用户');
 
+    if (user.userId === 'u00000') {
+      throw new ForbiddenException('不允许修改默认管理员');
+    }
+
     if (!(permission in UserPermissionCodeToIdMap)) {
       throw new BadRequestException('非法权限码');
     }
@@ -151,6 +156,10 @@ export class AdminService {
     });
     if (!user) throw new BadRequestException('未找到该用户');
 
+    if (user.userId === 'u00000') {
+      throw new ForbiddenException('不允许修改默认管理员');
+    }
+
     if (!(permission in UserPermissionCodeToIdMap)) {
       throw new BadRequestException('非法权限码');
     }
@@ -170,6 +179,10 @@ export class AdminService {
       },
     });
     if (!user) throw new BadRequestException('未找到该用户');
+
+    if (user.userId === 'u00000') {
+      throw new ForbiddenException('不允许修改默认管理员');
+    }
 
     if (!(permission in AdminPermissionCodeToIdMap)) {
       throw new BadRequestException('非法权限码');
@@ -193,9 +206,14 @@ export class AdminService {
     });
     if (!user) throw new BadRequestException('未找到该用户');
 
+    if (user.userId === 'u00000') {
+      throw new ForbiddenException('不允许修改默认管理员');
+    }
+
     if (!(permission in AdminPermissionCodeToIdMap)) {
       throw new BadRequestException('非法权限码');
     }
+
     await this.userPermissionRepository.delete({
       userId,
       permissionId: AdminPermissionCodeToIdMap[permission]!,
@@ -455,5 +473,35 @@ export class AdminService {
     const userId = post?.userId;
 
     return userId;
+  }
+
+  async getUserPerms(page: number, pageSize: number) {
+    const qb = this.userRepository.createQueryBuilder('user');
+
+    const [list, total] = await qb
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
+      .getManyAndCount();
+
+    const filteredList = list.map((user) => ({
+      userId: user.userId,
+      username: user.username,
+      avatar: user.userAvatar,
+      email: user.userEmail,
+      hasUserSpeakPerm: (user.userPermMask & UserPermissionBit.SPEAK) === 1,
+      hasUserPostPerm: (user.userPermMask & UserPermissionBit.POST) === 2,
+      hasUserLoginPerm: (user.userPermMask & UserPermissionBit.LOGIN) === 4,
+      hasPostReviewPerm:
+        (user.adminPermMask & AdminPermissionBit.POST_REVIEW) === 1,
+      hasReportReviewPerm:
+        (user.adminPermMask & AdminPermissionBit.REPORT_REVIEW) === 2,
+      hasUserPermModifyPerm:
+        (user.adminPermMask & AdminPermissionBit.USER_PERM_MODIFY) === 4,
+      muteUntil: formatRemainTime(user.muteUntil),
+      postProhibitUntil: formatRemainTime(user.postProhibitUntil),
+      loginProhibitUntil: formatRemainTime(user.loginProhibitUntil),
+    }));
+
+    return { list: filteredList, total };
   }
 }

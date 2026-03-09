@@ -9,7 +9,6 @@ import { ref } from 'vue'
 const { comment } = defineProps<{
   comment: CommentList
 }>()
-console.log(comment)
 
 const showReportModal = ref(false)
 

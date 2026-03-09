@@ -68,6 +68,23 @@ export function setPostViolateAPI(data: {
 }
 
 /**
+ * 设置评论违规（举报）
+ * @param data postId: 帖子id, commentId: 评论id, reason: 不通过原因
+ * @returns
+ */
+export function setCommentViolateAPI(data: {
+  postId: string
+  commentId: number
+  reason: string
+  punishTime?: number
+}) {
+  return request.post('/admin/comment-violate', {
+    ...data,
+    punishTime: data.punishTime ?? 0,
+  })
+}
+
+/**
  * 获取帖子举报列表
  * @param page 页数
  * @param limit 每页数量
@@ -78,12 +95,31 @@ export function getPostReportReasonAPI(page: number, limit: number) {
 }
 
 /**
+ * 获取评论举报列表
+ * @param page 页数
+ * @param limit 每页数量
+ * @returns
+ */
+export function getCommentReportReasonAPI(page: number, limit: number) {
+  return request.get(`/admin/comment-report?page=${page}&limit=${limit}`)
+}
+
+/**
  * 删除帖子举报
  * @param postId
  * @returns
  */
 export function deletePostReportAPI(postId: string) {
   return request.delete(`/admin/post-report/${postId}`)
+}
+
+/**
+ * 删除评论举报
+ * @param commentId
+ * @returns
+ */
+export function deleteCommentReportAPI(commentId: number) {
+  return request.delete(`/admin/comment-report/${commentId}`)
 }
 
 /**
@@ -101,6 +137,7 @@ type ProhibitionType = {
   reason: string
   punishTime: number
   postId: string
+  commentId?: number
 }
 
 /**
@@ -110,4 +147,57 @@ type ProhibitionType = {
  */
 export function setUserPermProhibitTimeAPI(data: ProhibitionType) {
   return request.post('/admin/prohibition', data)
+}
+
+/**
+ * 查询用户权限信息
+ * @returns
+ */
+export function getUserPermsAPI(page: number, limit: number) {
+  return request.get(`/admin/user-perms?page=${page}&limit=${limit}`)
+}
+
+type UserPerm = 'user_speak' | 'user_post' | 'user_login'
+type AdminPerm = 'post_review' | 'report_review' | 'user_perm_modify'
+
+/**
+ * 添加用户权限
+ * @param data userId: 用户id, permission: 权限
+ * @returns
+ */
+export function addUserPermAPI(data: { userId: string; permission: UserPerm }) {
+  return request.post('/admin/user-perm', data)
+}
+
+/**
+ * 添加管理员权限
+ * @param data userId: 用户id, permission: 权限
+ * @returns
+ */
+export function addAdminPermAPI(data: {
+  userId: string
+  permission: AdminPerm
+}) {
+  return request.post('/admin/admin-perm', data)
+}
+
+/**
+ * 删除用户权限
+ * @param data userId: 用户id, permission: 权限
+ * @returns
+ */
+export function delUserPermAPI(data: { userId: string; permission: UserPerm }) {
+  return request.delete('/admin/user-perm', { data })
+}
+
+/**
+ * 删除管理员权限
+ * @param data userId: 用户id, permission: 权限
+ * @returns
+ */
+export function delAdminPermAPI(data: {
+  userId: string
+  permission: AdminPerm
+}) {
+  return request.delete('/admin/admin-perm', { data })
 }

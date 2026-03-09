@@ -56,5 +56,34 @@
     "postInfo": "Post information:",
     "prohibitPublishPostHint": "Prohibit this user from posting?",
     "duration": "Duration:"
+  },
+  "commentReportReview": {
+    "commentId": "comment ID",
+    "ReportReason": "report reason",
+    "action": "action",
+    "pass": "pass",
+    "reject": "reject",
+    "isReject": "Is reject?",
+    "inputReasonTip": "Please enter the reason for the violation:",
+    "reason": "Please enter the reason",
+    "reasonInputErrorTip": "The content is not empty.",
+    "successTip": "Operation successful",
+    "postInfo": "Post information:",
+    "prohibitSpeakHint": "Prohibit this user from speaking?",
+    "duration": "Duration:"
+  },
+  "userPermModify": {
+    "defaultAdmin": "default admin",
+    "admin": "admin",
+    "userPerm": "user permission allocation",
+    "adminPerm": "admin permission allocation",
+    "edit": "quick edit",
+    "save": "save",
+    "cancel": "cancel",
+    "postReview": "post review",
+    "reportReview": "report review",
+    "permModify": "permission modify",
+    "successTip": "Operation successful",
+    "searchTip": "Search for user / email"
   }
 }

@@ -56,5 +56,34 @@
     "postInfo": "帖子信息：",
     "prohibitPublishPostHint": "是否禁止该用户发贴",
     "duration": "持续时间："
+  },
+  "commentReportReview": {
+    "commentId": "评论ID",
+    "ReportReason": "举报原因",
+    "action": "操作",
+    "pass": "通过",
+    "reject": "驳回",
+    "isReject": "是否驳回？",
+    "reasonInputErrorTip": "内容不为空",
+    "inputReasonTip": "请输入违规原因：",
+    "reason": "请输入原因",
+    "successTip": "操作成功",
+    "postInfo": "帖子信息：",
+    "prohibitSpeakHint": "是否禁止该用户发言",
+    "duration": "持续时间："
+  },
+  "userPermModify": {
+    "defaultAdmin": "默认管理员",
+    "admin": "管理员",
+    "userPerm": "用户权限分配",
+    "adminPerm": "管理员权限分配",
+    "edit": "快速编辑",
+    "save": "保存",
+    "cancel": "取消",
+    "postReview": "帖子审核",
+    "reportReview": "举报审核",
+    "permModify": "权限修改",
+    "successTip": "操作成功",
+    "searchTip": "搜索用户 / 邮箱"
   }
 }

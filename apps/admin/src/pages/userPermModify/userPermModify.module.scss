@@ -1,0 +1,136 @@
+.user {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .header {
+    align-self: center;
+    margin-right: 10px;
+    height: 50px;
+    width: 400px;
+
+    @media (max-width: 525px) {
+      // padding-left: 10px;
+      width: calc(100% - 30px);
+    }
+  }
+
+  .main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 400px);
+    align-content: start;
+    justify-content: center;
+    gap: 20px;
+    padding: 10px;
+    overflow-y: scroll;
+
+    @media (max-width: 525px) {
+      grid-template-columns: repeat(1, 100%);
+    }
+
+    &::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      background-color: var(--theme-scrollbar-thumb-color);
+    }
+
+    .item {
+      height: fit-content;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: var(--theme-shadow-color);
+
+      .head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        .avatar {
+          width: 40px;
+          height: 40px;
+          object-fit: cover;
+          border-radius: 10px;
+        }
+
+        .info {
+          .name {
+            font-weight: bold;
+          }
+
+          .email {
+            font-size: 14px;
+            color: rgb(141, 153, 167);
+          }
+        }
+      }
+
+      .perm {
+        margin: 20px 0;
+        .content {
+          font-size: 14px;
+          color: rgb(141, 153, 167);
+          margin-bottom: 10px;
+        }
+
+        .user-perm {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .admin-perm {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+      }
+
+      .edit {
+        display: flex;
+        justify-content: end;
+
+        .modify {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .btn {
+          color: var(--theme-font-color);
+          height: 32px;
+          background-color: var(--theme-perm-cancel-button-color);
+          padding: 0 10px;
+          border-radius: 5px;
+          justify-items: end;
+        }
+
+        .save {
+          background-color: var(--theme-perm-save-button-color);
+        }
+      }
+    }
+  }
+
+  .footer {
+    margin-top: 10px;
+    align-self: flex-end;
+  }
+}
+
+.common-label {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  width: fit-content;
+  font-size: 14px;
+  border-radius: 5px;
+  filter: var(--theme-perm-filter);
+}
+
+.no-perm {
+  background-color: var(--theme-no-perm-bg-color) !important;
+  color: var(--theme-no-perm-color) !important;
+}

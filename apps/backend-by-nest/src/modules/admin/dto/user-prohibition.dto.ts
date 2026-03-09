@@ -1,4 +1,4 @@
-import { IsIn, IsInt, IsString } from 'class-validator';
+import { IsIn, IsInt, IsNumber, IsString } from 'class-validator';
 import type { UserProhibitionType } from '../admin.constant';
 
 export class UserProhibitionDto {
@@ -13,6 +13,9 @@ export class UserProhibitionDto {
 
   @IsString()
   postId!: string;
+
+  @IsNumber()
+  commentId?: number;
 
   @IsInt()
   hours!: number;

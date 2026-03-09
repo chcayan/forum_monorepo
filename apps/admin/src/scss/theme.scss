@@ -22,6 +22,11 @@ body[data-theme='Dark'] {
 
   --theme-login-bg-color: rgb(18, 16, 16);
   --theme-login-font-color: rgb(255, 255, 255);
+  --theme-perm-save-button-color: rgb(88, 88, 88);
+  --theme-perm-cancel-button-color: rgb(37, 37, 37);
+  --theme-no-perm-color: rgb(165, 165, 165);
+  --theme-no-perm-bg-color: rgb(54, 54, 54);
+  --theme-perm-filter: brightness(0.8) saturate(1.2) contrast(1.05);
 }
 
 :root {
@@ -48,4 +53,9 @@ body[data-theme='Dark'] {
 
   --theme-login-bg-color: rgb(238, 242, 246);
   --theme-login-font-color: rgb(55, 65, 81);
+  --theme-perm-save-button-color: rgb(255, 214, 192);
+  --theme-perm-cancel-button-color: rgb(240, 241, 242);
+  --theme-no-perm-color: rgb(158, 171, 195);
+  --theme-no-perm-bg-color: rgb(241, 245, 249);
+  --theme-perm-filter: none;
 }

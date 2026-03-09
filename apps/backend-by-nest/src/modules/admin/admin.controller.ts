@@ -182,6 +182,16 @@ export class AdminController {
     return this.adminService.deleteCommentReport(commentId);
   }
 
+  @Get('user-perms')
+  @UseGuards(JwtAuthGuard, AdminPermissionGuard)
+  @AdminPermission('user_perm_modify')
+  async getUserPerms(
+    @Query('page', ParseIntPipe) page: number,
+    @Query('limit', ParseIntPipe) limit: number,
+  ) {
+    return this.adminService.getUserPerms(page, limit);
+  }
+
   @Post('prohibition')
   @UseGuards(JwtAuthGuard, AdminPermissionGuard)
   @AdminPermission('report_review')
@@ -206,6 +216,7 @@ export class AdminController {
         'user_mute',
         dto.punishTime,
         dto.postId,
+        dto.commentId,
       );
     }
     return this.adminService.setUserProhibition(
