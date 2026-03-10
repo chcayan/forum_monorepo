@@ -15,6 +15,11 @@ declare namespace NodeJS {
     DB_PASSWORD: string;
     DB_NAME: string;
     API_KEY: string;
+    REDIS_HOST: string;
+    REDIS_PORT: string;
+    REDIS_PASSWORD: string;
+    ACCESS_SECRET: string;
+    REFRESH_SECRET: string;
   }
 }
 

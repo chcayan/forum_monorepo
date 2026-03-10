@@ -36,7 +36,7 @@ export default function Login() {
 
   const currentTheme = useStatusStore((state) => state.currentTheme)
 
-  const setPermissions = useUserStore((state) => state.setPermissions)
+  // const setPermissions = useUserStore((state) => state.setPermissions)
   const setToken = useUserStore((state) => state.setToken)
   const navigate = useNavigate()
 
@@ -52,8 +52,8 @@ export default function Login() {
 
     const data = res.data.data
 
-    setToken(data.token)
-    setPermissions(Object.values(data.permissions))
+    setToken(data.accessToken)
+    // setPermissions(Object.values(data.permissions))
 
     Toast.show({
       msg: t('login.loginSuccessTip'),

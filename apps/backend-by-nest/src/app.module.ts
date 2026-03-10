@@ -27,6 +27,7 @@ import { ReviewViolationReason } from './modules/admin/entities/review-violation
 import { PostReport } from './modules/post/entities/post-report.entity';
 import { UserLog } from './modules/admin/entities/user-log.entity';
 import { CommentReport } from './modules/post/entities/comment-report.entity';
+import { RedisModule } from './modules/redis/redis.module';
 
 @Module({
   imports: [
@@ -70,6 +71,7 @@ import { CommentReport } from './modules/post/entities/comment-report.entity';
     AuthModule,
     ChatModule,
     AdminModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [AppService],

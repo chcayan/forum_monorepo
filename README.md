@@ -29,6 +29,7 @@ This project includes both web and app versions, with the app built on Uniapp.
 - node.js
 - nest.js
 - mysql
+- redis
 
 ### app:
 
@@ -47,8 +48,11 @@ Modify backend configuration (apps/backend-by-nest/.env.development).
 ```
 DB_HOST=localhost
 DB_USER=root
-DB_PASSWORD=yourpwd
-DB_NAME=yourdbname
+DB_PASSWORD=your_pwd
+DB_NAME=your_db_name
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_PASSWORD=your_pass_word
 ```
 
 Import database file (database/forum.sql).

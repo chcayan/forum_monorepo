@@ -18,14 +18,16 @@ export class OptionalJwtAuthGuard implements CanActivate {
       return true;
     }
 
-    const token = authHeader.split(' ')[1];
-    if (!token) {
+    const accessToken = authHeader.split(' ')[1];
+    if (!accessToken) {
       req.user = null;
       return true;
     }
 
     try {
-      const payload = this.jwtService.verify<JwtPayload>(token);
+      const payload = this.jwtService.verify<JwtPayload>(accessToken, {
+        secret: process.env.ACCESS_SECRET,
+      });
       req.user = { id: payload.id };
     } catch {
       req.user = null;

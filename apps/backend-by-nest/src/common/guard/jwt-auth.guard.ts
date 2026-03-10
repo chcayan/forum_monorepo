@@ -21,11 +21,13 @@ export class JwtAuthGuard implements CanActivate {
 
     if (!authHeader) throw new UnauthorizedException('未登录');
 
-    const token = authHeader.split(' ')[1];
-    if (!token) throw new UnauthorizedException('未登录');
+    const accessToken = authHeader.split(' ')[1];
+    if (!accessToken) throw new UnauthorizedException('未登录');
 
     try {
-      const payload = this.jwtService.verify<JwtPayload>(token);
+      const payload = this.jwtService.verify<JwtPayload>(accessToken, {
+        secret: process.env.ACCESS_SECRET,
+      });
 
       req.user = { id: payload.id };
       return true;

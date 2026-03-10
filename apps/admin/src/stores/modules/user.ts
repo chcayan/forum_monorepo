@@ -1,7 +1,14 @@
 import { checkIsLoginProhibitAPI, getAdminInfoAPI } from '@/api'
 import type { Permission } from '@/router'
-import type { UserInfo } from '@forum-monorepo/types'
 import { create } from 'zustand'
+
+interface UserInfo {
+  userId: string
+  username: string
+  userAvatar: string
+  userEmail: string
+  permissions: (keyof Permission)[]
+}
 
 interface UserState {
   permissions: (keyof Permission)[]
@@ -19,16 +26,11 @@ const defaultUserInfo = {
   username: '',
   userAvatar: '',
   userEmail: '',
-  registration: '',
-  follows: '',
-  fans: '',
-  backgroundImg: '',
-  sex: '',
-  signature: '',
+  permissions: [],
 }
 
 export const useUserStore = create<UserState>((set, get) => ({
-  permissions: JSON.parse(localStorage.getItem('perm') || '[]') || [],
+  permissions: [],
   token: localStorage.getItem('token') || '',
   userInfo: defaultUserInfo,
 
@@ -36,7 +38,6 @@ export const useUserStore = create<UserState>((set, get) => ({
     set({
       permissions,
     })
-    localStorage.setItem('perm', JSON.stringify(get().permissions))
   },
 
   setToken(_token) {
@@ -48,7 +49,6 @@ export const useUserStore = create<UserState>((set, get) => ({
 
   removeToken() {
     localStorage.removeItem('token')
-    localStorage.removeItem('perm')
     set({
       userInfo: defaultUserInfo,
       token: '',
@@ -57,12 +57,15 @@ export const useUserStore = create<UserState>((set, get) => ({
   },
 
   async setUserInfo() {
-    if (get().token) {
-      await checkIsLoginProhibitAPI()
-    }
-    const res = await getAdminInfoAPI('self')
+    const token = get().token
+    if (!token) return
+
+    await checkIsLoginProhibitAPI()
+    const res = await getAdminInfoAPI()
+    const data: UserInfo = res.data.data
     set({
-      userInfo: res.data.data,
+      userInfo: data,
+      permissions: data.permissions,
     })
   },
 }))

@@ -43,7 +43,8 @@ const submitForm = async () => {
         email: email.value,
         password: password.value,
       })
-      userStore.setToken(res.data.data.token)
+
+      userStore.setToken(res.data.data.accessToken)
       Toast.show({
         msg: '登录成功',
         type: 'success',

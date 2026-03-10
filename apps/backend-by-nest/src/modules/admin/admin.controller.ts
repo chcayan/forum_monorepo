@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Post,
   Query,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
@@ -19,14 +20,38 @@ import { LoginDto } from './dto/login.dto';
 import { UserProhibitionDto } from './dto/user-prohibition.dto';
 import { OptionalUser } from 'src/common/decorator/optional-user.decorator';
 import { CommentReportDto } from './dto/comment-report.dto';
+import { AuthService } from '../auth/auth.service';
+import type { Response } from 'express';
 
 @Controller('admin')
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(
+    private readonly adminService: AdminService,
+    private readonly authService: AuthService,
+  ) {}
 
   @Post('login')
-  async login(@Body() dto: LoginDto) {
-    return this.adminService.login(dto.email, dto.password);
+  async login(@Body() dto: LoginDto, @Res() res: Response) {
+    const userId = await this.adminService.login(dto.email, dto.password);
+    const accessToken = this.authService.generateAccessToken(userId);
+    const refreshToken = await this.authService.generateRefreshToken(
+      userId,
+      'admin',
+    );
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+    });
+
+    return res.json({
+      code: 0,
+      message: 'success',
+      data: {
+        accessToken,
+      },
+    });
   }
 
   @Post('user-perm')
@@ -224,5 +249,11 @@ export class AdminController {
       dto.prohibition,
       dto.hours,
     );
+  }
+
+  @Get('info')
+  @UseGuards(JwtAuthGuard)
+  async findOne(@OptionalUser() userId: string) {
+    return this.adminService.findOne(userId);
   }
 }

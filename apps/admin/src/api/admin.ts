@@ -5,8 +5,8 @@ import { request } from '@/utils'
  * @param userId 管理员id
  * @returns
  */
-export function getAdminInfoAPI(userId: string) {
-  return request.get(`/user/${userId}`)
+export function getAdminInfoAPI() {
+  return request.get('/admin/info')
 }
 
 type AdminLogin = {

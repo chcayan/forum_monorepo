@@ -18,7 +18,6 @@ import { Post } from '../post/entities/post.entity';
 import { UserAlias, UserFields } from '../user/user.constant';
 import { AdminPermissionBit, UserPermissionBit } from '../auth/auth.bit';
 import bcrypt from 'bcryptjs';
-import { JwtService } from '@nestjs/jwt';
 import { AdminPerm } from 'src/common/constant/permission.constant';
 import { PostAlias, PostFields } from '../post/post.constant';
 import { ReviewViolationReason } from './entities/review-violation-reason.entity';
@@ -47,7 +46,6 @@ export class AdminService {
     @InjectRepository(UserLog)
     private readonly userLogRepository: Repository<UserLog>,
     private readonly authService: AuthService,
-    private readonly jwtService: JwtService,
   ) {}
   async login(email: string, password: string) {
     const user = await this.userRepository
@@ -77,13 +75,9 @@ export class AdminService {
       throw new ForbiddenException('该用户没有管理员权限，请联系管理员');
     }
 
-    const token = this.jwtService.sign({
-      id: user.userId,
-    });
+    // const permissions = this.createPermissionsObj(userPermMask, adminPermMask);
 
-    const permissions = this.createPermissionsObj(userPermMask, adminPermMask);
-
-    return { token, permissions };
+    return user.userId;
   }
 
   createPermissionsObj(userPermMask: number, adminPermMask: number) {
@@ -120,6 +114,27 @@ export class AdminService {
     // };
 
     return adminPermission;
+  }
+
+  async findOne(userId: string) {
+    const result = await this.userRepository.findOne({
+      where: { userId },
+    });
+
+    if (!result) throw new NotFoundException('未找到该用户');
+
+    const userPermMask = result.userPermMask;
+    const adminPermMask = result.adminPermMask;
+
+    const permissions = this.createPermissionsObj(userPermMask, adminPermMask);
+
+    return {
+      userId: result.userId,
+      username: result.username,
+      userAvatar: result.userAvatar,
+      userEmail: result.userEmail,
+      permissions,
+    };
   }
 
   async addUserPermission(userId: string, permission: string) {

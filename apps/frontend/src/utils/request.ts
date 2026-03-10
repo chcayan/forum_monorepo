@@ -1,13 +1,27 @@
 import axios from 'axios'
 import emitter from './eventEmitter'
 import { useUserStore } from '@/stores'
+import { refreshAPI } from '@/api'
 
 const baseURL = '/api'
 
 const instance = axios.create({
   baseURL,
   timeout: 30000,
+  withCredentials: true,
 })
+
+let isRefreshing = false
+let refreshSubscribers: ((token: string) => void)[] = []
+
+function subscribeTokenRefresh(cb: (token: string) => void) {
+  refreshSubscribers.push(cb)
+}
+
+function onRefreshed(token: string) {
+  refreshSubscribers.forEach((cb) => cb(token))
+  refreshSubscribers = []
+}
 
 instance.interceptors.request.use(
   (config) => {
@@ -25,12 +39,42 @@ instance.interceptors.response.use(
   (res) => {
     return res
   },
-  (err) => {
+  async (err) => {
+    const originalRequest = err.config
+    const userStore = useUserStore()
+
     if (err.response?.status === 400) {
       emitter.emit('API:BAD_REQUEST', err.response?.data.message)
     }
     if (err.response?.status === 401) {
-      emitter.emit('API:UN_AUTH', err.response?.data.message)
+      if (originalRequest.url?.includes('/auth/refresh')) {
+        emitter.emit('API:UN_AUTH', err.response?.data.message)
+        return Promise.reject(err)
+      }
+
+      if (!isRefreshing) {
+        isRefreshing = true
+
+        try {
+          const res = await refreshAPI()
+          const newToken = res.data.data.accessToken
+
+          userStore.setToken(newToken)
+          isRefreshing = false
+
+          onRefreshed(newToken)
+        } catch {
+          isRefreshing = false
+          emitter.emit('API:UN_AUTH', err.response?.data.message)
+        }
+
+        return new Promise((resolve) => {
+          subscribeTokenRefresh((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`
+            resolve(instance(originalRequest))
+          })
+        })
+      }
     }
     if (err.response?.status === 403) {
       emitter.emit('API:FORBIDDEN', err.response?.data.message)

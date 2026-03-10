@@ -31,10 +31,9 @@ export default function Layout() {
 
   useEffect(() => {
     // init user
-    const { token, permissions, removeToken, setUserInfo } =
-      useUserStore.getState()
+    const { token, removeToken, setUserInfo } = useUserStore.getState()
 
-    if (!token || permissions.length === 0) {
+    if (!token) {
       removeToken()
       navigate(RoutePath.login)
     }

@@ -29,6 +29,7 @@
 - node.js
 - nest.js
 - mysql
+- redis
 
 ### app：
 
@@ -47,8 +48,11 @@ pnpm i
 ```
 DB_HOST=localhost
 DB_USER=root
-DB_PASSWORD=yourpwd
-DB_NAME=yourdbname
+DB_PASSWORD=your_pwd
+DB_NAME=your_db_name
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_PASSWORD=your_pass_word
 ```
 
 导入数据库文件 (database/forum.sql)

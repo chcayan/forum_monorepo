@@ -11,6 +11,7 @@ import {
   UseInterceptors,
   UploadedFiles,
   Patch,
+  Res,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { LoginDto, RegisterDto } from './dto/login.dto';
@@ -21,10 +22,15 @@ import { OptionalUser } from 'src/common/decorator/optional-user.decorator';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { OptionalJwtAuthGuard } from 'src/common/guard/optional-jwt-auth.guard';
 import { LoginProhibitGuard } from 'src/common/guard/login-prohibit.guard';
+import { AuthService } from '../auth/auth.service';
+import type { Response } from 'express';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly authService: AuthService,
+  ) {}
 
   @Post('check-login-prohibit')
   @UseGuards(JwtAuthGuard, LoginProhibitGuard)
@@ -33,8 +39,27 @@ export class UserController {
   }
 
   @Post('login')
-  async login(@Body() dto: LoginDto) {
-    return this.userService.login(dto.email, dto.password);
+  async login(@Body() dto: LoginDto, @Res() res: Response) {
+    const userId = await this.userService.login(dto.email, dto.password);
+    const accessToken = this.authService.generateAccessToken(userId);
+    const refreshToken = await this.authService.generateRefreshToken(
+      userId,
+      'user',
+    );
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+    });
+
+    return res.json({
+      code: 0,
+      message: 'success',
+      data: {
+        accessToken,
+      },
+    });
   }
 
   @Post('register')

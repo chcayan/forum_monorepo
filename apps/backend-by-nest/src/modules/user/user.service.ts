@@ -6,7 +6,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { JwtService } from '@nestjs/jwt';
 import { DataSource, Like, Repository } from 'typeorm';
 import bcrypt from 'bcryptjs';
 
@@ -38,8 +37,6 @@ export class UserService {
     @InjectRepository(UserLog)
     private readonly userLogRepository: Repository<UserLog>,
     @InjectRepository(Comment)
-    private readonly commentRepository: Repository<Comment>,
-    private readonly jwtService: JwtService,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -73,11 +70,7 @@ export class UserService {
       throw new UnauthorizedException('用户名或密码错误');
     }
 
-    const token = this.jwtService.sign({
-      id: user.userId,
-    });
-
-    return { token };
+    return user.userId;
   }
 
   async register(email: string, password: string) {
