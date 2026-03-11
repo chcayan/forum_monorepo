@@ -69,7 +69,7 @@ export class AuthService {
 
   async get(userId: string, role: 'user' | 'admin') {
     const key = `refresh:${userId}:${role}`;
-    console.log(key);
+
     return this.redis.get(key);
   }
 
@@ -82,7 +82,7 @@ export class AuthService {
   generateAccessToken(userId: string, role: 'user' | 'admin') {
     return this.jwtService.sign<JwtPayload>(
       { id: userId, role },
-      { secret: process.env.ACCESS_SECRET, expiresIn: '10s' },
+      { secret: process.env.ACCESS_SECRET, expiresIn: '15m' },
     );
   }
 

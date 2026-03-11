@@ -17,11 +17,25 @@ const userLoginProhibitTip = (punishTime: number) => {
   return `由于您近期多次违反论坛规范，您的账号已被禁止登录 ${punishTime} 小时。请遵守论坛规范。`
 }
 
+const systemTip = (reason: string) => {
+  return reason
+}
+
 type Tip = {
   (punishTime: number): string
 }
 
-const msgStatus = {
+type SystemTip = {
+  (reason: string): string
+}
+
+type MsgStatusType = [
+  string,
+  string,
+  string | ((punishTime: number) => void) | ((reason: string) => void),
+]
+
+const msgStatus: Record<UserMessage['status'], MsgStatusType> = {
   post_review_pass: [
     '审核通过',
     '您的帖子已发布',
@@ -35,7 +49,7 @@ const msgStatus = {
   user_mute: ['违规处罚', '账号禁言通知', userMuteTip],
   user_post_prohibit: ['违规处罚', '账号禁止发贴通知', userPostProhibitTip],
   user_login_prohibit: ['违规处罚', '账号禁止登录通知', userLoginProhibitTip],
-  system_announcement: ['系统公告', '版本更新说明', ''],
+  system_announcement: ['系统通知', '用户权限变更', systemTip],
   post_violate: [
     '帖子违规',
     '您发布的帖子被举报',
@@ -83,11 +97,13 @@ const navigateToPost = (status: UserMessage['status'], postId: string) => {
         <h3>{{ msgStatus[item.status][1] }}</h3>
         <p class="tip">
           {{
-            item.status === 'user_mute' ||
-            item.status === 'user_login_prohibit' ||
-            item.status === 'user_post_prohibit'
-              ? (msgStatus[item.status][2] as Tip)(item.punishTime)
-              : msgStatus[item.status][2]
+            item.status === 'system_announcement'
+              ? (msgStatus[item.status][2] as SystemTip)(item.content)
+              : item.status === 'user_mute' ||
+                  item.status === 'user_login_prohibit' ||
+                  item.status === 'user_post_prohibit'
+                ? (msgStatus[item.status][2] as Tip)(item.punishTime)
+                : msgStatus[item.status][2]
           }}{{
             item.status === 'post_violate' ||
             item.status === 'comment_violate' ||

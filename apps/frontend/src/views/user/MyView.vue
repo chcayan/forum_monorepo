@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import PostList from '../post/components/PostList.vue'
 import { getPostDetailAPI, getUserCollectPostAPI, getUserPostAPI } from '@/api'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import type { PostDetail } from '@forum-monorepo/types'
 import emitter from '@/utils/eventEmitter'
 import { useUserStore } from '@/stores'
@@ -87,6 +87,20 @@ onMounted(async () => {
   getUserPostList(userPostListPage.value)
   getUserCollectedPostList(userCollectedPostListPage.value)
 })
+
+watch(
+  () => userStore.token,
+  async () => {
+    if (!userStore.token) return
+    await getUserInfo()
+    userPostListPage.value = 1
+    userCollectedPostListPage.value = 1
+    userPostMap.value.clear()
+    userCollectedPostMap.value.clear()
+    getUserPostList(userPostListPage.value)
+    getUserCollectedPostList(userCollectedPostListPage.value)
+  }
+)
 
 emitter.on('EVENT:DELETE_USER_POST_LIST', async (pId: string) => {
   if (userPostMap.value.get(pId)) {

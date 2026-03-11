@@ -430,7 +430,7 @@ export class AdminService {
     until.setHours(now.getHours() + hours);
 
     await this.userRepository.update(userId, {
-      [`${prohibition}`]: until,
+      [prohibition]: until,
     });
 
     return {
@@ -518,5 +518,22 @@ export class AdminService {
     }));
 
     return { list: filteredList, total };
+  }
+
+  async setUserUntil2Null(userId: string, prohibition: UserProhibitionType) {
+    const user = await this.userRepository.findOne({
+      where: { userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('未找到该用户');
+    }
+
+    await this.userRepository.update(
+      { userId },
+      {
+        [prohibition]: null,
+      },
+    );
   }
 }

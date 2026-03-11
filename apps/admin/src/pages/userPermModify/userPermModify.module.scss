@@ -130,6 +130,10 @@
   filter: var(--theme-perm-filter);
 }
 
+.cursor {
+  cursor: pointer;
+}
+
 .no-perm {
   background-color: var(--theme-no-perm-bg-color) !important;
   color: var(--theme-no-perm-color) !important;

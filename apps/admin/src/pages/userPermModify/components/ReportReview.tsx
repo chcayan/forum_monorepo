@@ -17,7 +17,7 @@ export default function ReportReview({
   const [perm, setPerm] = useState(hasPerm)
 
   const handleClick = () => {
-    if (!currentEditUserId) return
+    if (userId !== currentEditUserId) return
     setPerm(!perm)
   }
 
@@ -54,7 +54,7 @@ export default function ReportReview({
   return (
     <>
       <div
-        className={`${styles['common-label']} ${!perm && styles['no-perm']}`}
+        className={`${styles['common-label']} ${!perm && styles['no-perm']} ${userId === currentEditUserId && styles['cursor']}`}
         style={{
           backgroundColor: 'rgb(235, 249, 245)',
           color: 'rgb(16, 185, 129)',

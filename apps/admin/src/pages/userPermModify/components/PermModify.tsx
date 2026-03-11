@@ -17,7 +17,7 @@ export default function PermModify({
   const [perm, setPerm] = useState(hasPerm)
 
   const handleClick = () => {
-    if (!currentEditUserId) return
+    if (userId !== currentEditUserId) return
     setPerm(!perm)
   }
 
@@ -58,7 +58,7 @@ export default function PermModify({
   return (
     <>
       <div
-        className={`${styles['common-label']} ${!perm && styles['no-perm']}`}
+        className={`${styles['common-label']} ${!perm && styles['no-perm']} ${userId === currentEditUserId && styles['cursor']}`}
         style={{
           backgroundColor: 'rgb(254, 240, 240)',
           color: 'rgb(240, 90, 78)',

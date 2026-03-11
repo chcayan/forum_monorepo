@@ -8,6 +8,7 @@ import { Toast } from '@/utils'
 import ReportReview from './components/ReportReview'
 import PermModify from './components/PermModify'
 import { useTranslation } from 'react-i18next'
+import UserMute from './components/UserSpeak'
 
 type UserPermsInfo = {
   userId: string
@@ -20,9 +21,9 @@ type UserPermsInfo = {
   hasPostReviewPerm: boolean
   hasReportReviewPerm: boolean
   hasUserPermModifyPerm: boolean
-  muteUntil: string
-  postProhibitUntil: string
-  loginProhibitUntil: string
+  muteUntil: number
+  postProhibitUntil: number
+  loginProhibitUntil: number
 }
 
 export default function UserPermModify() {
@@ -31,6 +32,7 @@ export default function UserPermModify() {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(9)
   const [total, setTotal] = useState(0)
+  const [userId, setUserId] = useState('')
 
   useEffect(() => {
     let ignore = false
@@ -50,6 +52,7 @@ export default function UserPermModify() {
 
     const off = emitter.on('EVENT:UPDATE_USER_PERMS', () => {
       getUserPerms()
+      setUserId('')
     })
 
     return () => {
@@ -57,8 +60,6 @@ export default function UserPermModify() {
       off()
     }
   }, [page, pageSize])
-
-  const [userId, setUserId] = useState('')
 
   const onEdit = (userId: string) => {
     setUserId(userId)
@@ -133,7 +134,15 @@ export default function UserPermModify() {
               </div>
               <div className={styles.perm}>
                 <p className={styles.content}>{t('userPermModify.userPerm')}</p>
-                <div className={styles['user-perm']}></div>
+                <div className={styles['user-perm']}>
+                  <UserMute
+                    userId={item.userId}
+                    hasPerm={item.hasUserSpeakPerm}
+                    currentEditUserId={userId}
+                    until={item.muteUntil}
+                  />
+                </div>
+                <div style={{ height: '10px' }}></div>
                 <p className={styles.content}>
                   {t('userPermModify.adminPerm')}
                 </p>

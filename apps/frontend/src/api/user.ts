@@ -202,14 +202,6 @@ export function getViolationReasonAPI(postId: string) {
 }
 
 /**
- * 检测用户是否被封禁
- * @returns
- */
-export function checkIsLoginProhibitAPI() {
-  return request.post('/user/check-login-prohibit')
-}
-
-/**
  * 查询用户信息
  * @returns
  */

@@ -57,18 +57,27 @@ function PassButton({ postId }: { postId: string }) {
 
   const handleOk = async () => {
     setConfirmLoading(true)
-    await updatePostStatusAPI({
-      postId,
-      status: 1,
-      reason: '帖子审核通过',
-    })
-    setConfirmLoading(false)
-    setOpen(false)
-    Toast.show({
-      msg: t('postReview.successTip'),
-      type: 'success',
-    })
-    emitter.emit('EVENT:UPDATE_POST_REVIEW')
+    try {
+      await updatePostStatusAPI({
+        postId,
+        status: 1,
+        reason: '帖子审核通过',
+      })
+
+      setOpen(false)
+      Toast.show({
+        msg: t('postReview.successTip'),
+        type: 'success',
+      })
+      emitter.emit('EVENT:UPDATE_POST_REVIEW')
+    } catch {
+      Toast.show({
+        msg: t('postReview.errorTip'),
+        type: 'error',
+      })
+    } finally {
+      setConfirmLoading(false)
+    }
   }
 
   const handleCancel = () => {
@@ -101,23 +110,30 @@ function ViolateButton({ postId }: { postId: string }) {
   const [value, setValue] = useState('')
 
   const handleOk = async () => {
-    setConfirmLoading(true)
     if (value.trim() === '') {
       Toast.show({
         msg: t('postReview.reasonInputErrorTip'),
         type: 'error',
       })
-      setConfirmLoading(false)
       return
     }
-    await updatePostStatusAPI({ postId, status: 2, reason: value })
-    setConfirmLoading(false)
-    setOpen(false)
-    Toast.show({
-      msg: t('postReview.successTip'),
-      type: 'success',
-    })
-    emitter.emit('EVENT:UPDATE_POST_REVIEW')
+    setConfirmLoading(true)
+    try {
+      await updatePostStatusAPI({ postId, status: 2, reason: value })
+      setOpen(false)
+      Toast.show({
+        msg: t('postReview.successTip'),
+        type: 'success',
+      })
+      emitter.emit('EVENT:UPDATE_POST_REVIEW')
+    } catch {
+      Toast.show({
+        msg: t('postReview.errorTip'),
+        type: 'error',
+      })
+    } finally {
+      setConfirmLoading(false)
+    }
   }
 
   return (

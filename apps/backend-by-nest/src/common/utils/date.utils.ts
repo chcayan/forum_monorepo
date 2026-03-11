@@ -19,6 +19,16 @@ export function formatDate(dateString: Date | string) {
 export function formatRemainTime(targetTime: Date | string | number) {
   const diff = new Date(targetTime).getTime() - Date.now();
 
+  if (diff <= 0) return 0;
+
+  const minute = Math.floor(diff / (1000 * 60));
+
+  return minute;
+}
+
+export function formatRemainTimeWithText(targetTime: Date | string | number) {
+  const diff = new Date(targetTime).getTime() - Date.now();
+
   if (diff <= 0) return '0 分钟';
 
   const day = Math.floor(diff / (1000 * 60 * 60 * 24));

@@ -51,40 +51,48 @@ function PassButton({
   const [value, setValue] = useState('')
 
   const handleOk = async () => {
-    setConfirmLoading(true)
     if (value.trim() === '') {
       Toast.show({
         msg: t('commentReportReview.reasonInputErrorTip'),
         type: 'error',
       })
-      setConfirmLoading(false)
       return
     }
-    await setCommentViolateAPI({
-      postId,
-      commentId,
-      reason: value,
-      punishTime: forbiddenTimeRadioVisible ? timeValue : 0,
-    })
-    if (forbiddenTimeRadioVisible) {
-      await setUserPermProhibitTimeAPI({
-        userId,
-        prohibition: 'muteUntil',
-        hours: timeValue,
-        reason: value,
-        punishTime: timeValue,
+    setConfirmLoading(true)
+
+    try {
+      await setCommentViolateAPI({
         postId,
         commentId,
+        reason: value,
+        punishTime: forbiddenTimeRadioVisible ? timeValue : 0,
       })
+      if (forbiddenTimeRadioVisible) {
+        await setUserPermProhibitTimeAPI({
+          userId,
+          prohibition: 'muteUntil',
+          hours: timeValue,
+          reason: value,
+          punishTime: timeValue,
+          postId,
+          commentId,
+        })
+      }
+      await deleteCommentReportAPI(commentId)
+      onClose()
+      Toast.show({
+        msg: t('commentReportReview.successTip'),
+        type: 'success',
+      })
+      emitter.emit('EVENT:UPDATE_COMMENT_REPORT')
+    } catch {
+      Toast.show({
+        msg: t('commentReportReview.errorTip'),
+        type: 'error',
+      })
+    } finally {
+      setConfirmLoading(false)
     }
-    await deleteCommentReportAPI(commentId)
-    setConfirmLoading(false)
-    onClose()
-    Toast.show({
-      msg: t('commentReportReview.successTip'),
-      type: 'success',
-    })
-    emitter.emit('EVENT:UPDATE_COMMENT_REPORT')
   }
 
   const onClose = () => {
@@ -170,14 +178,22 @@ function RejectButton({ commentId }: { commentId: number }) {
 
   const handleOk = async () => {
     setConfirmLoading(true)
-    await deleteCommentReportAPI(commentId)
-    setConfirmLoading(false)
-    setOpen(false)
-    Toast.show({
-      msg: t('commentReportReview.successTip'),
-      type: 'success',
-    })
-    emitter.emit('EVENT:UPDATE_COMMENT_REPORT')
+    try {
+      await deleteCommentReportAPI(commentId)
+      setOpen(false)
+      Toast.show({
+        msg: t('commentReportReview.successTip'),
+        type: 'success',
+      })
+      emitter.emit('EVENT:UPDATE_COMMENT_REPORT')
+    } catch {
+      Toast.show({
+        msg: t('commentReportReview.errorTip'),
+        type: 'error',
+      })
+    } finally {
+      setConfirmLoading(false)
+    }
   }
 
   const handleCancel = () => {

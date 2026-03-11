@@ -1,16 +1,24 @@
-import { Controller, Post, Req, Res } from '@nestjs/common';
+import { Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import type { Response } from 'express';
 import type { AuthRequest } from 'src/common/interface/auth-request.interface';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from 'src/common/interface/jwt-payload.interface';
 import { RefreshToken } from './auth.constant';
+import { JwtAuthGuard } from 'src/common/guard/jwt-auth.guard';
+import { LoginProhibitGuard } from 'src/common/guard/login-prohibit.guard';
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly jwtService: JwtService,
   ) {}
+
+  @Post('check-login-prohibit')
+  @UseGuards(JwtAuthGuard, LoginProhibitGuard)
+  checkIsLoginProhibit() {
+    return;
+  }
 
   @Post('refresh-user')
   async refreshUser(@Req() req: AuthRequest, @Res() res: Response) {

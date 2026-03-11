@@ -21,7 +21,6 @@ import { uploadOptions } from 'src/common/config/upload.config';
 import { OptionalUser } from 'src/common/decorator/optional-user.decorator';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { OptionalJwtAuthGuard } from 'src/common/guard/optional-jwt-auth.guard';
-import { LoginProhibitGuard } from 'src/common/guard/login-prohibit.guard';
 import { AuthService } from '../auth/auth.service';
 import type { Response } from 'express';
 import { RefreshToken } from '../auth/auth.constant';
@@ -32,12 +31,6 @@ export class UserController {
     private readonly userService: UserService,
     private readonly authService: AuthService,
   ) {}
-
-  @Post('check-login-prohibit')
-  @UseGuards(JwtAuthGuard, LoginProhibitGuard)
-  checkIsLoginProhibit() {
-    return;
-  }
 
   @Post('login')
   async login(@Body() dto: LoginDto, @Res() res: Response) {

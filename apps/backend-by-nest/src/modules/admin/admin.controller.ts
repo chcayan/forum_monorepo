@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
-import { PermissionDto } from './dto/permission.dto';
+import { AdminPermissionDto, UserPermissionDto } from './dto/permission.dto';
 import { JwtAuthGuard } from 'src/common/guard/jwt-auth.guard';
 import { AdminPermissionGuard } from 'src/common/guard/permission.guard';
 import { AdminPermission } from 'src/common/decorator/permission.decorator';
@@ -23,6 +23,7 @@ import { CommentReportDto } from './dto/comment-report.dto';
 import { AuthService } from '../auth/auth.service';
 import type { Response } from 'express';
 import { RefreshToken } from '../auth/auth.constant';
+import { PermModificationDto } from './dto/perm-modification.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -58,28 +59,48 @@ export class AdminController {
   @Post('user-perm')
   @UseGuards(JwtAuthGuard, AdminPermissionGuard)
   @AdminPermission('user_perm_modify')
-  async addUserPermission(@Body() dto: PermissionDto) {
-    return this.adminService.addUserPermission(dto.userId, dto.permission);
+  async addUserPermission(
+    @Body() dto: UserPermissionDto,
+    @OptionalUser() adminId: string,
+  ) {
+    await this.adminService.addUserPermission(dto.userId, dto.permission);
+    return this.adminService.setUserLog(
+      dto.userId,
+      adminId,
+      dto.reason,
+      'system_announcement',
+      0,
+    );
   }
 
   @Delete('user-perm')
   @UseGuards(JwtAuthGuard, AdminPermissionGuard)
   @AdminPermission('user_perm_modify')
-  async delUserPermission(@Body() dto: PermissionDto) {
-    return this.adminService.delUserPermission(dto.userId, dto.permission);
+  async delUserPermission(
+    @Body() dto: UserPermissionDto,
+    @OptionalUser() adminId: string,
+  ) {
+    await this.adminService.delUserPermission(dto.userId, dto.permission);
+    return this.adminService.setUserLog(
+      dto.userId,
+      adminId,
+      dto.reason,
+      'system_announcement',
+      0,
+    );
   }
 
   @Post('admin-perm')
   @UseGuards(JwtAuthGuard, AdminPermissionGuard)
   @AdminPermission('user_perm_modify')
-  async addAdminPermission(@Body() dto: PermissionDto) {
+  async addAdminPermission(@Body() dto: AdminPermissionDto) {
     return this.adminService.addAdminPermission(dto.userId, dto.permission);
   }
 
   @Delete('admin-perm')
   @UseGuards(JwtAuthGuard, AdminPermissionGuard)
   @AdminPermission('user_perm_modify')
-  async delAdminPermission(@Body() dto: PermissionDto) {
+  async delAdminPermission(@Body() dto: AdminPermissionDto) {
     return this.adminService.delAdminPermission(dto.userId, dto.permission);
   }
 
@@ -250,6 +271,24 @@ export class AdminController {
       dto.prohibition,
       dto.hours,
     );
+  }
+
+  @Post('punishment-to-null')
+  @UseGuards(JwtAuthGuard, AdminPermissionGuard)
+  @AdminPermission('user_perm_modify')
+  async setUserUntil2Null(
+    @OptionalUser() adminId: string,
+    @Body() dto: PermModificationDto,
+  ) {
+    await this.adminService.setUserLog(
+      dto.userId,
+      adminId,
+      dto.reason,
+      'system_announcement',
+      0,
+    );
+
+    return this.adminService.setUserUntil2Null(dto.userId, dto.prohibition);
   }
 
   @Get('info')

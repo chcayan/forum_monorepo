@@ -40,6 +40,7 @@
     "reason": "Please enter the reason",
     "reasonInputErrorTip": "The content is not empty.",
     "successTip": "Operation successful",
+    "errorTip": "Operation failed",
     "postContent": "Post content:"
   },
   "postReportReview": {
@@ -53,6 +54,7 @@
     "reason": "Please enter the reason",
     "reasonInputErrorTip": "The content is not empty.",
     "successTip": "Operation successful",
+    "errorTip": "Operation failed",
     "postInfo": "Post information:",
     "prohibitPublishPostHint": "Prohibit this user from posting?",
     "duration": "Duration:"
@@ -68,6 +70,7 @@
     "reason": "Please enter the reason",
     "reasonInputErrorTip": "The content is not empty.",
     "successTip": "Operation successful",
+    "errorTip": "Operation failed",
     "postInfo": "Post information:",
     "prohibitSpeakHint": "Prohibit this user from speaking?",
     "duration": "Duration:"
@@ -84,6 +87,18 @@
     "reportReview": "report review",
     "permModify": "permission modify",
     "successTip": "Operation successful",
-    "searchTip": "Search for user / email"
+    "errorTip": "Operation failed",
+    "searchTip": "Search for user / email",
+    "speech": "speech",
+    "mute": "mute",
+    "speechNormalTip": "Current user can speak normally",
+    "speechErrorTip": "Current user has been permanently banned from speaking",
+    "speechTempTip": "Current user is muting, remaining time:",
+    "permanentMuteTip": "Prohibit this user from permanently muting?",
+    "removeMuteTip": "Remove this user from permanently muting?",
+    "removeTempMuteTip": "Remove this user from muting?",
+    "reason": "Please enter the reason",
+    "reasonInputErrorTip": "The content is not empty.",
+    "noChangeTip": "Nothing has been changed yet"
   }
 }

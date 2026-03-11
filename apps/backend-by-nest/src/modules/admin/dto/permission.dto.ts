@@ -1,6 +1,17 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
-export class PermissionDto {
+export class UserPermissionDto {
+  @IsNotEmpty()
+  userId!: string;
+
+  @IsNotEmpty()
+  permission!: string;
+
+  @IsString()
+  reason!: string;
+}
+
+export class AdminPermissionDto {
   @IsNotEmpty()
   userId!: string;
 

@@ -40,6 +40,7 @@
     "reason": "请输入原因",
     "reasonInputErrorTip": "内容不为空",
     "successTip": "操作成功",
+    "errorTip": "操作失败",
     "postContent": "帖子内容："
   },
   "postReportReview": {
@@ -53,6 +54,7 @@
     "inputReasonTip": "请输入违规原因：",
     "reason": "请输入原因",
     "successTip": "操作成功",
+    "errorTip": "操作失败",
     "postInfo": "帖子信息：",
     "prohibitPublishPostHint": "是否禁止该用户发贴",
     "duration": "持续时间："
@@ -68,6 +70,7 @@
     "inputReasonTip": "请输入违规原因：",
     "reason": "请输入原因",
     "successTip": "操作成功",
+    "errorTip": "操作失败",
     "postInfo": "帖子信息：",
     "prohibitSpeakHint": "是否禁止该用户发言",
     "duration": "持续时间："
@@ -84,6 +87,18 @@
     "reportReview": "举报审核",
     "permModify": "权限修改",
     "successTip": "操作成功",
-    "searchTip": "搜索用户 / 邮箱"
+    "errorTip": "操作失败",
+    "searchTip": "搜索用户 / 邮箱",
+    "speech": "发言",
+    "mute": "禁言",
+    "speechNormalTip": "当前用户可正常发言",
+    "speechErrorTip": "当前用户被永久禁言",
+    "speechTempTip": "当前用户禁言中，剩余时间：",
+    "permanentMuteTip": "是否将该用户永久禁言",
+    "removeMuteTip": "是否解除该用户永久禁言",
+    "removeTempMuteTip": "是否解除该用户禁言",
+    "reason": "请输入原因",
+    "reasonInputErrorTip": "内容不为空",
+    "noChangeTip": "啥都没有改呢"
   }
 }

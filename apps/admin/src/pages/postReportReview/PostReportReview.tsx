@@ -92,39 +92,46 @@ function PassButton({ postId, userId }: { postId: string; userId: string }) {
   const [value, setValue] = useState('')
 
   const handleOk = async () => {
-    setConfirmLoading(true)
     if (value.trim() === '') {
       Toast.show({
         msg: t('postReportReview.reasonInputErrorTip'),
         type: 'error',
       })
-      setConfirmLoading(false)
       return
     }
-    await setPostViolateAPI({
-      postId,
-      status: 2,
-      reason: value,
-      punishTime: forbiddenTimeRadioVisible ? timeValue : 0,
-    })
-    if (forbiddenTimeRadioVisible) {
-      await setUserPermProhibitTimeAPI({
-        userId,
-        prohibition: 'postProhibitUntil',
-        hours: timeValue,
-        reason: value,
-        punishTime: timeValue,
+    setConfirmLoading(true)
+    try {
+      await setPostViolateAPI({
         postId,
+        status: 2,
+        reason: value,
+        punishTime: forbiddenTimeRadioVisible ? timeValue : 0,
       })
+      if (forbiddenTimeRadioVisible) {
+        await setUserPermProhibitTimeAPI({
+          userId,
+          prohibition: 'postProhibitUntil',
+          hours: timeValue,
+          reason: value,
+          punishTime: timeValue,
+          postId,
+        })
+      }
+      await deletePostReportAPI(postId)
+      onClose()
+      Toast.show({
+        msg: t('postReportReview.successTip'),
+        type: 'success',
+      })
+      emitter.emit('EVENT:UPDATE_POST_REPORT')
+    } catch {
+      Toast.show({
+        msg: t('postReportReview.errorTip'),
+        type: 'error',
+      })
+    } finally {
+      setConfirmLoading(false)
     }
-    await deletePostReportAPI(postId)
-    setConfirmLoading(false)
-    onClose()
-    Toast.show({
-      msg: t('postReportReview.successTip'),
-      type: 'success',
-    })
-    emitter.emit('EVENT:UPDATE_POST_REPORT')
   }
 
   const onClose = () => {
@@ -211,14 +218,22 @@ function RejectButton({ postId }: { postId: string }) {
 
   const handleOk = async () => {
     setConfirmLoading(true)
-    await deletePostReportAPI(postId)
-    setConfirmLoading(false)
-    setOpen(false)
-    Toast.show({
-      msg: t('postReportReview.successTip'),
-      type: 'success',
-    })
-    emitter.emit('EVENT:UPDATE_POST_REPORT')
+    try {
+      await deletePostReportAPI(postId)
+      setOpen(false)
+      Toast.show({
+        msg: t('postReportReview.successTip'),
+        type: 'success',
+      })
+      emitter.emit('EVENT:UPDATE_POST_REPORT')
+    } catch {
+      Toast.show({
+        msg: t('postReportReview.errorTip'),
+        type: 'error',
+      })
+    } finally {
+      setConfirmLoading(false)
+    }
   }
 
   const handleCancel = () => {

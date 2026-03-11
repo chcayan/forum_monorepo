@@ -122,14 +122,6 @@ export function deleteCommentReportAPI(commentId: number) {
   return request.delete(`/admin/comment-report/${commentId}`)
 }
 
-/**
- * 检测用户是否被封禁（这里用于检测jwt是否过期）
- * @returns
- */
-export function checkIsLoginProhibitAPI() {
-  return request.post('/user/check-login-prohibit')
-}
-
 type ProhibitionType = {
   userId: string
   prohibition: 'muteUntil' | 'postProhibitUntil' | 'loginProhibitUntil'
@@ -165,7 +157,11 @@ type AdminPerm = 'post_review' | 'report_review' | 'user_perm_modify'
  * @param data userId: 用户id, permission: 权限
  * @returns
  */
-export function addUserPermAPI(data: { userId: string; permission: UserPerm }) {
+export function addUserPermAPI(data: {
+  userId: string
+  permission: UserPerm
+  reason: string
+}) {
   return request.post('/admin/user-perm', data)
 }
 
@@ -186,7 +182,11 @@ export function addAdminPermAPI(data: {
  * @param data userId: 用户id, permission: 权限
  * @returns
  */
-export function delUserPermAPI(data: { userId: string; permission: UserPerm }) {
+export function delUserPermAPI(data: {
+  userId: string
+  permission: UserPerm
+  reason: string
+}) {
   return request.delete('/admin/user-perm', { data })
 }
 
@@ -200,4 +200,17 @@ export function delAdminPermAPI(data: {
   permission: AdminPerm
 }) {
   return request.delete('/admin/admin-perm', { data })
+}
+
+/**
+ * 取消用户暂时性权限限制
+ * @param data
+ * @returns
+ */
+export function setUserTempPunish2NullAPI(data: {
+  userId: string
+  prohibition: 'muteUntil' | 'postProhibitUntil' | 'loginProhibitUntil'
+  reason: string
+}) {
+  return request.post('/admin/punishment-to-null', data)
 }
