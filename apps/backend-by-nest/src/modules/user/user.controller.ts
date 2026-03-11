@@ -24,6 +24,7 @@ import { OptionalJwtAuthGuard } from 'src/common/guard/optional-jwt-auth.guard';
 import { LoginProhibitGuard } from 'src/common/guard/login-prohibit.guard';
 import { AuthService } from '../auth/auth.service';
 import type { Response } from 'express';
+import { RefreshToken } from '../auth/auth.constant';
 
 @Controller('user')
 export class UserController {
@@ -41,13 +42,13 @@ export class UserController {
   @Post('login')
   async login(@Body() dto: LoginDto, @Res() res: Response) {
     const userId = await this.userService.login(dto.email, dto.password);
-    const accessToken = this.authService.generateAccessToken(userId);
+    const accessToken = this.authService.generateAccessToken(userId, 'user');
     const refreshToken = await this.authService.generateRefreshToken(
       userId,
       'user',
     );
 
-    res.cookie('refreshToken', refreshToken, {
+    res.cookie(RefreshToken.user, refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'strict',

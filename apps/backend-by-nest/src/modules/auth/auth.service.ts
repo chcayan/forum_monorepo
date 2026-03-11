@@ -8,6 +8,7 @@ import {
 } from './auth.map';
 import Redis from 'ioredis';
 import { JwtService } from '@nestjs/jwt';
+import { JwtPayload } from 'src/common/interface/jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
@@ -68,7 +69,7 @@ export class AuthService {
 
   async get(userId: string, role: 'user' | 'admin') {
     const key = `refresh:${userId}:${role}`;
-
+    console.log(key);
     return this.redis.get(key);
   }
 
@@ -78,16 +79,16 @@ export class AuthService {
     await this.redis.del(key);
   }
 
-  generateAccessToken(userId: string) {
-    return this.jwtService.sign(
-      { id: userId },
-      { secret: process.env.ACCESS_SECRET, expiresIn: '15m' },
+  generateAccessToken(userId: string, role: 'user' | 'admin') {
+    return this.jwtService.sign<JwtPayload>(
+      { id: userId, role },
+      { secret: process.env.ACCESS_SECRET, expiresIn: '10s' },
     );
   }
 
   async generateRefreshToken(userId: string, role: 'user' | 'admin') {
-    const refreshToken = this.jwtService.sign(
-      { id: userId },
+    const refreshToken = this.jwtService.sign<JwtPayload>(
+      { id: userId, role },
       {
         secret: process.env.REFRESH_SECRET,
         expiresIn: '1d',

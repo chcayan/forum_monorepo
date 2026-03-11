@@ -22,6 +22,7 @@ import { OptionalUser } from 'src/common/decorator/optional-user.decorator';
 import { CommentReportDto } from './dto/comment-report.dto';
 import { AuthService } from '../auth/auth.service';
 import type { Response } from 'express';
+import { RefreshToken } from '../auth/auth.constant';
 
 @Controller('admin')
 export class AdminController {
@@ -33,13 +34,13 @@ export class AdminController {
   @Post('login')
   async login(@Body() dto: LoginDto, @Res() res: Response) {
     const userId = await this.adminService.login(dto.email, dto.password);
-    const accessToken = this.authService.generateAccessToken(userId);
+    const accessToken = this.authService.generateAccessToken(userId, 'admin');
     const refreshToken = await this.authService.generateRefreshToken(
       userId,
       'admin',
     );
 
-    res.cookie('refreshToken', refreshToken, {
+    res.cookie(RefreshToken.admin, refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'strict',

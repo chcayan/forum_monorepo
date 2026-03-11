@@ -46,7 +46,7 @@ instance.interceptors.response.use(
       emitter.emit('API:BAD_REQUEST', err.response?.data.message)
     }
     if (err.response?.status === 401) {
-      if (originalRequest.url?.includes('/auth/refresh')) {
+      if (originalRequest.url?.includes('/auth/refresh-admin')) {
         emitter.emit('API:UN_AUTH', err.response?.data.message)
         return Promise.reject(err)
       }
@@ -59,21 +59,22 @@ instance.interceptors.response.use(
           const newToken = res.data.data.accessToken
 
           setToken(newToken)
-          isRefreshing = false
-
           onRefreshed(newToken)
         } catch {
-          isRefreshing = false
           emitter.emit('API:UN_AUTH', err.response?.data.message)
+          return Promise.reject(err)
+        } finally {
+          isRefreshing = false
         }
-
-        return new Promise((resolve) => {
-          subscribeTokenRefresh((token) => {
-            originalRequest.headers.Authorization = `Bearer ${token}`
-            resolve(instance(originalRequest))
-          })
-        })
       }
+
+      return new Promise((resolve) => {
+        subscribeTokenRefresh((token) => {
+          originalRequest.headers.Authorization = `Bearer ${token}`
+          // getUserInfo()
+          resolve(instance(originalRequest))
+        })
+      })
     }
     if (err.response?.status === 403) {
       emitter.emit('API:FORBIDDEN', err.response?.data.message)

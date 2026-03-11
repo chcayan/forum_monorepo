@@ -4,6 +4,7 @@ import type { Response } from 'express';
 import type { AuthRequest } from 'src/common/interface/auth-request.interface';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from 'src/common/interface/jwt-payload.interface';
+import { RefreshToken } from './auth.constant';
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -13,7 +14,7 @@ export class AuthController {
 
   @Post('refresh-user')
   async refreshUser(@Req() req: AuthRequest, @Res() res: Response) {
-    const refreshToken = req.cookies.refreshToken;
+    const refreshToken = req.cookies.userRefreshToken;
 
     if (!refreshToken) {
       return res
@@ -38,14 +39,17 @@ export class AuthController {
 
       await this.authService.remove(payload.id, 'user');
 
-      const newAccessToken = this.authService.generateAccessToken(payload.id);
+      const newAccessToken = this.authService.generateAccessToken(
+        payload.id,
+        'user',
+      );
 
       const newRefreshToken = await this.authService.generateRefreshToken(
         payload.id,
         'user',
       );
 
-      res.cookie('refreshToken', newRefreshToken, {
+      res.cookie(RefreshToken.user, newRefreshToken, {
         httpOnly: true,
         secure: true,
         sameSite: 'strict',
@@ -69,9 +73,10 @@ export class AuthController {
 
   @Post('refresh-admin')
   async refreshAdmin(@Req() req: AuthRequest, @Res() res: Response) {
-    const refreshToken = req.cookies.refreshToken;
+    const refreshToken = req.cookies.adminRefreshToken;
 
     if (!refreshToken) {
+      console.log(refreshToken);
       return res
         .status(401)
         .json({ message: 'No token', error: 'Unauthorized', statusCode: 401 });
@@ -94,14 +99,17 @@ export class AuthController {
 
       await this.authService.remove(payload.id, 'admin');
 
-      const newAccessToken = this.authService.generateAccessToken(payload.id);
+      const newAccessToken = this.authService.generateAccessToken(
+        payload.id,
+        'admin',
+      );
 
       const newRefreshToken = await this.authService.generateRefreshToken(
         payload.id,
         'admin',
       );
 
-      res.cookie('refreshToken', newRefreshToken, {
+      res.cookie(RefreshToken.admin, newRefreshToken, {
         httpOnly: true,
         secure: true,
         sameSite: 'strict',

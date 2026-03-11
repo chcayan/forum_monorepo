@@ -59,13 +59,16 @@ export const useUserStore = create<UserState>((set, get) => ({
   async setUserInfo() {
     const token = get().token
     if (!token) return
-
-    await checkIsLoginProhibitAPI()
-    const res = await getAdminInfoAPI()
-    const data: UserInfo = res.data.data
-    set({
-      userInfo: data,
-      permissions: data.permissions,
-    })
+    try {
+      await checkIsLoginProhibitAPI()
+      const res = await getAdminInfoAPI()
+      const data: UserInfo = res.data.data
+      set({
+        userInfo: data,
+        permissions: data.permissions,
+      })
+    } catch (err) {
+      console.log(err)
+    }
   },
 }))

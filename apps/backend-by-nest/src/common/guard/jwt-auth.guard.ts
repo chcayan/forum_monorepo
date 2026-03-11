@@ -29,7 +29,7 @@ export class JwtAuthGuard implements CanActivate {
         secret: process.env.ACCESS_SECRET,
       });
 
-      req.user = { id: payload.id };
+      req.user = { id: payload.id, role: payload.role };
       return true;
     } catch {
       throw new UnauthorizedException('登录状态过期，请重新登录');
