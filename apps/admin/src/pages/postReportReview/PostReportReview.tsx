@@ -94,7 +94,7 @@ function PassButton({ postId, userId }: { postId: string; userId: string }) {
   const handleOk = async () => {
     if (value.trim() === '') {
       Toast.show({
-        msg: t('postReportReview.reasonInputErrorTip'),
+        msg: t('common.reasonInputErrorTip'),
         type: 'error',
       })
       return
@@ -120,13 +120,13 @@ function PassButton({ postId, userId }: { postId: string; userId: string }) {
       await deletePostReportAPI(postId)
       onClose()
       Toast.show({
-        msg: t('postReportReview.successTip'),
+        msg: t('common.successTip'),
         type: 'success',
       })
       emitter.emit('EVENT:UPDATE_POST_REPORT')
     } catch {
       Toast.show({
-        msg: t('postReportReview.errorTip'),
+        msg: t('common.errorTip'),
         type: 'error',
       })
     } finally {
@@ -164,10 +164,10 @@ function PassButton({ postId, userId }: { postId: string; userId: string }) {
   return (
     <>
       <Button color="cyan" variant="solid" onClick={() => setOpen(true)}>
-        {t('postReportReview.pass')}
+        {t('common.pass')}
       </Button>
       <Modal
-        title={t('postReportReview.inputReasonTip')}
+        title={t('common.inputReasonTip')}
         open={open}
         onOk={handleOk}
         confirmLoading={confirmLoading}
@@ -177,7 +177,7 @@ function PassButton({ postId, userId }: { postId: string; userId: string }) {
         <Input
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder={t('postReportReview.reason')}
+          placeholder={t('common.reason')}
         />
         <div
           style={{
@@ -192,9 +192,7 @@ function PassButton({ postId, userId }: { postId: string; userId: string }) {
         </div>
         {forbiddenTimeRadioVisible && (
           <>
-            <p style={{ marginBottom: '10px' }}>
-              {t('postReportReview.duration')}
-            </p>
+            <p style={{ marginBottom: '10px' }}>{t('common.duration')}</p>
             <Radio.Group
               block
               options={options}
@@ -222,13 +220,13 @@ function RejectButton({ postId }: { postId: string }) {
       await deletePostReportAPI(postId)
       setOpen(false)
       Toast.show({
-        msg: t('postReportReview.successTip'),
+        msg: t('common.successTip'),
         type: 'success',
       })
       emitter.emit('EVENT:UPDATE_POST_REPORT')
     } catch {
       Toast.show({
-        msg: t('postReportReview.errorTip'),
+        msg: t('common.errorTip'),
         type: 'error',
       })
     } finally {
@@ -243,7 +241,7 @@ function RejectButton({ postId }: { postId: string }) {
   return (
     <>
       <Button danger onClick={() => setOpen(true)}>
-        {t('postReportReview.reject')}
+        {t('common.reject')}
       </Button>
 
       <Modal
@@ -253,7 +251,7 @@ function RejectButton({ postId }: { postId: string }) {
         onCancel={handleCancel}
         centered
       >
-        <p>{t('postReportReview.isReject')}</p>
+        <p>{t('common.isReject')}</p>
       </Modal>
     </>
   )
@@ -270,7 +268,7 @@ export default function PostReportReview() {
       render: (postId: string) => <PostCell postId={postId} />,
     },
     {
-      title: t('postReportReview.ReportReason'),
+      title: t('common.ReportReason'),
       dataIndex: 'reasons',
       key: 'reasons',
       render: (reasons: string[]) =>
@@ -295,7 +293,7 @@ export default function PostReportReview() {
         )),
     },
     {
-      title: t('postReportReview.action'),
+      title: t('common.action'),
       dataIndex: 'postId',
       key: 'action',
       render: (_, record: DataType) => (

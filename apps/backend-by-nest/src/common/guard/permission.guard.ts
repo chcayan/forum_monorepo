@@ -40,7 +40,7 @@ export class UserPermissionGuard implements CanActivate {
       }
 
       if (requiredPermission === 2) {
-        throw new ForbiddenException('您已被永久禁止发贴');
+        throw new ForbiddenException('您已被永久禁止发帖');
       }
 
       throw new ForbiddenException('权限不足');
@@ -61,7 +61,7 @@ export class UserPermissionGuard implements CanActivate {
       new Date(user.postProhibitUntil) > new Date()
     ) {
       const time = formatRemainTimeWithText(user.postProhibitUntil);
-      throw new ForbiddenException(`你已被禁止发贴，还剩${time}解除`);
+      throw new ForbiddenException(`你已被禁止发帖，还剩${time}解除`);
     }
 
     return true;

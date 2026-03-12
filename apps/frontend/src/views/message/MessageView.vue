@@ -10,7 +10,7 @@ const userMuteTip = (punishTime: number) => {
 }
 
 const userPostProhibitTip = (punishTime: number) => {
-  return `由于您发布了不良帖子，您的账号已被禁止发贴 ${punishTime} 小时。请遵守论坛规范。`
+  return `由于您发布了不良帖子，您的账号已被禁止发帖 ${punishTime} 小时。请遵守论坛规范。`
 }
 
 const userLoginProhibitTip = (punishTime: number) => {
@@ -47,7 +47,7 @@ const msgStatus: Record<UserMessage['status'], MsgStatusType> = {
     '很抱歉，您的帖子未能通过审核，请修改帖子内容。违规原因：',
   ],
   user_mute: ['违规处罚', '账号禁言通知', userMuteTip],
-  user_post_prohibit: ['违规处罚', '账号禁止发贴通知', userPostProhibitTip],
+  user_post_prohibit: ['违规处罚', '账号禁止发帖通知', userPostProhibitTip],
   user_login_prohibit: ['违规处罚', '账号禁止登录通知', userLoginProhibitTip],
   system_announcement: ['系统通知', '用户权限变更', systemTip],
   post_violate: [
@@ -125,7 +125,7 @@ const navigateToPost = (status: UserMessage['status'], postId: string) => {
             class="text quote_cursor"
             @click="navigateToPost(item.status, item.postId)"
           >
-            原贴：{{
+            原帖：{{
               item.status === 'post_review_violate' ||
               item.status === 'post_violate' ||
               item.status === 'post_review_pass' ||

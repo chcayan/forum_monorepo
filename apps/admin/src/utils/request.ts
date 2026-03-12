@@ -46,16 +46,40 @@ instance.interceptors.response.use(
       emitter.emit('API:BAD_REQUEST', err.response?.data.message)
     }
     if (err.response?.status === 401) {
-      if (originalRequest.url?.includes('/login')) {
+      if (originalRequest.url?.includes('/admin/login')) {
         emitter.emit('API:UN_AUTH', err.response?.data.message)
         return Promise.reject(err)
       }
 
-      if (originalRequest.url?.includes('/auth/refresh-admin')) {
-        emitter.emit('API:UN_AUTH', err.response?.data.message)
-        return Promise.reject(err)
-      }
+      // if (originalRequest.url?.includes('/auth/refresh-admin')) {
+      //   emitter.emit('API:UN_AUTH', err.response?.data.message)
+      //   return Promise.reject(err)
+      // }
 
+      // if (!isRefreshing) {
+      //   isRefreshing = true
+
+      //   try {
+      //     const res = await refreshAPI()
+      //     const newToken = res.data.data.accessToken
+
+      //     setToken(newToken)
+      //     onRefreshed(newToken)
+      //   } catch {
+      //     emitter.emit('API:UN_AUTH', err.response?.data.message)
+      //     return Promise.reject(err)
+      //   } finally {
+      //     isRefreshing = false
+      //   }
+      // }
+
+      // return new Promise((resolve) => {
+      //   subscribeTokenRefresh((token) => {
+      //     originalRequest.headers.Authorization = `Bearer ${token}`
+      //     // getUserInfo()
+      //     resolve(instance(originalRequest))
+      //   })
+      // })
       if (!isRefreshing) {
         isRefreshing = true
 
@@ -65,21 +89,23 @@ instance.interceptors.response.use(
 
           setToken(newToken)
           onRefreshed(newToken)
+
+          originalRequest.headers.Authorization = `Bearer ${newToken}`
+          return instance(originalRequest)
         } catch {
           emitter.emit('API:UN_AUTH', err.response?.data.message)
           return Promise.reject(err)
         } finally {
           isRefreshing = false
         }
-      }
-
-      return new Promise((resolve) => {
-        subscribeTokenRefresh((token) => {
-          originalRequest.headers.Authorization = `Bearer ${token}`
-          // getUserInfo()
-          resolve(instance(originalRequest))
+      } else {
+        return new Promise((resolve) => {
+          subscribeTokenRefresh((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`
+            resolve(instance(originalRequest))
+          })
         })
-      })
+      }
     }
     if (err.response?.status === 403) {
       emitter.emit('API:FORBIDDEN', err.response?.data.message)

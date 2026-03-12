@@ -53,7 +53,7 @@ function PassButton({
   const handleOk = async () => {
     if (value.trim() === '') {
       Toast.show({
-        msg: t('commentReportReview.reasonInputErrorTip'),
+        msg: t('common.reasonInputErrorTip'),
         type: 'error',
       })
       return
@@ -81,13 +81,13 @@ function PassButton({
       await deleteCommentReportAPI(commentId)
       onClose()
       Toast.show({
-        msg: t('commentReportReview.successTip'),
+        msg: t('common.successTip'),
         type: 'success',
       })
       emitter.emit('EVENT:UPDATE_COMMENT_REPORT')
     } catch {
       Toast.show({
-        msg: t('commentReportReview.errorTip'),
+        msg: t('common.errorTip'),
         type: 'error',
       })
     } finally {
@@ -124,10 +124,10 @@ function PassButton({
   return (
     <>
       <Button color="cyan" variant="solid" onClick={() => setOpen(true)}>
-        {t('commentReportReview.pass')}
+        {t('common.pass')}
       </Button>
       <Modal
-        title={t('commentReportReview.inputReasonTip')}
+        title={t('common.inputReasonTip')}
         open={open}
         onOk={handleOk}
         confirmLoading={confirmLoading}
@@ -137,7 +137,7 @@ function PassButton({
         <Input
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder={t('commentReportReview.reason')}
+          placeholder={t('common.reason')}
         />
         <div
           style={{
@@ -152,9 +152,7 @@ function PassButton({
         </div>
         {forbiddenTimeRadioVisible && (
           <>
-            <p style={{ marginBottom: '10px' }}>
-              {t('commentReportReview.duration')}
-            </p>
+            <p style={{ marginBottom: '10px' }}>{t('common.duration')}</p>
             <Radio.Group
               block
               options={options}
@@ -182,13 +180,13 @@ function RejectButton({ commentId }: { commentId: number }) {
       await deleteCommentReportAPI(commentId)
       setOpen(false)
       Toast.show({
-        msg: t('commentReportReview.successTip'),
+        msg: t('common.successTip'),
         type: 'success',
       })
       emitter.emit('EVENT:UPDATE_COMMENT_REPORT')
     } catch {
       Toast.show({
-        msg: t('commentReportReview.errorTip'),
+        msg: t('common.errorTip'),
         type: 'error',
       })
     } finally {
@@ -203,7 +201,7 @@ function RejectButton({ commentId }: { commentId: number }) {
   return (
     <>
       <Button danger onClick={() => setOpen(true)}>
-        {t('commentReportReview.reject')}
+        {t('common.reject')}
       </Button>
 
       <Modal
@@ -213,7 +211,7 @@ function RejectButton({ commentId }: { commentId: number }) {
         onCancel={handleCancel}
         centered
       >
-        <p>{t('commentReportReview.isReject')}</p>
+        <p>{t('common.isReject')}</p>
       </Modal>
     </>
   )
@@ -229,7 +227,7 @@ export default function CommentReportReview() {
       key: 'commentId',
     },
     {
-      title: t('commentReportReview.ReportReason'),
+      title: t('common.ReportReason'),
       dataIndex: 'reasons',
       key: 'reasons',
       render: (reasons: string[]) =>
@@ -252,7 +250,7 @@ export default function CommentReportReview() {
         )),
     },
     {
-      title: t('commentReportReview.action'),
+      title: t('common.action'),
       dataIndex: 'postId',
       key: 'action',
       render: (_, record: DataType) => (

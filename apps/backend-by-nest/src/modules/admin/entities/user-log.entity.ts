@@ -33,7 +33,7 @@ export class UserLog {
       'post_violate', // 帖子违规（举报）
       'comment_violate', // 评论违规（举报）
       'user_mute', // 用户禁言
-      'user_post_prohibit', // 用户禁止发贴
+      'user_post_prohibit', // 用户禁止发帖
       'user_login_prohibit', // 用户禁止登录
       'system_announcement', // 系统公告
     ],

@@ -11,7 +11,7 @@ function App() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    console.log('app effect')
+    // console.log('app effect')
     const { currentTheme, currentLanguage } = useStatusStore.getState()
 
     // 主题

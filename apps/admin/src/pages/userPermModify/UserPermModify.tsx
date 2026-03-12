@@ -8,7 +8,10 @@ import { Toast } from '@/utils'
 import ReportReview from './components/ReportReview'
 import PermModify from './components/PermModify'
 import { useTranslation } from 'react-i18next'
-import UserMute from './components/UserSpeak'
+import UserSpeak from './components/UserSpeak'
+import UserPost from './components/UserPost'
+import UserLogin from './components/UserLogin'
+import { useUserStore } from '@/stores'
 
 type UserPermsInfo = {
   userId: string
@@ -34,6 +37,8 @@ export default function UserPermModify() {
   const [total, setTotal] = useState(0)
   const [userId, setUserId] = useState('')
 
+  const adminId = useUserStore((state) => state.userInfo.userId)
+
   useEffect(() => {
     let ignore = false
 
@@ -42,9 +47,13 @@ export default function UserPermModify() {
       const data: UserPermsInfo[] = res.data.data.list
       const total = res.data.data.total
 
+      const filteredData = data.filter(
+        (item) => item.userId !== adminId && item.userId !== 'u00000'
+      )
+
       setTotal(total)
       if (!ignore) {
-        setList(data)
+        setList(filteredData)
       }
     }
 
@@ -59,7 +68,7 @@ export default function UserPermModify() {
       ignore = true
       off()
     }
-  }, [page, pageSize])
+  }, [adminId, page, pageSize])
 
   const onEdit = (userId: string) => {
     setUserId(userId)
@@ -72,16 +81,20 @@ export default function UserPermModify() {
     emitter.emit('EVENT:UPDATE_USER_PERMS')
     setUserId('')
     Toast.show({
-      msg: t('userPermModify.successTip'),
+      msg: t('common.successTip'),
       type: 'success',
     })
   }
 
-  const cancel = (hasPerm: boolean) => {
+  const cancel = (
+    hasPostReviewPerm: boolean,
+    hasReportReviewPerm: boolean,
+    hasUserPermModifyPerm: boolean
+  ) => {
     setUserId('')
-    emitter.emit('EVENT:RECOVER_POST_REVIEW_PERM', hasPerm)
-    emitter.emit('EVENT:RECOVER_REPORT_REVIEW_PERM', hasPerm)
-    emitter.emit('EVENT:RECOVER_USER_PERM_MODIFY_PERM', hasPerm)
+    emitter.emit('EVENT:RECOVER_POST_REVIEW_PERM', hasPostReviewPerm)
+    emitter.emit('EVENT:RECOVER_REPORT_REVIEW_PERM', hasReportReviewPerm)
+    emitter.emit('EVENT:RECOVER_USER_PERM_MODIFY_PERM', hasUserPermModifyPerm)
   }
 
   const [value, setValue] = useState('')
@@ -135,11 +148,23 @@ export default function UserPermModify() {
               <div className={styles.perm}>
                 <p className={styles.content}>{t('userPermModify.userPerm')}</p>
                 <div className={styles['user-perm']}>
-                  <UserMute
+                  <UserSpeak
                     userId={item.userId}
                     hasPerm={item.hasUserSpeakPerm}
                     currentEditUserId={userId}
                     until={item.muteUntil}
+                  />
+                  <UserPost
+                    userId={item.userId}
+                    hasPerm={item.hasUserPostPerm}
+                    currentEditUserId={userId}
+                    until={item.postProhibitUntil}
+                  />
+                  <UserLogin
+                    userId={item.userId}
+                    hasPerm={item.hasUserLoginPerm}
+                    currentEditUserId={userId}
+                    until={item.loginProhibitUntil}
                   />
                 </div>
                 <div style={{ height: '10px' }}></div>
@@ -171,13 +196,19 @@ export default function UserPermModify() {
                       className={`${styles.btn} ${styles.save}`}
                       onClick={save}
                     >
-                      {t('userPermModify.save')}
+                      {t('common.save')}
                     </button>
                     <button
                       className={styles.btn}
-                      onClick={() => cancel(item.hasPostReviewPerm)}
+                      onClick={() =>
+                        cancel(
+                          item.hasPostReviewPerm,
+                          item.hasReportReviewPerm,
+                          item.hasUserPermModifyPerm
+                        )
+                      }
                     >
-                      {t('userPermModify.cancel')}
+                      {t('common.cancel')}
                     </button>
                   </div>
                 ) : (
@@ -185,7 +216,7 @@ export default function UserPermModify() {
                     className={styles.btn}
                     onClick={() => onEdit(item.userId)}
                   >
-                    {t('userPermModify.edit')}
+                    {t('common.edit')}
                   </button>
                 )}
               </div>

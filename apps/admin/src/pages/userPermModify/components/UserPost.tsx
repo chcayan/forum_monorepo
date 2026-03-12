@@ -10,7 +10,7 @@ import {
 } from '@/api'
 import emitter from '@/utils/eventEmitter'
 
-export default function UserSpeak({
+export default function UserPost({
   userId,
   hasPerm,
   currentEditUserId,
@@ -72,7 +72,7 @@ export default function UserSpeak({
     }
 
     try {
-      // 取消暂时性禁言
+      // 取消暂时性禁止发帖
       if (cprVisible) {
         if (!cancelPunishmentReason) {
           Toast.show({
@@ -84,12 +84,12 @@ export default function UserSpeak({
         setConfirmLoading(true)
         await setUserTempPunish2NullAPI({
           userId,
-          prohibition: 'muteUntil',
+          prohibition: 'postProhibitUntil',
           reason: cancelPunishmentReason,
         })
       }
 
-      // 永久禁言
+      // 永久禁止发帖
       if (pprVisible) {
         if (!permanentPunishmentReason) {
           Toast.show({
@@ -101,12 +101,12 @@ export default function UserSpeak({
         setConfirmLoading(true)
         await delUserPermAPI({
           userId,
-          permission: 'user_speak',
+          permission: 'user_post',
           reason: permanentPunishmentReason,
         })
       }
 
-      // 取消永久禁言
+      // 取消永久禁止发帖
       if (cpprVisible) {
         if (!cancelPmntPunishmentReason) {
           Toast.show({
@@ -118,7 +118,7 @@ export default function UserSpeak({
         setConfirmLoading(true)
         await addUserPermAPI({
           userId,
-          permission: 'user_speak',
+          permission: 'user_post',
           reason: cancelPmntPunishmentReason,
         })
       }
@@ -144,21 +144,21 @@ export default function UserSpeak({
       <div
         className={`${styles['common-label']} ${(!hasPerm || until !== 0) && styles['no-perm']} ${userId === currentEditUserId && styles['cursor']}`}
         style={{
-          backgroundColor: 'rgb(239, 245, 254)',
-          color: 'rgb(91, 149, 246)',
+          backgroundColor: 'rgb(235, 249, 245)',
+          color: 'rgb(16, 185, 129)',
         }}
         onClick={handleClick}
       >
-        {until ? t('userPermModify.mute') : t('userPermModify.speech')}
+        {until ? t('userPermModify.prohibitPost') : t('userPermModify.post')}
         {until !== 0 && ' ' + until + ' min'}
       </div>
       <Modal
         title={
           !hasPerm
-            ? t('userPermModify.speechErrorTip')
+            ? t('userPermModify.postErrorTip')
             : until !== 0
-              ? t('userPermModify.speechTempTip') + `${until} min`
-              : t('userPermModify.speechNormalTip')
+              ? t('userPermModify.postTempTip') + `${until} min`
+              : t('userPermModify.postNormalTip')
         }
         open={open}
         onOk={handleOk}
@@ -168,7 +168,7 @@ export default function UserSpeak({
         okText={t('common.save')}
         cancelText={t('common.cancel')}
       >
-        {/* 取消暂时性禁言 */}
+        {/* 取消暂时性禁止发帖 */}
         {hasPerm && until !== 0 && (
           <>
             <div
@@ -179,7 +179,7 @@ export default function UserSpeak({
                 justifyContent: 'space-between',
               }}
             >
-              <p>{t('userPermModify.removeTempMuteTip')}</p>
+              <p>{t('userPermModify.removeTempProhibitPostTip')}</p>
               <Switch
                 value={cprVisible}
                 onChange={(status: boolean) => {
@@ -199,7 +199,7 @@ export default function UserSpeak({
             )}
           </>
         )}
-        {/* 永久禁言 */}
+        {/* 永久禁止发帖 */}
         {(hasPerm || until !== 0) && (
           <>
             <div
@@ -210,7 +210,7 @@ export default function UserSpeak({
                 justifyContent: 'space-between',
               }}
             >
-              <p>{t('userPermModify.permanentMuteTip')}</p>
+              <p>{t('userPermModify.permanentProhibitPostTip')}</p>
               <Switch
                 value={pprVisible}
                 onChange={(status: boolean) => {
@@ -230,7 +230,7 @@ export default function UserSpeak({
             )}
           </>
         )}
-        {/* 取消永久禁言 */}
+        {/* 取消永久禁止发帖 */}
         {!hasPerm && (
           <>
             <div
@@ -241,7 +241,7 @@ export default function UserSpeak({
                 justifyContent: 'space-between',
               }}
             >
-              <p>{t('userPermModify.removeMuteTip')}</p>
+              <p>{t('userPermModify.removeProhibitPostTip')}</p>
               <Switch
                 value={cpprVisible}
                 onChange={(status: boolean) => setCpprVisible(status)}

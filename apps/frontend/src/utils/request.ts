@@ -52,11 +52,6 @@ instance.interceptors.response.use(
         return Promise.reject(err)
       }
 
-      if (originalRequest.url?.includes('/auth/refresh-user')) {
-        emitter.emit('API:UN_AUTH', err.response?.data.message)
-        return Promise.reject(err)
-      }
-
       if (!isRefreshing) {
         isRefreshing = true
 
@@ -66,20 +61,23 @@ instance.interceptors.response.use(
 
           userStore.setToken(newToken)
           onRefreshed(newToken)
+
+          originalRequest.headers.Authorization = `Bearer ${newToken}`
+          return instance(originalRequest)
         } catch {
           emitter.emit('API:UN_AUTH', err.response?.data.message)
           return Promise.reject(err)
         } finally {
           isRefreshing = false
         }
-      }
-
-      return new Promise((resolve) => {
-        subscribeTokenRefresh((token) => {
-          originalRequest.headers.Authorization = `Bearer ${token}`
-          resolve(instance(originalRequest))
+      } else {
+        return new Promise((resolve) => {
+          subscribeTokenRefresh((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`
+            resolve(instance(originalRequest))
+          })
         })
-      })
+      }
     }
     if (err.response?.status === 403) {
       emitter.emit('API:FORBIDDEN', err.response?.data.message)

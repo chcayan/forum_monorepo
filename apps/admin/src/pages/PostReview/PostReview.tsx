@@ -66,13 +66,13 @@ function PassButton({ postId }: { postId: string }) {
 
       setOpen(false)
       Toast.show({
-        msg: t('postReview.successTip'),
+        msg: t('common.successTip'),
         type: 'success',
       })
       emitter.emit('EVENT:UPDATE_POST_REVIEW')
     } catch {
       Toast.show({
-        msg: t('postReview.errorTip'),
+        msg: t('common.errorTip'),
         type: 'error',
       })
     } finally {
@@ -87,7 +87,7 @@ function PassButton({ postId }: { postId: string }) {
   return (
     <>
       <Button color="cyan" variant="solid" onClick={showModal}>
-        {t('postReview.pass')}
+        {t('common.pass')}
       </Button>
       <Modal
         open={open}
@@ -96,7 +96,7 @@ function PassButton({ postId }: { postId: string }) {
         onCancel={handleCancel}
         centered
       >
-        <p>{t('postReview.isPass')}</p>
+        <p>{t('common.isPass')}</p>
       </Modal>
     </>
   )
@@ -112,7 +112,7 @@ function ViolateButton({ postId }: { postId: string }) {
   const handleOk = async () => {
     if (value.trim() === '') {
       Toast.show({
-        msg: t('postReview.reasonInputErrorTip'),
+        msg: t('common.reasonInputErrorTip'),
         type: 'error',
       })
       return
@@ -122,13 +122,13 @@ function ViolateButton({ postId }: { postId: string }) {
       await updatePostStatusAPI({ postId, status: 2, reason: value })
       setOpen(false)
       Toast.show({
-        msg: t('postReview.successTip'),
+        msg: t('common.successTip'),
         type: 'success',
       })
       emitter.emit('EVENT:UPDATE_POST_REVIEW')
     } catch {
       Toast.show({
-        msg: t('postReview.errorTip'),
+        msg: t('common.errorTip'),
         type: 'error',
       })
     } finally {
@@ -139,10 +139,10 @@ function ViolateButton({ postId }: { postId: string }) {
   return (
     <>
       <Button danger onClick={() => setOpen(true)}>
-        {t('postReview.violate')}
+        {t('common.violate')}
       </Button>
       <Modal
-        title={t('postReview.inputReasonTip')}
+        title={t('common.inputReasonTip')}
         open={open}
         onOk={handleOk}
         confirmLoading={confirmLoading}
@@ -152,7 +152,7 @@ function ViolateButton({ postId }: { postId: string }) {
         <Input
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder={t('postReview.reason')}
+          placeholder={t('common.reason')}
         />
       </Modal>
     </>
@@ -195,7 +195,7 @@ export default function PostReview() {
       },
     },
     {
-      title: t('postReview.action'),
+      title: t('common.action'),
       dataIndex: 'postId',
       key: 'action',
       render: (postId: string) => (
