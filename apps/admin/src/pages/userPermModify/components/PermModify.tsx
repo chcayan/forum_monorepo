@@ -24,27 +24,26 @@ export default function PermModify({
   useEffect(() => {
     if (userId !== currentEditUserId) return
 
-    const off = emitter.on(
-      'EVENT:RECOVER_USER_PERM_MODIFY_PERM',
-      (hasPerm: boolean) => {
-        setPerm(hasPerm)
-      }
-    )
+    const off = emitter.on('EVENT:RECOVER_USER_PERM_MODIFY_PERM', () => {
+      setPerm(hasPerm)
+    })
 
-    const off1 = emitter.on('EVENT:SAVE_USER_PERM_MODIFY_PERM', () => {
+    const off1 = emitter.on('EVENT:SAVE_USER_PERM_MODIFY_PERM', async () => {
       if (hasPerm !== perm) {
         if (perm === true) {
-          addAdminPermAPI({ userId, permission: 'user_perm_modify' }).catch(
-            () => {
-              setPerm(hasPerm)
-            }
-          )
+          await addAdminPermAPI({
+            userId,
+            permission: 'user_perm_modify',
+          }).catch(() => {
+            setPerm(hasPerm)
+          })
         } else if (perm === false) {
-          delAdminPermAPI({ userId, permission: 'user_perm_modify' }).catch(
-            () => {
-              setPerm(hasPerm)
-            }
-          )
+          await delAdminPermAPI({
+            userId,
+            permission: 'user_perm_modify',
+          }).catch(() => {
+            setPerm(hasPerm)
+          })
         }
       }
     })

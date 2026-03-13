@@ -101,7 +101,7 @@ export class AdminController {
   @UseGuards(JwtAuthGuard, AdminPermissionGuard)
   @AdminPermission('user_perm_modify')
   async delAdminPermission(@Body() dto: AdminPermissionDto) {
-    return this.adminService.delAdminPermission(dto.userId, dto.permission);
+    await this.adminService.delAdminPermission(dto.userId, dto.permission);
   }
 
   @Post('post-review')

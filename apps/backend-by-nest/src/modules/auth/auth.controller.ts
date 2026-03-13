@@ -84,7 +84,6 @@ export class AuthController {
     const refreshToken = req.cookies.adminRefreshToken;
 
     if (!refreshToken) {
-      console.log(refreshToken);
       return res
         .status(401)
         .json({ message: 'No token', error: 'Unauthorized', statusCode: 401 });

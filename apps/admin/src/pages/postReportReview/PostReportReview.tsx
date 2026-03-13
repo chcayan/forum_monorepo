@@ -158,7 +158,6 @@ function PassButton({ postId, userId }: { postId: string; userId: string }) {
 
   const getTimeValue = (e: RadioChangeEvent) => {
     setTimeValue(e.target.value)
-    console.log(e.target.value)
   }
 
   return (

@@ -24,23 +24,24 @@ export default function ReportReview({
   useEffect(() => {
     if (userId !== currentEditUserId) return
 
-    const off = emitter.on(
-      'EVENT:RECOVER_REPORT_REVIEW_PERM',
-      (hasPerm: boolean) => {
-        setPerm(hasPerm)
-      }
-    )
+    const off = emitter.on('EVENT:RECOVER_REPORT_REVIEW_PERM', () => {
+      setPerm(hasPerm)
+    })
 
-    const off1 = emitter.on('EVENT:SAVE_REPORT_REVIEW_PERM', () => {
+    const off1 = emitter.on('EVENT:SAVE_REPORT_REVIEW_PERM', async () => {
       if (hasPerm !== perm) {
         if (perm === true) {
-          addAdminPermAPI({ userId, permission: 'report_review' }).catch(() => {
-            setPerm(hasPerm)
-          })
+          await addAdminPermAPI({ userId, permission: 'report_review' }).catch(
+            () => {
+              setPerm(hasPerm)
+            }
+          )
         } else if (perm === false) {
-          delAdminPermAPI({ userId, permission: 'report_review' }).catch(() => {
-            setPerm(hasPerm)
-          })
+          await delAdminPermAPI({ userId, permission: 'report_review' }).catch(
+            () => {
+              setPerm(hasPerm)
+            }
+          )
         }
       }
     })

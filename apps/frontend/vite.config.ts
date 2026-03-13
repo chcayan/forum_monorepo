@@ -35,4 +35,11 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    terserOptions: {
+      compress: {
+        pure_funcs: ['console.log'],
+      },
+    },
+  },
 })

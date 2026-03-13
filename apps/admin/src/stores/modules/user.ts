@@ -67,8 +67,7 @@ export const useUserStore = create<UserState>((set, get) => ({
         userInfo: data,
         permissions: data.permissions,
       })
-    } catch (err) {
-      console.log(err)
-    }
+      // eslint-disable-next-line no-empty
+    } catch {}
   },
 }))

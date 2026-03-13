@@ -59,8 +59,8 @@ export default function UserPermModify() {
 
     getUserPerms()
 
-    const off = emitter.on('EVENT:UPDATE_USER_PERMS', () => {
-      getUserPerms()
+    const off = emitter.on('EVENT:UPDATE_USER_PERMS', async () => {
+      await getUserPerms()
       setUserId('')
     })
 
@@ -78,23 +78,18 @@ export default function UserPermModify() {
     await emitter.emitAsync('EVENT:SAVE_POST_REVIEW_PERM')
     await emitter.emitAsync('EVENT:SAVE_REPORT_REVIEW_PERM')
     await emitter.emitAsync('EVENT:SAVE_USER_PERM_MODIFY_PERM')
-    emitter.emit('EVENT:UPDATE_USER_PERMS')
-    setUserId('')
+    await emitter.emitAsync('EVENT:UPDATE_USER_PERMS')
     Toast.show({
       msg: t('common.successTip'),
       type: 'success',
     })
   }
 
-  const cancel = (
-    hasPostReviewPerm: boolean,
-    hasReportReviewPerm: boolean,
-    hasUserPermModifyPerm: boolean
-  ) => {
+  const cancel = async () => {
+    await emitter.emitAsync('EVENT:RECOVER_POST_REVIEW_PERM')
+    await emitter.emitAsync('EVENT:RECOVER_REPORT_REVIEW_PERM')
+    await emitter.emitAsync('EVENT:RECOVER_USER_PERM_MODIFY_PERM')
     setUserId('')
-    emitter.emit('EVENT:RECOVER_POST_REVIEW_PERM', hasPostReviewPerm)
-    emitter.emit('EVENT:RECOVER_REPORT_REVIEW_PERM', hasReportReviewPerm)
-    emitter.emit('EVENT:RECOVER_USER_PERM_MODIFY_PERM', hasUserPermModifyPerm)
   }
 
   const [value, setValue] = useState('')
@@ -112,6 +107,7 @@ export default function UserPermModify() {
 
     timer.current = setTimeout(() => {
       console.log(value)
+      // TODO search
     }, 300)
   }
 
@@ -198,16 +194,7 @@ export default function UserPermModify() {
                     >
                       {t('common.save')}
                     </button>
-                    <button
-                      className={styles.btn}
-                      onClick={() =>
-                        cancel(
-                          item.hasPostReviewPerm,
-                          item.hasReportReviewPerm,
-                          item.hasUserPermModifyPerm
-                        )
-                      }
-                    >
+                    <button className={styles.btn} onClick={() => cancel()}>
                       {t('common.cancel')}
                     </button>
                   </div>

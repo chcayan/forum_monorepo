@@ -84,9 +84,6 @@ importers:
       typescript-eslint:
         specifier: ^8.46.0
         version: 8.46.0(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3)
-      vite:
-        specifier: ^7.3.1
-        version: 7.3.1(@types/node@22.18.8)(jiti@2.6.1)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1)
       vue-eslint-parser:
         specifier: ^10.2.0
         version: 10.2.0(eslint@9.37.0(jiti@2.6.1))
@@ -331,6 +328,9 @@ importers:
       '@vitejs/plugin-vue':
         specifier: ^6.0.1
         version: 6.0.1(vite@7.3.1(@types/node@24.10.13)(jiti@2.6.1)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1))(vue@3.5.22(typescript@5.9.3))
+      vite:
+        specifier: ^7.3.1
+        version: 7.3.1(@types/node@24.10.13)(jiti@2.6.1)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1)
       vite-plugin-vue-devtools:
         specifier: ^8.0.2
         version: 8.0.2(vite@7.3.1(@types/node@24.10.13)(jiti@2.6.1)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1))(vue@3.5.22(typescript@5.9.3))
@@ -11830,22 +11830,6 @@ snapshots:
       vite: 7.3.1(@types/node@24.10.13)(jiti@2.6.1)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1)
     transitivePeerDependencies:
       - supports-color
-
-  vite@7.3.1(@types/node@22.18.8)(jiti@2.6.1)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1):
-    dependencies:
-      esbuild: 0.27.3
-      fdir: 6.5.0(picomatch@4.0.3)
-      picomatch: 4.0.3
-      postcss: 8.5.6
-      rollup: 4.52.4
-      tinyglobby: 0.2.15
-    optionalDependencies:
-      '@types/node': 22.18.8
-      fsevents: 2.3.3
-      jiti: 2.6.1
-      sass: 1.93.2
-      terser: 5.46.0
-      yaml: 2.8.1
 
   vite@7.3.1(@types/node@24.10.13)(jiti@2.6.1)(sass@1.93.2)(terser@5.46.0)(yaml@2.8.1):
     dependencies:
