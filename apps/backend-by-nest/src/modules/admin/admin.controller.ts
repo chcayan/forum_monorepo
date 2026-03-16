@@ -235,8 +235,9 @@ export class AdminController {
   async getUserPerms(
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
+    @Query('keyword') keyword: string,
   ) {
-    return this.adminService.getUserPerms(page, limit);
+    return this.adminService.getUserPerms(page, limit, keyword);
   }
 
   @Post('prohibition')

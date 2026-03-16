@@ -145,7 +145,12 @@ export function setUserPermProhibitTimeAPI(data: ProhibitionType) {
  * 查询用户权限信息
  * @returns
  */
-export function getUserPermsAPI(page: number, limit: number) {
+export function getUserPermsAPI(page: number, limit: number, keyword?: string) {
+  if (keyword) {
+    return request.get(
+      `/admin/user-perms?page=${page}&limit=${limit}&keyword=${keyword}`
+    )
+  }
   return request.get(`/admin/user-perms?page=${page}&limit=${limit}`)
 }
 

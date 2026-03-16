@@ -490,8 +490,15 @@ export class AdminService {
     return userId;
   }
 
-  async getUserPerms(page: number, pageSize: number) {
+  async getUserPerms(page: number, pageSize: number, keyword?: string) {
     const qb = this.userRepository.createQueryBuilder('user');
+
+    if (keyword) {
+      qb.andWhere(
+        '(user.username LIKE :keyword OR user.userEmail LIKE :keyword)',
+        { keyword: `%${keyword}%` },
+      );
+    }
 
     const [list, total] = await qb
       .skip((page - 1) * pageSize)

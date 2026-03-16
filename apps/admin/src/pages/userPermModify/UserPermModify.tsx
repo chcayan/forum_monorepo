@@ -1,6 +1,6 @@
 import { Input, Pagination } from 'antd'
 import styles from './userPermModify.module.scss'
-import { useEffect, useRef, useState, type ChangeEvent } from 'react'
+import { useEffect, useState, type ChangeEvent } from 'react'
 import { getUserPermsAPI } from '@/api'
 import PostReview from './components/PostReview'
 import emitter from '@/utils/eventEmitter'
@@ -36,6 +36,7 @@ export default function UserPermModify() {
   const [pageSize, setPageSize] = useState(9)
   const [total, setTotal] = useState(0)
   const [userId, setUserId] = useState('')
+  const [value, setValue] = useState('')
 
   const adminId = useUserStore((state) => state.userInfo.userId)
 
@@ -43,7 +44,7 @@ export default function UserPermModify() {
     let ignore = false
 
     async function getUserPerms() {
-      const res = await getUserPermsAPI(page, pageSize)
+      const res = await getUserPermsAPI(page, pageSize, value)
       const data: UserPermsInfo[] = res.data.data.list
       const total = res.data.data.total
 
@@ -68,7 +69,7 @@ export default function UserPermModify() {
       ignore = true
       off()
     }
-  }, [adminId, page, pageSize])
+  }, [adminId, page, pageSize, value])
 
   const onEdit = (userId: string) => {
     setUserId(userId)
@@ -92,23 +93,10 @@ export default function UserPermModify() {
     setUserId('')
   }
 
-  const [value, setValue] = useState('')
-
-  const timer = useRef<number | null>(null)
-
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChange = async (e: ChangeEvent<HTMLInputElement>) => {
     if ((e.nativeEvent as InputEvent).isComposing) return
-
     const value = e.target.value
     setValue(value)
-    if (timer.current) {
-      clearTimeout(timer.current)
-    }
-
-    timer.current = setTimeout(() => {
-      console.log(value)
-      // TODO search
-    }, 300)
   }
 
   return (

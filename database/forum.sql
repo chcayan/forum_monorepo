@@ -11,7 +11,7 @@
  Target Server Version : 80043 (8.0.43)
  File Encoding         : 65001
 
- Date: 20/11/2025 11:15:58
+ Date: 13/03/2026 22:02:23
 */
 
 SET NAMES utf8mb4;
@@ -29,6 +29,20 @@ CREATE TABLE `collection`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
+-- Table structure for comment_report
+-- ----------------------------
+DROP TABLE IF EXISTS `comment_report`;
+CREATE TABLE `comment_report`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `comment_id` int NOT NULL,
+  `report_reason` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `fk_comment_report`(`comment_id` ASC) USING BTREE,
+  CONSTRAINT `fk_comment_report` FOREIGN KEY (`comment_id`) REFERENCES `comments` (`comment_id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
 -- Table structure for comments
 -- ----------------------------
 DROP TABLE IF EXISTS `comments`;
@@ -38,8 +52,9 @@ CREATE TABLE `comments`  (
   `p_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `c_content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `is_violation` int NOT NULL DEFAULT 0,
   PRIMARY KEY (`comment_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 137 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 173 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for follows
@@ -65,7 +80,20 @@ CREATE TABLE `messages`  (
   `is_read` tinyint(1) NULL DEFAULT 0,
   `is_share` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '0',
   PRIMARY KEY (`msg_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1577 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1642 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Table structure for permission
+-- ----------------------------
+DROP TABLE IF EXISTS `permission`;
+CREATE TABLE `permission`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '权限编码',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '权限名称',
+  `scope` enum('user','admin') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '权限作用域',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `code`(`code` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for post
@@ -82,8 +110,69 @@ CREATE TABLE `post`  (
   `p_images` json NULL,
   `publish_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `is_public` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT 'true',
+  `status` tinyint NOT NULL DEFAULT 0 COMMENT '未审核: 0; 审核通过: 1; 审核未通过: 2',
   PRIMARY KEY (`p_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Table structure for post_report
+-- ----------------------------
+DROP TABLE IF EXISTS `post_report`;
+CREATE TABLE `post_report`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `p_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `report_reason` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `fk_post_report`(`p_id` ASC) USING BTREE,
+  CONSTRAINT `fk_post_report` FOREIGN KEY (`p_id`) REFERENCES `post` (`p_id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for review_violation_reason
+-- ----------------------------
+DROP TABLE IF EXISTS `review_violation_reason`;
+CREATE TABLE `review_violation_reason`  (
+  `p_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `reason` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`p_id`) USING BTREE,
+  CONSTRAINT `fk_violation_post` FOREIGN KEY (`p_id`) REFERENCES `post` (`p_id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for user_log
+-- ----------------------------
+DROP TABLE IF EXISTS `user_log`;
+CREATE TABLE `user_log`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '日志ID',
+  `user_id` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '被记录用户ID',
+  `operator_id` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '操作人ID（管理员）',
+  `post_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '关联帖子ID',
+  `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '日志描述内容',
+  `status` enum('post_review_pass','post_review_violate','user_mute','user_post_prohibit','user_login_prohibit','system_announcement','post_violate','comment_violate') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '日志状态类型',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `punish_time` bigint NULL DEFAULT 0,
+  `comment_id` int NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
+  INDEX `idx_status`(`status` ASC) USING BTREE,
+  INDEX `idx_post_id`(`post_id` ASC) USING BTREE,
+  INDEX `idx_comment_id`(`comment_id` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 57 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '用户行为及处罚日志表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for user_permission
+-- ----------------------------
+DROP TABLE IF EXISTS `user_permission`;
+CREATE TABLE `user_permission`  (
+  `user_id` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `permission_id` int NOT NULL,
+  PRIMARY KEY (`user_id`, `permission_id`) USING BTREE,
+  INDEX `fk_user_permission_permission`(`permission_id` ASC) USING BTREE,
+  CONSTRAINT `fk_user_permission_permission` FOREIGN KEY (`permission_id`) REFERENCES `permission` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  CONSTRAINT `fk_user_permission_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for users
@@ -101,6 +190,12 @@ CREATE TABLE `users`  (
   `sex` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT 'boy',
   `signature` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '个性签名',
   `background_img` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '/uploads/default/default_bg.jpg',
+  `user_perm_mask` int NOT NULL DEFAULT 7 COMMENT '普通用户权限位缓存',
+  `admin_perm_mask` int NOT NULL DEFAULT 0 COMMENT '管理员权限位缓存',
+  `perm_version` int NOT NULL DEFAULT 1 COMMENT '权限版本号',
+  `mute_until` datetime NULL DEFAULT NULL COMMENT '禁言截止时间',
+  `post_prohibit_until` datetime NULL DEFAULT NULL COMMENT '禁止发帖截止时间',
+  `login_prohibit_until` datetime NULL DEFAULT NULL COMMENT '禁止登录截止时间',
   PRIMARY KEY (`user_id`) USING BTREE,
   UNIQUE INDEX `user_email`(`user_email` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
