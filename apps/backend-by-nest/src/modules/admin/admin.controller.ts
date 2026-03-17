@@ -240,6 +240,12 @@ export class AdminController {
     return this.adminService.getUserPerms(page, limit, keyword);
   }
 
+  @Get('overview/data')
+  @UseGuards(JwtAuthGuard)
+  async getOverviewData() {
+    return this.adminService.getOverviewData();
+  }
+
   @Post('prohibition')
   @UseGuards(JwtAuthGuard, AdminPermissionGuard)
   @AdminPermission('report_review')

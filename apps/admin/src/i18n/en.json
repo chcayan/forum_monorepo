@@ -44,7 +44,10 @@
     "logoutSuccessTip": "Logout successful"
   },
   "overview": {
-    "title": "I don't know what to write at the moment."
+    "title": "Content review data",
+    "postReviewCount": "Post awaiting review",
+    "postReportCount": "Post report pending process",
+    "commentReportCount": "Comment report pending process"
   },
   "postReview": {
     "content": "post content",

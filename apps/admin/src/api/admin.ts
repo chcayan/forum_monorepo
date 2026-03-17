@@ -219,3 +219,11 @@ export function setUserTempPunish2NullAPI(data: {
 }) {
   return request.post('/admin/punishment-to-null', data)
 }
+
+/**
+ * 查询概览信息
+ * @returns
+ */
+export function getOverviewDataAPI() {
+  return request.get('/admin/overview/data')
+}

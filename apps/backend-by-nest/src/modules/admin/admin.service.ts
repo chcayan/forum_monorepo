@@ -543,4 +543,22 @@ export class AdminService {
       },
     );
   }
+
+  async getOverviewData() {
+    const postReviewCount = await this.postRepository.count({
+      where: {
+        status: 0,
+      },
+    });
+
+    const postReportCount = await this.postReportRepository.count();
+
+    const commentReportCount = await this.commentReportRepository.count();
+
+    return {
+      postReviewCount,
+      postReportCount,
+      commentReportCount,
+    };
+  }
 }

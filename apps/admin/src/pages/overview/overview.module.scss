@@ -1,0 +1,47 @@
+.overview {
+  padding: 0 10px;
+
+  .h2 {
+    margin-bottom: 20px;
+  }
+
+  $size: 200px;
+  $media-size: 516px;
+
+  .ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, $size);
+    gap: 10px;
+
+    @media (max-width: $media-size) {
+      grid-template-columns: repeat(1, 100%);
+    }
+
+    .li {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: $size;
+      height: auto;
+      padding: 20px;
+      border-radius: 10px;
+
+      @media (max-width: $media-size) {
+        width: 100%;
+      }
+
+      background-color: var(--theme-overview-li-color);
+
+      .p {
+        font-size: 14px;
+        color: rgb(136, 144, 159);
+        margin-bottom: 10px;
+      }
+
+      .count {
+        font-size: 25px;
+        font-weight: bold;
+      }
+    }
+  }
+}

@@ -44,7 +44,10 @@
     "logoutSuccessTip": "退出成功"
   },
   "overview": {
-    "title": "暂时不知道写什么"
+    "title": "内容审核数据",
+    "postReviewCount": "帖子待审核",
+    "postReportCount": "帖子举报待处理",
+    "commentReportCount": "评论举报待处理"
   },
   "postReview": {
     "content": "帖子内容",
