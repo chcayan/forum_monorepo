@@ -5,6 +5,7 @@ import {
   updateUserInfoAPI,
 } from '@/api'
 import EditIcon from '@/components/icon/EditIcon.vue'
+import MsgIcon from '@/components/icon/MsgIcon.vue'
 import type { UserInfo } from '@/types'
 import UserListWidget from '@/components/user/UserListWidget.vue'
 import { getCurrentRoute, getImgUrl, RouterPath } from '@/utils'
@@ -100,6 +101,12 @@ const follow = async () => {
     flag = true
   }
 }
+
+const navigateToMsg = () => {
+  uni.navigateTo({
+    url: RouterPath.message,
+  })
+}
 </script>
 
 <template>
@@ -124,6 +131,7 @@ const follow = async () => {
         "
         class="btn"
       >
+        <MsgIcon @click="navigateToMsg" />
         <EditIcon @click="edit" />
       </view>
       <view class="follow-btn" v-else>
@@ -179,7 +187,7 @@ $position-size: 200px;
 
   .header {
     position: relative;
-    height: $position-size;
+    height: $position-size - 5px;
 
     .follow-btn {
       display: flex;
@@ -230,6 +238,8 @@ $position-size: 200px;
       width: 80px;
       height: 30px;
       display: flex;
+      align-items: center;
+      gap: 10px;
       justify-content: end;
     }
   }

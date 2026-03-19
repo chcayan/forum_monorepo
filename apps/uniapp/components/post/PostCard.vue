@@ -217,7 +217,7 @@ const onPublic = () => {
 
 const onPrivate = () => {
   uni.showModal({
-    content: '确定要设置为公开可见吗',
+    content: '确定要设置为仅自己可见吗',
     async success(result: any) {
       if (result.confirm) {
         await updateUserPostToPrivateAPI(props.post.pId)
@@ -277,12 +277,12 @@ const share = async (friendId: string) => {
     from: userStore.userInfo.userId,
     to: friendId,
     message: props.post.pId,
-    is_share: '1',
+    isShare: '1',
   }
 
   socket.emit('sendMessage', payload)
   updatePostStatus()
-  emitter.emit('EVENT:UPDATE_CHAT_RECORDS', friendId)
+  emitter.emit('EVENT:UPDATE_CHAT_RECORDS', friendId, props.post.pId)
   uni.showToast({
     icon: 'none',
     title: '分享成功',

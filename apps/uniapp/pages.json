@@ -88,6 +88,20 @@
       ]
     },
     {
+      "root": "pages/my/message",
+      "pages": [
+        {
+          "path": "message",
+          "style": {
+            "navigationBarTitleText": "消息",
+            "backgroundColor": "@bgColor",
+            "navigationBarBackgroundColor": "@navBarBgColor",
+            "navigationBarTextStyle": "@navTextColor"
+          }
+        }
+      ]
+    },
+    {
       "root": "pages/my/user",
       "pages": [
         {

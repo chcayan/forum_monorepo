@@ -2,6 +2,7 @@
 import {
   getChatHistoryAPI,
   getChatUnreadAPI,
+  getReviewPassIds,
   markAsReadAPI,
   searchUserAPI,
 } from '@/api'
@@ -261,13 +262,23 @@ async function getChatHistory(friendId: string) {
   }))
 }
 
-emitter.on('EVENT:UPDATE_CHAT_RECORDS', async (friend: string) => {
-  await getChatHistory(friend)
-})
+emitter.on(
+  'EVENT:UPDATE_CHAT_RECORDS',
+  async (friend: string, postId: string) => {
+    chatRecords[friend].push({
+      from: userStore.userInfo.userId,
+      message: postId,
+      isShare: '1',
+    })
+  }
+)
 
 onShow(async () => {
   await userStore.getUserFriendList()
   await fetchUnread()
+
+  const res = await getReviewPassIds()
+  reviewArr.value = res.data.data
   emitter.emit('EVENT:RESET_PUBLISH_PAGE')
 })
 
@@ -297,6 +308,8 @@ const navigateToUser = (userId: string) => {
     url: `${RouterPath.user}?userId=${userId}`,
   })
 }
+
+const reviewArr = ref<string[]>([])
 
 // #ifdef MP-WEIXIN
 import { navigateInterceptor } from '@/utils'
@@ -436,7 +449,11 @@ onShow(() => {
                 :nodes="lineBreakReplace(msg.message)"
               ></rich-text>
               <view v-else class="post-msg">
-                <SharePost :post-id="msg.message" />
+                <SharePost
+                  :post-id="
+                    reviewArr.includes(msg.message) ? msg.message : null
+                  "
+                />
               </view>
               <image
                 class="m-img"
@@ -460,7 +477,11 @@ onShow(() => {
                 :nodes="lineBreakReplace(msg.message)"
               ></rich-text>
               <view v-else class="post-msg">
-                <SharePost :post-id="msg.message" />
+                <SharePost
+                  :post-id="
+                    reviewArr.includes(msg.message) ? msg.message : null
+                  "
+                />
               </view>
             </view>
           </view>

@@ -12,3 +12,14 @@ The differences between app functionality and web functionality are as follows:
 - The app cannot reply to pop-up messages
 - Differences in styles between the two end scenes
 - The app does not have Pikachu?
+
+### 2.7.1 (260319)
+
+同步 web 功能，当前版本变更：
+
+- Add online user display function.
+- Add editing post.
+- Add post/comment reporting function.
+- Add message function.
+- Fix the error in the text prompt when setting a post to hidden.
+- Fix some UI issues.

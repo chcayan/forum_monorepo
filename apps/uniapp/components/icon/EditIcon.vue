@@ -10,7 +10,7 @@ const statusStore = useStatusStore()
   <view>
     <image
       :src="statusStore.isDarkMode ? editDarkIcon : editLightIcon"
-      style="width: 30px; height: 30px"
+      style="width: 26px; height: 26px"
     />
   </view>
 </template>

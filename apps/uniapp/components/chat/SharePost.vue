@@ -5,11 +5,12 @@ import { RouterPath, getImgUrl } from '@/utils'
 import type { PostDetail } from '@/types'
 import { ref } from 'vue'
 import { useStatusStore } from '@/stores'
+import WarnIcon from '@/components/icon/WarnIcon.vue'
 
 const statusStore = useStatusStore()
 
 const { postId } = defineProps<{
-  postId: string
+  postId: string | null
 }>()
 
 const postInfo = ref<PostDetail>({
@@ -28,13 +29,19 @@ const postInfo = ref<PostDetail>({
   username: '',
 })
 
+let isHide = ref(false)
 const getPostInfo = async () => {
-  const res = await getPostDetailAPI(postId)
-  postInfo.value = res.data.data
+  if (postId) {
+    const res = await getPostDetailAPI(postId)
+    postInfo.value = res.data.data
+  } else {
+    isHide.value = true
+  }
 }
 getPostInfo()
 
 const navigateToPostDetail = async () => {
+  if (!postId) return
   uni.navigateTo({
     url: `${RouterPath.detail}?postId=${postId}`,
   })
@@ -55,34 +62,51 @@ const navigateToPostDetail = async () => {
 
 <template>
   <view
+    v-if="!isHide"
     class="share-post"
     @click="navigateToPostDetail"
-    :class="{ theme: statusStore.isDarkMode }"
+    :class="{ 'theme-share-post': statusStore.isDarkMode }"
   >
+    <view class="content">{{ postInfo.pContent }}</view>
     <view class="title">
       <image
         class="img"
         mode="aspectFill"
         :src="getImgUrl(postInfo.userAvatar)"
       />
-      <text style="font-size: 14px">{{ postInfo.username }}</text>
+      <text style="font-size: 12px">{{ postInfo.username }}</text>
     </view>
-    <view class="content">{{ postInfo.pContent }}</view>
+  </view>
+  <view
+    v-else
+    class="share-post unwatch"
+    :class="{ 'theme-share-post': statusStore.isDarkMode }"
+    style="height: 38px !important; width: fit-content"
+  >
+    <WarnIcon />
+    <p>该帖子暂时不可见</p>
   </view>
 </template>
 
 <style scoped lang="scss">
-.theme {
+.theme-share-post {
   background-color: $theme-dark-chat-speech-bubble-color !important;
+}
+
+.unwatch {
+  opacity: 0.6;
+  flex-direction: row !important;
+  gap: 5px;
 }
 
 .share-post {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   width: 200px;
-  height: 100px;
+  height: 83px;
   border-radius: 10px;
-  padding: 10px;
+  padding: 8px 10px;
   background-color: $theme-light-chat-speech-bubble-color;
   cursor: pointer;
   box-sizing: border-box;
@@ -90,19 +114,19 @@ const navigateToPostDetail = async () => {
   .title {
     display: flex;
     align-items: center;
-    height: 32px;
+    height: 20px;
     gap: 8px;
+    align-self: flex-end;
 
     .img {
-      width: 25px;
-      height: 25px;
+      width: 20px;
+      height: 20px;
       aspect-ratio: 1;
       border-radius: 50%;
     }
   }
 
   .content {
-    margin-top: 5px;
     display: -webkit-box;
     line-clamp: 1;
     -webkit-line-clamp: 2;
