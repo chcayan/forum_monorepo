@@ -76,3 +76,11 @@ Current version changes:
 - Add message function.
 - Add comment reporting function.
 - Optimize the reporting interface style.
+
+### 2.7.1 (260318)
+
+Current version changes:
+
+- Fix the issue where images are not normally displayed after editing the post.
+- Fix the issue where unreviewed posts are added to the index page when viewing them in my page.
+- Optimize the post sharing card style in the chat view.

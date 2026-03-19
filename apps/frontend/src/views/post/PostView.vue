@@ -35,11 +35,16 @@ const getPostList = async (page: number) => {
 
 getPostList(postListPage.value)
 
-emitter.on('EVENT:UPDATE_POST_LIST', async (p_id: string) => {
+emitter.on('EVENT:UPDATE_POST_LIST', async (pId: string) => {
   try {
-    const res = await getPostDetailAPI(p_id)
+    const res = await getPostDetailAPI(pId)
+    const data: PostDetail = res.data.data
 
-    postMap.value.set(p_id, res.data.data)
+    if (data.status !== 1) {
+      return
+    }
+
+    postMap.value.set(pId, data)
     if (route.path === RouterPath.base) {
       emitter.emit('EVENT:TOGGLE_FLAG')
     }

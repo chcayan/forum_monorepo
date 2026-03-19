@@ -36,11 +36,11 @@ const getSearchPostList = async (page: number) => {
 
 getSearchPostList(searchPostListPage.value)
 
-emitter.on('EVENT:UPDATE_POST_LIST', async (p_id: string) => {
+emitter.on('EVENT:UPDATE_POST_LIST', async (pId: string) => {
   try {
-    const res = await getPostDetailAPI(p_id)
+    const res = await getPostDetailAPI(pId)
 
-    searchPostMap.value.set(p_id, res.data.data)
+    searchPostMap.value.set(pId, res.data.data)
     if (route.path === RouterPath.search) {
       emitter.emit('EVENT:TOGGLE_FLAG')
     }

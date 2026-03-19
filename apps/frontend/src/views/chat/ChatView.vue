@@ -241,12 +241,14 @@ onActivated(async () => {
   reviewArr.value = res.data.data
 })
 
+const isFocus = ref(false)
 onUpdated(() => {
-  if (message.value) return
-  scrollToBottom()
+  if (isFocus.value) return
+  // TODO: 可优化：提示有新消息
   if (chatPosition.value !== 0 && messageBoxRef.value) {
     messageBoxRef.value.scrollTop = chatPosition.value
   }
+  scrollToBottom()
 })
 
 const chatPosition = ref(0)
@@ -452,6 +454,8 @@ const onPikachuChat = () => {
               v-model.trim="message"
               @keydown.enter="sendMessage($event)"
               placeholder="Please input your message..."
+              @focus="isFocus = true"
+              @blur="isFocus = false"
             ></textarea>
             <button @click="sendMessage($event)" title="发送">
               <SendSvg />
@@ -611,7 +615,7 @@ const onPikachuChat = () => {
         .unread-count {
           user-select: none;
           margin-left: auto;
-          margin-right: 10px;
+          margin-right: -10px;
           width: 30px;
           height: 30px;
           line-height: 30px;

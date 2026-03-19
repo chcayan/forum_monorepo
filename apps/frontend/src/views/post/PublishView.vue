@@ -8,19 +8,20 @@ import { Toast } from '@/utils'
 import { useRoute } from 'vue-router'
 import { PostDetail } from '@forum-monorepo/types'
 import { useUserStore } from '@/stores'
+import router, { RouterPath } from '@/router'
 
 const context = ref<string>('')
 
 const imgUploadRef = useTemplateRef('ImgUploadEl')
 
 const route = useRoute()
-const postId = route.query['edit-post']
+const postId = ref(route.query['edit-post'] || '')
 
 const userStore = useUserStore()
 onMounted(async () => {
-  if (postId) {
+  if (postId.value) {
     try {
-      const res = await getPostDetailAPI(postId as string)
+      const res = await getPostDetailAPI(postId.value as string)
       const data: PostDetail = res.data.data
       if (data.userId !== userStore.userInfo.userId) {
         Toast.show({
@@ -76,13 +77,15 @@ const publishPost = async () => {
   let res
 
   try {
-    if (postId) {
+    if (postId.value) {
+      let files = getPostImages()
       res = await updatePostInfoAPI({
         content: context.value as string,
         isPublic: isPublic.value ? 'true' : 'false',
-        postImages: getPostImages(),
-        postId: postId as string,
+        postImages: files,
+        postId: postId.value as string,
       })
+      emitter.emit('EVENT:UPDATE_POST_IMAGES', files.length, postId.value)
     } else {
       res = await publishPostAPI({
         content: context.value as string,
@@ -92,10 +95,14 @@ const publishPost = async () => {
     }
     context.value = ''
     Toast.show({
-      msg: postId ? '修改成功' : '发布成功',
+      msg: postId.value ? '修改成功' : '发布成功',
       type: 'success',
     })
 
+    if (postId.value) {
+      router.push(RouterPath.publish)
+      postId.value = ''
+    }
     emitter.emit('EVENT:RESET_POST_IMAGES')
     emitter.emit('EVENT:UPDATE_USER_POST_LIST', res, true)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

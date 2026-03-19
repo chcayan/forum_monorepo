@@ -11,12 +11,13 @@ const { status } = defineProps<{
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .review {
   cursor: default;
 
   p {
-    margin-top: 3px;
+    margin-top: 2px;
+    margin-left: 2px;
     padding: 2px 5px;
     font-size: 12px;
   }

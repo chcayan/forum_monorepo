@@ -1,15 +1,25 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import emitter from '@/utils/eventEmitter'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 const active = ref('')
-const parseImages = ref<Array<string>>([])
-const { images } = defineProps<{
+const { images, postId } = defineProps<{
   images: string[]
+  postId: string
 }>()
-parseImages.value = images
 
+let off: () => void
 onMounted(() => {
-  active.value = `size${parseImages.value.length}`
+  active.value = `size${images.length}`
+
+  off = emitter.on('EVENT:UPDATE_POST_IMAGES', (size: number, pId: string) => {
+    if (postId !== pId) return
+    active.value = `size${size}`
+  })
+})
+
+onUnmounted(() => {
+  off?.()
 })
 </script>
 
@@ -19,7 +29,7 @@ onMounted(() => {
       v-loading
       v-fullScreen
       loading="lazy"
-      v-for="image in parseImages"
+      v-for="image in images"
       :key="image"
       :src="image"
       alt="postImage"

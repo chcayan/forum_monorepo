@@ -245,7 +245,7 @@ const share = async (friendId: string) => {
     from: userStore.userInfo.userId,
     to: friendId,
     message: post.pId,
-    is_share: '1',
+    isShare: '1',
   }
 
   socket.emit('sendMessage', payload)
@@ -343,7 +343,12 @@ const closeReportModal = () => {
         v-html="lineBreakReplace(post?.pContent)"
         :class="{ 'restrict-line': isRestrictLine }"
       ></p>
-      <NGrid class="n-grid" v-if="post?.pImages" :images="post?.pImages" />
+      <NGrid
+        class="n-grid"
+        v-if="post?.pImages"
+        :images="post?.pImages"
+        :postId="post.pId"
+      />
     </div>
     <footer v-if="post.status === 1">
       <ul>

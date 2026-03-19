@@ -47,7 +47,7 @@ instance.interceptors.response.use(
       emitter.emit('API:BAD_REQUEST', err.response?.data.message)
     }
     if (err.response?.status === 401) {
-      if (originalRequest.url?.includes('/login')) {
+      if (originalRequest.url?.includes('/user/login')) {
         emitter.emit('API:UN_AUTH', err.response?.data.message)
         return Promise.reject(err)
       }
