@@ -18,9 +18,9 @@ import { escapeHTML } from '@/utils/format'
 import pikachuImg from '@/assets/pikachu.jpg'
 import type { ChatInfo, UserBySearchInfo } from '@forum-monorepo/types'
 import {
+  nextTick,
   onActivated,
   onDeactivated,
-  onUpdated,
   reactive,
   ref,
   useTemplateRef,
@@ -28,6 +28,7 @@ import {
 } from 'vue'
 import SharePost from './components/SharePost.vue'
 import PikachuAi from './components/PikachuAi.vue'
+import { useRoute } from 'vue-router'
 
 const userStore = useUserStore()
 
@@ -47,13 +48,10 @@ const closeChatBox = () => {
 }
 
 onDeactivated(() => {
-  // closeChatBox()
-  // message.value = ''
   const el = messageBoxRef.value
   if (el) {
     el.style.scrollBehavior = 'auto'
   }
-
   showSearchBox.value = false
 })
 
@@ -148,6 +146,9 @@ const sendMessage = async (e: KeyboardEvent | PointerEvent) => {
     isShare: '0',
   })
   message.value = ''
+
+  await nextTick()
+  scrollToBottom()
 }
 
 type MsgType = {
@@ -180,6 +181,9 @@ socket.on(
       unreadCount[from] = (unreadCount[from] || 0) + 1
     }
 
+    await nextTick()
+    scrollToBottom()
+
     if (currentFriendUserId.value === from) {
       await markAsReadAPI({
         followId: from,
@@ -196,10 +200,16 @@ watch(currentFriendUserId, async (friend) => {
   if (el) {
     el.style.scrollBehavior = 'auto'
   }
+
+  if (!chatRecords[friend]) {
+    await getChatHistory(friend)
+  }
+
+  await nextTick()
+  scrollToBottom()
+
   await markAsReadAPI({ followId: friend })
   unreadCount[friend] = 0
-
-  await getChatHistory(friend)
 })
 
 async function getChatHistory(friendId: string) {
@@ -241,19 +251,18 @@ onActivated(async () => {
   reviewArr.value = res.data.data
 })
 
-const isFocus = ref(false)
-onUpdated(() => {
-  if (isFocus.value) return
-  // TODO: 可优化：提示有新消息
-  if (chatPosition.value !== 0 && messageBoxRef.value) {
-    messageBoxRef.value.scrollTop = chatPosition.value
+const route = useRoute()
+watch(
+  () => route.path,
+  () => {
+    if (chatPosition.value !== 0 && messageBoxRef.value) {
+      messageBoxRef.value.scrollTop = chatPosition.value
+    }
   }
-  scrollToBottom()
-})
+)
 
 const chatPosition = ref(0)
 const handleScroll = () => {
-  // console.log('当前滚动距离:', messageBoxRef.value?.scrollTop)
   chatPosition.value = messageBoxRef.value?.scrollTop as number
 }
 
@@ -454,8 +463,6 @@ const onPikachuChat = () => {
               v-model.trim="message"
               @keydown.enter="sendMessage($event)"
               placeholder="Please input your message..."
-              @focus="isFocus = true"
-              @blur="isFocus = false"
             ></textarea>
             <button @click="sendMessage($event)" title="发送">
               <SendSvg />
@@ -490,6 +497,7 @@ const onPikachuChat = () => {
     ul {
       overflow-y: scroll;
       height: calc(100% - 60px);
+      width: 240px;
 
       .avatar {
         position: relative;
