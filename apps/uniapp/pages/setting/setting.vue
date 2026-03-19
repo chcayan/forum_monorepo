@@ -1,9 +1,16 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import { RouterPath } from '../../utils'
 import { useStatusStore, useUserStore } from '@/stores'
+import emitter from '../../utils/eventEmitter'
+import { onShow } from '@dcloudio/uni-app'
 
 const userStore = useUserStore()
 const statusStore = useStatusStore()
+
+onShow(() => {
+  emitter.emit('EVENT:RESET_PUBLISH_PAGE')
+})
 
 const onLogin = () => {
   uni.navigateTo({

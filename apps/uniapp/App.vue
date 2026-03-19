@@ -25,6 +25,10 @@ async function initUserStatus() {
 
   socket.emit('login', userStore.userInfo?.userId)
 
+  socket.on('receiveOnlineList', (list: string[]) => {
+    userStore.setOnLineList(list)
+  })
+
   socket.on(
     'receiveMessage',
     async ({

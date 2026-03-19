@@ -233,3 +233,20 @@ export function updateUserPostToPublicAPI(postId: string) {
 export function updateUserPostToPrivateAPI(postId: string) {
   return request.patch(`/user/post/private/${postId}`)
 }
+
+/**
+ * 查询用户违规帖子原因
+ * @param postId 帖子id
+ * @returns
+ */
+export function getViolationReasonAPI(postId: string) {
+  return request.get(`/user/violation-post/${postId}`)
+}
+
+/**
+ * 查询用户信息
+ * @returns
+ */
+export function getUserMessageAPI() {
+  return request.get('/user/message')
+}

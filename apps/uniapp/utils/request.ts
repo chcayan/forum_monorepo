@@ -1,3 +1,4 @@
+import { refreshAPI } from '../api'
 import { useUserStore } from '../stores'
 import emitter from './eventEmitter'
 
@@ -10,6 +11,19 @@ type Options = {
   timeout?: number
   beforeRequest?: (requestInstance: Request) => Request
   afterRequest?: (res: any) => void
+  withCredentials?: boolean
+}
+
+let isRefreshing = false
+let refreshSubscribers: ((token: string) => void)[] = []
+
+function subscribeTokenRefresh(cb: (token: string) => void) {
+  refreshSubscribers.push(cb)
+}
+
+function onRefreshed(token: string) {
+  refreshSubscribers.forEach((cb) => cb(token))
+  refreshSubscribers = []
 }
 
 class Request {
@@ -21,6 +35,7 @@ class Request {
   timeout?: number
   beforeRequest?: (requestInstance: Request) => Request
   afterRequest?: (res: any) => void
+  withCredentials?: boolean
 
   constructor(options: Options) {
     this.baseUrl = options.baseUrl
@@ -31,6 +46,7 @@ class Request {
     this.timeout = options.timeout || 60000
     this.beforeRequest = undefined
     this.afterRequest = undefined
+    this.withCredentials = false
   }
 
   get(url: string, data: any | string = {}) {
@@ -70,8 +86,8 @@ class Request {
   }
 
   handleRequest() {
-    this.beforeRequest?.(this)
-
+    const originalRequest = this.beforeRequest?.(this)
+    const userStore = useUserStore()
     return new Promise<any>(
       (resolve: (v: any) => void, reject: (r: any) => void) => {
         uni.request({
@@ -80,15 +96,57 @@ class Request {
           data: this.data,
           header: this.header,
           timeout: this.timeout,
-          success: (res: any) => {
+          withCredentials: this.withCredentials,
+          success: async (res: any) => {
             if (res.statusCode === 400) {
               emitter.emit('API:BAD_REQUEST', res.data.message)
               reject(res)
               return
             } else if (res.statusCode === 401) {
-              emitter.emit('API:UN_AUTH', res.data.message)
-              reject(res)
-              return
+              if (originalRequest?.url?.includes('/user/login')) {
+                emitter.emit('API:UN_AUTH', err.data.message)
+                return reject(res)
+              }
+
+              if (!isRefreshing) {
+                isRefreshing = true
+                try {
+                  const res = await refreshAPI()
+                  const newToken = res.data.data.accessToken
+
+                  userStore.setToken(newToken)
+                  onRefreshed(newToken)
+
+                  return new Request({
+                    baseUrl,
+                    url: originalRequest!.url,
+                    header: {
+                      Authorization: `Bearer ${newToken}`,
+                    },
+                    withCredentials: true,
+                  })
+                } catch {
+                  emitter.emit('API:UN_AUTH', res.data.message)
+                  return reject(res)
+                } finally {
+                  isRefreshing = false
+                }
+              } else {
+                return new Promise((resolve) => {
+                  subscribeTokenRefresh((token) => {
+                    resolve(
+                      new Request({
+                        baseUrl,
+                        url: originalRequest!.url,
+                        header: {
+                          Authorization: `Bearer ${token}`,
+                        },
+                        withCredentials: true,
+                      }) as unknown as void
+                    )
+                  })
+                })
+              }
             } else if (res.statusCode === 403) {
               emitter.emit('API:FORBIDDEN', res.data.message)
               reject(res)
@@ -104,12 +162,12 @@ class Request {
   }
 }
 
-const socketUrl = 'ws://localhost:3000'
-const baseUrl = 'http://localhost:3000'
-// const baseUrl = 'http://10.0.2.2:3000'
+const socketUrl = import.meta.env.VITE_SOCKET
+const baseUrl = import.meta.env.VITE_BASE_URL
 const request = new Request({
   baseUrl,
   url: '',
+  withCredentials: true,
 })
 
 request.beforeRequest = function (requestInstance: Request) {

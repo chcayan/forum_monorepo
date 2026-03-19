@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import PostList from '@/components/post/PostList.vue'
 import { getPostDetailAPI, getUserCollectPostAPI, getUserPostAPI } from '@/api'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import type { PostDetail } from '@/types'
 import emitter from '@/utils/eventEmitter'
 import { useUserStore } from '@/stores'
 import UserCard from '@/components/user/UserCard.vue'
 import ToggleBtn from '@/components/button/ToggleBtn.vue'
-import { onLoad, onReachBottom } from '@dcloudio/uni-app'
+import { onLoad, onReachBottom, onShow } from '@dcloudio/uni-app'
 import { useStatusStore } from '@/stores'
 import { RouterPath, getCurrentRoute } from '@/utils'
 
@@ -91,6 +91,10 @@ onLoad(async () => {
   getUserCollectedPostList(userCollectedPostListPage.value)
 })
 
+onShow(() => {
+  emitter.emit('EVENT:RESET_PUBLISH_PAGE')
+})
+
 emitter.on('EVENT:DELETE_USER_POST_LIST', async (pId: string) => {
   if (userPostMap.value.get(pId)) {
     userPostMap.value.delete(pId)
@@ -163,7 +167,6 @@ onReachBottom(async () => {
 })
 
 // #ifdef MP-WEIXIN
-import { onShow } from '@dcloudio/uni-app'
 import { navigateInterceptor } from '@/utils'
 
 onShow(() => {

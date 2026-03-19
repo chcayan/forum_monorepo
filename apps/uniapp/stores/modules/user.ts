@@ -50,10 +50,9 @@ export const useUserStore = defineStore('user', () => {
     const res = await getUserCollectPostIdListAPI()
     const arr = res.data?.data ?? []
     // userCollectListOfPostId.value = arr.map(
-    //   (item : { p_id : string }) => item.p_id
+    //   (item : { pId : string }) => item.pId
     // )
     userCollectListOfPostId.value = arr
-    console.log(userCollectListOfPostId.value)
   }
 
   const userFollowList = ref<FriendInfo[]>([])
@@ -71,6 +70,11 @@ export const useUserStore = defineStore('user', () => {
     userFriendList.value = res.data.data
   }
 
+  const onLineList = ref<string[]>([])
+  const setOnLineList = (list: string[]) => {
+    onLineList.value = list
+  }
+
   return {
     token,
     setToken,
@@ -84,5 +88,7 @@ export const useUserStore = defineStore('user', () => {
     getUserFollowList,
     userFriendList,
     getUserFriendList,
+    onLineList,
+    setOnLineList,
   }
 })

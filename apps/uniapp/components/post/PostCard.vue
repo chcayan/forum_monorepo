@@ -8,7 +8,7 @@ import {
   checkLoginStatus,
   socket,
 } from '@/utils/index'
-import { PostDetail } from '@/types/index'
+import { FriendInfo, PostDetail } from '@/types/index'
 import ViewIcon from '@/components/icon/ViewIcon.vue'
 import CommentIcon from '@/components/icon/CommentIcon.vue'
 import CollectIcon from '@/components/icon/CollectIcon.vue'
@@ -16,10 +16,15 @@ import ShareIcon from '@/components/icon/ShareIcon.vue'
 import DelIcon from '@/components/icon/DelIcon.vue'
 import PublicIcon from '@/components/icon/PublicIcon.vue'
 import PrivateIcon from '@/components/icon/PrivateIcon.vue'
+import ReportIcon from '@/components/icon/ReportIcon.vue'
+import ModifyIcon from '@/components/icon/ModifyIcon.vue'
 import NGrid from '@/components/post/NGrid.vue'
+import ReviewLabel from '@/components/post/ReviewLabel.vue'
+import ViolationReason from '@/components/post/ViolationReason.vue'
 import { ref, watch, computed } from 'vue'
 import emitter from '@/utils/eventEmitter'
 import {
+  createPostReportAPI,
   deleteUserPostAPI,
   updatePostViewAPI,
   updateUserAddCollectAPI,
@@ -107,7 +112,7 @@ const changeCollectStatus = async () => {
 }
 
 function updatePostStatus() {
-  const route = getCurrentRoute()
+  const route = getCurrentRoute()!
 
   if (
     route === RouterPath.index ||
@@ -153,12 +158,19 @@ const navigateToPostDetail = async (postId: string) => {
     })
 }
 
+const navigateToPublish = () => {
+  uni.setStorageSync('query', { postId: props.post.pId })
+  uni.switchTab({
+    url: RouterPath.publish,
+  })
+}
+
 const deletePost = () => {
   uni.showModal({
     content: '确定要删除吗',
     confirmText: '删除',
     confirmColor: '#ff0000',
-    async success(result: string | boolean) {
+    async success(result: any) {
       if (result.confirm) {
         await deleteUserPostAPI(props.post.pId)
           .then(() => {
@@ -182,7 +194,7 @@ const deletePost = () => {
 const onPublic = () => {
   uni.showModal({
     content: '确定要设置为公开可见吗',
-    async success(result: string | boolean) {
+    async success(result: any) {
       if (result.confirm) {
         await updateUserPostToPublicAPI(props.post.pId)
           .then(() => {
@@ -206,7 +218,7 @@ const onPublic = () => {
 const onPrivate = () => {
   uni.showModal({
     content: '确定要设置为公开可见吗',
-    async success(result: string | boolean) {
+    async success(result: any) {
       if (result.confirm) {
         await updateUserPostToPrivateAPI(props.post.pId)
           .then(() => {
@@ -241,10 +253,12 @@ const navigateToUser = () => {
 }
 
 const isSelf = ref(false)
+const isPostDetail = ref(false)
 onShow(() => {
   const route = getCurrentRoute()
   isSelf.value =
     props.post?.userId === userStore.userInfo.userId && route === RouterPath.my
+  isPostDetail.value = route === RouterPath.detail
 })
 
 const showShareBox = ref(false)
@@ -280,6 +294,33 @@ onPageScroll(() => {
   if (!showShareBox.value) return
   showShareBox.value = false
 })
+
+const openReportModal = () => {
+  uni.showModal({
+    title: '请填写举报原因：',
+    editable: true,
+    confirmText: '提交',
+    async success(result) {
+      if (result.confirm) {
+        if (!result.content?.trim()) {
+          uni.showToast({
+            icon: 'none',
+            title: '内容不为空',
+          })
+          return
+        }
+        await createPostReportAPI({
+          postId: props.post.pId,
+          reason: result.content.trim(),
+        })
+        uni.showToast({
+          icon: 'none',
+          title: '提交成功，等待审核中',
+        })
+      }
+    },
+  })
+}
 </script>
 
 <template>
@@ -326,6 +367,7 @@ onPageScroll(() => {
       </view>
       <view class="func-widget" v-if="isSelf">
         <DelIcon @click="deletePost" />
+        <ModifyIcon @click="navigateToPublish" />
         <view v-if="post.status === 1">
           <PublicIcon
             @click="onPrivate"
@@ -333,9 +375,19 @@ onPageScroll(() => {
           />
           <PrivateIcon @click="onPublic" v-else />
         </view>
+        <view v-else>
+          <ReviewLabel :status="props.post?.status" />
+        </view>
+      </view>
+      <view v-if="isPostDetail && props.post.status === 1">
+        <ReportIcon @click="openReportModal" />
       </view>
     </view>
     <view class="main">
+      <ViolationReason
+        v-if="props.post.status === 2"
+        :postId="props.post.pId"
+      />
       <rich-text
         style="font-size: 16px"
         @click="navigateToPostDetail(props.post.pId)"
@@ -343,7 +395,11 @@ onPageScroll(() => {
         :nodes="lineBreakReplace(props.post?.pContent)"
         class="text"
       ></rich-text>
-      <NGrid class="imgs" :images="props.post?.pImages"></NGrid>
+      <NGrid
+        class="imgs"
+        :images="props.post?.pImages"
+        :postId="props.post.pId"
+      ></NGrid>
     </view>
     <view class="footer" v-if="post.status === 1">
       <view class="icon-list">
@@ -449,6 +505,7 @@ onPageScroll(() => {
     .post-info {
       display: flex;
       flex-direction: column;
+      margin-right: auto;
 
       .date {
         margin-top: 2px;

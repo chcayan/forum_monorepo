@@ -1,19 +1,26 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, onUpdated, ref } from 'vue'
 import { getImgUrl } from '@/utils'
+import emitter from '../../utils/eventEmitter'
 
 const active = ref('')
-const parseImages = ref<Array<string>>([])
-const { images } = defineProps<{
-  images: string[]
+
+const { images, postId } = defineProps<{
+  images: string[] | null
+  postId: string
 }>()
 
-parseImages.value = images
-
+let off: any
 onMounted(() => {
-  if (parseImages.value) {
-    active.value = `size${parseImages.value.length}`
-  }
+  active.value = `size${images?.length}`
+  off = emitter.on('EVENT:UPDATE_POST_IMAGES', (size: number, pId: string) => {
+    if (postId !== pId) return
+    active.value = `size${size}`
+  })
+})
+
+onUnmounted(() => {
+  off?.()
 })
 
 function preview(url: string) {
@@ -24,14 +31,14 @@ function preview(url: string) {
 </script>
 
 <template>
-  <view v-if="images?.length" class="box one" :class="active">
+  <view v-if="images && images?.length" class="box one" :class="active">
     <image
       class="img"
-      v-for="image in parseImages"
+      v-for="image in images"
       :key="image"
       :src="getImgUrl(image)"
       @click="preview(getImgUrl(image))"
-      :mode="parseImages?.length === 1 ? 'widthFix' : 'aspectFill'"
+      :mode="images?.length === 1 ? 'widthFix' : 'aspectFill'"
     />
   </view>
 </template>

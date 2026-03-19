@@ -2,10 +2,39 @@
 import { lineBreakReplace } from '@/utils'
 import type { CommentList } from '@/types'
 import { formatDateByYear, getImgUrl } from '@/utils'
+import ReportIcon from '@/components/icon/ReportIcon.vue'
+import { createCommentReportAPI } from '../../api'
 
 const { comment } = defineProps<{
   comment: CommentList
 }>()
+
+const openReportModal = () => {
+  uni.showModal({
+    title: '请填写举报原因：',
+    editable: true,
+    confirmText: '提交',
+    async success(result) {
+      if (result.confirm) {
+        if (!result.content?.trim()) {
+          uni.showToast({
+            icon: 'none',
+            title: '内容不为空',
+          })
+          return
+        }
+        await createCommentReportAPI({
+          commentId: comment.commentId,
+          reason: result.content.trim(),
+        })
+        uni.showToast({
+          icon: 'none',
+          title: '提交成功，等待审核中',
+        })
+      }
+    },
+  })
+}
 </script>
 
 <template>
@@ -17,8 +46,13 @@ const { comment } = defineProps<{
         mode="aspectFill"
       />
       <view class="comment-card-info">
-        <text>{{ comment?.username }}</text>
-        <text class="time">{{ formatDateByYear(comment.createdTime) }}</text>
+        <view class="left">
+          <text>{{ comment?.username }}</text>
+          <text class="time">{{ formatDateByYear(comment.createdTime) }}</text>
+        </view>
+        <view class="right">
+          <ReportIcon @click="openReportModal" />
+        </view>
       </view>
     </view>
     <view class="main">
@@ -40,6 +74,7 @@ $main-gap: 20px;
     gap: calc($main-gap / 2);
 
     .comment-card-img {
+      flex-shrink: 0;
       width: 32px;
       height: 32px;
       aspect-ratio: 1;
@@ -47,10 +82,21 @@ $main-gap: 20px;
     }
 
     .comment-card-info {
+      width: calc(100% - 40px);
       display: flex;
-      flex-direction: column;
-      justify-content: center;
-      font-size: 14px;
+      align-items: center;
+
+      .left {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+      }
+
+      .right {
+        margin-left: auto;
+      }
 
       .time {
         font-size: 11px;

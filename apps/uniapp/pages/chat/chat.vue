@@ -93,7 +93,7 @@ const sendMessage = async () => {
   }
 
   const payload = {
-    type: 'chat',
+    // type: 'chat',
     from: userStore.userInfo.userId,
     to: currentFriendUserId.value,
     message: msg,
@@ -268,6 +268,7 @@ emitter.on('EVENT:UPDATE_CHAT_RECORDS', async (friend: string) => {
 onShow(async () => {
   await userStore.getUserFriendList()
   await fetchUnread()
+  emitter.emit('EVENT:RESET_PUBLISH_PAGE')
 })
 
 const searchUserList = ref<UserBySearchInfo[]>([])
@@ -298,7 +299,6 @@ const navigateToUser = (userId: string) => {
 }
 
 // #ifdef MP-WEIXIN
-import { onShow } from '@dcloudio/uni-app'
 import { navigateInterceptor } from '@/utils'
 
 onShow(() => {
@@ -358,11 +358,20 @@ onShow(() => {
             selectFriend(friend.username, friend.userAvatar, friend.followId)
           "
         >
-          <image
-            class="u-img"
-            mode="aspectFill"
-            :src="getImgUrl(friend.userAvatar)"
-          />
+          <view
+            :class="{
+              avatar: userStore.onLineList.includes(friend.followId),
+              'theme-avatar':
+                userStore.onLineList.includes(friend.followId) &&
+                statusStore.isDarkMode,
+            }"
+          >
+            <image
+              class="u-img"
+              mode="aspectFill"
+              :src="getImgUrl(friend.userAvatar)"
+            />
+          </view>
           <text class="u-text">{{ friend.username }}</text>
           <view
             v-if="unreadCount[friend.followId]"
@@ -395,7 +404,16 @@ onShow(() => {
             mode="aspectFill"
             :src="getImgUrl(currentFriendAvatar)"
           />
-          <text>{{ currentFriendUsername }}</text>
+          <view class="h-name">
+            <text>{{ currentFriendUsername }}</text>
+            <text class="online">
+              {{
+                userStore.onLineList.includes(currentFriendUserId)
+                  ? '在线'
+                  : '离线'
+              }}
+            </text>
+          </view>
           <view class="close-box" @click="closeChatBox">
             <CloseIcon class="close" />
           </view>
@@ -471,7 +489,7 @@ onShow(() => {
   </view>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .theme {
   background-color: $theme-dark-color !important;
 }
@@ -510,6 +528,16 @@ onShow(() => {
 .theme-textarea {
   color: $theme-dark-font-color !important;
   background-color: $theme-dark-color !important;
+}
+
+.theme-avatar {
+  .u-img {
+    border: 4px solid $theme-dark-avatar-border-color !important;
+  }
+
+  &::after {
+    background-color: $theme-dark-avatar-border-color !important;
+  }
 }
 
 .chat-view {
@@ -615,18 +643,23 @@ onShow(() => {
         padding: 10px;
         cursor: pointer;
 
-        .unread-count {
-          user-select: none;
-          margin-left: auto;
-          margin-right: 10px;
-          width: 30px;
-          height: 30px;
-          line-height: 30px;
-          text-align: center;
-          color: $theme-light-font-color;
-          border-radius: 50%;
-          background-color: $theme-light-chat-speech-bubble-color;
-          font-size: 15px;
+        .avatar {
+          position: relative;
+
+          .u-img {
+            border: 4px solid $theme-light-avatar-border-color;
+          }
+
+          &::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            width: 12px;
+            height: 12px;
+            background-color: $theme-light-avatar-border-color;
+            border-radius: 50%;
+          }
         }
 
         .u-img {
@@ -635,6 +668,21 @@ onShow(() => {
           aspect-ratio: 1;
           object-fit: cover;
           border-radius: 50%;
+          box-sizing: border-box;
+        }
+
+        .unread-count {
+          user-select: none;
+          margin-left: auto;
+          margin-right: 5px;
+          width: 30px;
+          height: 30px;
+          line-height: 30px;
+          text-align: center;
+          color: $theme-light-font-color;
+          border-radius: 50%;
+          background-color: $theme-light-chat-speech-bubble-color;
+          font-size: 15px;
         }
 
         .u-text {
@@ -688,6 +736,16 @@ onShow(() => {
           height: 40px;
           aspect-ratio: 1;
           border-radius: 50%;
+        }
+
+        .h-name {
+          display: flex;
+          flex-direction: column;
+
+          .online {
+            font-size: 12px;
+            font-weight: bold;
+          }
         }
       }
 

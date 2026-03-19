@@ -105,7 +105,7 @@ const login = async () => {
       email: email.value,
       password: password.value,
     })
-    userStore.setToken(res.data.data.token)
+    userStore.setToken(res.data.data.accessToken)
     uni.showToast({
       icon: 'none',
       title: '登录成功',

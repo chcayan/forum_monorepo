@@ -28,7 +28,6 @@ const postDetail = ref<PostDetail>({
 const getPostDetail = async (postId: string) => {
   await getPostDetailAPI(postId)
     .then((res) => {
-      console.log(res)
       postDetail.value = res.data.data
     })
     .catch(() => {

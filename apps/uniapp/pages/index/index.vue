@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import type { PostDetail } from '@/types/index'
 import { getPostListAPI, getPostDetailAPI } from '@/api/index'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import SearchIcon from '@/components/icon/SearchIcon.vue'
 import PostList from '@/components/post/PostList.vue'
 import { onReachBottom, onPullDownRefresh } from '@dcloudio/uni-app'
 import emitter from '@/utils/eventEmitter'
 import { RouterPath, getCurrentRoute } from '@/utils'
 import { useStatusStore } from '@/stores'
+import { onShow } from '@dcloudio/uni-app'
+
+onShow(() => {
+  emitter.emit('EVENT:RESET_PUBLISH_PAGE')
+})
 
 const statusStore = useStatusStore()
 const postMap = ref(new Map<string, PostDetail>())
@@ -38,6 +43,12 @@ getPostList(postListPage.value)
 emitter.on('EVENT:UPDATE_POST_LIST', async (pId: string) => {
   try {
     const res = await getPostDetailAPI(pId)
+    const data: PostDetail = res.data.data
+
+    if (data.status !== 1) {
+      return
+    }
+
     postMap.value.set(pId, res.data.data)
 
     const currentRoute = getCurrentRoute()

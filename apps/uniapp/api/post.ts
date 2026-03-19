@@ -111,3 +111,79 @@ export async function publishPostAPI(data: PostPublish) {
 export function updatePostViewAPI(postId: string) {
   return request.patch(`/post/view/${postId}`)
 }
+
+type UpdatePostInfo = {
+  content: string
+  isPublic: string
+  postId: string
+  postImages: string[]
+}
+
+/**
+ * 修改帖子信息
+ * @param data 更新帖子信息
+ * @returns
+ */
+export async function updatePostInfoAPI(data: UpdatePostInfo) {
+  const res = await request.post('/post/modify', data)
+  const postId = res.data.data.postId
+
+  if (data.postImages?.length !== 0) {
+    const userStore = useUserStore()
+    const token = userStore.token
+
+    if (!token) {
+      console.error('unauth')
+      return
+    }
+
+    let index = 0
+    for (const path of data.postImages!) {
+      await new Promise((resolve, reject) => {
+        uni.uploadFile({
+          url: baseUrl + '/post/upload-image',
+          header: {
+            Authorization: `Bearer ${token}`,
+          },
+          filePath: path,
+          name: 'postImages',
+          formData: { pId: postId, index: index.toString() },
+          success: (res) => resolve(res),
+          fail: (err) => reject(err),
+        })
+      })
+      index++
+    }
+  }
+
+  return postId
+}
+
+/**
+ * 添加帖子举报
+ * @param data postId, reason
+ * @returns
+ */
+export function createPostReportAPI(data: { postId: string; reason: string }) {
+  return request.post('/post/post-report', data)
+}
+
+/**
+ * 添加评论举报
+ * @param data commentId, reason
+ * @returns
+ */
+export function createCommentReportAPI(data: {
+  commentId: number
+  reason: string
+}) {
+  return request.post('/post/comment-report', data)
+}
+
+/**
+ * 查询审核通过的帖子id数组
+ * @returns
+ */
+export function getReviewPassIds() {
+  return request.get('/post/review-pass-ids')
+}
