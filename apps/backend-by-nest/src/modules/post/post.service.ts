@@ -292,7 +292,7 @@ export class PostService {
 
   async findReviewPassIds() {
     const posts = await this.postRepository.find({
-      where: { status: 1 },
+      where: { status: 1, isPublic: 'true' },
       select: ['pId'],
     });
 
