@@ -129,7 +129,7 @@ export class UserService {
     return result;
   }
 
-  async findUserPostByUserId(userId: string, page: number, pageSize: number) {
+  async findMyPost(userId: string, page: number, pageSize: number) {
     const qb = this.postRepository.createQueryBuilder(PostAlias);
     const [list, total] = await qb
       .leftJoin(PostFields.user, UserAlias)
@@ -159,7 +159,37 @@ export class UserService {
     return { list: formattedList, total };
   }
 
-  async findCollectedPostByViewerId(
+  async findUserPostByUserId(userId: string, page: number, pageSize: number) {
+    const qb = this.postRepository.createQueryBuilder(PostAlias);
+    const [list, total] = await qb
+      .leftJoin(PostFields.user, UserAlias)
+      .addSelect([UserFields.userAvatar, UserFields.username])
+      .where(`${PostFields.userId} = :userId and status = 1`, {
+        userId: userId,
+      })
+      .andWhere(
+        `(${PostFields.isPublic} = :isPublic OR ${PostFields.userId} = :userId)`,
+        {
+          isPublic: 'true',
+          userId,
+        },
+      )
+      .orderBy(PostFields.publishTime, 'DESC')
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
+      .getManyAndCount();
+
+    const formattedList = list.map(({ user, ...post }) => ({
+      ...post,
+      userId: post.userId,
+      username: user?.username,
+      userAvatar: user?.userAvatar,
+    }));
+
+    return { list: formattedList, total };
+  }
+
+  async findMyCollectedPost(
     viewerId: string,
     page: number,
     pageSize: number,
@@ -170,6 +200,37 @@ export class UserService {
       .leftJoinAndSelect('c.post', 'p')
       .leftJoinAndSelect('p.user', 'u')
       .where('c.userId = :viewerId', { viewerId })
+      .andWhere('(p.isPublic = :isPublic OR p.userId = :userId)', {
+        isPublic: 'true',
+        userId,
+      })
+      .andWhere('p.status = :status', { status: 1 })
+      .orderBy('c.collectTime', 'DESC')
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
+      .getManyAndCount();
+
+    const formattedList = list.map((c) => ({
+      ...c.post,
+      userId: c.userId,
+      username: c.post.user?.username,
+      userAvatar: c.post.user?.userAvatar,
+    }));
+
+    return { list: formattedList, total };
+  }
+
+  async findCollectedPostByViewerId(
+    viewerId: string,
+    page: number,
+    pageSize: number,
+    userId?: string,
+  ) {
+    const [list, total] = await this.collectionRepository
+      .createQueryBuilder('c')
+      .leftJoinAndSelect('c.post', 'p')
+      .leftJoinAndSelect('p.user', 'u')
+      .where('c.userId = :viewerId and status = 1', { viewerId })
       .andWhere('(p.isPublic = :isPublic OR p.userId = :userId)', {
         isPublic: 'true',
         userId,

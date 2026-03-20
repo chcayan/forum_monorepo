@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import PostList from '@/components/post/PostList.vue'
-import { getPostDetailAPI, getUserCollectPostAPI, getUserPostAPI } from '@/api'
+import { getPostDetailAPI, getMyCollectPostAPI, getMyPostAPI } from '@/api'
 import { computed, onMounted, ref } from 'vue'
 import type { PostDetail } from '@/types'
 import emitter from '@/utils/eventEmitter'
@@ -44,7 +44,7 @@ const ucpHasMore = ref(true)
 const userCollectedPostListPage = ref(1)
 
 const getUserPostList = async (page: number) => {
-  const res = await getUserPostAPI({
+  const res = await getMyPostAPI({
     userId: userStore.userInfo?.userId as string,
     page,
     limit,
@@ -65,7 +65,7 @@ const getUserPostList = async (page: number) => {
 }
 
 const getUserCollectedPostList = async (page: number) => {
-  const res = await getUserCollectPostAPI({
+  const res = await getMyCollectPostAPI({
     userId: userStore.userInfo?.userId as string,
     page,
     limit,
@@ -121,7 +121,7 @@ emitter.on(
       ]
       return
     }
-    if (!userCollectedPostMap.value.get(pId)) {
+    if (!toggleStatus.value && !userCollectedPostMap.value.get(pId)) {
       userCollectedPostMap.value.set(pId, post)
       userCollectedPostOrder.value = [
         pId,

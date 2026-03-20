@@ -61,6 +61,16 @@ export class UserController {
     return this.userService.register(dto.email, dto.password);
   }
 
+  @Get('post')
+  @UseGuards(JwtAuthGuard)
+  async findMyPost(
+    @OptionalUser() userId: string,
+    @Query('page', ParseIntPipe) page: number,
+    @Query('limit', ParseIntPipe) limit: number,
+  ) {
+    return this.userService.findMyPost(userId, page, limit);
+  }
+
   @Get('post/:userId')
   async findUserPost(
     @Param('userId') userId: string,
@@ -119,6 +129,16 @@ export class UserController {
     @Param('postId') postId: string,
   ) {
     return this.userService.delCollect(userId, postId);
+  }
+
+  @Get('collect')
+  @UseGuards(JwtAuthGuard)
+  async findMyCollectedPost(
+    @Query('page', ParseIntPipe) page: number,
+    @Query('limit', ParseIntPipe) limit: number,
+    @OptionalUser() userId: string,
+  ) {
+    return this.userService.findMyCollectedPost(userId, page, limit, userId);
   }
 
   @Get('collect/:viewerId')

@@ -84,3 +84,9 @@ Current version changes:
 - Fix the issue where images are not normally displayed after editing the post.
 - Fix the issue where unreviewed posts are added to the index page when viewing them in my page.
 - Optimize the post sharing card style in the chat view.
+
+### 2.7.2 (263020)
+
+Current version changes:
+
+- Fix the issue where other users' unreviewed posts are visible.

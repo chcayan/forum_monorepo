@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import PostList from '../post/components/PostList.vue'
-import { getPostDetailAPI, getUserCollectPostAPI, getUserPostAPI } from '@/api'
+import { getMyCollectPostAPI, getMyPostAPI, getPostDetailAPI } from '@/api'
 import { computed, onActivated, onMounted, ref } from 'vue'
 import type { PostDetail } from '@forum-monorepo/types'
 import emitter from '@/utils/eventEmitter'
@@ -41,7 +41,7 @@ const ucpHasMore = ref(true)
 const userCollectedPostListPage = ref(1)
 
 const getUserPostList = async (page: number) => {
-  const res = await getUserPostAPI({
+  const res = await getMyPostAPI({
     userId: userStore.userInfo?.userId as string,
     page,
     limit,
@@ -62,7 +62,7 @@ const getUserPostList = async (page: number) => {
 }
 
 const getUserCollectedPostList = async (page: number) => {
-  const res = await getUserCollectPostAPI({
+  const res = await getMyCollectPostAPI({
     userId: userStore.userInfo?.userId as string,
     page,
     limit,

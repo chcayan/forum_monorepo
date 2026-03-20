@@ -17,6 +17,16 @@ type PostInfo = {
 }
 
 /**
+ * 查询我的帖子 - 数据结构：PostDetail[]
+ * @param data 用户id、页数、每页帖子数
+ * @returns
+ */
+export function getMyPostAPI(data: PostInfo) {
+  const { page, limit } = data
+  return request.get(`/user/post?page=${page}&limit=${limit}`)
+}
+
+/**
  * 查询用户帖子 - 数据结构：PostDetail[]
  * @param data 用户id、页数、每页帖子数
  * @returns
@@ -24,6 +34,16 @@ type PostInfo = {
 export function getUserPostAPI(data: PostInfo) {
   const { userId, page, limit } = data
   return request.get(`/user/post/${userId}?page=${page}&limit=${limit}`)
+}
+
+/**
+ * 我的收藏帖子信息 - 数据结构：PostDetail[]
+ * @param data 用户id、页数、每页帖子数
+ * @returns
+ */
+export function getMyCollectPostAPI(data: PostInfo) {
+  const { page, limit } = data
+  return request.get(`/user/collect?page=${page}&limit=${limit}`)
 }
 
 /**

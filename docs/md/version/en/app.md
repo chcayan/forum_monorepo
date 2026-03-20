@@ -23,3 +23,9 @@ The differences between app functionality and web functionality are as follows:
 - Add message function.
 - Fix the error in the text prompt when setting a post to hidden.
 - Fix some UI issues.
+
+### 2.7.2 (263020)
+
+Current version changes:
+
+- Fix the issue where other users' unreviewed posts are visible.
