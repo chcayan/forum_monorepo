@@ -1500,9 +1500,9 @@
             "in": "query",
             "description": "",
             "required": true,
-            "example": "1",
+            "example": 1,
             "schema": {
-              "type": "string"
+              "type": "number"
             }
           },
           {
@@ -1510,9 +1510,9 @@
             "in": "query",
             "description": "",
             "required": true,
-            "example": "10",
+            "example": 10,
             "schema": {
-              "type": "string"
+              "type": "number"
             }
           }
         ],
@@ -1628,6 +1628,52 @@
           }
         },
         "security": []
+      }
+    },
+    "/user/post": {
+      "get": {
+        "summary": "查询我的帖子",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
       }
     },
     "/user/collect/{userId}": {
@@ -1962,6 +2008,52 @@
               }
             },
             "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/user/collect": {
+      "get": {
+        "summary": "查询我的收藏帖子",
+        "deprecated": false,
+        "description": "",
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
           }
         },
         "security": [
