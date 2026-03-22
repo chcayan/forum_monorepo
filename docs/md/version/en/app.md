@@ -29,3 +29,10 @@ The differences between app functionality and web functionality are as follows:
 Current version changes:
 
 - Fix the issue where other users' unreviewed posts are visible.
+
+### 2.7.3 (263022)
+
+Current version changes:
+
+- Fixed the issue where no prompt was displayed when verifying the email/password on the login page.
+- Fixed the issue of overlapping posts on my page caused by logging into different accounts.
