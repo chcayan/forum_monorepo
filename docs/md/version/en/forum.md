@@ -90,3 +90,9 @@ Current version changes:
 Current version changes:
 
 - Fix the issue where other users' unreviewed posts are visible.
+
+### 2.7.3 (263022)
+
+Current version changes:
+
+- Optimize the style of chat pages and chat toast
