@@ -485,7 +485,6 @@ const onPikachuChat = () => {
   box-shadow: var(--theme-shadow-color);
   background-color: var(--theme-color);
   overflow: hidden;
-
   position: relative;
 
   .left {
@@ -623,7 +622,7 @@ const onPikachuChat = () => {
         .unread-count {
           user-select: none;
           margin-left: auto;
-          margin-right: -10px;
+          margin-right: 10px;
           width: 30px;
           height: 30px;
           line-height: 30px;
@@ -842,6 +841,10 @@ const onPikachuChat = () => {
     .left {
       width: 100%;
       box-shadow: initial;
+
+      ul {
+        width: 100%;
+      }
     }
 
     .right {

@@ -173,54 +173,58 @@ defineExpose({
 
 <template>
   <div class="chat-toast" ref="toast">
-    <ul v-if="userList.size">
-      <li
-        v-for="(item, index) in userList"
-        :key="index"
-        :class="{ active: _userId === item[1].userId }"
-      >
-        <img
-          v-if="avatar"
-          v-loading
-          :src="item[1].userAvatar"
-          @click="chooseUser(item[1].userId)"
-        />
-      </li>
-    </ul>
-    <div class="user-info">
-      <span>{{ _username }}</span>
-      <CloseSvg class="ico" @click="closeChatToast" />
-      <JumpSvg class="ico" @click="navigateToChat" />
-    </div>
-    <div class="chat-box" ref="chatBoxEl">
-      <div
-        class="chat"
-        v-for="(item, index) in chatRecords[_userId]"
-        :key="index"
-      >
-        <img v-if="avatar" v-loading :src="avatar" />
-        <span
-          v-if="item.isShare === '0'"
-          class="msg"
-          v-html="lineBreakReplace(item.message)"
-        ></span>
-        <div v-else>
-          <SharePost style="text-align: start" :post-id="item.postId" />
+    <div class="chat">
+      <ul class="left" v-if="userList.size">
+        <li
+          v-for="(item, index) in userList"
+          :key="index"
+          :class="{ active: _userId === item[1].userId }"
+        >
+          <img
+            v-if="avatar"
+            v-loading
+            :src="item[1].userAvatar"
+            @click="chooseUser(item[1].userId)"
+          />
+        </li>
+      </ul>
+      <div class="right">
+        <div class="user-info">
+          <span>{{ _username }}</span>
+          <CloseSvg class="ico" @click="closeChatToast" />
+          <JumpSvg class="ico" @click="navigateToChat" />
         </div>
+        <div class="chat-box" ref="chatBoxEl">
+          <div
+            class="chat"
+            v-for="(item, index) in chatRecords[_userId]"
+            :key="index"
+          >
+            <img v-if="avatar" v-loading :src="avatar" />
+            <span
+              v-if="item.isShare === '0'"
+              class="msg"
+              v-html="lineBreakReplace(item.message)"
+            ></span>
+            <div v-else>
+              <SharePost style="text-align: start" :post-id="item.postId" />
+            </div>
+          </div>
+        </div>
+        <form class="ipt" @submit.prevent>
+          <textarea
+            ref="input"
+            v-disableEnter
+            v-model.trim="sendMsg"
+            @keydown.enter="sendMessage($event)"
+            placeholder="Please input your message..."
+          ></textarea>
+          <button @click="sendMessage($event)" title="发送">
+            <SendSvg />
+          </button>
+        </form>
       </div>
     </div>
-    <form class="ipt" @submit.prevent>
-      <textarea
-        ref="input"
-        v-disableEnter
-        v-model.trim="sendMsg"
-        @keydown.enter="sendMessage($event)"
-        placeholder="Please input your message..."
-      ></textarea>
-      <button @click="sendMessage($event)" title="发送">
-        <SendSvg />
-      </button>
-    </form>
   </div>
 </template>
 
@@ -232,162 +236,180 @@ $main-gap: 20px;
   left: 50%;
   z-index: $toast-z-index;
   width: auto;
-  min-width: 300px;
+  min-width: 340px;
   margin-top: 20px;
   font-size: 14px;
-  padding: 10px 15px;
   text-align: center;
   border-radius: 10px;
+  overflow: hidden;
   background-color: var(--theme-color);
   box-shadow: var(--theme-shadow-color);
   transform: translateY(v-bind(y)) translateX(-50%);
 
-  ul {
-    position: absolute;
-    top: 0px;
-    left: -70px;
-    padding: 10px;
-    border-radius: 10px;
-    background-color: var(--theme-color);
-    box-shadow: var(--theme-shadow-color);
+  .chat {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
 
-    .active {
-      background-color: var(--theme-chat-speech-bubble-color);
-      box-shadow: 0 0 0 3px var(--theme-chat-speech-bubble-color);
-      border-radius: 10px;
-    }
-
-    li {
+    .left {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-
-      img {
-        width: 30px;
-        height: 30px;
-        aspect-ratio: 1;
-        border-radius: 50%;
-      }
-    }
-  }
-
-  .user-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-
-    span {
-      margin-right: auto;
-    }
-
-    .ico {
-      width: 20px;
-      height: 20px;
-      cursor: pointer;
-    }
-
-    img {
-      width: 40px;
-      height: 40px;
-      aspect-ratio: 1;
-      border-radius: 50%;
-    }
-  }
-
-  .chat-box {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-height: 200px;
-    overflow-y: scroll;
-    scroll-behavior: smooth;
-
-    &::-webkit-scrollbar {
-      width: 10px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      border-radius: 10px;
-      background-color: var(--theme-scrollbar-thumb-color);
-    }
-
-    .chat {
-      display: flex;
+      flex-direction: column;
       gap: 10px;
-
-      .msg {
-        padding: 10px;
-        border-radius: 10px;
-        background-color: var(--theme-chat-speech-bubble-color);
-        max-width: 200px;
-        color: var(--theme-font-color);
-        text-align: start;
-        word-break: break-all;
-      }
-
-      img {
-        width: 30px;
-        height: 30px;
-        aspect-ratio: 1;
-        border-radius: 50%;
-      }
-    }
-  }
-
-  .ipt {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: var(--theme-shadow-color);
-    transition: all 0.3s ease;
-    margin-top: 10px;
-
-    button {
-      height: 60px;
-      border: none;
-      outline: none;
-      padding: 0 calc($main-gap / 1.3);
-      border-radius: 0 calc($main-gap / 2) calc($main-gap / 2) 0;
-      background-color: var(--theme-send-button-color);
-      transition: all 0.3s ease;
-      cursor: pointer;
-
-      &:hover {
-        background-color: var(--theme-send-button-hover-color);
-      }
-    }
-
-    textarea {
-      width: 100%;
-      height: 60px;
-      resize: none;
-      padding: 10px;
-      border: none;
-      outline: none;
-      color: var(--theme-font-color);
-      background-color: var(--theme-color);
-      font-family: system-ui;
+      padding: 15px;
+      flex-shrink: 0;
+      background-color: var(--theme-chat-box-bg-color);
+      max-height: 325px;
+      overflow-y: auto;
+      overflow-x: hidden;
 
       &::-webkit-scrollbar {
-        width: 0;
-        height: 0;
+        width: 10px;
       }
 
-      &::placeholder {
-        color: var(--theme-font-color);
+      &::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        background-color: var(--theme-scrollbar-thumb-color);
+      }
+
+      .active {
+        box-shadow: 0 0 0 3px var(--theme-chat-speech-bubble-color);
+      }
+
+      li {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        overflow: hidden;
+
+        img {
+          width: 40px;
+          height: 40px;
+          aspect-ratio: 1;
+        }
       }
     }
 
-    &:has(textarea:focus) {
-      box-shadow: 0 0 7px var(--theme-button-hover-color);
+    .right {
+      width: 100%;
+      padding: 10px;
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+
+        span {
+          color: var(--theme-font-color);
+          margin-right: auto;
+        }
+
+        .ico {
+          width: 20px;
+          height: 20px;
+          cursor: pointer;
+        }
+
+        img {
+          width: 40px;
+          height: 40px;
+          aspect-ratio: 1;
+          border-radius: 50%;
+        }
+      }
+
+      .chat-box {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-height: 200px;
+        overflow-y: scroll;
+        scroll-behavior: smooth;
+
+        &::-webkit-scrollbar {
+          width: 10px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          border-radius: 10px;
+          background-color: var(--theme-scrollbar-thumb-color);
+        }
+
+        .chat {
+          display: flex;
+          gap: 10px;
+
+          .msg {
+            padding: 10px;
+            border-radius: 10px;
+            background-color: var(--theme-chat-speech-bubble-color);
+            max-width: 200px;
+            color: var(--theme-font-color);
+            text-align: start;
+            word-break: break-all;
+          }
+
+          img {
+            width: 30px;
+            height: 30px;
+            aspect-ratio: 1;
+            border-radius: 50%;
+          }
+        }
+      }
+
+      .ipt {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        border-radius: 10px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+
+        button {
+          height: 60px;
+          border: none;
+          outline: none;
+          padding: 0 calc($main-gap / 1.3);
+          border-radius: 0 calc($main-gap / 2) calc($main-gap / 2) 0;
+          background-color: var(--theme-send-button-color);
+          transition: all 0.3s ease;
+          cursor: pointer;
+
+          &:hover {
+            background-color: var(--theme-send-button-hover-color);
+          }
+        }
+
+        textarea {
+          width: 100%;
+          height: 60px;
+          resize: none;
+          padding: 10px;
+          border: none;
+          outline: none;
+          color: var(--theme-font-color);
+          background-color: var(--theme-chat-box-bg-color);
+          font-family: system-ui;
+
+          &::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+          }
+
+          &::placeholder {
+            color: var(--theme-font-color);
+            opacity: 0.6;
+          }
+        }
+
+        &:has(textarea:focus) {
+          box-shadow: 0 0 7px var(--theme-button-hover-color);
+        }
+      }
     }
   }
 }
