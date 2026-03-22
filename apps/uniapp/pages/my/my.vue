@@ -85,14 +85,30 @@ const getUserCollectedPostList = async (page: number) => {
   }
 }
 
+let newUser: string
+
 onLoad(async () => {
   await getUserInfo()
   getUserPostList(userPostListPage.value)
   getUserCollectedPostList(userCollectedPostListPage.value)
+  newUser = userStore.token
 })
 
-onShow(() => {
+onShow(async () => {
   emitter.emit('EVENT:RESET_PUBLISH_PAGE')
+  const route = getCurrentRoute()
+  if (route !== RouterPath.my) return
+  if (newUser === userStore.token) return
+  newUser = userStore.token
+  await getUserInfo()
+  userPostListPage.value = 1
+  userCollectedPostListPage.value = 1
+  userPostOrder.value = []
+  userCollectedPostOrder.value = []
+  userPostMap.value.clear()
+  userCollectedPostMap.value.clear()
+  getUserPostList(userPostListPage.value)
+  getUserCollectedPostList(userCollectedPostListPage.value)
 })
 
 emitter.on('EVENT:DELETE_USER_POST_LIST', async (pId: string) => {

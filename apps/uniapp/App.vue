@@ -71,7 +71,6 @@ onLaunch(async () => {
   navigateInterceptor()
 
   emitter.on('API:UN_AUTH', (message: string) => {
-    console.log(message)
     uni.showToast({
       icon: 'none',
       title: message,

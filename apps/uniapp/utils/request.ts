@@ -104,7 +104,7 @@ class Request {
               return
             } else if (res.statusCode === 401) {
               if (originalRequest?.url?.includes('/user/login')) {
-                emitter.emit('API:UN_AUTH', err.data.message)
+                emitter.emit('API:UN_AUTH', res.data.message)
                 return reject(res)
               }
 
