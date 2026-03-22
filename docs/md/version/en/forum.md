@@ -96,3 +96,4 @@ Current version changes:
 Current version changes:
 
 - Optimize the style of chat pages and chat toast
+- Fix the issue where only new messages are obtained when retrieving chat records in specific scenarios.

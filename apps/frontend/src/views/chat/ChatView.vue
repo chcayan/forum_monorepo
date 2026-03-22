@@ -174,7 +174,13 @@ socket.on(
     if (el) {
       el.style.scrollBehavior = 'smooth'
     }
-    if (!chatRecords[from]) chatRecords[from] = []
+
+    if (!chatRecords[from]) {
+      chatRecords[from] = []
+      await getChatHistory(from)
+      chatRecords[from].pop()
+    }
+
     chatRecords[from].push({ from, message, isShare })
 
     if (currentFriendUserId.value !== from) {
