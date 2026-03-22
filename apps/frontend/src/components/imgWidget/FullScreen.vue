@@ -27,13 +27,13 @@ defineExpose({
 </script>
 
 <template>
-  <div v-if="_imgEl" class="pic" title="退出全屏" @click="exitFullscreen">
+  <div v-if="_imgEl" class="shade" title="退出全屏" @click="exitFullscreen">
     <img :src="_imgEl.src" alt="image" title="" />
   </div>
 </template>
 
 <style scoped lang="scss">
-.pic {
+.shade {
   position: fixed;
   top: 0;
   left: 0;

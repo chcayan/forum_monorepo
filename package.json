@@ -15,6 +15,7 @@
     "dev": "concurrently  \"pnpm -F backend-by-nest start:dev\" \"pnpm -F frontend dev\" \"pnpm -F admin dev\"",
     "dev:forum": "concurrently  \"pnpm --filter backend-by-nest start:dev\" \"pnpm --filter frontend dev\"",
     "dev:admin": "concurrently  \"pnpm --filter backend-by-nest start:dev\" \"pnpm --filter admin dev\"",
+    "test:unit": "pnpm -F frontend test:unit",
     "build": "pnpm -F utils build && pnpm -F frontend build && pnpm -F admin build && pnpm -F backend-by-nest build",
     "upload": "pnpm build && bash ./script/upload.sh",
     "start:backend": "pnpm -F backend-by-nest start:dev"
@@ -51,11 +52,13 @@
     "globals": "^16.4.0",
     "husky": "^9.1.7",
     "jiti": "^2.5.1",
+    "jsdom": "^28.1.0",
     "lint-staged": "^16.2.3",
     "npm-run-all2": "^8.0.4",
     "prettier": "^3.6.2",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.0",
-    "vue-eslint-parser": "^10.2.0"
+    "vue-eslint-parser": "^10.2.0",
+    "vitest": "^4.0.18"
   }
 }

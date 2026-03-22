@@ -62,7 +62,6 @@ const fetchUnread = async () => {
   })
 }
 
-const messageBoxEl = ref()
 const message = ref('')
 
 const sendMessage = async () => {
@@ -165,8 +164,7 @@ socket.on(
   }
 )
 
-const scrollTop = ref(0)
-watch(currentFriendUserId, async (friend) => {
+watch(currentFriendUserId, async (friend: string) => {
   if (!friend) return
 
   await markAsReadAPI({ followId: friend })
