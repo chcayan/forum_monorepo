@@ -112,7 +112,10 @@ const publishPost = async () => {
     emitter.emit('EVENT:UPDATE_USER_POST_LIST', res, true)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
-    emitter.emit('API:FORBIDDEN', err?.response?.data?.message || '未知错误')
+    emitter.emit(
+      'API:FORBIDDEN',
+      err?.response?.data?.message || '服务器异常，请重试'
+    )
   } finally {
     flag = true
   }

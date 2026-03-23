@@ -1,4 +1,5 @@
 import { request, escapeHTML } from '@/utils'
+import { deleteUserPostAPI } from './user'
 
 /**
  * 帖子列表 - 数据结构：PostInfo[]
@@ -63,28 +64,35 @@ type PostPublish = {
  * @returns
  */
 export async function publishPostAPI(data: PostPublish) {
-  const res = await request.post('/post', {
-    isPublic: data.isPublic,
-    content: data.content,
-  })
+  let postId
 
-  const postId = res.data.data.postId
+  try {
+    const res = await request.post('/post', {
+      isPublic: data.isPublic,
+      content: data.content,
+    })
 
-  if (data.postImages?.length !== 0) {
-    let index = 0
-    for (const file of data.postImages!) {
-      const formData = new FormData()
+    postId = res.data.data.postId
 
-      formData.append('index', index.toString())
-      formData.append('pId', postId)
-      formData.append('postImages', file)
+    if (data.postImages?.length !== 0) {
+      let index = 0
+      for (const file of data.postImages!) {
+        const formData = new FormData()
 
-      index++
-      await request.post('/post/upload-image', formData)
+        formData.append('index', index.toString())
+        formData.append('pId', postId)
+        formData.append('postImages', file)
+
+        index++
+        await request.post('/post/upload-image', formData)
+      }
     }
-  }
 
-  return postId
+    return postId
+  } catch (err) {
+    await deleteUserPostAPI(postId)
+    throw err
+  }
 }
 
 /**
