@@ -9,6 +9,7 @@ import { useRoute } from 'vue-router'
 import { PostDetail } from '@forum-monorepo/types'
 import { useUserStore } from '@/stores'
 import router, { RouterPath } from '@/router'
+import { compressImage } from '@/utils/imgCompress'
 
 const context = ref<string>('')
 
@@ -41,16 +42,20 @@ onMounted(async () => {
   }
 })
 
-function getPostImages() {
+async function getPostImages() {
   const images: { type: 'file'; file: File }[] =
     imgUploadRef.value?.$!.exposed!.allImages
 
   let files: File[] = []
 
-  images.forEach((item) => {
-    files.push(item.file)
-  })
+  for (let i = 0; i < images.length; i++) {
+    const compressedFile = await compressImage(images[i]!.file!)
+    files.push(compressedFile)
+  }
 
+  // images.forEach((item) => {
+  // files.push(item.file)
+  // })
   return files
 }
 
@@ -78,7 +83,7 @@ const publishPost = async () => {
 
   try {
     if (postId.value) {
-      let files = getPostImages()
+      let files = await getPostImages()
       res = await updatePostInfoAPI({
         content: context.value as string,
         isPublic: isPublic.value ? 'true' : 'false',
@@ -90,7 +95,7 @@ const publishPost = async () => {
       res = await publishPostAPI({
         content: context.value as string,
         isPublic: isPublic.value ? 'true' : 'false',
-        postImages: getPostImages(),
+        postImages: await getPostImages(),
       })
     }
     context.value = ''

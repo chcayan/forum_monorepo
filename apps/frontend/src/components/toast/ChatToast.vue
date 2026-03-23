@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { onUpdated, reactive, ref, useTemplateRef } from 'vue'
-import { lineBreakReplace, socket } from '@/utils'
+import { lineBreakReplace, socket, escapeHTML } from '@/utils'
 import CloseSvg from '../svgIcon/CloseSvg.vue'
 import JumpSvg from '../svgIcon/JumpSvg.vue'
 import SendSvg from '../svgIcon/SendSvg.vue'
 import { useTempStore, useUserStore } from '@/stores'
 import { ChatToastParams } from './types'
-import { escapeHTML } from '@/utils/format'
 import router, { RouterPath } from '@/router'
 import { markAsReadAPI } from '@/api'
 import SharePost from '@/views/chat/components/SharePost.vue'

@@ -1,5 +1,4 @@
-import { request } from '@/utils'
-import { escapeHTML } from '@/utils/format'
+import { request, escapeHTML } from '@/utils'
 
 /**
  * 帖子列表 - 数据结构：PostInfo[]
