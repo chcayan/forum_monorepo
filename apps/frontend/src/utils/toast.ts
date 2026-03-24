@@ -18,12 +18,19 @@ class Toast {
     return toast
   }
 
-  static show({ msg, type, duration = 2000, eventFn }: ToastParams) {
+  static show({
+    msg,
+    type,
+    duration = 2000,
+    eventFn,
+    confirmText = '确认',
+  }: ToastParams) {
     this.toast.show({
       msg,
       type,
       duration,
       ...(eventFn ? { eventFn } : {}),
+      confirmText,
     })
   }
 }

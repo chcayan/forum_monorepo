@@ -11,6 +11,8 @@ const btnType = ref<ColorType>('normal')
 const confirmBtnVisible = ref(false)
 const count = ref<number>()
 
+const text = ref('')
+
 function isInt(time: number) {
   if (Number.isNaN(time) || time === Infinity || typeof time !== 'number') {
     console.error('请输入一个正确的数字')
@@ -40,12 +42,19 @@ class Toast {
    * @param params msg 弹窗信息 type 弹窗类型 duration 持续时间(ms),默认2s eventFn 弹窗事件
    */
   static show(options: ToastParams) {
-    const { msg, type, duration = 2000, eventFn } = options
+    const {
+      msg,
+      type,
+      duration = 2000,
+      eventFn,
+      confirmText = '确认',
+    } = options
 
     if (duration && !isInt(duration)) return
 
     _msg.value = msg
     btnType.value = type
+    text.value = confirmText
 
     if (!Toast.isShowing) {
       Toast.isShowing = true
@@ -116,7 +125,7 @@ defineExpose({
   <div class="toast" :class="btnType" ref="toast">
     <span ref="msgEl">{{ _msg }}</span>
     <button @click="handleEvent" v-if="confirmBtnVisible">
-      &nbsp;&nbsp;确定（{{ count }}）
+      &nbsp;&nbsp;{{ text }}（{{ count }}）
     </button>
   </div>
 </template>

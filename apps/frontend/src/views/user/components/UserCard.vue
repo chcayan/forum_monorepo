@@ -13,6 +13,7 @@ import { useRoute } from 'vue-router'
 import UserListWidget from './UserListWidget.vue'
 import emitter from '@/utils/eventEmitter'
 import MsgSvg from '@/components/svgIcon/MsgSvg.vue'
+import { compressImage } from '@/utils/imgCompress'
 
 const { userInfo } = defineProps<{
   userInfo: UserInfo
@@ -83,20 +84,25 @@ const save = async () => {
   if (!flag) return
   flag = false
   try {
+    const avatarImg = avatarInputRef.value?.files?.[0]
+    const bgImg = bgInputRef.value?.files?.[0]
     await updateUserInfoAPI({
       username: name.value.trim() || userInfo.username,
       sex: userInfo.sex,
       signature: signature.value.trim() || userInfo.signature,
-      avatar: avatarInputRef.value?.files?.[0] || null,
-      bgImg: bgInputRef.value?.files?.[0] || null,
+      avatar: (avatarImg && (await compressImage(avatarImg))) || null,
+      bgImg: (bgImg && (await compressImage(bgImg))) || null,
     })
     await userStore.getUserInfo()
     Toast.show({
       msg: '更新成功',
       type: 'success',
     })
-    // eslint-disable-next-line no-empty
   } catch {
+    Toast.show({
+      msg: '更新失败',
+      type: 'error',
+    })
   } finally {
     close(false)
     flag = true

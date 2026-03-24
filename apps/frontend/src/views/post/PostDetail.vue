@@ -62,9 +62,14 @@ let off2 = emitter.on('EVENT:UPDATE_COMMENT_LIST', () => {
   getCommentList()
 })
 
+let off3 = emitter.on('EVENT:GET_NEW_COMMENT', () => {
+  getCommentList()
+})
+
 onUnmounted(() => {
   off1?.()
   off2?.()
+  off3?.()
 })
 </script>
 
@@ -116,6 +121,7 @@ onUnmounted(() => {
       width: 400px;
       margin-bottom: 10px;
       position: sticky;
+      z-index: 1;
       top: 80px;
     }
 

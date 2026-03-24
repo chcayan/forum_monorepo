@@ -28,6 +28,7 @@ import { PostReport } from './modules/post/entities/post-report.entity';
 import { UserLog } from './modules/admin/entities/user-log.entity';
 import { CommentReport } from './modules/post/entities/comment-report.entity';
 import { RedisModule } from './modules/redis/redis.module';
+import { SseModule } from './modules/sse/sse.module';
 
 @Module({
   imports: [
@@ -72,6 +73,7 @@ import { RedisModule } from './modules/redis/redis.module';
     ChatModule,
     AdminModule,
     RedisModule,
+    SseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

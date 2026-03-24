@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { onMounted, watch } from 'vue'
-import { ChatToast, socket, Toast } from './utils'
+import { ChatToast, createEs, socket, Toast } from './utils'
 import emitter from '@/utils/eventEmitter'
 import { useUserStore, useStatusStore } from './stores'
 import router, { RouterPath } from './router'
 import { useRoute } from 'vue-router'
 import { checkIsLoginProhibitAPI, getUserInfoAPI } from './api'
+import { MsgType } from '@forum-monorepo/types'
 
 const userStore = useUserStore()
 const route = useRoute()
@@ -19,6 +20,29 @@ type userInfo = {
 async function initUserStatus() {
   await checkIsLoginProhibitAPI()
   await userStore.getUserInfo()
+
+  // SSE
+  const es = createEs(userStore.userInfo.userId)
+
+  if (es) {
+    es.onmessage = (e) => {
+      const { data }: { data: MsgType } = JSON.parse(e.data)
+      if (data.type === 'comment') {
+        Toast.show({
+          msg: data.message,
+          type: 'normal',
+          duration: 5000,
+          eventFn() {
+            router.push(`${RouterPath.post}/${data.postId}`)
+            if (route.fullPath === `${RouterPath.post}/${data.postId}`) {
+              emitter.emit('EVENT:GET_NEW_COMMENT')
+            }
+          },
+          confirmText: '去看看',
+        })
+      }
+    }
+  }
 
   // websocket
   socket.emit('login', userStore.userInfo?.userId)

@@ -11,6 +11,7 @@ import { UserAlias, UserFields } from 'src/modules/user/user.constant';
 import { Comment } from './entities/comment.entity';
 import { PostReport } from './entities/post-report.entity';
 import { CommentReport } from './entities/comment-report.entity';
+import { SseService } from '../sse/sse.service';
 
 @Injectable()
 export class PostService {
@@ -23,6 +24,7 @@ export class PostService {
     private readonly postReportRepository: Repository<PostReport>,
     @InjectRepository(CommentReport)
     private readonly commentReportRepository: Repository<CommentReport>,
+    private readonly sseService: SseService,
   ) {}
 
   async create(content: string, isPublic: string, userId: string) {
@@ -231,6 +233,16 @@ export class PostService {
     });
 
     await this.commentRepository.save(comment);
+
+    const post = await this.postRepository.findOne({ where: { pId: postId } });
+
+    if (post && post.userId !== userId) {
+      this.sseService.sendMsgToUser(post.userId, {
+        type: 'comment',
+        message: '刚刚有人评论了你的帖子',
+        postId: postId,
+      });
+    }
   }
 
   async findCommentsByPostId(postId: string) {

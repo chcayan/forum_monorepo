@@ -95,5 +95,11 @@ Current version changes:
 
 Current version changes:
 
-- Optimize the style of chat pages and chat toast
+- Optimize the style of chat pages and chat toast.
 - Fix the issue where only new messages are obtained when retrieving chat records in specific scenarios.
+
+### 2.8.0 (263024)
+
+Current version changes:
+
+- Add function of users receive a notification for new comments.

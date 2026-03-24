@@ -5,6 +5,7 @@ export type ToastParams = {
   type: ColorType
   duration?: number
   eventFn?: () => void
+  confirmText?: string
 }
 
 export type ChatToastParams = {

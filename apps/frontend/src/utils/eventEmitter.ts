@@ -24,6 +24,7 @@ type BaseEvent =
   | 'EVENT:UPDATE_CHAT_RECORDS'
   | 'EVENT:ECHO_POST_IMAGES'
   | 'EVENT:UPDATE_POST_IMAGES'
+  | 'EVENT:GET_NEW_COMMENT'
 type EventNames = ApiEvent | TabEvent | BaseEvent
 
 class EventEmitter {
@@ -51,6 +52,7 @@ class EventEmitter {
     'EVENT:UPDATE_CHAT_RECORDS': new Set(),
     'EVENT:ECHO_POST_IMAGES': new Set(),
     'EVENT:UPDATE_POST_IMAGES': new Set(),
+    'EVENT:GET_NEW_COMMENT': new Set(),
   }
 
   on(eventName: EventNames, listener: Function) {

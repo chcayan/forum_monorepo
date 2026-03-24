@@ -96,6 +96,11 @@ export const compressImage = async (
   file: File,
   options?: ImageCompressOptions
 ) => {
+  if (!file) {
+    console.error('请上传文件')
+    return
+  }
+
   const canUseWorker =
     typeof window !== 'undefined' &&
     'OffscreenCanvas' in window &&
