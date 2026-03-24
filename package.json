@@ -31,7 +31,8 @@
   "packageManager": "pnpm@10.24.0",
   "dependencies": {
     "@forum-monorepo/types": "workspace:*",
-    "@forum-monorepo/utils": "workspace:*"
+    "@forum-monorepo/utils": "workspace:*",
+    "@forum-monorepo/sdk": "workspace:*"
   },
   "devDependencies": {
     "axios": "^1.12.2",

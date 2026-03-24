@@ -3,6 +3,7 @@ import FullScreen from '@/components/imgWidget/FullScreen.vue'
 import { createApp } from 'vue'
 import type { DirectiveBinding } from 'vue'
 import { Toast } from './toast'
+import { EventItem, track } from '@forum-monorepo/sdk'
 
 class ImgFullScreenWidget {
   static mount() {
@@ -149,6 +150,14 @@ export const directives: Record<string, any> = {
           onInput(el.innerText)
         }
       }
+    },
+  },
+
+  track: {
+    mounted(el: HTMLElement, binding: DirectiveBinding<EventItem['event']>) {
+      el.addEventListener('click', () => {
+        track(binding.value)
+      })
     },
   },
 }

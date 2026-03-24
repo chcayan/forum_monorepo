@@ -1,5 +1,6 @@
 import { useUserStore } from '@/stores'
 import { Toast } from '@/utils'
+import { track } from '@forum-monorepo/sdk'
 import { createRouter, createWebHistory } from 'vue-router'
 
 class RouterPath {
@@ -107,6 +108,11 @@ router.beforeEach((to, from) => {
     return RouterPath.base
   }
   return true
+})
+
+router.afterEach((to) => {
+  console.log(to.path)
+  track('page_view', { page: to.path })
 })
 
 export { RouterPath }

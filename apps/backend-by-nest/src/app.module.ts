@@ -29,6 +29,8 @@ import { UserLog } from './modules/admin/entities/user-log.entity';
 import { CommentReport } from './modules/post/entities/comment-report.entity';
 import { RedisModule } from './modules/redis/redis.module';
 import { SseModule } from './modules/sse/sse.module';
+import { TrackModule } from './modules/track/track.module';
+import { TrackEvents } from './modules/track/entities/track-events.entity';
 
 @Module({
   imports: [
@@ -60,6 +62,7 @@ import { SseModule } from './modules/sse/sse.module';
         PostReport,
         UserLog,
         CommentReport,
+        TrackEvents,
       ],
       namingStrategy: new SnakeNamingStrategy(),
     }),
@@ -74,6 +77,7 @@ import { SseModule } from './modules/sse/sse.module';
     AdminModule,
     RedisModule,
     SseModule,
+    TrackModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -22,7 +22,10 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "types": ["jest"]
+    "types": ["jest"],
+    "paths": {
+      "@forum-monorepo/sdk": ["../../packages/sdk/src/index.ts"]
+    }
   },
   "include": ["src", "env.d.ts", "test/**/*.ts"]
 }
