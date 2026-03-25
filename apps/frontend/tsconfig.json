@@ -5,10 +5,7 @@
     "lib": ["ESNext", "DOM"],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@forum-monorepo/utils": ["../../packages/utils/src/index.ts"],
-      "@forum-monorepo/types": ["../../packages/types/index.ts"],
-      "@forum-monorepo/sdk": ["../../packages/sdk/src/index.ts"]
+      "@/*": ["src/*"]
     }
   },
   "include": ["src", "env.d.ts", "src/**/*", "src/**/*.vue"]
