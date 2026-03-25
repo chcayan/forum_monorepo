@@ -355,14 +355,14 @@ export class PostService {
       throw new NotFoundException('未找到该帖子');
     }
 
-    const existingTagIds = new Set(post.tags.map((t) => t.id));
+    // const existingTagIds = new Set(post.tags.map((t) => t.id));
 
-    const finalTags = [
-      ...post.tags,
-      ...allTags.filter((t) => !existingTagIds.has(t.id)),
-    ];
+    // const finalTags = [
+    //   ...post.tags,
+    //   ...allTags.filter((t) => !existingTagIds.has(t.id)),
+    // ];
 
-    post.tags = finalTags;
+    post.tags = allTags;
 
     await this.postRepository.save(post);
   }

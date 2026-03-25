@@ -1007,15 +1007,27 @@
                     "type": "string"
                   },
                   "isPublic": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": ["true", "false"]
                   },
                   "postId": {
                     "type": "string"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
                   }
                 },
-                "required": ["content", "isPublic", "postId"]
+                "required": ["content", "isPublic", "postId", "tags"]
               },
-              "examples": {}
+              "example": {
+                "content": "dolore quis",
+                "isPublic": "true",
+                "postId": "p00175",
+                "tags": ["王者荣耀", "音乐", "猫和老鼠"]
+              }
             }
           },
           "required": true

@@ -37,12 +37,16 @@ export class PostController {
   @UseGuards(JwtAuthGuard, UserPermissionGuard)
   @UserPermission('user_post')
   async modifyPostInfo(@Body() dto: UpdatePostDto, @Req() req: AuthRequest) {
-    return this.postService.modifyPostInfo(
+    const data = await this.postService.modifyPostInfo(
       dto.content,
       dto.isPublic,
       dto.postId,
       req.user.id,
     );
+
+    await this.postService.bindTagsToPost(dto.tags, data.postId);
+
+    return data;
   }
 
   @Post('upload-image')
