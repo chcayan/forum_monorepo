@@ -8,10 +8,19 @@ import { UserModule } from '../user/user.module';
 import { PostReport } from './entities/post-report.entity';
 import { CommentReport } from './entities/comment-report.entity';
 import { SseModule } from '../sse/sse.module';
+import { Tag } from './entities/tag.entity';
+import { PostTag } from './entities/post-tag.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Post, Comment, PostReport, CommentReport]),
+    TypeOrmModule.forFeature([
+      Post,
+      Comment,
+      PostReport,
+      CommentReport,
+      Tag,
+      PostTag,
+    ]),
     UserModule,
     SseModule,
   ],

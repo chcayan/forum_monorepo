@@ -499,6 +499,8 @@ const closeReportModal = () => {
       overflow: hidden;
       -webkit-box-orient: vertical;
       text-overflow: ellipsis;
+      // word-break: break-all;
+      overflow-wrap: anywhere;
     }
 
     .restrict-line {

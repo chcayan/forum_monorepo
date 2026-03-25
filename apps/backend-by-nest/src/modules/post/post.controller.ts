@@ -63,11 +63,6 @@ export class PostController {
     return this.postService.search(dto.result, dto.page, dto.limit);
   }
 
-  @Get('comment/:postId')
-  async findCommentsByPostId(@Param('postId') postId: string) {
-    return this.postService.findCommentsByPostId(postId);
-  }
-
   @Patch('/view/:postId')
   async updateViewCount(@Param('postId') postId: string) {
     return this.postService.updateViewCount(postId);
@@ -99,12 +94,24 @@ export class PostController {
   @UseGuards(JwtAuthGuard, UserPermissionGuard)
   @UserPermission('user_post')
   async create(@Body() dto: CreatePostDto, @Req() req: AuthRequest) {
-    return this.postService.create(dto.content, dto.isPublic, req.user.id);
+    const data = await this.postService.create(
+      dto.content,
+      dto.isPublic,
+      req.user.id,
+    );
+
+    await this.postService.bindTagsToPost(dto.tags, data.postId);
+    return data;
   }
 
   @Get('review-pass-ids')
   async findReviewPassIds() {
     return this.postService.findReviewPassIds();
+  }
+
+  @Get('comment/:postId')
+  async findCommentsByPostId(@Param('postId') postId: string) {
+    return this.postService.findCommentsByPostId(postId);
   }
 
   @UseGuards(OptionalJwtAuthGuard)

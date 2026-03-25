@@ -28,12 +28,10 @@ export const track = (event: EventItem['event'], data?: any) => {
 const flush = () => {
   if (!queue.length) return
 
-  // const data = JSON.stringify(queue.splice(0, queue.length))
-  // const data = queue
+  const data = queue.splice(0)
 
-  const blob = new Blob([JSON.stringify(queue)], { type: 'application/json' })
+  const blob = new Blob([JSON.stringify(data)], { type: 'application/json' })
 
-  console.log(blob)
   navigator.sendBeacon('/api/track/batch', blob)
 }
 

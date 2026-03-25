@@ -9,8 +9,7 @@
     "declaration": true,
     "paths": {
       "@configs/*": ["src/configs/*"],
-      "@middleware/*": ["src/middleware/*"],
-      "@forum-monorepo/utils": ["../../packages/utils/src/index.ts"]
+      "@middleware/*": ["src/middleware/*"]
     }
   },
   "include": ["src", "env.d.ts"]

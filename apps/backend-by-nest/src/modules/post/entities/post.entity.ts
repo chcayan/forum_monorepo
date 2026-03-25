@@ -1,5 +1,14 @@
 import { User } from 'src/modules/user/entities/user.entity';
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  PrimaryColumn,
+} from 'typeorm';
+import { Tag } from './tag.entity';
 
 @Entity()
 export class Post {
@@ -43,4 +52,20 @@ export class Post {
     referencedColumnName: 'userId',
   })
   user!: User;
+
+  @ManyToMany(() => Tag, (tag) => tag.posts, {
+    cascade: false,
+  })
+  @JoinTable({
+    name: 'post_tag',
+    joinColumn: {
+      name: 'post_id',
+      referencedColumnName: 'pId',
+    },
+    inverseJoinColumn: {
+      name: 'tag_id',
+      referencedColumnName: 'id',
+    },
+  })
+  tags!: Tag[];
 }

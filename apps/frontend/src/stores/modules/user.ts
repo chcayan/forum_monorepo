@@ -48,6 +48,7 @@ export const useUserStore = defineStore('user', () => {
     token.value = _token
     localStorage.setItem('token', token.value)
   }
+
   const removeToken = () => {
     token.value = ''
     userInfo.value = defaultUserInfo
@@ -56,11 +57,13 @@ export const useUserStore = defineStore('user', () => {
     userFollowIdList.value = []
     userFriendList.value = []
     localStorage.removeItem('token')
+    localStorage.removeItem('userId')
   }
 
   const getUserInfo = async () => {
     const res = await getUserInfoAPI('self')
     userInfo.value = res.data.data
+    localStorage.setItem('userId', userInfo.value.userId)
   }
 
   const userCollectListOfPostId = ref<string[]>([])

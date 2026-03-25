@@ -31,6 +31,8 @@ import { RedisModule } from './modules/redis/redis.module';
 import { SseModule } from './modules/sse/sse.module';
 import { TrackModule } from './modules/track/track.module';
 import { TrackEvents } from './modules/track/entities/track-events.entity';
+import { Tag } from './modules/post/entities/tag.entity';
+import { PostTag } from './modules/post/entities/post-tag.entity';
 
 @Module({
   imports: [
@@ -63,6 +65,8 @@ import { TrackEvents } from './modules/track/entities/track-events.entity';
         UserLog,
         CommentReport,
         TrackEvents,
+        Tag,
+        PostTag,
       ],
       namingStrategy: new SnakeNamingStrategy(),
     }),

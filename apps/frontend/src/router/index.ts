@@ -111,7 +111,6 @@ router.beforeEach((to, from) => {
 })
 
 router.afterEach((to) => {
-  console.log(to.path)
   track('page_view', { page: to.path })
 })
 

@@ -180,12 +180,23 @@
                     "type": "string"
                   },
                   "isPublic": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": ["true", "false"]
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
                   }
                 },
-                "required": ["content", "isPublic"]
+                "required": ["content", "isPublic", "tags"]
               },
-              "examples": {}
+              "example": {
+                "content": "et aute occaecat tempor dolore",
+                "isPublic": "true",
+                "tags": ["王者荣耀", "音乐", "小猪佩奇"]
+              }
             }
           },
           "required": true

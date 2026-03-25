@@ -5,25 +5,37 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
-import { Brackets, Repository } from 'typeorm';
+import { Brackets, In, Repository } from 'typeorm';
 import { PostAlias, PostFields } from './post.constant';
 import { UserAlias, UserFields } from 'src/modules/user/user.constant';
 import { Comment } from './entities/comment.entity';
 import { PostReport } from './entities/post-report.entity';
 import { CommentReport } from './entities/comment-report.entity';
 import { SseService } from '../sse/sse.service';
+import { Tag } from './entities/tag.entity';
+import { PostTag } from './entities/post-tag.entity';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
+
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
+
     @InjectRepository(PostReport)
     private readonly postReportRepository: Repository<PostReport>,
+
     @InjectRepository(CommentReport)
     private readonly commentReportRepository: Repository<CommentReport>,
+
+    @InjectRepository(Tag)
+    private readonly tagRepository: Repository<Tag>,
+
+    @InjectRepository(PostTag)
+    private readonly postTagRepository: Repository<PostTag>,
+
     private readonly sseService: SseService,
   ) {}
 
@@ -309,5 +321,49 @@ export class PostService {
     });
 
     return posts.map((p) => p.pId);
+  }
+
+  async bindTagsToPost(tagName: string[], postId: string) {
+    const names = (tagName ?? []).filter(Boolean);
+
+    const existTags = await this.tagRepository.find({
+      where: {
+        name: In(names),
+      },
+    });
+
+    const existNames = new Set(existTags.map((t) => t.name));
+
+    const newTags = names
+      .filter((name) => !existNames.has(name))
+      .map((name) =>
+        this.tagRepository.create({
+          name,
+        }),
+      );
+
+    const savedNewTags = await this.tagRepository.save(newTags);
+
+    const allTags = [...existTags, ...savedNewTags];
+
+    const post = await this.postRepository.findOne({
+      where: { pId: postId },
+      relations: ['tags'],
+    });
+
+    if (!post) {
+      throw new NotFoundException('未找到该帖子');
+    }
+
+    const existingTagIds = new Set(post.tags.map((t) => t.id));
+
+    const finalTags = [
+      ...post.tags,
+      ...allTags.filter((t) => !existingTagIds.has(t.id)),
+    ];
+
+    post.tags = finalTags;
+
+    await this.postRepository.save(post);
   }
 }
