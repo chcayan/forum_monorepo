@@ -8,4 +8,5 @@ export const PostFields = {
   pId: `${PostAlias}.pId`,
   userId: `${PostAlias}.userId`,
   status: `${PostAlias}.status`,
+  tags: `${PostAlias}.tags`,
 } as const;

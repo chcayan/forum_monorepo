@@ -44,7 +44,7 @@ export class PostController {
       req.user.id,
     );
 
-    await this.postService.bindTagsToPost(dto.tags, data.postId);
+    await this.postService.bindTagsToPost(data.postId, dto.tags);
 
     return data;
   }
@@ -104,7 +104,7 @@ export class PostController {
       req.user.id,
     );
 
-    await this.postService.bindTagsToPost(dto.tags, data.postId);
+    await this.postService.bindTagsToPost(data.postId, dto.tags);
     return data;
   }
 
@@ -116,6 +116,15 @@ export class PostController {
   @Get('comment/:postId')
   async findCommentsByPostId(@Param('postId') postId: string) {
     return this.postService.findCommentsByPostId(postId);
+  }
+
+  @Get('tag')
+  async findPostsByTah(
+    @Query('name') name: string,
+    @Query('page', ParseIntPipe) page: number,
+    @Query('limit', ParseIntPipe) limit: number,
+  ) {
+    return this.postService.findPostsByTag(name, page, limit);
   }
 
   @UseGuards(OptionalJwtAuthGuard)

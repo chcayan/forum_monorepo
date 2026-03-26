@@ -118,6 +118,7 @@ export class PostService {
     const [list, total] = await qb
       .leftJoin(PostFields.user, UserAlias)
       .addSelect([UserFields.userAvatar, UserFields.username])
+      .leftJoinAndSelect(`${PostFields.tags}`, 'tag')
       .where(`${PostFields.isPublic} = :isPublic`, {
         isPublic: 'true',
       })
@@ -129,19 +130,12 @@ export class PostService {
       .take(pageSize)
       .getManyAndCount();
 
-    const formattedList = list.map(({ user, ...post }) => ({
+    const formattedList = list.map(({ user, tags, ...post }) => ({
       ...post,
       username: user?.username,
       userAvatar: user?.userAvatar,
+      tags: tags?.map((t) => t.name) ?? [],
     }));
-    // const [list, total] = await this.postRepository.findAndCount({
-    //   where: {
-    //     isPublic: 'true',
-    //   },
-    //   order: { publishTime: 'DESC' },
-    //   skip: (page - 1) * pageSize,
-    //   take: pageSize,
-    // });
 
     return { list: formattedList, total };
   }
@@ -151,6 +145,7 @@ export class PostService {
     const [list, total] = await qb
       .leftJoin(PostFields.user, UserAlias)
       .addSelect([UserFields.userAvatar, UserFields.username])
+      .leftJoinAndSelect(`${PostFields.tags}`, 'tag')
       .where(`${PostFields.isPublic} = :isPublic`, {
         isPublic: 'true',
       })
@@ -165,10 +160,11 @@ export class PostService {
       .take(pageSize)
       .getManyAndCount();
 
-    const formattedList = list.map(({ user, ...post }) => ({
+    const formattedList = list.map(({ user, tags, ...post }) => ({
       ...post,
       username: user?.username,
       userAvatar: user?.userAvatar,
+      tags: tags?.map((t) => t.name) ?? [],
     }));
 
     return { list: formattedList, total };
@@ -178,6 +174,7 @@ export class PostService {
     const qb = this.postRepository.createQueryBuilder(PostAlias);
     qb.leftJoin(PostFields.user, UserAlias)
       .addSelect([UserFields.userAvatar, UserFields.username])
+      .leftJoinAndSelect(`${PostFields.tags}`, 'tag')
       .where(`${PostFields.pId} = :pId`, { pId });
 
     // 访问权限控制
@@ -199,12 +196,13 @@ export class PostService {
     if (post.status !== 1 && userId !== post.userId)
       throw new NotFoundException('该帖子暂时不可见');
 
-    const { user, ...rest } = post;
+    const { user, tags, ...rest } = post;
     return {
       ...rest,
       userId: rest?.userId,
       username: user?.username,
       userAvatar: user?.userAvatar,
+      tags: tags?.map((t) => t.name) ?? [],
     };
   }
 
@@ -323,7 +321,22 @@ export class PostService {
     return posts.map((p) => p.pId);
   }
 
-  async bindTagsToPost(tagName: string[], postId: string) {
+  async bindTagsToPost(postId: string, tagName?: string[]) {
+    const post = await this.postRepository.findOne({
+      where: { pId: postId },
+      relations: ['tags'],
+    });
+
+    if (!post) {
+      throw new NotFoundException('未找到该帖子');
+    }
+
+    if (!tagName || tagName.length === 0) {
+      post.tags = [];
+      await this.postRepository.save(post);
+      return;
+    }
+
     const names = (tagName ?? []).filter(Boolean);
 
     const existTags = await this.tagRepository.find({
@@ -346,15 +359,6 @@ export class PostService {
 
     const allTags = [...existTags, ...savedNewTags];
 
-    const post = await this.postRepository.findOne({
-      where: { pId: postId },
-      relations: ['tags'],
-    });
-
-    if (!post) {
-      throw new NotFoundException('未找到该帖子');
-    }
-
     // const existingTagIds = new Set(post.tags.map((t) => t.id));
 
     // const finalTags = [
@@ -365,5 +369,35 @@ export class PostService {
     post.tags = allTags;
 
     await this.postRepository.save(post);
+  }
+
+  async findPostsByTag(tag: string, page: number, pageSize: number) {
+    const qb = this.postRepository.createQueryBuilder(PostAlias);
+    const [list, total] = await qb
+      .leftJoin(PostFields.user, UserAlias)
+      .addSelect([UserFields.userAvatar, UserFields.username])
+      .leftJoinAndSelect(`${PostFields.tags}`, 'tag')
+      .where(`${PostFields.isPublic} = :isPublic`, {
+        isPublic: 'true',
+      })
+      .andWhere('tag.name = :name', {
+        name: tag,
+      })
+      .andWhere(`${PostFields.status} = :status`, {
+        status: 1,
+      })
+      .orderBy(PostFields.publishTime, 'DESC')
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
+      .getManyAndCount();
+
+    const formattedList = list.map(({ user, tags, ...post }) => ({
+      ...post,
+      username: user?.username,
+      userAvatar: user?.userAvatar,
+      tags: tags?.map((t) => t.name) ?? [],
+    }));
+
+    return { list: formattedList, total };
   }
 }

@@ -11,7 +11,7 @@
  Target Server Version : 80043 (8.0.43)
  File Encoding         : 65001
 
- Date: 25/03/2026 21:34:14
+ Date: 26/03/2026 21:44:40
 */
 
 SET NAMES utf8mb4;
@@ -80,7 +80,7 @@ CREATE TABLE `messages`  (
   `is_read` tinyint(1) NULL DEFAULT 0,
   `is_share` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '0',
   PRIMARY KEY (`msg_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1912 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1913 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for permission
@@ -164,7 +164,7 @@ CREATE TABLE `tag`  (
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `name`(`name` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for track_events
@@ -199,7 +199,7 @@ CREATE TABLE `user_log`  (
   INDEX `idx_status`(`status` ASC) USING BTREE,
   INDEX `idx_post_id`(`post_id` ASC) USING BTREE,
   INDEX `idx_comment_id`(`comment_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 57 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '用户行为及处罚日志表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 60 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '用户行为及处罚日志表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for user_permission

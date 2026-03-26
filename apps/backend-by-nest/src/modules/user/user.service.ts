@@ -134,6 +134,7 @@ export class UserService {
     const [list, total] = await qb
       .leftJoin(PostFields.user, UserAlias)
       .addSelect([UserFields.userAvatar, UserFields.username])
+      .leftJoinAndSelect(`${PostFields.tags}`, 'tag')
       .where(`${PostFields.userId} = :userId`, {
         userId: userId,
       })
@@ -149,11 +150,12 @@ export class UserService {
       .take(pageSize)
       .getManyAndCount();
 
-    const formattedList = list.map(({ user, ...post }) => ({
+    const formattedList = list.map(({ user, tags, ...post }) => ({
       ...post,
       userId: post.userId,
       username: user?.username,
       userAvatar: user?.userAvatar,
+      tags: tags?.map((t) => t.name) ?? [],
     }));
 
     return { list: formattedList, total };
@@ -164,6 +166,7 @@ export class UserService {
     const [list, total] = await qb
       .leftJoin(PostFields.user, UserAlias)
       .addSelect([UserFields.userAvatar, UserFields.username])
+      .leftJoinAndSelect(`${PostFields.tags}`, 'tag')
       .where(`${PostFields.userId} = :userId and status = 1`, {
         userId: userId,
       })
@@ -179,11 +182,12 @@ export class UserService {
       .take(pageSize)
       .getManyAndCount();
 
-    const formattedList = list.map(({ user, ...post }) => ({
+    const formattedList = list.map(({ user, tags, ...post }) => ({
       ...post,
       userId: post.userId,
       username: user?.username,
       userAvatar: user?.userAvatar,
+      tags: tags?.map((t) => t.name) ?? [],
     }));
 
     return { list: formattedList, total };
@@ -199,6 +203,7 @@ export class UserService {
       .createQueryBuilder('c')
       .leftJoinAndSelect('c.post', 'p')
       .leftJoinAndSelect('p.user', 'u')
+      .leftJoinAndSelect(`p.tags`, 'tag')
       .where('c.userId = :viewerId', { viewerId })
       .andWhere('(p.isPublic = :isPublic OR p.userId = :userId)', {
         isPublic: 'true',
@@ -210,12 +215,17 @@ export class UserService {
       .take(pageSize)
       .getManyAndCount();
 
-    const formattedList = list.map((c) => ({
-      ...c.post,
-      userId: c.userId,
-      username: c.post.user?.username,
-      userAvatar: c.post.user?.userAvatar,
-    }));
+    const formattedList = list.map((c) => {
+      const { user, tags, ...post } = c.post;
+
+      return {
+        ...post,
+        userId: c.userId,
+        username: user?.username,
+        userAvatar: user?.userAvatar,
+        tags: tags?.map((t) => t.name) ?? [],
+      };
+    });
 
     return { list: formattedList, total };
   }
@@ -230,6 +240,7 @@ export class UserService {
       .createQueryBuilder('c')
       .leftJoinAndSelect('c.post', 'p')
       .leftJoinAndSelect('p.user', 'u')
+      .leftJoinAndSelect('p.tags', 'tag')
       .where('c.userId = :viewerId and status = 1', { viewerId })
       .andWhere('(p.isPublic = :isPublic OR p.userId = :userId)', {
         isPublic: 'true',
@@ -241,12 +252,17 @@ export class UserService {
       .take(pageSize)
       .getManyAndCount();
 
-    const formattedList = list.map((c) => ({
-      ...c.post,
-      userId: c.userId,
-      username: c.post.user?.username,
-      userAvatar: c.post.user?.userAvatar,
-    }));
+    const formattedList = list.map((c) => {
+      const { user, tags, ...post } = c.post;
+
+      return {
+        ...post,
+        userId: userId,
+        username: user?.username,
+        userAvatar: user?.userAvatar,
+        tags: tags?.map((t) => t.name) ?? [],
+      };
+    });
 
     return { list: formattedList, total };
   }

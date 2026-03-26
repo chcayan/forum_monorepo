@@ -272,19 +272,25 @@ const openReportModal = () => {
 const closeReportModal = () => {
   showReportModal.value = false
 }
+
+const searchPostsByTag = (name: string) => {
+  router.push(`${RouterPath.tag}?name=${name}`)
+}
 </script>
 
 <template>
   <article
     tabindex="0"
     class="tab-focus-style post-card"
+    :class="{ 'main-cursor': !route.path.startsWith(RouterPath.post) }"
+    @click="navigateToPostDetail"
     @keydown.enter="navigateToPostDetail"
   >
     <div class="share-box" :class="{ 'show-share-box': showShareBox }">
       <p>请选择一位好友：</p>
       <ul tabindex="-1">
         <li
-          @click="share(friend.followId)"
+          @click.stop="share(friend.followId)"
           v-for="(friend, index) in friendList"
           :key="index"
         >
@@ -299,10 +305,10 @@ const closeReportModal = () => {
         loading="lazy"
         :src="userAvatar"
         alt="avatar"
-        @click="navigateToUser"
+        @click.stop="navigateToUser"
       />
       <div class="info">
-        <p class="name" @click="navigateToUser">
+        <p class="name" @click.stop="navigateToUser">
           {{ username }}
         </p>
         <p class="time">{{ formatDateByYear(post?.publishTime) }}</p>
@@ -314,18 +320,18 @@ const closeReportModal = () => {
           route.path === RouterPath.my
         "
       >
-        <DeleteSvg @click="deletePost" />
-        <ModifySvg @click="navigateToPublish" />
+        <DeleteSvg @click.stop="deletePost" />
+        <ModifySvg @click.stop="navigateToPublish" />
         <div v-if="post.status === 1">
-          <PublicSvg @click="onPrivate" v-if="post?.isPublic === 'true'" />
-          <PrivateSvg @click="onPublic" v-else />
+          <PublicSvg @click.stop="onPrivate" v-if="post?.isPublic === 'true'" />
+          <PrivateSvg @click.stop="onPublic" v-else />
         </div>
         <div v-else>
           <ReviewLabel :status="post.status" />
         </div>
       </div>
       <div v-if="route.path.startsWith(RouterPath.post) && post.status === 1">
-        <ReportSvg @click="openReportModal" />
+        <ReportSvg @click.stop="openReportModal" />
         <ReportReasonModal
           :postId="post.pId"
           :isOpen="showReportModal"
@@ -333,11 +339,7 @@ const closeReportModal = () => {
         />
       </div>
     </header>
-    <div
-      :class="{ 'main-cursor': !route.path.startsWith(RouterPath.post) }"
-      class="main"
-      @click="navigateToPostDetail"
-    >
+    <div class="main">
       <ViolationReason v-if="post.status === 2" :postId="post.pId" />
       <p
         v-html="lineBreakReplace(post?.pContent)"
@@ -349,6 +351,18 @@ const closeReportModal = () => {
         :images="post?.pImages"
         :postId="post.pId"
       />
+      <ul class="tag-list">
+        <li
+          v-for="tag in post.tags"
+          :key="tag"
+          @click.stop="searchPostsByTag(tag)"
+          :title="tag"
+        >
+          <span
+            ><span style="font-weight: bold">#</span>&nbsp;&nbsp;{{ tag }}</span
+          >
+        </li>
+      </ul>
     </div>
     <footer v-if="post.status === 1">
       <ul>
@@ -362,14 +376,14 @@ const closeReportModal = () => {
             post?.pCommentCount
           }}</span>
         </li>
-        <li @click="changeCollectStatus" style="cursor: pointer">
+        <li @click.stop="changeCollectStatus" style="cursor: pointer">
           <CollectSvg :isCollect="isCollect" class="svg" /><span
             style="cursor: pointer"
             title="收藏数"
             >{{ post?.pCollectCount }}</span
           >
         </li>
-        <li @click="onShare" style="cursor: pointer">
+        <li @click.stop="onShare" style="cursor: pointer">
           <ShareSvg class="svg" /><span
             style="cursor: pointer"
             title="分享数"
@@ -382,6 +396,10 @@ const closeReportModal = () => {
 </template>
 
 <style scoped lang="scss">
+.main-cursor {
+  cursor: pointer;
+}
+
 .post-card {
   width: 100%;
   padding: $gap * 1;
@@ -516,10 +534,27 @@ const closeReportModal = () => {
         width: calc(100vw - 50px);
       }
     }
-  }
 
-  .main-cursor {
-    cursor: pointer;
+    .tag-list {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+
+      li {
+        display: flex;
+        align-items: center;
+        height: 30px;
+        padding: 5px 10px;
+        background-color: var(--theme-textarea-bg-color);
+        border-radius: 10px;
+
+        span {
+          font-size: 13px;
+        }
+      }
+    }
   }
 
   footer {

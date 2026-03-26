@@ -275,7 +275,7 @@ onShow(() => {
       border-radius: 10px;
       color: $theme-light-font-color;
       background-color: $theme-light-textarea-bg-color;
-      font-family: system-ui;
+      font-family: inherit;
     }
 
     .visible {

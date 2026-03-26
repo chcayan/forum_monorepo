@@ -107,7 +107,7 @@ $main-gap: 20px;
     outline: none;
     color: $theme-light-font-color;
     background-color: $theme-light-color;
-    font-family: system-ui;
+    font-family: inherit;
   }
 
   .send-btn {

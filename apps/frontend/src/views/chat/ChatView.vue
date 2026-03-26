@@ -1,7 +1,7 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
 import {
-  getReviewPassIds,
+  getReviewPassIdsAPI,
   getChatHistoryAPI,
   getChatUnreadAPI,
   markAsReadAPI,
@@ -252,7 +252,7 @@ onActivated(async () => {
   await userStore.getUserFriendList()
   await fetchUnread()
 
-  const res = await getReviewPassIds()
+  const res = await getReviewPassIdsAPI()
   reviewArr.value = res.data.data
 })
 
@@ -815,7 +815,7 @@ const onPikachuChat = () => {
             background-color: var(--theme-color);
             transition: all 0.3s ease;
             border-radius: 10px 0 0 0;
-            font-family: system-ui;
+            font-family: inherit;
 
             &::-webkit-scrollbar {
               width: 0;

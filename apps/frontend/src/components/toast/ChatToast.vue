@@ -392,7 +392,7 @@ $main-gap: 20px;
           outline: none;
           color: var(--theme-font-color);
           background-color: var(--theme-chat-box-bg-color);
-          font-family: system-ui;
+          font-family: inherit;
 
           &::-webkit-scrollbar {
             width: 0;

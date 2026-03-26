@@ -4,6 +4,7 @@ import {
   ArrayMinSize,
   IsArray,
   IsNotEmpty,
+  IsOptional,
   IsString,
   Length,
   MaxLength,
@@ -18,6 +19,7 @@ export class CreatePostDto {
   @Length(4, 5)
   isPublic!: string;
 
+  @IsOptional()
   @IsArray()
   @ArrayMinSize(1)
   @ArrayMaxSize(10)
@@ -28,5 +30,5 @@ export class CreatePostDto {
   @Transform(({ value }: { value: string[] }) =>
     value.map((v: string) => v.trim()),
   )
-  tags!: string[];
+  tags?: string[];
 }

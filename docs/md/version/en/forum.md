@@ -103,3 +103,10 @@ Current version changes:
 Current version changes:
 
 - Add function of users receive a notification for new comments.
+
+### 2.9.0 (263026)
+
+Current version changes:
+
+- Add post tag feature.
+- Optimize post card UX.

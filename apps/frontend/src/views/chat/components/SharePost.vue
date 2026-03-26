@@ -24,6 +24,7 @@ const postInfo = ref<PostDetail>({
   publishTime: '',
   userAvatar: '',
   username: '',
+  tags: [],
 })
 
 let isHide = ref(false)

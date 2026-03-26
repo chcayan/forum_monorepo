@@ -858,7 +858,7 @@ onShow(() => {
         transition: all 0.3s ease;
         border-radius: 10px 0 0 0;
         box-shadow: 0 -1px 1px rgba(156, 164, 172, 0.3);
-        font-family: system-ui;
+        font-family: inherit;
       }
     }
   }

@@ -24,6 +24,7 @@ const postDetail = ref<PostDetail>({
   status: 1,
   userAvatar: '',
   username: '',
+  tags: [],
 })
 
 const getPostDetail = async () => {

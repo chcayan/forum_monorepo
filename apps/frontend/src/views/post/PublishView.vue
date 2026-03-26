@@ -33,6 +33,7 @@ onMounted(async () => {
       }
 
       context.value = data.pContent
+      tags.value = data.tags
       emitter.emit('EVENT:ECHO_POST_IMAGES', data.pImages)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -50,7 +51,9 @@ async function getPostImages() {
 
   for (let i = 0; i < images.length; i++) {
     const compressedFile = await compressImage(images[i]!.file!)
-    files.push(compressedFile)
+    if (compressedFile) {
+      files.push(compressedFile)
+    }
   }
 
   // images.forEach((item) => {
@@ -60,6 +63,46 @@ async function getPostImages() {
 }
 
 const isPublic = ref(true)
+
+const tag = ref('')
+const tags = ref<string[]>([])
+
+const addTag = () => {
+  if (tag.value.length > 20) {
+    Toast.show({
+      msg: '标签长度不超过20字符',
+      type: 'error',
+    })
+    return
+  }
+
+  if (tags.value.length >= 9) {
+    Toast.show({
+      msg: '标签最多9个',
+      type: 'error',
+    })
+    return
+  }
+
+  if (tags.value.includes(tag.value)) {
+    Toast.show({
+      msg: '标签不要重复',
+      type: 'error',
+    })
+    return
+  }
+
+  tags.value.push(tag.value.trim())
+  tag.value = ''
+}
+
+const delTag = (name: string) => {
+  const index = tags.value.indexOf(name)
+
+  if (index !== -1) {
+    tags.value.splice(index, 1)
+  }
+}
 
 const changeStatus = () => {
   isPublic.value = !isPublic.value
@@ -89,6 +132,7 @@ const publishPost = async () => {
         isPublic: isPublic.value ? 'true' : 'false',
         postImages: files,
         postId: postId.value as string,
+        tags: tags.value,
       })
       emitter.emit('EVENT:UPDATE_POST_IMAGES', files.length, postId.value)
     } else {
@@ -96,9 +140,11 @@ const publishPost = async () => {
         content: context.value as string,
         isPublic: isPublic.value ? 'true' : 'false',
         postImages: await getPostImages(),
+        tags: tags.value,
       })
     }
     context.value = ''
+    tags.value = []
     Toast.show({
       msg: postId.value ? '修改成功' : '发布成功',
       type: 'success',
@@ -143,6 +189,23 @@ onUnmounted(() => {
         ></textarea>
         <h3>图片：</h3>
         <ImgUpload ref="ImgUploadEl" />
+        <div class="tags">
+          <h3>标签：</h3>
+          <div class="tag-input">
+            <input type="text" v-model="tag" />
+            <button class="add" @click="addTag" title="添加">添加</button>
+          </div>
+        </div>
+        <ul class="tag-list">
+          <li v-for="tag in tags" :key="tag">
+            <span
+              ><span style="font-weight: bold">#</span>&nbsp;&nbsp;{{
+                tag
+              }}</span
+            >
+            <button @click="delTag(tag)" title="删除">x</button>
+          </li>
+        </ul>
         <div class="visible">
           <h3>可见性：</h3>
           <ToggleBtn
@@ -183,7 +246,78 @@ onUnmounted(() => {
     .main {
       margin-top: 20px;
 
+      .tag-list {
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+
+        li {
+          display: flex;
+          align-items: center;
+          height: 35px;
+          padding: 5px 0 5px 10px;
+          background-color: var(--theme-textarea-bg-color);
+          border-radius: 10px;
+
+          span {
+            font-size: 14px;
+            // font-weight: bold;
+          }
+        }
+
+        button {
+          width: 35px;
+          height: 35px;
+          font-size: 20px;
+          margin-left: 15px;
+          background-color: var(--theme-button-color);
+          border-radius: 0 10px 10px 0;
+          color: black;
+        }
+      }
+
+      .tags {
+        margin-top: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        h3 {
+          margin-top: 0;
+        }
+
+        .tag-input {
+          display: flex;
+
+          input {
+            width: 100%;
+            height: 35px;
+            padding: 10px;
+            border-radius: 10px 0 0 10px;
+            color: var(--theme-font-color);
+            background-color: var(--theme-textarea-bg-color);
+          }
+
+          .add {
+            flex-shrink: 0;
+            padding: 10px;
+            width: 60px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            // border-radius: 50%;
+            background-color: var(--theme-button-color);
+            border-radius: 0 10px 10px 0;
+          }
+        }
+      }
+
       .publish {
+        margin-top: 10px;
         width: 100%;
         height: 40px;
         border-radius: 10px;
@@ -207,8 +341,12 @@ onUnmounted(() => {
         border-radius: 10px;
         color: var(--theme-font-color);
         background-color: var(--theme-textarea-bg-color);
-        font-family: system-ui;
+        font-family: inherit;
 
+        &::placeholder {
+          color: var(--theme-font-color);
+          opacity: 0.6;
+        }
         &::-webkit-scrollbar {
           width: 10px;
         }
@@ -220,11 +358,12 @@ onUnmounted(() => {
       }
 
       .visible {
+        margin-top: 20px;
         display: flex;
         align-items: center;
 
         h3 {
-          margin-bottom: 10px;
+          margin-top: 0;
           margin-right: auto;
         }
       }

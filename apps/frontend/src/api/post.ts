@@ -20,7 +20,7 @@ export function getPostListAPI(page: number, limit: number) {
  */
 export function searchPostAPI(result: string, page: number, limit: number) {
   return request.get(
-    `/post/search?result=${result}&?page=${page}&limit=${limit}`
+    `/post/search?result=${result}&page=${page}&limit=${limit}`
   )
 }
 
@@ -54,8 +54,9 @@ export function publishCommentAPI(data: { postId: string; content: string }) {
 
 type PostPublish = {
   content: string
-  isPublic: string
+  isPublic: 'true' | 'false'
   postImages?: File[]
+  tags?: string[]
 }
 
 /**
@@ -70,6 +71,7 @@ export async function publishPostAPI(data: PostPublish) {
     const res = await request.post('/post', {
       isPublic: data.isPublic,
       content: data.content,
+      tags: data.tags,
     })
 
     postId = res.data.data.postId
@@ -108,7 +110,8 @@ type UpdatePostInfo = {
   content: string
   isPublic: string
   postId: string
-  postImages: File[]
+  postImages?: File[]
+  tags?: string[]
 }
 
 /**
@@ -162,6 +165,17 @@ export function createCommentReportAPI(data: {
  * 查询审核通过的帖子id数组
  * @returns
  */
-export function getReviewPassIds() {
+export function getReviewPassIdsAPI() {
   return request.get('/post/review-pass-ids')
+}
+
+/**
+ * 根据tag查询帖子
+ * @param name tag 名字
+ * @param page 页数
+ * @param limit 每页帖子数量
+ * @returns
+ */
+export function getPostsByTagAPI(name: string, page: number, limit: number) {
+  return request.get(`/post/tag?name=${name}&page=${page}&limit=${limit}`)
 }

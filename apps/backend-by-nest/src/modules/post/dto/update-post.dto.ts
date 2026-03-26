@@ -4,6 +4,7 @@ import {
   ArrayMinSize,
   IsArray,
   IsNotEmpty,
+  IsOptional,
   IsString,
   Length,
   MaxLength,
@@ -21,6 +22,7 @@ export class UpdatePostDto {
   @IsString()
   postId!: string;
 
+  @IsOptional()
   @IsArray()
   @ArrayMinSize(1)
   @ArrayMaxSize(10)
@@ -31,5 +33,5 @@ export class UpdatePostDto {
   @Transform(({ value }: { value: string[] }) =>
     value.map((v: string) => v.trim()),
   )
-  tags!: string[];
+  tags?: string[];
 }

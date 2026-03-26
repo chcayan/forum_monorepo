@@ -12,6 +12,7 @@ export interface PostInfo {
   publishTime: string
   userAvatar: string
   username: string
+  tags: string[]
 }
 
 export type PostTotal = { total: number }

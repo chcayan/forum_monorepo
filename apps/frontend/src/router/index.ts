@@ -1,5 +1,6 @@
 import { useUserStore } from '@/stores'
 import { Toast } from '@/utils'
+import emitter from '@/utils/eventEmitter'
 import { track } from '@forum-monorepo/sdk'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -10,6 +11,7 @@ class RouterPath {
   static publish: string = '/publish'
   static login: string = '/login'
   static search: string = '/search'
+  static tag: string = '/tag'
   static my: string = '/my'
   static user: string = '/user'
   static setting: string = '/setting'
@@ -35,6 +37,10 @@ const router = createRouter({
         {
           path: RouterPath.search,
           component: () => import('@/views/post/SearchView.vue'),
+        },
+        {
+          path: RouterPath.tag,
+          component: () => import('@/views/post/PostsByTagView.vue'),
         },
         {
           path: RouterPath.chat,
@@ -111,6 +117,7 @@ router.beforeEach((to, from) => {
 })
 
 router.afterEach((to) => {
+  emitter.emit('TAB:CLOSE_AVATAR_WIDGET')
   track('page_view', { page: to.path })
 })
 
