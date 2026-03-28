@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class TrackEvents {
+export class UserTrack {
   @PrimaryGeneratedColumn()
   id!: number;
 

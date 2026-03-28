@@ -8,7 +8,7 @@ import CommentInput from './components/CommentInput.vue'
 import CommentCard from './components/CommentCard.vue'
 import emitter from '@/utils/eventEmitter'
 import router, { RouterPath } from '@/router'
-import { track } from '@forum-monorepo/sdk'
+import { userTrack } from '@forum-monorepo/sdk'
 
 const route = useRoute()
 const postDetail = ref<PostDetail>({
@@ -78,7 +78,7 @@ onUnmounted(() => {
   off1?.()
   off2?.()
   off3?.()
-  track('post_browse', currentPath, {
+  userTrack('post_browse', currentPath, {
     duration: Date.now() - startTime,
     tags: postDetail.value.tags,
   })

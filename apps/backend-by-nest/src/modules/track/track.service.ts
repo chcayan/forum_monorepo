@@ -1,27 +1,43 @@
-import type { EventItem } from '@forum-monorepo/sdk';
+import type { ErrorEventItem, UserEventItem } from '@forum-monorepo/sdk';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TrackEvents } from './entities/track-events.entity';
+import { UserTrack } from './entities/user-track.entity';
 import { Repository } from 'typeorm';
+import { ErrorTrack } from './entities/error-track.entity';
 
 @Injectable()
 export class TrackService {
   constructor(
-    @InjectRepository(TrackEvents)
-    private readonly trackEventsRepository: Repository<TrackEvents>,
+    @InjectRepository(UserTrack)
+    private readonly userTrackRepository: Repository<UserTrack>,
+    @InjectRepository(ErrorTrack)
+    private readonly errorTrackRepository: Repository<ErrorTrack>,
   ) {}
 
-  async saveBatch(events: EventItem[]) {
+  async saveUserTrack(events: UserEventItem[]) {
     const entities = (events ?? [])
       .filter((item) => item)
       .map((item) =>
-        this.trackEventsRepository.create({
+        this.userTrackRepository.create({
           event: item.event,
           userId: item.userId || 'guest',
           page: item.page,
           data: item.data as string,
         }),
       );
-    await this.trackEventsRepository.save(entities);
+    await this.userTrackRepository.save(entities);
+  }
+
+  async saveErrorTrack(events: ErrorEventItem[]) {
+    const entities = (events ?? [])
+      .filter((item) => item)
+      .map((item) =>
+        this.errorTrackRepository.create({
+          event: item.event,
+          userId: item.userId || 'guest',
+          data: item.data as string,
+        }),
+      );
+    await this.errorTrackRepository.save(entities);
   }
 }

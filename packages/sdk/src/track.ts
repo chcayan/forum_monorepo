@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export type EventItem = {
+export type UserEventItem = {
   event: 'post_browse'
   time: number
   page: string
@@ -7,14 +7,24 @@ export type EventItem = {
   data?: any
 }
 
-const queue: EventItem[] = []
+export type ErrorEventItem = {
+  event: 'js_error' | 'promise_error' | 'resource_error' | 'vue_error'
+  time: number
+  userId?: string
+  data?: any
+}
 
-let timer: any = null
+const userQueue: UserEventItem[] = []
+const errorQueue: ErrorEventItem[] = []
 
 const getUserId = () => localStorage.getItem('userId') || 'guest'
 
-export const track = (event: EventItem['event'], page: string, data?: any) => {
-  queue.push({
+export const userTrack = (
+  event: UserEventItem['event'],
+  page: string,
+  data?: any
+) => {
+  userQueue.push({
     event,
     time: Date.now(),
     page: page || location.pathname,
@@ -25,17 +35,28 @@ export const track = (event: EventItem['event'], page: string, data?: any) => {
   scheduleFlush()
 }
 
-const flush = () => {
-  if (!queue.length) return
+export const errorTrack = (event: ErrorEventItem['event'], data?: any) => {
+  errorQueue.push({
+    event,
+    time: Date.now(),
+    userId: getUserId(),
+    data,
+  })
 
-  const data = queue.splice(0)
+  scheduleFlush()
+}
+
+const userFlush = () => {
+  if (!userQueue.length) return
+
+  const data = userQueue.splice(0)
 
   const blob = new Blob([JSON.stringify(data)], { type: 'application/json' })
 
-  const success = navigator.sendBeacon('/api/track/batch', blob)
+  const success = navigator.sendBeacon('/api/track/user', blob)
 
   if (!success) {
-    fetch('/api/track/batch', {
+    fetch('/api/track/user', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -44,12 +65,36 @@ const flush = () => {
   }
 }
 
+const errorFlush = () => {
+  if (!errorQueue.length) return
+
+  const data = errorQueue.splice(0)
+
+  const blob = new Blob([JSON.stringify(data)], { type: 'application/json' })
+
+  const success = navigator.sendBeacon('/api/track/error', blob)
+
+  if (!success) {
+    fetch('/api/track/error', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      keepalive: true,
+    })
+  }
+}
+
+let timer: any = null
 const scheduleFlush = () => {
   if (timer) return
   timer = setTimeout(() => {
-    flush()
+    userFlush()
+    errorFlush()
     timer = null
   }, 5000)
 }
 
-window.addEventListener('beforeunload', flush)
+window.addEventListener('beforeunload', () => {
+  userFlush()
+  errorFlush()
+})
