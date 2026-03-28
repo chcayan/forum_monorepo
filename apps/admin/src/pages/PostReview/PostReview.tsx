@@ -20,6 +20,7 @@ interface DataType {
   postId: string
   pContent: string
   pImages: string[]
+  tags: string[]
 }
 
 function ContentCell({ text }: { text: string }) {
@@ -195,6 +196,18 @@ export default function PostReview() {
       },
     },
     {
+      title: t('postReview.tags'),
+      dataIndex: 'tags',
+      key: 'tags',
+      render: (tags: string[]) => (
+        <ul>
+          {tags.map((tag) => (
+            <li># {tag}</li>
+          ))}
+        </ul>
+      ),
+    },
+    {
       title: t('common.action'),
       dataIndex: 'postId',
       key: 'action',
@@ -241,6 +254,7 @@ export default function PostReview() {
           postId: item.pId,
           pContent: item.pContent,
           pImages: item.pImages,
+          tags: item.tags,
         })
       )
 

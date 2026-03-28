@@ -52,11 +52,13 @@
   "postReview": {
     "content": "帖子内容",
     "images": "帖子图片",
+    "tags": "帖子标签",
     "postContent": "帖子内容："
   },
   "postReportReview": {
     "postId": "帖子ID",
     "postInfo": "帖子信息：",
+    "tags": "标签：",
     "prohibitPublishPostHint": "是否禁止该用户发帖"
   },
   "commentReportReview": {

@@ -78,7 +78,22 @@ function PostCell({ postId }: { postId: string }) {
               />
             ))}
           </Space>
+          {post?.pImages && post?.pImages.length > 0 && (
+            <>
+              <br />
+              <br />
+            </>
+          )}
         </Image.PreviewGroup>
+        <h3>{t('postReportReview.tags')}</h3>
+        <br />
+        <ul>
+          {post?.tags && post?.tags.length > 0 ? (
+            post?.tags.map((tag) => <li># {tag}</li>)
+          ) : (
+            <p>无</p>
+          )}
+        </ul>
       </Drawer>
     </>
   )

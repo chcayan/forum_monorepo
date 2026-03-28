@@ -254,6 +254,7 @@ export class AdminService {
     const [list, total] = await qb
       .leftJoin(PostFields.user, UserAlias)
       .addSelect([UserFields.userAvatar, UserFields.username])
+      .leftJoinAndSelect('post.tags', 'tag')
       .where(`${PostFields.status} = :status`, {
         status: 0,
       })
@@ -262,10 +263,11 @@ export class AdminService {
       .take(pageSize)
       .getManyAndCount();
 
-    const formattedList = list.map(({ user, ...post }) => ({
+    const formattedList = list.map(({ user, tags, ...post }) => ({
       ...post,
       username: user?.username,
       userAvatar: user?.userAvatar,
+      tags: tags?.map((t) => t.name) ?? [],
     }));
 
     return { list: formattedList, total };

@@ -52,11 +52,13 @@
   "postReview": {
     "content": "post content",
     "images": "post images",
+    "tags": "post tags",
     "postContent": "Post content:"
   },
   "postReportReview": {
     "postId": "post ID",
     "postInfo": "Post information:",
+    "tags": "tags:",
     "prohibitPublishPostHint": "Prohibit this user from posting?"
   },
   "commentReportReview": {
