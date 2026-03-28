@@ -141,6 +141,14 @@ const onBack = () => {
 }
 
 const statusStore = useStatusStore()
+
+const refreshPost = async () => {
+  await emitter.emitAsync('EVENT:REFRESH_POST_LIST')
+  Toast.show({
+    msg: '已为您更新新的内容😊',
+    type: 'success',
+  })
+}
 </script>
 
 <template>
@@ -152,7 +160,9 @@ const statusStore = useStatusStore()
       </div>
     </div>
     <nav>
-      <router-link :to="RouterPath.base"><PostSvg /></router-link>
+      <router-link :to="RouterPath.base"
+        ><PostSvg @dblclick="refreshPost"
+      /></router-link>
       <router-link :to="RouterPath.chat"><ChatSvg /></router-link>
       <router-link :to="RouterPath.publish">
         <PublishSvg v-if="!route.path.startsWith(RouterPath.publish)" />

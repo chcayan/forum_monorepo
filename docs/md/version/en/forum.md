@@ -110,3 +110,9 @@ Current version changes:
 
 - Add post tag feature.
 - Optimize post card UX.
+
+### 2.10.0 (263028)
+
+Current version changes:
+
+- Add home page refresh function (double-click the post button).

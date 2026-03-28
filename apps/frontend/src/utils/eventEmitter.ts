@@ -25,6 +25,7 @@ type BaseEvent =
   | 'EVENT:ECHO_POST_IMAGES'
   | 'EVENT:UPDATE_POST_IMAGES'
   | 'EVENT:GET_NEW_COMMENT'
+  | 'EVENT:REFRESH_POST_LIST'
 type EventNames = ApiEvent | TabEvent | BaseEvent
 
 class EventEmitter {
@@ -53,6 +54,7 @@ class EventEmitter {
     'EVENT:ECHO_POST_IMAGES': new Set(),
     'EVENT:UPDATE_POST_IMAGES': new Set(),
     'EVENT:GET_NEW_COMMENT': new Set(),
+    'EVENT:REFRESH_POST_LIST': new Set(),
   }
 
   on(eventName: EventNames, listener: Function) {

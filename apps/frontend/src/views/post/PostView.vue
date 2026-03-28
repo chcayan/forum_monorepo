@@ -35,6 +35,24 @@ const getPostList = async (page: number) => {
 
 getPostList(postListPage.value)
 
+emitter.on('EVENT:REFRESH_POST_LIST', async () => {
+  postListPage.value = 1
+  hasMore.value = true
+
+  const res = await getPostListAPI(postListPage.value, limit)
+
+  const data: PostDetail[] = res.data.data.list
+
+  if (data.length < limit) {
+    hasMore.value = false
+  }
+
+  postMap.value.clear()
+  for (const item of data) {
+    postMap.value.set(item.pId, item)
+  }
+})
+
 emitter.on('EVENT:UPDATE_POST_LIST', async (pId: string) => {
   try {
     const res = await getPostDetailAPI(pId)
