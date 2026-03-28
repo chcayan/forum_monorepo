@@ -1,7 +1,6 @@
 import { useUserStore } from '@/stores'
 import { Toast } from '@/utils'
 import emitter from '@/utils/eventEmitter'
-import { track } from '@forum-monorepo/sdk'
 import { createRouter, createWebHistory } from 'vue-router'
 
 class RouterPath {
@@ -116,9 +115,8 @@ router.beforeEach((to, from) => {
   return true
 })
 
-router.afterEach((to) => {
+router.afterEach(() => {
   emitter.emit('TAB:CLOSE_AVATAR_WIDGET')
-  track('page_view', { page: to.path })
 })
 
 export { RouterPath }

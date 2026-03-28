@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import PostCard from './components/PostCard.vue'
 import type { CommentList, PostDetail } from '@forum-monorepo/types'
 import { useRoute } from 'vue-router'
@@ -8,6 +8,7 @@ import CommentInput from './components/CommentInput.vue'
 import CommentCard from './components/CommentCard.vue'
 import emitter from '@/utils/eventEmitter'
 import router, { RouterPath } from '@/router'
+import { track } from '@forum-monorepo/sdk'
 
 const route = useRoute()
 const postDetail = ref<PostDetail>({
@@ -67,10 +68,20 @@ let off3 = emitter.on('EVENT:GET_NEW_COMMENT', () => {
   getCommentList()
 })
 
+let startTime = 0
+let currentPath = route.path
+onMounted(() => {
+  startTime = Date.now()
+})
+
 onUnmounted(() => {
   off1?.()
   off2?.()
   off3?.()
+  track('post_browse', currentPath, {
+    duration: Date.now() - startTime,
+    tags: postDetail.value.tags,
+  })
 })
 </script>
 

@@ -12,7 +12,6 @@ export class TrackService {
   ) {}
 
   async saveBatch(events: EventItem[]) {
-    return;
     const entities = (events ?? [])
       .filter((item) => item)
       .map((item) =>

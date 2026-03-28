@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type EventItem = {
-  event: 'view_post' | 'comment_post' | 'page_view'
+  event: 'post_browse'
   time: number
   page: string
   userId?: string
@@ -13,11 +13,11 @@ let timer: any = null
 
 const getUserId = () => localStorage.getItem('userId') || 'guest'
 
-export const track = (event: EventItem['event'], data?: any) => {
+export const track = (event: EventItem['event'], page: string, data?: any) => {
   queue.push({
     event,
     time: Date.now(),
-    page: location.pathname,
+    page: page || location.pathname,
     userId: getUserId(),
     data,
   })
@@ -32,7 +32,16 @@ const flush = () => {
 
   const blob = new Blob([JSON.stringify(data)], { type: 'application/json' })
 
-  navigator.sendBeacon('/api/track/batch', blob)
+  const success = navigator.sendBeacon('/api/track/batch', blob)
+
+  if (!success) {
+    fetch('/api/track/batch', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      keepalive: true,
+    })
+  }
 }
 
 const scheduleFlush = () => {
