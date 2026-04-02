@@ -119,12 +119,16 @@ defineExpose({
   show: Toast.show,
   hide: Toast.hide,
 })
+
+const close = () => {
+  Toast.hide()
+}
 </script>
 
 <template>
-  <div class="toast" :class="btnType" ref="toast">
+  <div @click="close" class="toast" :class="btnType" ref="toast">
     <span ref="msgEl">{{ _msg }}</span>
-    <button @click="handleEvent" v-if="confirmBtnVisible">
+    <button @click.stop="handleEvent" v-if="confirmBtnVisible">
       &nbsp;&nbsp;{{ text }}（{{ count }}）
     </button>
   </div>
@@ -145,6 +149,7 @@ defineExpose({
   border-radius: 10px;
   background-color: white;
   box-shadow: var(--theme-shadow-color);
+  cursor: default;
   transform: translateY(v-bind(y)) translateX(-50%);
 
   button {

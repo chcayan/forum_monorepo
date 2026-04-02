@@ -85,34 +85,40 @@ Current version changes:
 - Fix the issue where unreviewed posts are added to the index page when viewing them in my page.
 - Optimize the post sharing card style in the chat view.
 
-### 2.7.2 (263020)
+### 2.7.2 (260320)
 
 Current version changes:
 
 - Fix the issue where other users' unreviewed posts are visible.
 
-### 2.7.3 (263022)
+### 2.7.3 (260322)
 
 Current version changes:
 
 - Optimize the style of chat pages and chat toast.
 - Fix the issue where only new messages are obtained when retrieving chat records in specific scenarios.
 
-### 2.8.0 (263024)
+### 2.8.0 (260324)
 
 Current version changes:
 
 - Add function of users receive a notification for new comments.
 
-### 2.9.0 (263026)
+### 2.9.0 (260326)
 
 Current version changes:
 
 - Add post tag feature.
 - Optimize post card UX.
 
-### 2.10.0 (263028)
+### 2.10.0 (260328)
 
 Current version changes:
 
 - Add home page refresh function (double-click the post button).
+
+### 2.10.1 (260402)
+
+Current version changes:
+
+- Optimize toast, click to hide in advance

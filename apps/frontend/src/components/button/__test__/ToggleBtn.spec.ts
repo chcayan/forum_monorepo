@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 import ToggleBtn from '../ToggleBtn.vue'
+
 describe('ToggleButton', () => {
   it('status = true 时不应该有 toggle-active', () => {
     const wrapper = mount(ToggleBtn, {

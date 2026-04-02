@@ -19,6 +19,7 @@ describe('弹窗功能', () => {
       msg: 'hello',
       type: 'success',
       duration: 2000,
+      confirmText: '确认',
     })
   })
 
@@ -42,6 +43,7 @@ describe('弹窗功能', () => {
       type: 'error',
       duration: 2000,
       eventFn,
+      confirmText: '确认',
     })
   })
 })

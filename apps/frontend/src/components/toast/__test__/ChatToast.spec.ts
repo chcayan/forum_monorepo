@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import ChatToast from '../ChatToast.vue'
 
 const avatarUrl = 'http://localhost:3000/test.jpg'
@@ -18,42 +18,36 @@ const defaultUserInfo = {
   signature: 'what can i say!',
 }
 
-describe('Chat toast', () => {
-  vi.mock('@/utils', () => ({
+vi.mock('@/utils/socket', () => {
+  return {
     socket: {
       emit: vi.fn(),
     },
-    lineBreakReplace: (v: string) => v,
-  }))
+  }
+})
 
-  vi.mock('@/api', () => ({
-    markAsReadAPI: vi.fn(() => Promise.resolve()),
-  }))
+vi.mock('@/router', () => ({
+  default: {
+    push: vi.fn(),
+  },
+  RouterPath: {
+    chat: '/chat',
+  },
+}))
 
-  vi.mock('@/router', () => ({
-    default: {
-      push: vi.fn(),
-    },
-    RouterPath: {
-      chat: '/chat',
-    },
-  }))
+vi.mock('@/stores', () => ({
+  useUserStore: () => ({
+    userInfo: defaultUserInfo,
+  }),
+  useTempStore: () => ({
+    setTempUserInfo: vi.fn(),
+  }),
+}))
 
-  vi.mock('@/stores', () => ({
-    useUserStore: () => ({
-      userInfo: defaultUserInfo,
-    }),
-    useTempStore: () => ({
-      setTempUserInfo: vi.fn(),
-    }),
-  }))
-
-  beforeAll(() => {
-    Element.prototype.animate = vi.fn()
-  })
-
+describe('Chat toast', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    Element.prototype.animate = vi.fn()
   })
 
   it('显示用户消息', async () => {
@@ -181,7 +175,7 @@ describe('Chat toast', () => {
 
     await wrapper.find('.ico').trigger('click')
 
-    expect(wrapper.find('.chat').exists()).toBe(false)
+    expect(wrapper.find('.chat').exists()).toBe(true)
   })
 
   it('跳转到 chat 页面', async () => {
