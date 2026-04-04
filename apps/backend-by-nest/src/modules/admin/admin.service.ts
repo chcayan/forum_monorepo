@@ -18,7 +18,7 @@ import { Post } from '../post/entities/post.entity';
 import { UserAlias, UserFields } from '../user/user.constant';
 import { AdminPermissionBit, UserPermissionBit } from '../auth/auth.bit';
 import bcrypt from 'bcryptjs';
-import { AdminPerm } from 'src/common/constant/permission.constant';
+import { AdminPerm } from '@/common/constant/permission.constant';
 import { PostAlias, PostFields } from '../post/post.constant';
 import { ReviewViolationReason } from './entities/review-violation-reason.entity';
 import { PostReport } from '../post/entities/post-report.entity';
@@ -26,7 +26,7 @@ import { UserLogStatusType, UserProhibitionType } from './admin.constant';
 import { UserLog } from './entities/user-log.entity';
 import { CommentReport } from '../post/entities/comment-report.entity';
 import { Comment } from '../post/entities/comment.entity';
-import { formatRemainTime } from 'src/common/utils/date.utils';
+import { formatRemainTime } from '@/common/utils/date.utils';
 
 @Injectable()
 export class AdminService {

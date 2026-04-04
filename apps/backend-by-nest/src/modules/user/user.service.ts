@@ -19,7 +19,7 @@ import { UserAlias, UserFields } from './user.constant';
 import { PostAlias, PostFields } from '../post/post.constant';
 import { UserPermissionBit } from '../auth/auth.bit';
 import { ReviewViolationReason } from '../admin/entities/review-violation-reason.entity';
-import { formatRemainTimeWithText } from 'src/common/utils/date.utils';
+import { formatRemainTimeWithText } from '@/common/utils/date.utils';
 import { UserLog } from '../admin/entities/user-log.entity';
 import { Comment } from '../post/entities/comment.entity';
 

@@ -3,7 +3,7 @@ import viteConfig from './vite.config'
 import { fileURLToPath } from 'url'
 
 export default mergeConfig(
-  viteConfig,
+  viteConfig as never,
   defineConfig({
     test: {
       environment: 'jsdom',

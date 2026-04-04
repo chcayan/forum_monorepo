@@ -3,7 +3,10 @@ import emitter from './eventEmitter'
 import { useUserStore } from '@/stores'
 import { refreshAPI } from '@/api'
 
-const baseURL = '/api'
+const baseURL =
+  import.meta.env.VITE_IS_ELECTRON === 'true'
+    ? import.meta.env.VITE_REQUEST_URL
+    : '/api'
 
 const instance = axios.create({
   baseURL,

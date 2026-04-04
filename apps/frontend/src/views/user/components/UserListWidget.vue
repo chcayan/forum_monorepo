@@ -2,6 +2,7 @@
 import { getUserFansAPI, getUserFollowsAPI } from '@/api'
 import router, { RouterPath } from '@/router'
 import { useUserStore } from '@/stores'
+import { getImgUrl } from '@/utils'
 // import emitter from '@/utils/eventEmitter'
 import type { FriendInfo } from '@forum-monorepo/types'
 import { ref, watch } from 'vue'
@@ -64,7 +65,7 @@ const navigateToUser = (userId: string) => {
         navigateToUser(isFollowOrFan === 'follow' ? user.followId : user.userId)
       "
     >
-      <img :src="user.userAvatar" alt="avatar" />
+      <img :src="getImgUrl(user.userAvatar)" alt="avatar" />
       <div>{{ user.username }}</div>
     </li>
   </ul>

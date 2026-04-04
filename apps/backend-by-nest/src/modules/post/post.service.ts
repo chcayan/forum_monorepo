@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
 import { Brackets, In, Repository } from 'typeorm';
 import { PostAlias, PostFields } from './post.constant';
-import { UserAlias, UserFields } from 'src/modules/user/user.constant';
+import { UserAlias, UserFields } from '@/modules/user/user.constant';
 import { Comment } from './entities/comment.entity';
 import { PostReport } from './entities/post-report.entity';
 import { CommentReport } from './entities/comment-report.entity';

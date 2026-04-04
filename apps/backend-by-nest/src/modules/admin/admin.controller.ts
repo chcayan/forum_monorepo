@@ -12,13 +12,13 @@ import {
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { AdminPermissionDto, UserPermissionDto } from './dto/permission.dto';
-import { JwtAuthGuard } from 'src/common/guard/jwt-auth.guard';
-import { AdminPermissionGuard } from 'src/common/guard/permission.guard';
-import { AdminPermission } from 'src/common/decorator/permission.decorator';
+import { JwtAuthGuard } from '@/common/guard/jwt-auth.guard';
+import { AdminPermissionGuard } from '@/common/guard/permission.guard';
+import { AdminPermission } from '@/common/decorator/permission.decorator';
 import { PostReviewDto } from './dto/post-review.dto';
 import { LoginDto } from './dto/login.dto';
 import { UserProhibitionDto } from './dto/user-prohibition.dto';
-import { OptionalUser } from 'src/common/decorator/optional-user.decorator';
+import { OptionalUser } from '@/common/decorator/optional-user.decorator';
 import { CommentReportDto } from './dto/comment-report.dto';
 import { AuthService } from '../auth/auth.service';
 import type { Response } from 'express';

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { getImgUrl } from '@/utils'
 import { ref } from 'vue'
 
 const _imgEl = ref<HTMLImageElement | null>(null)
@@ -28,7 +29,7 @@ defineExpose({
 
 <template>
   <div v-if="_imgEl" class="shade" title="退出全屏" @click="exitFullscreen">
-    <img :src="_imgEl.src" alt="image" title="" />
+    <img :src="getImgUrl(_imgEl.src)" alt="image" title="" />
   </div>
 </template>
 

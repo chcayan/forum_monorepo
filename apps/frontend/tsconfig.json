@@ -3,9 +3,8 @@
   "compilerOptions": {
     "types": [],
     "lib": ["ESNext", "DOM"],
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src", "env.d.ts", "src/**/*", "src/**/*.vue"]

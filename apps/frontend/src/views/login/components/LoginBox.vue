@@ -148,7 +148,6 @@ const submitForm = async () => {
 
       &:focus + p,
       &:valid + P {
-        width: 350px;
         transform: translateY(-50px) scale(0.8);
       }
     }

@@ -20,7 +20,9 @@ import { UsePipes, ValidationPipe } from '@nestjs/common';
         process.env.CORS_ORIGIN_1,
         process.env.CORS_ORIGIN_2,
         process.env.CORS_ORIGIN_3,
+        'file://',
       ];
+      console.log('origin: ', origin);
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {

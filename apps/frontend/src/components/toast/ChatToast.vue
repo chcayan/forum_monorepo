@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onUpdated, reactive, ref, useTemplateRef } from 'vue'
-import { lineBreakReplace, socket, escapeHTML } from '@/utils'
+import { lineBreakReplace, socket, escapeHTML, getImgUrl } from '@/utils'
 import CloseSvg from '../svgIcon/CloseSvg.vue'
 import JumpSvg from '../svgIcon/JumpSvg.vue'
 import SendSvg from '../svgIcon/SendSvg.vue'
@@ -182,7 +182,7 @@ defineExpose({
           <img
             v-if="avatar"
             v-loading
-            :src="item[1].userAvatar"
+            :src="getImgUrl(item[1].userAvatar)"
             @click="chooseUser(item[1].userId)"
           />
         </li>
@@ -199,7 +199,7 @@ defineExpose({
             v-for="(item, index) in chatRecords[_userId]"
             :key="index"
           >
-            <img v-if="avatar" v-loading :src="avatar" />
+            <img v-if="avatar" v-loading :src="getImgUrl(avatar)" />
             <span
               v-if="item.isShare === '0'"
               class="msg"

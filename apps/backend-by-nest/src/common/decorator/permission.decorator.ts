@@ -3,10 +3,7 @@ import {
   AdminPermissionCodeToIdMapInterface,
   UserPermissionCodeToIdMapInterface,
 } from '../interface/permission.interface';
-import {
-  AdminPermissionMap,
-  UserPermissionMap,
-} from 'src/modules/auth/auth.map';
+import { AdminPermissionMap, UserPermissionMap } from '@/modules/auth/auth.map';
 import { Permission } from '../constant/permission.constant';
 
 export const UserPermission = (

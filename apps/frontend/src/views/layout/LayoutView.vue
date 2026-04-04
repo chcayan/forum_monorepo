@@ -16,7 +16,7 @@ import emitter from '@/utils/eventEmitter'
 import BackSvg from '@/components/svgIcon/BackSvg.vue'
 import { useRoute } from 'vue-router'
 import SendSvg from '@/components/svgIcon/SendSvg.vue'
-import { debounce, Toast } from '@/utils'
+import { debounce, getImgUrl, Toast } from '@/utils'
 import LogoutSvg from '@/components/svgIcon/LogoutSvg.vue'
 
 const userStore = useUserStore()
@@ -194,7 +194,7 @@ const refreshPost = async () => {
         <img
           v-loading
           loading="lazy"
-          :src="userStore.userInfo?.userAvatar"
+          :src="getImgUrl(userStore.userInfo?.userAvatar)"
           alt="avatar"
           @click="toggleWidgetVisible"
           :title="userStore.userInfo?.username"

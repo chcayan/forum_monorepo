@@ -2,6 +2,7 @@
 import { getPostDetailAPI, updatePostViewAPI } from '@/api'
 import WarnSvg from '@/components/svgIcon/WarnSvg.vue'
 import router, { RouterPath } from '@/router'
+import { getImgUrl } from '@/utils'
 import emitter from '@/utils/eventEmitter'
 import type { PostDetail } from '@forum-monorepo/types'
 import { ref } from 'vue'
@@ -58,7 +59,7 @@ const navigateToPostDetail = async () => {
   <div v-if="!isHide" class="share-post" @click="navigateToPostDetail">
     <div class="content">{{ postInfo.pContent }}</div>
     <div class="title">
-      <img :src="postInfo.userAvatar" alt="avatar" />
+      <img :src="getImgUrl(postInfo.userAvatar)" alt="avatar" />
       <span>{{ postInfo.username }}</span>
     </div>
   </div>

@@ -4,8 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite ",
+    "dev": "vite",
     "build": "vite build",
+    "build:electron:dev": "vite build --mode electron.development --emptyOutDir",
+    "build:electron:prod": "vite build --mode electron.production --emptyOutDir",
     "preview": "vite build && vite preview",
     "test:unit": "vitest"
   },

@@ -15,9 +15,11 @@
     "dev": "concurrently  \"pnpm -F backend-by-nest start:dev\" \"pnpm -F frontend dev\" \"pnpm -F admin dev\"",
     "dev:forum": "concurrently  \"pnpm --filter backend-by-nest start:dev\" \"pnpm --filter frontend dev\"",
     "dev:admin": "concurrently  \"pnpm --filter backend-by-nest start:dev\" \"pnpm --filter admin dev\"",
+    "dev:electron": "pnpm -F frontend build:electron:dev && pnpm -F electron start",
     "test:unit": "pnpm -F frontend test:unit",
     "build": "pnpm build:package && pnpm -F frontend build && pnpm -F admin build && pnpm -F backend-by-nest build",
     "build:package": "pnpm -F utils build && pnpm -F sdk build && pnpm -F types build",
+    "build:electron": "pnpm -F frontend build:electron:prod && pnpm -F electron build",
     "upload": "pnpm build && bash ./script/upload.sh",
     "start:backend": "pnpm -F backend-by-nest start:dev"
   },

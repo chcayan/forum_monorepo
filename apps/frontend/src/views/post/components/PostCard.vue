@@ -5,7 +5,13 @@ import CollectSvg from '@/components/svgIcon/CollectSvg.vue'
 import ShareSvg from '@/components/svgIcon/ShareSvg.vue'
 import type { FriendInfo, PostDetail } from '@forum-monorepo/types'
 import { formatDateByYear } from '@forum-monorepo/utils'
-import { checkLoginStatus, lineBreakReplace, socket, Toast } from '@/utils'
+import {
+  checkLoginStatus,
+  getImgUrl,
+  lineBreakReplace,
+  socket,
+  Toast,
+} from '@/utils'
 import NGrid from './NGrid.vue'
 import { computed, onDeactivated, onUnmounted, ref, watch } from 'vue'
 import emitter from '@/utils/eventEmitter'
@@ -294,7 +300,7 @@ const searchPostsByTag = (name: string) => {
           v-for="(friend, index) in friendList"
           :key="index"
         >
-          <img :src="friend.userAvatar" alt="avatar" />
+          <img :src="getImgUrl(friend.userAvatar)" alt="avatar" />
           <p class="name">{{ friend.username }}</p>
         </li>
       </ul>
@@ -303,7 +309,7 @@ const searchPostsByTag = (name: string) => {
       <img
         v-loading
         loading="lazy"
-        :src="userAvatar"
+        :src="getImgUrl(userAvatar!)"
         alt="avatar"
         @click.stop="navigateToUser"
       />

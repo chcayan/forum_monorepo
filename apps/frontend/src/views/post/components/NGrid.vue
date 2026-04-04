@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { getImgUrl } from '@/utils'
 import emitter from '@/utils/eventEmitter'
 import { onMounted, onUnmounted, ref } from 'vue'
 
@@ -31,7 +32,7 @@ onUnmounted(() => {
       loading="lazy"
       v-for="image in images"
       :key="image"
-      :src="image"
+      :src="getImgUrl(image)"
       alt="postImage"
     />
   </div>

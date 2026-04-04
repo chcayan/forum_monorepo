@@ -5,11 +5,10 @@
     "lib": ["ESNext"],
     "esModuleInterop": true,
     "outDir": "dist",
-    "baseUrl": "./",
     "declaration": true,
     "paths": {
-      "@configs/*": ["src/configs/*"],
-      "@middleware/*": ["src/middleware/*"]
+      "@configs/*": ["./src/configs/*"],
+      "@middleware/*": ["./src/middleware/*"]
     }
   },
   "include": ["src", "env.d.ts"]

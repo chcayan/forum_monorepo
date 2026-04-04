@@ -12,7 +12,14 @@ import SearchSvg from '@/components/svgIcon/SearchSvg.vue'
 import SendSvg from '@/components/svgIcon/SendSvg.vue'
 import router, { RouterPath } from '@/router'
 import { useTempStore, useUserStore } from '@/stores'
-import { debounce, lineBreakReplace, socket, Toast, escapeHTML } from '@/utils'
+import {
+  debounce,
+  lineBreakReplace,
+  socket,
+  Toast,
+  escapeHTML,
+  getImgUrl,
+} from '@/utils'
 import emitter from '@/utils/eventEmitter'
 import pikachuImg from '@/assets/pikachu.jpg'
 import type { ChatInfo, UserBySearchInfo } from '@forum-monorepo/types'
@@ -332,7 +339,7 @@ const onPikachuChat = () => {
             @click="navigateToUser(user.userId)"
             :title="user.username"
           >
-            <img :src="user.userAvatar" alt="avatar" />
+            <img :src="getImgUrl(user.userAvatar)" alt="avatar" />
             <div>{{ user.username }}</div>
           </li>
         </ul>
@@ -372,7 +379,7 @@ const onPikachuChat = () => {
           <div
             :class="{ avatar: userStore.onLineList.includes(friend.followId) }"
           >
-            <img :src="friend.userAvatar" alt="avatar" />
+            <img :src="getImgUrl(friend.userAvatar)" alt="avatar" />
           </div>
           <div>{{ friend.username }}</div>
           <div
@@ -388,7 +395,7 @@ const onPikachuChat = () => {
     <div class="right" :class="{ 'right-up': showChatBox }">
       <div class="chat-box" v-if="currentFriendUsername || isPikachuChat">
         <header v-if="!isPikachuChat">
-          <img :src="currentFriendAvatar" />
+          <img :src="getImgUrl(currentFriendAvatar)" />
           <div>
             <p>{{ currentFriendUsername }}</p>
             <p class="online">
@@ -436,13 +443,13 @@ const onPikachuChat = () => {
                   "
                 />
               </div>
-              <img :src="userStore.userInfo?.userAvatar" />
+              <img :src="getImgUrl(userStore.userInfo?.userAvatar)" />
             </div>
             <div
               class="follow-chat"
               v-if="msg.from !== userStore.userInfo.userId"
             >
-              <img :src="currentFriendAvatar" />
+              <img :src="getImgUrl(currentFriendAvatar)" />
               <span
                 v-if="msg.isShare === '0'"
                 v-html="lineBreakReplace(msg.message)"

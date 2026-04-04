@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { UserPermission } from './entities/user-permission.entity';
 import bcrypt from 'bcryptjs';
 import { Permission } from './entities/permission.entity';
-import { AdminPerm, UserPerm } from 'src/common/constant/permission.constant';
+import { AdminPerm, UserPerm } from '@/common/constant/permission.constant';
 
 @Injectable()
 export class UserSeedService implements OnApplicationBootstrap {

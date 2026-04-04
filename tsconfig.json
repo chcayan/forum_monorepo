@@ -1,7 +1,5 @@
 {
   "compilerOptions": {
-    // env
-    "baseUrl": "./",
     "module": "esnext",
     "target": "esnext",
     "lib": ["esnext"],

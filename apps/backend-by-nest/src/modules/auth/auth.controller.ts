@@ -1,12 +1,12 @@
 import { Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import type { Response } from 'express';
-import type { AuthRequest } from 'src/common/interface/auth-request.interface';
+import type { AuthRequest } from '@/common/interface/auth-request.interface';
 import { JwtService } from '@nestjs/jwt';
-import { JwtPayload } from 'src/common/interface/jwt-payload.interface';
+import { JwtPayload } from '@/common/interface/jwt-payload.interface';
 import { RefreshToken } from './auth.constant';
-import { JwtAuthGuard } from 'src/common/guard/jwt-auth.guard';
-import { LoginProhibitGuard } from 'src/common/guard/login-prohibit.guard';
+import { JwtAuthGuard } from '@/common/guard/jwt-auth.guard';
+import { LoginProhibitGuard } from '@/common/guard/login-prohibit.guard';
 @Controller('auth')
 export class AuthController {
   constructor(

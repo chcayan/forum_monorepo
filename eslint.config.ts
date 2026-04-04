@@ -112,6 +112,7 @@ const config: Linter.Config[] = defineConfig(
     'scripts/**',
     '**/*.d.ts',
     '**/uniapp/**',
+    '**/electron/**',
   ])
 )
 

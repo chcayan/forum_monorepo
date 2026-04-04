@@ -15,12 +15,12 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { LoginDto, RegisterDto } from './dto/login.dto';
-import { JwtAuthGuard } from 'src/common/guard/jwt-auth.guard';
+import { JwtAuthGuard } from '@/common/guard/jwt-auth.guard';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { uploadOptions } from 'src/common/config/upload.config';
-import { OptionalUser } from 'src/common/decorator/optional-user.decorator';
+import { uploadOptions } from '@/common/config/upload.config';
+import { OptionalUser } from '@/common/decorator/optional-user.decorator';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { OptionalJwtAuthGuard } from 'src/common/guard/optional-jwt-auth.guard';
+import { OptionalJwtAuthGuard } from '@/common/guard/optional-jwt-auth.guard';
 import { AuthService } from '../auth/auth.service';
 import type { Response } from 'express';
 import { RefreshToken } from '../auth/auth.constant';

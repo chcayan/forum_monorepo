@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ReportSvg from '@/components/svgIcon/ReportSvg.vue'
-import { lineBreakReplace } from '@/utils'
+import { getImgUrl, lineBreakReplace } from '@/utils'
 import type { CommentList } from '@forum-monorepo/types'
 import { formatDateByYear } from '@forum-monorepo/utils'
 import CommentReportModal from './CommentReportModal.vue'
@@ -24,7 +24,7 @@ const closeReportModal = () => {
 <template>
   <div class="comment-card">
     <div class="header">
-      <img :src="comment.userAvatar" alt="avatar" />
+      <img :src="getImgUrl(comment.userAvatar)" alt="avatar" />
       <div class="box">
         <div class="left">
           <span>{{ comment?.username }}</span>

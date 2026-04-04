@@ -1,4 +1,4 @@
-import { Post } from 'src/modules/post/entities/post.entity';
+import { Post } from '@/modules/post/entities/post.entity';
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 
 @Entity()

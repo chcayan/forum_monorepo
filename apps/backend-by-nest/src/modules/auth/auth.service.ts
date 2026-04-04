@@ -8,7 +8,7 @@ import {
 } from './auth.map';
 import Redis from 'ioredis';
 import { JwtService } from '@nestjs/jwt';
-import { JwtPayload } from 'src/common/interface/jwt-payload.interface';
+import { JwtPayload } from '@/common/interface/jwt-payload.interface';
 
 @Injectable()
 export class AuthService {

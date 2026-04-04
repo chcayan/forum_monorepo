@@ -26,13 +26,14 @@ coverage
 *.njsproj
 *.sln
 *.sw?
-
 *.tsbuildinfo
 
+# other
 desktop.ini
-
 .env.production
+.env.electron.production
 
+# images
 apps/backend/uploads/*
 !apps/backend/uploads/default/
 !apps/backend/uploads/default/**
@@ -43,3 +44,6 @@ apps/backend-by-nest/uploads/*
 
 # uniapp
 unpackage
+
+# electron
+release

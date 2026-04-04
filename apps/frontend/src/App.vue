@@ -8,6 +8,10 @@ import { useRoute } from 'vue-router'
 import { checkIsLoginProhibitAPI, getUserInfoAPI } from './api'
 import { MsgType } from '@forum-monorepo/types'
 
+if (import.meta.env.VITE_IS_ELECTRON === 'true') {
+  console.log(666)
+}
+
 const userStore = useUserStore()
 const route = useRoute()
 

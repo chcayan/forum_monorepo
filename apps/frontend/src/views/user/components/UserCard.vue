@@ -5,7 +5,7 @@ import EditSvg from '@/components/svgIcon/EditSvg.vue'
 import SaveSvg from '@/components/svgIcon/SaveSvg.vue'
 import router, { RouterPath } from '@/router'
 import { useUserStore } from '@/stores'
-import { Toast } from '@/utils'
+import { getImgUrl, Toast } from '@/utils'
 import FollowButton from '@/views/post/components/FollowButton.vue'
 import type { UserInfo } from '@forum-monorepo/types'
 import { nextTick, onUnmounted, ref, useTemplateRef } from 'vue'
@@ -229,7 +229,7 @@ onUnmounted(() => {
           v-loading
           class="bg"
           :class="{ 'edit-img': isContenteditable }"
-          :src="userInfo.backgroundImg"
+          :src="getImgUrl(userInfo.backgroundImg)"
           ref="bgEl"
           alt="bg"
           @dblclick="edit"
@@ -247,7 +247,7 @@ onUnmounted(() => {
           v-loading
           class="avatar"
           :class="{ 'edit-img': isContenteditable }"
-          :src="userInfo.userAvatar"
+          :src="getImgUrl(userInfo.userAvatar)"
           ref="avatarEl"
           alt="avatar"
           @dblclick="edit"

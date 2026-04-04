@@ -4,9 +4,9 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UserService } from 'src/modules/user/user.service';
+import { UserService } from '@/modules/user/user.service';
 import { AuthRequest } from '../interface/auth-request.interface';
-import { UserPermissionBit } from 'src/modules/auth/auth.bit';
+import { UserPermissionBit } from '@/modules/auth/auth.bit';
 
 @Injectable()
 export class LoginProhibitGuard implements CanActivate {

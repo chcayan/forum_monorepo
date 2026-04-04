@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthRequest } from '../interface/auth-request.interface';
-import { UserService } from 'src/modules/user/user.service';
+import { UserService } from '@/modules/user/user.service';
 import { Permission } from '../constant/permission.constant';
 import { formatRemainTimeWithText } from '../utils/date.utils';
 
