@@ -15,7 +15,7 @@ The differences between app functionality and web functionality are as follows:
 
 ### 2.7.1 (260319)
 
-同步 web 功能，当前版本变更：
+Synchronize web function, current version changes：
 
 - Add online user display function.
 - Add editing post.

@@ -181,7 +181,9 @@
             }
 
             .eye-icon {
-              width: 90px;
+              flex-shrink: 0;
+              width: 72px;
+              height: 42px;
               text-align: end;
               cursor: pointer;
               padding: 8px;

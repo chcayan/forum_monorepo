@@ -8,7 +8,7 @@ Optimize and refactor previous projects: https://github.com/chcayan/forum
 
 Using Monorepo for Project Management.
 
-This project includes both web and app versions, with the app built on Uniapp.
+This project includes web, app, and desktop (Windows). The app is built on Uniapp, while the desktop is built on Electron
 
 ---
 
@@ -35,6 +35,10 @@ This project includes both web and app versions, with the app built on Uniapp.
 
 - uniapp
 
+### desktop：
+
+- electron
+
 ## Run
 
 Install dependencies.
@@ -42,6 +46,12 @@ Install dependencies.
 ```bash
 pnpm i
 ```
+
+> Note: Electron needs to be executed separately in this path
+>
+> ```bash
+> pnpm i
+> ```
 
 Modify backend configuration (apps/backend-by-nest/.env.development).
 
@@ -91,6 +101,20 @@ pnpm start:backend
 
 Run the Uniapp project using HBuilderX.
 
+### desktop
+
+Start electron related services.
+
+```bash
+pnpm start:electron:serve
+```
+
+Start Electron.
+
+```bash
+pnpm start:electron:app
+```
+
 ## Tip
 
 - "apps/backend" has been deprecated, and the backend project is now "apps/backend-by-nest".
@@ -101,3 +125,4 @@ Run the Uniapp project using HBuilderX.
 - [forum](./docs/md/version/en/forum.md)
 - [admin](./docs/md/version/en/admin.md)
 - [app](./docs/md/version/en/app.md)
+- [desktop](./docs/md/version/en/desktop.md)

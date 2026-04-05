@@ -128,6 +128,7 @@ const submitForm = async () => {
     cursor: pointer;
 
     p {
+      width: 110%;
       align-self: self-start;
       transition: all 0.3s ease;
       transform: translateY(-35px) scale(1);

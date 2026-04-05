@@ -18,6 +18,7 @@
   "build": {
     "appId": "org.chcaya.forum",
     "productName": "forum",
+    "icon": "build/icon",
     "directories": {
       "output": "release"
     },

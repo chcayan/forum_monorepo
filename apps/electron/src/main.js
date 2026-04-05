@@ -1,6 +1,7 @@
 // @ts-check
 const path = require('node:path')
 const { session, app, BrowserWindow, ipcMain, Menu } = require('electron')
+const { showNotification } = require('./utils/notify')
 
 require('dotenv').config({
   path: path.resolve(
@@ -20,7 +21,7 @@ const createWindow = () => {
     minWidth: 375,
     minHeight: 500,
     webPreferences: {
-      // preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, 'preload.js'),
     },
   })
 
@@ -34,36 +35,66 @@ const createWindow = () => {
     // production
     win.loadFile(path.join(__dirname, '../dist/index.html'))
   }
+
+  return win
 }
 
-app.enableSandbox()
-app.whenReady().then(() => {
-  const isDev = !app.isPackaged
+/** @type {BrowserWindow} */
+let mainWin
+const gotTheLock = app.requestSingleInstanceLock()
 
-  const csp = isDev
-    ? `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: ${process.env.NODE_API_ORIGIN}; connect-src 'self' ${process.env.NODE_API_ORIGIN} ${process.env.NODE_API_ORIGIN.replace('http', 'ws')}`
-    : `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: ${process.env.NODE_API_ORIGIN}; connect-src 'self' ${process.env.NODE_API_ORIGIN} ${process.env.NODE_API_ORIGIN.replace('https', 'wss')}`
+if (!gotTheLock) {
+  app.quit()
+} else {
+  app.on('second-instance', () => {
+    if (mainWin) {
+      if (mainWin.isMinimized()) mainWin.restore()
 
-  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-    callback({
-      responseHeaders: {
-        ...details.responseHeaders,
-        'Content-Security-Policy': [csp],
-      },
+      mainWin.show()
+      mainWin.focus()
+    }
+  })
+
+  app.enableSandbox()
+  app.whenReady().then(() => {
+    const isDev = !app.isPackaged
+
+    const csp = `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: ${process.env.NODE_API_ORIGIN}; connect-src 'self' ${process.env.NODE_API_ORIGIN} ${process.env.NODE_API_ORIGIN.replace(isDev ? 'http' : 'https', isDev ? 'ws' : 'wss')}`
+
+    session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+      callback({
+        responseHeaders: {
+          ...details.responseHeaders,
+          'Content-Security-Policy': [csp],
+        },
+      })
+    })
+
+    ipcMain.on('notify', handleNotify)
+
+    mainWin = createWindow()
+
+    app.on('activate', () => {
+      if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow()
+      }
     })
   })
 
-  createWindow()
-
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow()
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+      app.quit()
     }
   })
-})
+}
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
+function handleNotify(
+  /** @type {Electron.IpcMainEvent} */ event,
+  /** @type {import('../types/notify').Notify} */ msg
+) {
+  showNotification(event.sender, {
+    type: 'chat',
+    title: msg.title,
+    body: msg.body,
+  })
+}

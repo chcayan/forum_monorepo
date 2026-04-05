@@ -8,7 +8,7 @@
 
 使用 monorepo 进行项目管理
 
-本项目包含 web 端和 app 端，app 基于 uniapp 构建
+本项目包含 web 端、app 端和桌面端（win），app 基于 uniapp 构建，桌面的基于 electron 构建
 
 ---
 
@@ -35,6 +35,10 @@
 
 - uniapp
 
+### 桌面端：
+
+- electron
+
 ## 运行
 
 安装依赖
@@ -42,6 +46,12 @@
 ```bash
 pnpm i
 ```
+
+> 注意：electron 需要单独在该路径下单独执行
+>
+> ```bash
+> pnpm i
+> ```
 
 修改后端配置 (apps/backend-by-nest/.env.development)
 
@@ -91,6 +101,20 @@ pnpm start:backend
 
 使用HBuilderX运行uniapp项目
 
+### 桌面端
+
+启动 electron 相关服务
+
+```bash
+pnpm start:electron:serve
+```
+
+启动 electron
+
+```bash
+pnpm start:electron:app
+```
+
 ## 提示
 
 - apps/backend 已弃用，后端项目现为 apps/backend-by-nest
@@ -101,3 +125,4 @@ pnpm start:backend
 - [forum](./docs/md/version/zh/forum.md)
 - [admin](./docs/md/version/zh/admin.md)
 - [app](./docs/md/version/zh/app.md)
+- [desktop](./docs/md/version/zh/desktop.md)

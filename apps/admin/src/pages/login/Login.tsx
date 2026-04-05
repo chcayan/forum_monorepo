@@ -329,7 +329,7 @@ export default function Login() {
                     }
                   }}
                 />
-                <span
+                <p
                   className={styles['eye-icon']}
                   style={{
                     color: showPassword ? themeColor : '#999',
@@ -342,7 +342,7 @@ export default function Login() {
                   }
                 >
                   {showPassword ? '( •̀ ω •́ )' : '( -_- )'}
-                </span>
+                </p>
               </div>
               <div
                 className={styles['focus-line']}

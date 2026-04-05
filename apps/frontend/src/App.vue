@@ -8,10 +8,6 @@ import { useRoute } from 'vue-router'
 import { checkIsLoginProhibitAPI, getUserInfoAPI } from './api'
 import { MsgType } from '@forum-monorepo/types'
 
-if (import.meta.env.VITE_IS_ELECTRON === 'true') {
-  console.log(666)
-}
-
 const userStore = useUserStore()
 const route = useRoute()
 
@@ -76,6 +72,15 @@ async function initUserStatus() {
         message,
         isShare,
       })
+
+      if (import.meta.env.VITE_IS_ELECTRON === 'true') {
+        console.log('notify by electron')
+        window.electronAPI.notify({
+          type: 'chat',
+          title: `来自 ${userInfo.username} 的消息：`,
+          body: message,
+        })
+      }
     }
   )
 
