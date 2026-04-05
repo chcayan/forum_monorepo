@@ -357,7 +357,7 @@ const searchPostsByTag = (name: string) => {
         :images="post?.pImages"
         :postId="post.pId"
       />
-      <ul class="tag-list">
+      <ul class="tag-list" v-if="post.tags && post.tags.length">
         <li
           v-for="tag in post.tags"
           :key="tag"

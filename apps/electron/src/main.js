@@ -1,18 +1,13 @@
 // @ts-check
 const path = require('node:path')
-const {
-  session,
-  app,
-  BrowserWindow,
-  ipcMain,
-  dialog,
-  Menu,
-} = require('electron')
+const { session, app, BrowserWindow, ipcMain, Menu } = require('electron')
 
 require('dotenv').config({
   path: path.resolve(
     __dirname,
-    !app.isPackaged ? '../.env.development' : '../.env.development'
+    app.isPackaged
+      ? path.resolve(process.resourcesPath, '.env.production')
+      : path.join(__dirname, '../.env.development')
   ),
 })
 
@@ -31,8 +26,14 @@ const createWindow = () => {
 
   Menu.setApplicationMenu(null)
 
-  win.loadFile(path.join(__dirname, '../dist/index.html'))
-  !app.isPackaged && win.webContents.openDevTools()
+  if (!app.isPackaged) {
+    // development
+    win.loadURL('http://localhost:5173')
+    win.webContents.openDevTools()
+  } else {
+    // production
+    win.loadFile(path.join(__dirname, '../dist/index.html'))
+  }
 }
 
 app.enableSandbox()
