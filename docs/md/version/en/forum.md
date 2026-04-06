@@ -122,3 +122,9 @@ Current version changes:
 Current version changes:
 
 - Optimize toast, click to hide in advance
+
+### 2.10.2 (260406)
+
+Current version changes:
+
+- Fix the malignant bug caused by authentication restoration.

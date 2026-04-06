@@ -2,12 +2,13 @@
 import { onUnmounted, ref } from 'vue'
 import PostCard from '@/components/post/PostCard.vue'
 import type { CommentList, PostDetail } from '@/types'
-import { getCommentListAPI, getPostDetailAPI } from '@/api'
+import { getCommentListAPI, getPostDetailAPI, refreshAPI } from '@/api'
 import CommentInput from '@/components/post/CommentInput.vue'
 import CommentCard from '@/components/post/CommentCard.vue'
 import emitter from '@/utils/eventEmitter'
 import { onLoad } from '@dcloudio/uni-app'
 import { RouterPath } from '../../../utils'
+import { useUserStore } from '../../../stores'
 
 const postDetail = ref<PostDetail>({
   isPublic: '',
@@ -26,15 +27,27 @@ const postDetail = ref<PostDetail>({
 })
 
 const getPostDetail = async (postId: string) => {
-  await getPostDetailAPI(postId)
-    .then((res) => {
+  const userStore = useUserStore()
+
+  try {
+    const res = await getPostDetailAPI(postId)
+    postDetail.value = res.data.data
+  } catch (err) {
+    try {
+      if (userStore.token) {
+        const res = await refreshAPI()
+        const newToken = res.data.data.accessToken
+        userStore.setToken(newToken)
+      }
+
+      const res = await getPostDetailAPI(postId)
       postDetail.value = res.data.data
-    })
-    .catch(() => {
+    } catch (err) {
       uni.redirectTo({
         url: RouterPath.notFound,
       })
-    })
+    }
+  }
 }
 
 const commentList = ref<CommentList[]>()

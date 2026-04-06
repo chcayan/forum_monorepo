@@ -353,7 +353,7 @@ const searchPostsByTag = (name: string) => {
       ></p>
       <NGrid
         class="n-grid"
-        v-if="post?.pImages"
+        v-if="post?.pImages && post?.pImages.length"
         :images="post?.pImages"
         :postId="post.pId"
       />
@@ -480,10 +480,18 @@ const searchPostsByTag = (name: string) => {
   header {
     display: flex;
     gap: $gap;
-    height: 40px;
+    height: 34px;
 
     .info {
       margin-right: auto;
+
+      .name {
+        height: 20px;
+      }
+
+      .time {
+        height: 14px;
+      }
     }
 
     .func-widget {
@@ -492,8 +500,8 @@ const searchPostsByTag = (name: string) => {
     }
 
     img {
-      width: 32px;
-      height: 32px;
+      width: 34px;
+      height: 34px;
       aspect-ratio: 1;
       border-radius: 50%;
       cursor: pointer;
@@ -515,7 +523,7 @@ const searchPostsByTag = (name: string) => {
   }
 
   .main {
-    margin: $gap 0;
+    margin: $gap 0 0;
 
     p {
       display: -webkit-box;
@@ -554,7 +562,7 @@ const searchPostsByTag = (name: string) => {
         height: 30px;
         padding: 5px 10px;
         background-color: var(--theme-textarea-bg-color);
-        border-radius: 10px;
+        border-radius: 5px;
 
         span {
           font-size: 13px;
@@ -564,6 +572,8 @@ const searchPostsByTag = (name: string) => {
   }
 
   footer {
+    margin-top: 10px;
+
     ul {
       display: flex;
 

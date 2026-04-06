@@ -220,7 +220,7 @@ export class UserService {
 
       return {
         ...post,
-        userId: c.userId,
+        userId: user.userId,
         username: user?.username,
         userAvatar: user?.userAvatar,
         tags: tags?.map((t) => t.name) ?? [],
@@ -257,8 +257,8 @@ export class UserService {
 
       return {
         ...post,
-        userId: userId,
-        username: user?.username,
+        userId: user.userId,
+        username: user.username,
         userAvatar: user?.userAvatar,
         tags: tags?.map((t) => t.name) ?? [],
       };

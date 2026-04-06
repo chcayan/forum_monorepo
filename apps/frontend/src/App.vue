@@ -17,72 +17,76 @@ type userInfo = {
   userAvatar: string
 }
 
+async function notify({
+  from,
+  message,
+  isShare,
+}: {
+  from: string
+  message: string
+  isShare: '0' | '1'
+}) {
+  if (route.path.startsWith(RouterPath.chat)) return
+  const res = await getUserInfoAPI(from)
+  const userInfo = res.data?.data as userInfo
+  ChatToast.show({
+    userId: userInfo.userId,
+    userAvatar: userInfo.userAvatar,
+    username: userInfo.username,
+    message,
+    isShare,
+  })
+
+  if (import.meta.env.VITE_IS_ELECTRON === 'true') {
+    window.electronAPI.notify({
+      type: 'chat',
+      title: `来自 ${userInfo.username} 的消息：`,
+      body: message,
+    })
+  }
+}
+
+let es: EventSource | null
+function createEsInstance() {
+  if (es) es.close()
+  es = createEs(userStore.userInfo.userId)
+
+  es.onmessage = (e) => {
+    const { data }: { data: MsgType } = JSON.parse(e.data)
+    if (data.type === 'comment') {
+      Toast.show({
+        msg: data.message,
+        type: 'normal',
+        duration: 5000,
+        eventFn() {
+          router.push(`${RouterPath.post}/${data.postId}`)
+          if (route.fullPath === `${RouterPath.post}/${data.postId}`) {
+            emitter.emit('EVENT:GET_NEW_COMMENT')
+          }
+        },
+        confirmText: '去看看',
+      })
+    }
+  }
+}
+
 async function initUserStatus() {
   await checkIsLoginProhibitAPI()
   await userStore.getUserInfo()
 
   // SSE
-  const es = createEs(userStore.userInfo.userId)
-
-  if (es) {
-    es.onmessage = (e) => {
-      const { data }: { data: MsgType } = JSON.parse(e.data)
-      if (data.type === 'comment') {
-        Toast.show({
-          msg: data.message,
-          type: 'normal',
-          duration: 5000,
-          eventFn() {
-            router.push(`${RouterPath.post}/${data.postId}`)
-            if (route.fullPath === `${RouterPath.post}/${data.postId}`) {
-              emitter.emit('EVENT:GET_NEW_COMMENT')
-            }
-          },
-          confirmText: '去看看',
-        })
-      }
-    }
-  }
+  createEsInstance()
 
   // websocket
   socket.emit('login', userStore.userInfo?.userId)
 
+  socket.off('receiveOnlineList')
   socket.on('receiveOnlineList', (list: string[]) => {
     userStore.setOnLineList(list)
   })
 
-  socket.on(
-    'receiveMessage',
-    async ({
-      from,
-      message,
-      isShare,
-    }: {
-      from: string
-      message: string
-      isShare: '0' | '1'
-    }) => {
-      if (route.path.startsWith(RouterPath.chat)) return
-      const res = await getUserInfoAPI(from)
-      const userInfo = res.data?.data as userInfo
-      ChatToast.show({
-        userId: userInfo.userId,
-        userAvatar: userInfo.userAvatar,
-        username: userInfo.username,
-        message,
-        isShare,
-      })
-
-      if (import.meta.env.VITE_IS_ELECTRON === 'true') {
-        console.log('notify by electron')
-        window.electronAPI.notify({
-          type: 'chat',
-          title: `来自 ${userInfo.username} 的消息：`,
-          body: message,
-        })
-      }
-    }
-  )
+  socket.off('receiveMessage', notify)
+  socket.on('receiveMessage', notify)
 
   await userStore.getUserCollectListOfPostId()
   await userStore.getUserFollowList()
@@ -156,6 +160,18 @@ onMounted(async () => {
       type: 'success',
     })
   })
+
+  // electron: 禁止拖动 a 标签
+  if (import.meta.env.VITE_IS_ELECTRON === 'true') {
+    window.addEventListener('dragstart', (e) => {
+      const target = e.target as HTMLElement | null
+      if (target) {
+        if (target.tagName === 'A') {
+          e.preventDefault()
+        }
+      }
+    })
+  }
 
   let lastTime = 0
   window.addEventListener('scroll', () => {

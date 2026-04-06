@@ -358,10 +358,10 @@ const openReportModal = () => {
         @click="navigateToUser()"
       />
       <view class="post-info">
-        <text style="font-size: 16px" @click="navigateToUser()">{{
+        <text style="font-size: 16px; height: 20px" @click="navigateToUser()">{{
           username
         }}</text>
-        <text class="date">{{
+        <text class="date" style="height: 14px">{{
           formatDateByYear(props.post?.publishTime)
         }}</text>
       </view>
@@ -395,11 +395,17 @@ const openReportModal = () => {
         :nodes="lineBreakReplace(props.post?.pContent)"
         class="text"
       ></rich-text>
-      <NGrid
-        class="imgs"
-        :images="props.post?.pImages"
-        :postId="props.post.pId"
-      ></NGrid>
+      <view
+        class="p-images"
+        v-if="props.post?.pImages && props.post.pImages.length"
+      >
+        <NGrid
+          class="imgs"
+          :images="props.post?.pImages"
+          :postId="props.post.pId"
+        >
+        </NGrid>
+      </view>
     </view>
     <view class="footer" v-if="post.status === 1">
       <view class="icon-list">
@@ -493,11 +499,11 @@ const openReportModal = () => {
   .header {
     display: flex;
     flex-direction: row;
-    height: 40px;
+    height: 34px;
 
     .avatar {
-      width: 40px;
-      height: 40px;
+      width: 34px;
+      height: 34px;
       border-radius: 9999px;
       margin-right: 10px;
     }
@@ -537,7 +543,10 @@ const openReportModal = () => {
       overflow: hidden;
       -webkit-box-orient: vertical;
       text-overflow: ellipsis;
-      margin-bottom: 10px;
+    }
+
+    .p-images {
+      margin-top: 10px;
     }
 
     .restrict-line {
@@ -547,6 +556,8 @@ const openReportModal = () => {
   }
 
   .footer {
+    margin-top: 10px;
+
     .icon-list {
       display: flex;
 

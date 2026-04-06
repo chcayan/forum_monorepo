@@ -46,7 +46,7 @@ class Request {
     this.timeout = options.timeout || 60000
     this.beforeRequest = undefined
     this.afterRequest = undefined
-    this.withCredentials = false
+    this.withCredentials = options.withCredentials || false
   }
 
   get(url: string, data: any | string = {}) {
@@ -117,14 +117,30 @@ class Request {
                   userStore.setToken(newToken)
                   onRefreshed(newToken)
 
-                  return new Request({
-                    baseUrl,
-                    url: originalRequest!.url,
-                    header: {
-                      Authorization: `Bearer ${newToken}`,
-                    },
+                  const request = new Request({
+                    baseUrl: originalRequest!.url,
+                    url: '',
                     withCredentials: true,
                   })
+
+                  request.beforeRequest = function (requestInstance: Request) {
+                    const token = userStore.token
+
+                    requestInstance.header = requestInstance.header || {}
+
+                    if (token) {
+                      requestInstance.header['Authorization'] =
+                        `Bearer ${token}`
+                    }
+                    return requestInstance
+                  }
+
+                  resolve(
+                    request[originalRequest!.method!.toLowerCase()](
+                      '',
+                      originalRequest?.data
+                    )
+                  )
                 } catch {
                   emitter.emit('API:UN_AUTH', res.data.message)
                   return reject(res)
@@ -134,21 +150,39 @@ class Request {
               } else {
                 return new Promise((resolve) => {
                   subscribeTokenRefresh((token) => {
+                    const request = new Request({
+                      baseUrl: originalRequest!.url,
+                      url: '',
+                      withCredentials: true,
+                    })
+
+                    request.beforeRequest = function (
+                      requestInstance: Request
+                    ) {
+                      const token = userStore.token
+
+                      requestInstance.header = requestInstance.header || {}
+
+                      if (token) {
+                        requestInstance.header['Authorization'] =
+                          `Bearer ${token}`
+                      }
+                      return requestInstance
+                    }
+
                     resolve(
-                      new Request({
-                        baseUrl,
-                        url: originalRequest!.url,
-                        header: {
-                          Authorization: `Bearer ${token}`,
-                        },
-                        withCredentials: true,
-                      }) as unknown as void
+                      request[originalRequest!.method!.toLowerCase()](
+                        '',
+                        originalRequest?.data
+                      )
                     )
                   })
                 })
               }
             } else if (res.statusCode === 403) {
               emitter.emit('API:FORBIDDEN', res.data.message)
+              reject(res)
+            } else if (res.statusCode === 404) {
               reject(res)
             }
             resolve(res)

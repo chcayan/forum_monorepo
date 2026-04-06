@@ -1,4 +1,5 @@
 import { useUserStore } from '../stores'
+import { refreshAPI } from './auth'
 import { baseUrl, request } from '@/utils'
 
 /**
@@ -150,43 +151,62 @@ export async function updateUserInfoAPI(data: UserInfo) {
       return
     }
     if (data.avatar) {
-      await new Promise((resolve, reject) => {
-        uni.uploadFile({
-          url: baseUrl + '/user',
-          header: {
-            Authorization: `Bearer ${token}`,
-          },
-          filePath: data.avatar?.path || data.avatar?.url,
-          name: 'avatar',
-          formData: {
-            username: data.username,
-            sex: data.sex,
-            signature: data.signature,
-          },
-          success: (res) => resolve(res),
-          fail: (err) => reject(err),
+      async function upload(token: string) {
+        return await new Promise((resolve, reject) => {
+          uni.uploadFile({
+            url: baseUrl + '/user',
+            header: {
+              Authorization: `Bearer ${token}`,
+            },
+            filePath: data.avatar?.path || data.avatar?.url,
+            name: 'avatar',
+            formData: {
+              username: data.username,
+              sex: data.sex,
+              signature: data.signature,
+            },
+            success: (res) => resolve(res),
+            fail: (err) => reject(err),
+          })
         })
-      })
+      }
+      const res = await upload(token)
+      if (res.statusCode === 401) {
+        const res = await refreshAPI()
+        const newToken = res.data.data.accessToken
+        userStore.setToken(newToken)
+        await upload(newToken)
+      }
     }
 
     if (data.bgImg) {
-      await new Promise((resolve, reject) => {
-        uni.uploadFile({
-          url: baseUrl + '/user',
-          header: {
-            Authorization: `Bearer ${token}`,
-          },
-          filePath: data.bgImg?.path || data.bgImg?.url,
-          name: 'bgImg',
-          formData: {
-            username: data.username,
-            sex: data.sex,
-            signature: data.signature,
-          },
-          success: (res) => resolve(res),
-          fail: (err) => reject(err),
+      async function upload(token: string) {
+        return await new Promise((resolve, reject) => {
+          uni.uploadFile({
+            url: baseUrl + '/user',
+            header: {
+              Authorization: `Bearer ${token}`,
+            },
+            filePath: data.bgImg?.path || data.bgImg?.url,
+            name: 'bgImg',
+            formData: {
+              username: data.username,
+              sex: data.sex,
+              signature: data.signature,
+            },
+            success: (res) => resolve(res),
+            fail: (err) => reject(err),
+          })
         })
-      })
+      }
+
+      const res = await upload(token)
+      if (res.statusCode === 401) {
+        const res = await refreshAPI()
+        const newToken = res.data.data.accessToken
+        userStore.setToken(newToken)
+        await upload(newToken)
+      }
     }
   }
 }

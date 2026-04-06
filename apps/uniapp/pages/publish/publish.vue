@@ -4,7 +4,12 @@ const statusStore = useStatusStore()
 import { ref, toRaw } from 'vue'
 import ToggleBtn from '@/components/button/ToggleBtn.vue'
 import emitter from '@/utils/eventEmitter'
-import { getPostDetailAPI, publishPostAPI, updatePostInfoAPI } from '@/api'
+import {
+  getPostDetailAPI,
+  publishPostAPI,
+  refreshAPI,
+  updatePostInfoAPI,
+} from '@/api'
 import uniFilePicker from '@/uni_modules/uni-file-picker/components/uni-file-picker/uni-file-picker.vue'
 import { onShow, onUnload } from '@dcloudio/uni-app'
 import { baseUrl, getImgUrl } from '@/utils'

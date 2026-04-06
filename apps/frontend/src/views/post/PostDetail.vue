@@ -3,12 +3,13 @@ import { onMounted, onUnmounted, ref } from 'vue'
 import PostCard from './components/PostCard.vue'
 import type { CommentList, PostDetail } from '@forum-monorepo/types'
 import { useRoute } from 'vue-router'
-import { getCommentListAPI, getPostDetailAPI } from '@/api'
+import { getCommentListAPI, getPostDetailAPI, refreshAPI } from '@/api'
 import CommentInput from './components/CommentInput.vue'
 import CommentCard from './components/CommentCard.vue'
 import emitter from '@/utils/eventEmitter'
 import router, { RouterPath } from '@/router'
 import { userTrack } from '@forum-monorepo/sdk'
+import { useUserStore } from '@/stores'
 
 const route = useRoute()
 const postDetail = ref<PostDetail>({
@@ -30,14 +31,27 @@ const postDetail = ref<PostDetail>({
 
 const getPostDetail = async () => {
   const postId = route.params.postId as string
+  const userStore = useUserStore()
+
   try {
     const res = await getPostDetailAPI(postId)
     postDetail.value = res.data.data
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (err: any) {
-    emitter.emit('API:NOT_FOUND', err.response.data.message)
-    router.replace(RouterPath.notFound)
-    console.log(err)
+  } catch {
+    try {
+      if (userStore.token) {
+        const res = await refreshAPI()
+        const newToken = res.data.data.accessToken
+        userStore.setToken(newToken)
+      }
+
+      const res = await getPostDetailAPI(postId)
+      postDetail.value = res.data.data
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      emitter.emit('API:NOT_FOUND', err.response.data.message)
+      router.replace(RouterPath.notFound)
+      console.log(err)
+    }
   }
 }
 getPostDetail()

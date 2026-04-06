@@ -1,7 +1,6 @@
 import { Transform } from 'class-transformer';
 import {
   ArrayMaxSize,
-  ArrayMinSize,
   IsArray,
   IsNotEmpty,
   IsOptional,
@@ -21,7 +20,6 @@ export class CreatePostDto {
 
   @IsOptional()
   @IsArray()
-  @ArrayMinSize(1)
   @ArrayMaxSize(10)
   @IsString({ each: true })
   @MinLength(1, { each: true })

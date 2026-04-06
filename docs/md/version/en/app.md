@@ -36,3 +36,9 @@ Current version changes:
 
 - Fixed the issue where no prompt was displayed when verifying the email/password on the login page.
 - Fixed the issue of overlapping posts on my page caused by logging into different accounts.
+
+### 2.7.4 (260406)
+
+Current version changes:
+
+- Fix the malignant bug caused by authentication restoration.

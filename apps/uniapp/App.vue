@@ -20,38 +20,39 @@ type userInfo = {
   userAvatar: string
 }
 
+async function notify({
+  from,
+  message,
+  isShare,
+}: {
+  from: string
+  message: string
+  isShare: '0' | '1'
+}) {
+  const route = getCurrentRoute()
+  if (route === RouterPath.chat) return
+  const res = await getUserInfoAPI(from)
+  const userInfo = res.data?.data as userInfo
+
+  uni.showToast({
+    icon: 'none',
+    title: `${userInfo.username}: ${isShare === '0' ? message : '分享了帖子'}`,
+    position: 'top',
+  })
+}
+
 async function initUserStatus() {
   await userStore.getUserInfo()
 
   socket.emit('login', userStore.userInfo?.userId)
 
+  socket.off('receiveOnlineList')
   socket.on('receiveOnlineList', (list: string[]) => {
     userStore.setOnLineList(list)
   })
 
-  socket.on(
-    'receiveMessage',
-    async ({
-      from,
-      message,
-      isShare,
-    }: {
-      from: string
-      message: string
-      isShare: '0' | '1'
-    }) => {
-      const route = getCurrentRoute()
-      if (route === RouterPath.chat) return
-      const res = await getUserInfoAPI(from)
-      const userInfo = res.data?.data as userInfo
-
-      uni.showToast({
-        icon: 'none',
-        title: `${userInfo.username}: ${isShare === '0' ? message : '分享了帖子'}`,
-        position: 'top',
-      })
-    }
-  )
+  socket.off('receiveMessage', notify)
+  socket.on('receiveMessage', notify)
 
   await userStore.getUserCollectListOfPostId()
   await userStore.getUserFollowList()

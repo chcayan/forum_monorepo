@@ -1,4 +1,5 @@
 import { useUserStore } from '../stores'
+import { refreshAPI } from './auth'
 import { baseUrl, request } from '@/utils'
 import { escapeHTML } from '@/utils/format'
 
@@ -83,19 +84,30 @@ export async function publishPostAPI(data: PostPublish) {
 
     let index = 0
     for (const file of data.postImages!) {
-      await new Promise((resolve, reject) => {
-        uni.uploadFile({
-          url: baseUrl + '/post/upload-image',
-          header: {
-            Authorization: `Bearer ${token}`,
-          },
-          filePath: file?.path || file?.url,
-          name: 'postImages',
-          formData: { pId: postId, index: index.toString() },
-          success: (res) => resolve(res),
-          fail: (err) => reject(err),
+      async function upload(token: string) {
+        return await new Promise((resolve, reject) => {
+          uni.uploadFile({
+            url: baseUrl + '/post/upload-image',
+            header: {
+              Authorization: `Bearer ${token}`,
+            },
+            filePath: file?.path || file?.url,
+            name: 'postImages',
+            formData: { pId: postId, index: index.toString() },
+            success: (res) => resolve(res),
+            fail: (err) => reject(err),
+          })
         })
-      })
+      }
+
+      const res = await upload(token)
+      if (res.statusCode === 401) {
+        const res = await refreshAPI()
+        const newToken = res.data.data.accessToken
+        userStore.setToken(newToken)
+        await upload(newToken)
+      }
+
       index++
     }
   }
@@ -139,19 +151,30 @@ export async function updatePostInfoAPI(data: UpdatePostInfo) {
 
     let index = 0
     for (const path of data.postImages!) {
-      await new Promise((resolve, reject) => {
-        uni.uploadFile({
-          url: baseUrl + '/post/upload-image',
-          header: {
-            Authorization: `Bearer ${token}`,
-          },
-          filePath: path,
-          name: 'postImages',
-          formData: { pId: postId, index: index.toString() },
-          success: (res) => resolve(res),
-          fail: (err) => reject(err),
+      async function upload(token: string) {
+        return await new Promise((resolve, reject) => {
+          uni.uploadFile({
+            url: baseUrl + '/post/upload-image',
+            header: {
+              Authorization: `Bearer ${token}`,
+            },
+            filePath: path,
+            name: 'postImages',
+            formData: { pId: postId, index: index.toString() },
+            success: (res) => resolve(res),
+            fail: (err) => reject(err),
+          })
         })
-      })
+      }
+
+      const res = await upload(token)
+      if (res.statusCode === 401) {
+        const res = await refreshAPI()
+        const newToken = res.data.data.accessToken
+        userStore.setToken(newToken)
+        await upload(newToken)
+      }
+
       index++
     }
   }

@@ -6,7 +6,7 @@ import emitter from '../../utils/eventEmitter'
 const active = ref('')
 
 const { images, postId } = defineProps<{
-  images: string[] | null
+  images: string[]
   postId: string
 }>()
 
