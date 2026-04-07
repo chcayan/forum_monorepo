@@ -222,7 +222,7 @@ const changeStatus = () => {
 
   header {
     width: 400px;
-    height: 290px;
+    height: 280px;
     padding: 10px 10px 0;
     gap: initial;
     position: sticky;

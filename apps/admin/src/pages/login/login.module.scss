@@ -182,7 +182,8 @@
 
             .eye-icon {
               flex-shrink: 0;
-              width: 72px;
+              white-space: nowrap;
+              width: fit-content;
               height: 42px;
               text-align: end;
               cursor: pointer;

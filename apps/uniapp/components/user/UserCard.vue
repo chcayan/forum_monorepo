@@ -187,7 +187,7 @@ $position-size: 200px;
 
   .header {
     position: relative;
-    height: $position-size - 5px;
+    height: $position-size - 10px;
 
     .follow-btn {
       display: flex;

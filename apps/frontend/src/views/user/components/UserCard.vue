@@ -113,9 +113,11 @@ const close = (isOldImgRecovery: boolean) => {
   isContenteditable.value = false
   if (nameRef.value?.innerText || nameRef.value?.innerText === '') {
     nameRef.value.innerText = userInfo.username
+    name.value = userInfo.username
   }
   if (signatureRef.value?.innerText || signatureRef.value?.innerText === '') {
     signatureRef.value.innerText = userInfo.signature
+    signature.value = userInfo.signature
   }
   if (oldBgSrc.value && bgRef.value && isOldImgRecovery) {
     bgRef.value.src = oldBgSrc.value
@@ -365,7 +367,7 @@ $position-size: 200px;
 
   .header {
     position: relative;
-    height: $position-size;
+    height: $position-size - 10px;
 
     .follow-btn {
       display: flex;
@@ -417,7 +419,7 @@ $position-size: 200px;
   }
 
   .main {
-    height: 100px;
+    height: auto;
     margin-left: $main-gap;
 
     .main-item {

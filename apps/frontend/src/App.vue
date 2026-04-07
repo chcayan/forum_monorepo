@@ -108,6 +108,14 @@ emitter.on('API:UN_AUTH', (message: string) => {
     type: 'error',
   })
   userStore.removeToken()
+
+  if (
+    route.path.startsWith(RouterPath.chat) ||
+    route.path.startsWith(RouterPath.publish) ||
+    route.path.startsWith(RouterPath.my)
+  ) {
+    router.push(RouterPath.base)
+  }
 })
 
 emitter.on('API:FORBIDDEN', (message: string) => {
@@ -129,13 +137,6 @@ emitter.on('API:BAD_REQUEST', (message: string) => {
     msg: message,
     type: 'error',
   })
-  if (
-    route.path.startsWith(RouterPath.chat) ||
-    route.path.startsWith(RouterPath.publish) ||
-    route.path.startsWith(RouterPath.my)
-  ) {
-    router.push(RouterPath.base)
-  }
 })
 
 const statusStore = useStatusStore()

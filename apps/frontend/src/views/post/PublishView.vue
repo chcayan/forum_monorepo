@@ -286,6 +286,7 @@ onUnmounted(() => {
 
         h3 {
           margin-top: 0;
+          flex-shrink: 0;
         }
 
         .tag-input {

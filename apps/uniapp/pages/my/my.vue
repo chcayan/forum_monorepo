@@ -244,7 +244,7 @@ onShow(() => {
   box-sizing: border-box;
 
   .header {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     padding: 10px 10px 0;
   }
 
