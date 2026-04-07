@@ -201,9 +201,7 @@ export default function PostReview() {
       key: 'tags',
       render: (tags: string[]) => (
         <ul>
-          {tags.map((tag) => (
-            <li># {tag}</li>
-          ))}
+          {tags.length > 0 ? tags.map((tag) => <li># {tag}</li>) : <li>-</li>}
         </ul>
       ),
     },
