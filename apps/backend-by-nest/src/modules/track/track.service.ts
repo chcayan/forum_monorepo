@@ -1,4 +1,4 @@
-import type { ErrorEventItem, UserEventItem } from '@forum-monorepo/sdk';
+import type { ErrorEventItem, UserEventItem } from '@forum-monorepo/types';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserTrack } from './entities/user-track.entity';

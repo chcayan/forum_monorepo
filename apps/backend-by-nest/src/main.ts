@@ -17,11 +17,21 @@ async function bootstrap() {
     }),
   );
   app.enableCors({
-    origin: [
-      process.env.CORS_ORIGIN,
-      process.env.CORS_ORIGIN_1,
-      process.env.CORS_ORIGIN_2,
-    ],
+    origin: (
+      origin: string,
+      callback: (err: Error | null, origin?: boolean) => void,
+    ) => {
+      const allowedOrigins = [process.env.CORS_ORIGIN];
+      if (
+        !origin ||
+        allowedOrigins.includes(origin) ||
+        origin.startsWith('http://localhost')
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });

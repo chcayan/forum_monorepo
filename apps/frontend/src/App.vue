@@ -26,16 +26,8 @@ async function notify({
   message: string
   isShare: '0' | '1'
 }) {
-  if (route.path.startsWith(RouterPath.chat)) return
   const res = await getUserInfoAPI(from)
   const userInfo = res.data?.data as userInfo
-  ChatToast.show({
-    userId: userInfo.userId,
-    userAvatar: userInfo.userAvatar,
-    username: userInfo.username,
-    message,
-    isShare,
-  })
 
   if (import.meta.env.VITE_IS_ELECTRON === 'true') {
     window.electronAPI.notify({
@@ -44,6 +36,15 @@ async function notify({
       body: message,
     })
   }
+
+  if (route.path.startsWith(RouterPath.chat)) return
+  ChatToast.show({
+    userId: userInfo.userId,
+    userAvatar: userInfo.userAvatar,
+    username: userInfo.username,
+    message,
+    isShare,
+  })
 }
 
 let es: EventSource | null

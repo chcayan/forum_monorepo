@@ -1,9 +1,9 @@
-import { request } from '@/utils'
+import { request, baseURL } from '@/utils'
 import axios from 'axios'
 
 export function refreshAPI() {
   return axios
-    .create({ baseURL: '/api', timeout: 30000, withCredentials: true })
+    .create({ baseURL, timeout: 30000, withCredentials: true })
     .post('/auth/refresh-user')
 }
 

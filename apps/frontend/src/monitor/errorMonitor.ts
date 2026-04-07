@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { errorTrack } from '@forum-monorepo/sdk'
+import { errorTrack } from '@/sdk'
 import type { App } from 'vue'
 
 export function initErrorMonitor(app: App<Element>) {

@@ -60,7 +60,8 @@ export class AuthController {
       res.cookie(RefreshToken.user, newRefreshToken, {
         httpOnly: true,
         secure: true,
-        sameSite: 'strict',
+        sameSite: 'none',
+        maxAge: 1 * 24 * 60 * 60 * 1000,
       });
 
       return res.json({
@@ -119,7 +120,8 @@ export class AuthController {
       res.cookie(RefreshToken.admin, newRefreshToken, {
         httpOnly: true,
         secure: true,
-        sameSite: 'strict',
+        sameSite: 'none',
+        maxAge: 1 * 24 * 60 * 60 * 1000,
       });
 
       return res.json({

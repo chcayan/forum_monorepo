@@ -1,3 +1,5 @@
+import { baseURL } from '@/utils'
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type UserEventItem = {
   event: 'post_browse'
@@ -53,10 +55,10 @@ const userFlush = () => {
 
   const blob = new Blob([JSON.stringify(data)], { type: 'application/json' })
 
-  const success = navigator.sendBeacon('/api/track/user', blob)
+  const success = navigator.sendBeacon(baseURL + '/track/user', blob)
 
   if (!success) {
-    fetch('/api/track/user', {
+    fetch(baseURL + '/track/user', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -72,10 +74,10 @@ const errorFlush = () => {
 
   const blob = new Blob([JSON.stringify(data)], { type: 'application/json' })
 
-  const success = navigator.sendBeacon('/api/track/error', blob)
+  const success = navigator.sendBeacon(baseURL + '/track/error', blob)
 
   if (!success) {
-    fetch('/api/track/error', {
+    fetch(baseURL + '/track/error', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),

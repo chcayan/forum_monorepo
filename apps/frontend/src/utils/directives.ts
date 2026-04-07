@@ -3,7 +3,7 @@ import FullScreen from '@/components/imgWidget/FullScreen.vue'
 import { createApp } from 'vue'
 import type { DirectiveBinding } from 'vue'
 import { Toast } from './toast'
-import { UserEventItem, userTrack } from '@forum-monorepo/sdk'
+import { UserEventItem, userTrack } from '@/sdk'
 
 class ImgFullScreenWidget {
   static mount() {

@@ -3,7 +3,7 @@ import emitter from './eventEmitter'
 import { useUserStore } from '@/stores'
 import { refreshAPI } from '@/api'
 
-const baseURL =
+export const baseURL =
   import.meta.env.VITE_IS_ELECTRON === 'true'
     ? import.meta.env.VITE_REQUEST_URL
     : '/api'
@@ -61,19 +61,16 @@ instance.interceptors.response.use(
         try {
           const res = await refreshAPI()
           const newToken = res.data.data.accessToken
-          console.log(document.cookie)
+
           userStore.setToken(newToken)
           onRefreshed(newToken)
 
           originalRequest.headers.Authorization = `Bearer ${newToken}`
           return instance(originalRequest)
-        } catch (error) {
-          console.log(error)
-          console.log('err')
+        } catch {
           emitter.emit('API:UN_AUTH', err.response?.data.message)
           return Promise.reject(err)
         } finally {
-          console.log('refresh')
           isRefreshing = false
         }
       } else {

@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { TrackService } from './track.service';
-import type { ErrorEventItem, UserEventItem } from '@forum-monorepo/sdk';
+import type { ErrorEventItem, UserEventItem } from '@forum-monorepo/types';
 
 @Controller('track')
 export class TrackController {

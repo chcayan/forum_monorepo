@@ -19,7 +19,7 @@
     "start:electron:app": "pnpm -F electron start",
     "test:unit": "pnpm -F frontend test:unit",
     "build": "pnpm build:package && pnpm -F frontend build && pnpm -F admin build && pnpm -F backend-by-nest build",
-    "build:package": "pnpm -F utils build && pnpm -F sdk build && pnpm -F types build",
+    "build:package": "pnpm -F utils build && pnpm -F types build",
     "build:electron": "pnpm -F frontend build:electron:prod && pnpm -F electron build",
     "upload": "pnpm build && bash ./script/upload.sh",
     "start:backend": "pnpm -F backend-by-nest start:dev"
@@ -34,7 +34,6 @@
   "license": "ISC",
   "packageManager": "pnpm@10.24.0",
   "dependencies": {
-    "@forum-monorepo/sdk": "workspace:*",
     "@forum-monorepo/types": "workspace:*",
     "@forum-monorepo/utils": "workspace:*"
   },

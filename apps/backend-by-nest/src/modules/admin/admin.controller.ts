@@ -44,7 +44,8 @@ export class AdminController {
     res.cookie(RefreshToken.admin, refreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'none',
+      maxAge: 1 * 24 * 60 * 60 * 1000,
     });
 
     return res.json({

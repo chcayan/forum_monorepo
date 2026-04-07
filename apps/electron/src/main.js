@@ -34,6 +34,7 @@ const createWindow = () => {
   } else {
     // production
     win.loadFile(path.join(__dirname, '../dist/index.html'))
+    // win.webContents.openDevTools()
   }
 
   return win

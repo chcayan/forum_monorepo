@@ -8,8 +8,8 @@ import CommentInput from './components/CommentInput.vue'
 import CommentCard from './components/CommentCard.vue'
 import emitter from '@/utils/eventEmitter'
 import router, { RouterPath } from '@/router'
-import { userTrack } from '@forum-monorepo/sdk'
 import { useUserStore } from '@/stores'
+import { userTrack } from '@/sdk'
 
 const route = useRoute()
 const postDetail = ref<PostDetail>({
