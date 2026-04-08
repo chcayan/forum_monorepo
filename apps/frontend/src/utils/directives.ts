@@ -95,7 +95,10 @@ export const directives: Record<string, any> = {
   },
 
   fullScreen: {
-    mounted(el: HTMLImageElement) {
+    mounted(el: HTMLImageElement, binding: DirectiveBinding<boolean>) {
+      const enabled = binding.value
+      if (!enabled) return
+
       el.addEventListener('click', () => {
         ImgFullScreenWidget.img.onFullScreen(el)
       })

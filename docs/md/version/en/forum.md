@@ -128,3 +128,10 @@ Current version changes:
 Current version changes:
 
 - Fix the malignant bug caused by authentication restoration.
+
+### 2.10.3 (260408)
+
+Current version changes:
+
+- Optimize the back button for mobile devices.
+- Optimization: In full screen image scenes, using gestures to return will result in returning to the previous page without exiting full screen.

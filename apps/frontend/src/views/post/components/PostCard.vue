@@ -271,12 +271,26 @@ const navigateToPublish = () => {
 
 const showReportModal = ref(false)
 
+function wheelEvent(e: WheelEvent) {
+  e.stopPropagation()
+  e.preventDefault()
+}
+
+function touchEvent(e: TouchEvent) {
+  e.stopPropagation()
+  e.preventDefault()
+}
+
 const openReportModal = () => {
   showReportModal.value = true
+  document.body.addEventListener('wheel', wheelEvent, { passive: false })
+  document.body.addEventListener('touchmove', touchEvent, { passive: false })
 }
 
 const closeReportModal = () => {
   showReportModal.value = false
+  document.body.removeEventListener('wheel', wheelEvent)
+  document.body.removeEventListener('touchmove', touchEvent)
 }
 
 const searchPostsByTag = (name: string) => {

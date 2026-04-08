@@ -21,7 +21,10 @@ async function bootstrap() {
       origin: string,
       callback: (err: Error | null, origin?: boolean) => void,
     ) => {
-      const allowedOrigins = [process.env.CORS_ORIGIN];
+      const allowedOrigins = [
+        process.env.CORS_ORIGIN,
+        process.env.CORS_ORIGIN_1,
+      ];
       if (
         !origin ||
         allowedOrigins.includes(origin) ||

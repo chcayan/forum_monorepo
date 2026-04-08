@@ -235,6 +235,7 @@ onUnmounted(() => {
           ref="bgEl"
           alt="bg"
           @dblclick="edit"
+          v-fullScreen="route.path.startsWith(RouterPath.user)"
         />
         <input
           ref="bgInputEl"
@@ -253,6 +254,7 @@ onUnmounted(() => {
           ref="avatarEl"
           alt="avatar"
           @dblclick="edit"
+          v-fullScreen="route.path.startsWith(RouterPath.user)"
         />
         <input
           ref="avatarInputEl"

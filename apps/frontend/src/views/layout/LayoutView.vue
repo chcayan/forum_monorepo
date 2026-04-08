@@ -90,6 +90,18 @@ const showBackBtn = () => {
   return false
 }
 
+const showBackBtnInMobile = () => {
+  if (
+    route.path.startsWith(RouterPath.post) ||
+    route.path.startsWith(RouterPath.tag) ||
+    route.path.startsWith(RouterPath.search) ||
+    route.path.startsWith(RouterPath.message)
+  ) {
+    return true
+  }
+  return false
+}
+
 const publishPostBtn = () => {
   emitter.emit('EVENT:PUBLISH_POST')
 }
@@ -165,8 +177,18 @@ const refreshPost = async () => {
       /></router-link>
       <router-link :to="RouterPath.chat"><ChatSvg /></router-link>
       <router-link :to="RouterPath.publish">
-        <PublishSvg v-if="!route.path.startsWith(RouterPath.publish)" />
-        <SendSvg v-else @click="publishPostBtn" />
+        <div v-if="!showBackBtnInMobile()">
+          <PublishSvg v-if="!route.path.startsWith(RouterPath.publish)" />
+          <SendSvg v-else @click="publishPostBtn" />
+        </div>
+        <div
+          tabindex="0"
+          class="tab-focus-style back-mobile"
+          @click="onBack"
+          v-else
+        >
+          <BackSvg />
+        </div>
       </router-link>
       <router-link :to="RouterPath.my" class="mobile"><MySvg /></router-link>
       <router-link :to="RouterPath.setting" class="mobile"
@@ -245,6 +267,26 @@ const refreshPost = async () => {
 </template>
 
 <style scoped lang="scss">
+.back-mobile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: var(--theme-button-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: var(--theme-button-hover-color);
+  }
+
+  @media (min-width: $mobile-size) {
+    display: none;
+  }
+}
+
 .layout-view {
   display: flex;
   width: 90%;

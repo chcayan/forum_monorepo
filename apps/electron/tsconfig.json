@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "types": ["node"],
+    "lib": ["ESNext"],
+    "outDir": "./dist-electron",
+    "allowJs": true
+  },
+  "include": ["src", "types/env.d.ts"]
+}

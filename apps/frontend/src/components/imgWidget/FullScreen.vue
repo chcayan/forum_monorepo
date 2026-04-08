@@ -8,18 +8,41 @@ function wheelEvent(e: WheelEvent) {
   e.preventDefault()
 }
 
+function touchEvent(e: TouchEvent) {
+  e.stopPropagation()
+  e.preventDefault()
+}
+
 const exitFullscreen = (e: MouseEvent) => {
   const target = e.target as HTMLElement
   if (target && target.tagName === 'IMG') return
   _imgEl.value = null
   document.body.removeEventListener('wheel', wheelEvent)
+  document.body.removeEventListener('touchmove', touchEvent)
+  history.back()
 }
 
 const onFullScreen = (imgEl: HTMLImageElement) => {
   if (!imgEl) return
   _imgEl.value = imgEl
+  console.log(location.pathname)
+  history.pushState(
+    {
+      current: location.pathname,
+    },
+    ''
+  )
   document.body.addEventListener('wheel', wheelEvent, { passive: false })
+  document.body.addEventListener('touchmove', touchEvent, { passive: false })
 }
+
+window.addEventListener('popstate', () => {
+  if (_imgEl.value) {
+    _imgEl.value = null
+    document.body.removeEventListener('wheel', wheelEvent)
+    document.body.removeEventListener('touchmove', touchEvent)
+  }
+})
 
 defineExpose({
   onFullScreen,

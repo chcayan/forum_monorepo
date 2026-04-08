@@ -28,7 +28,7 @@ onUnmounted(() => {
   <div class="box" :class="active">
     <img
       v-loading
-      v-fullScreen
+      v-fullScreen="true"
       loading="lazy"
       v-for="image in images"
       :key="image"

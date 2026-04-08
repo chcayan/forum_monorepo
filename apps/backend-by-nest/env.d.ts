@@ -3,6 +3,7 @@ declare namespace NodeJS {
     NODE_ENV: 'development' | 'production' | 'test';
     ORIGIN?: any;
     CORS_ORIGIN: string;
+    CORS_ORIGIN_1: string;
     SERVER_HOST?: string;
     PORT?: string;
     SECRET_KEY: string;

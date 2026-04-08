@@ -15,7 +15,11 @@ import { UsePipes, ValidationPipe } from '@nestjs/common';
 @WebSocketGateway({
   cors: {
     origin: (origin, callback) => {
-      const allowedOrigins = [process.env.CORS_ORIGIN, 'file://'];
+      const allowedOrigins = [
+        process.env.CORS_ORIGIN,
+        process.env.CORS_ORIGIN_1,
+        'file://',
+      ];
       console.log('origin: ', origin);
       if (
         !origin ||
