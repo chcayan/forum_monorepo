@@ -321,6 +321,12 @@ const openReportModal = () => {
     },
   })
 }
+
+const searchPostsByTag = (name: string) => {
+  uni.navigateTo({
+    url: `${RouterPath.tag}?tag=${name}`,
+  })
+}
 </script>
 
 <template>
@@ -406,6 +412,22 @@ const openReportModal = () => {
         >
         </NGrid>
       </view>
+      <view class="tag-list" v-if="post.tags && post.tags.length">
+        <view
+          :class="{ 'theme-li': statusStore.isDarkMode }"
+          class="li"
+          v-for="tag in post.tags"
+          :key="tag"
+          @click.stop="searchPostsByTag(tag)"
+          :title="tag"
+        >
+          <text class="span"
+            ><text class="span" style="font-weight: bold">#</text>&nbsp;&nbsp;{{
+              tag
+            }}</text
+          >
+        </view>
+      </view>
     </view>
     <view class="footer" v-if="post.status === 1">
       <view class="icon-list">
@@ -437,6 +459,10 @@ const openReportModal = () => {
 .theme-share-box {
   background-color: $theme-dark-color !important;
   box-shadow: $theme-dark-shadow-color !important;
+}
+
+.theme-li {
+  background-color: $theme-dark-textarea-bg-color !important;
 }
 
 .post-card {
@@ -530,6 +556,28 @@ const openReportModal = () => {
 
   .main {
     margin: 10px 0 0;
+
+    .tag-list {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+
+      .li {
+        display: flex;
+        align-items: center;
+        height: 30px;
+        padding: 5px 10px;
+        background-color: $theme-light-textarea-bg-color;
+        box-sizing: border-box;
+        border-radius: 5px;
+
+        .span {
+          font-size: 13px;
+        }
+      }
+    }
 
     .imgs {
       max-height: 500px;

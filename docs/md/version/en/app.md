@@ -42,3 +42,9 @@ Current version changes:
 Current version changes:
 
 - Fix the malignant bug caused by authentication restoration.
+
+### 2.10.3 (260411)
+
+Synchronize web function, current version changes：
+
+- Add tag function.

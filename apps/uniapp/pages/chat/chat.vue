@@ -332,7 +332,11 @@ onShow(() => {
           />
           <SearchIcon class="search" @click="search(result)" />
         </label>
-        <view class="search-list" v-if="showSearchBox && searchUserList.length">
+        <view
+          class="search-list"
+          :class="{ 'theme-search-list': statusStore.isDarkMode }"
+          v-if="showSearchBox && searchUserList.length"
+        >
           <view
             class="s-item"
             v-for="user in searchUserList"
@@ -583,6 +587,7 @@ onShow(() => {
         right: 10px;
         display: flex;
         flex-direction: column;
+        gap: 10px;
         width: 120px;
         height: auto;
         border-radius: 10px;
@@ -590,6 +595,8 @@ onShow(() => {
         padding: 10px;
         background-color: $theme-light-avatar-widget-color;
         box-shadow: $theme-light-shadow-color;
+        max-height: 300px;
+        overflow-y: scroll;
 
         .s-item {
           display: flex;

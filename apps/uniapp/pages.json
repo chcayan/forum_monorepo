@@ -130,6 +130,20 @@
       ]
     },
     {
+      "root": "pages/index/tag",
+      "pages": [
+        {
+          "path": "tag",
+          "style": {
+            "navigationBarTitleText": "标签结果",
+            "backgroundColor": "@bgColor",
+            "navigationBarBackgroundColor": "@navBarBgColor",
+            "navigationBarTextStyle": "@navTextColor"
+          }
+        }
+      ]
+    },
+    {
       "root": "pages/index/notfound",
       "pages": [
         {

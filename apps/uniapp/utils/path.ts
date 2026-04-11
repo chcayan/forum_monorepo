@@ -19,6 +19,7 @@ class RouterPath {
   static notFound: string = '/pages/index/notfound/notfound'
   static edit: string = '/pages/my/edit/edit'
   static search: string = '/pages/index/search/search'
+  static tag: string = '/pages/index/tag/tag'
   static message: string = '/pages/my/message/message'
 }
 

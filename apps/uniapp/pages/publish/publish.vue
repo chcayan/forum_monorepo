@@ -96,6 +96,46 @@ function toRawArray(filesList: Array<File>) {
   return array
 }
 
+const tag = ref('')
+const tags = ref<string[]>([])
+
+const addTag = () => {
+  if (tag.value.length > 20) {
+    uni.showToast({
+      icon: 'none',
+      title: '标签长度不超过20字符',
+    })
+    return
+  }
+
+  if (tags.value.length >= 9) {
+    uni.showToast({
+      icon: 'none',
+      title: '标签最多9个',
+    })
+    return
+  }
+
+  if (tags.value.includes(tag.value)) {
+    uni.showToast({
+      icon: 'none',
+      title: '标签不要重复',
+    })
+    return
+  }
+
+  tags.value.push(tag.value.trim())
+  tag.value = ''
+}
+
+const delTag = (name: string) => {
+  const index = tags.value.indexOf(name)
+
+  if (index !== -1) {
+    tags.value.splice(index, 1)
+  }
+}
+
 let flag = true
 const publishPost = async () => {
   if (!flag) return
@@ -128,6 +168,7 @@ const publishPost = async () => {
         isPublic: isPublic.value ? 'true' : 'false',
         postImages: images,
         postId: postId.value,
+        tags: tags.value,
       })
       emitter.emit('EVENT:UPDATE_POST_IMAGES', images.length, postId.value)
     } else {
@@ -135,9 +176,11 @@ const publishPost = async () => {
         content: context.value as string,
         isPublic: isPublic.value ? 'true' : 'false',
         postImages: toRawArray(files.value.filesList),
+        tags: tags.value,
       })
     }
     context.value = ''
+    tags.value = []
     files.value.clearFiles()
 
     uni.showToast({
@@ -188,6 +231,45 @@ onShow(() => {
           :auto-upload="false"
         />
       </view>
+      <view class="tags">
+        <text class="h3">标签：</text>
+        <view class="tag-input">
+          <input
+            class="input"
+            :class="{ 'theme-input': statusStore.isDarkMode }"
+            type="text"
+            v-model="tag"
+          />
+          <text
+            class="add"
+            :class="{ 'theme-add': statusStore.isDarkMode }"
+            @click="addTag"
+            title="添加"
+            >添加</text
+          >
+        </view>
+      </view>
+      <view class="tag-list">
+        <view
+          class="li"
+          :class="{ 'theme-li': statusStore.isDarkMode }"
+          v-for="tag in tags"
+          :key="tag"
+        >
+          <text class="span"
+            ><text class="span" style="font-weight: bold">#</text>&nbsp;&nbsp;{{
+              tag
+            }}</text
+          >
+          <text
+            class="button"
+            :class="{ 'theme-button': statusStore.isDarkMode }"
+            @click="delTag(tag)"
+            title="删除"
+            >x</text
+          >
+        </view>
+      </view>
       <view class="visible">
         <text class="h3">可见性：</text>
         <view class="btn">
@@ -228,6 +310,23 @@ onShow(() => {
   background-color: $theme-dark-textarea-bg-color !important;
 }
 
+.theme-li {
+  background-color: $theme-dark-textarea-bg-color !important;
+}
+
+.theme-button {
+  background-color: $theme-dark-button-color !important;
+}
+
+.theme-input {
+  color: $theme-dark-font-color !important;
+  background-color: $theme-dark-textarea-bg-color !important;
+}
+
+.theme-add {
+  background-color: $theme-dark-button-color !important;
+}
+
 .publish-view {
   padding: 10px;
   padding-bottom: 60px;
@@ -243,6 +342,83 @@ onShow(() => {
 
   .main {
     margin-top: 20px;
+
+    .tag-list {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+
+      .li {
+        display: flex;
+        align-items: center;
+        height: 35px;
+        padding: 5px 0 5px 10px;
+        background-color: $theme-light-textarea-bg-color;
+        border-radius: 10px;
+        box-sizing: border-box;
+
+        .span {
+          font-size: 14px;
+        }
+      }
+
+      .button {
+        width: 35px;
+        height: 35px;
+        display: flex;
+        line-height: 31px;
+        justify-content: center;
+        font-size: 20px;
+        margin-left: 15px;
+        background-color: $theme-light-button-color;
+        border-radius: 0 10px 10px 0;
+        color: black;
+      }
+    }
+
+    .tags {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .h3 {
+        margin-top: 0;
+        flex-shrink: 0;
+      }
+
+      .tag-input {
+        display: flex;
+
+        .input {
+          width: 100%;
+          height: 35px;
+          padding: 10px;
+          box-sizing: border-box;
+          border-radius: 10px 0 0 10px;
+          color: $theme-light-font-color;
+          background-color: $theme-light-textarea-bg-color;
+        }
+
+        .add {
+          box-sizing: border-box;
+          flex-shrink: 0;
+          padding: 10px;
+          width: 60px;
+          font-size: 14px;
+          height: 35px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          background-color: $theme-light-button-color;
+          color: black;
+          border-radius: 0 10px 10px 0;
+        }
+      }
+    }
 
     .publish {
       position: fixed;
@@ -284,6 +460,8 @@ onShow(() => {
     }
 
     .visible {
+      height: 35px;
+      margin-top: 20px;
       display: flex;
       align-items: center;
 
