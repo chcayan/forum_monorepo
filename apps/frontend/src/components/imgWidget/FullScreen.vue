@@ -25,7 +25,6 @@ const exitFullscreen = (e: MouseEvent) => {
 const onFullScreen = (imgEl: HTMLImageElement) => {
   if (!imgEl) return
   _imgEl.value = imgEl
-  console.log(location.pathname)
   history.pushState(
     {
       current: location.pathname,

@@ -538,6 +538,7 @@ const searchPostsByTag = (name: string) => {
 
   .main {
     margin: $gap 0 0;
+    width: 100%;
 
     p {
       display: -webkit-box;
@@ -559,7 +560,7 @@ const searchPostsByTag = (name: string) => {
       width: 100%;
 
       @media (max-width: $mobile-size) {
-        width: calc(100vw - 50px);
+        width: 100%;
       }
     }
 

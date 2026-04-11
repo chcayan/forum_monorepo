@@ -36,7 +36,6 @@ type UserListType = 'follow' | 'fan' | undefined
 const isFollowOrFan = ref<UserListType>()
 
 const onShowFollowList = () => {
-  console.log(666)
   showFollowList.value = !showFollowList.value
   showFanList.value = false
   isFollowOrFan.value = 'follow'
@@ -91,6 +90,7 @@ const follow = async () => {
     }
     await userStore.getUserFollowList()
     await userStore.getUserFriendList()
+    await userStore.getUserInfo()
     await postStore.getUserInfoWithFans(userId.value)
   } catch {
     uni.showToast({

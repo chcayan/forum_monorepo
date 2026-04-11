@@ -184,11 +184,6 @@ onMounted(async () => {
     }
   })
 })
-
-window.addEventListener('popstate', (e) => {
-  console.log('当前地址：', location.href)
-  console.log('state：', e.state)
-})
 </script>
 
 <template>

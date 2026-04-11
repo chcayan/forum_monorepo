@@ -236,6 +236,8 @@ onUnmounted(() => {
     }
 
     .right {
+      width: 100%;
+
       .main {
         width: calc(100% - 2 * $gap);
         position: fixed;

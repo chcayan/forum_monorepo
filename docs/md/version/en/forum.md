@@ -135,3 +135,10 @@ Current version changes:
 
 - Optimize the back button for mobile devices.
 - Optimization: In full screen image scenes, using gestures to return will result in returning to the previous page without exiting full screen.
+
+### 2.10.4 (260411)
+
+Current version changes:
+
+- optimize style.
+- Fix the issue where the number of followers on my page does not change after adding/removing followers.

@@ -504,6 +504,7 @@ const onPikachuChat = () => {
     padding: 10px;
     height: 100%;
     box-shadow: var(--theme-shadow-color);
+    position: relative;
 
     ul {
       overflow-y: scroll;
@@ -557,12 +558,23 @@ const onPikachuChat = () => {
         right: 10px;
         display: flex;
         flex-direction: column;
-        width: 120px;
-        height: auto;
+        width: 140px;
         border-radius: 10px;
         font-size: 14px;
         background-color: var(--theme-avatar-widget-color);
         box-shadow: var(--theme-shadow-color);
+        height: auto;
+        max-height: 270px;
+        overflow-y: scroll;
+
+        &::-webkit-scrollbar {
+          width: 10px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          border-radius: 10px;
+          background-color: rgb(249, 249, 249);
+        }
 
         li {
           display: flex;
@@ -593,7 +605,7 @@ const onPikachuChat = () => {
 
         input {
           background-color: var(--theme-textarea-bg-color);
-          width: 120px;
+          width: 140px;
           height: 40px;
           padding-left: 10px;
           padding-right: 45px;
