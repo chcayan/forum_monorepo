@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useStatusStore, useUserStore } from '@/stores'
-const statusStore = useStatusStore()
 import { ref, toRaw } from 'vue'
 import ToggleBtn from '@/components/button/ToggleBtn.vue'
 import emitter from '@/utils/eventEmitter'
@@ -17,6 +16,7 @@ import { baseUrl, getImgUrl } from '@/utils'
 const postId = ref('')
 const fileList = ref<{ url: string }[]>([])
 const userStore = useUserStore()
+const statusStore = useStatusStore()
 
 onUnload(() => {
   clearPostId()
