@@ -14,6 +14,8 @@ require('dotenv').config({
 
 console.log('当前环境：', process.env.NODE_ENV)
 
+app.setAppUserModelId('org.chcaya.forum')
+
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 600,
@@ -30,7 +32,7 @@ const createWindow = () => {
   if (!app.isPackaged) {
     // development
     win.loadURL('http://localhost:5173')
-    win.webContents.openDevTools()
+    // win.webContents.openDevTools()
   } else {
     // production
     win.loadFile(path.join(__dirname, '../dist/index.html'))
@@ -60,7 +62,7 @@ if (!gotTheLock) {
   app.whenReady().then(() => {
     const isDev = !app.isPackaged
 
-    const csp = `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: ${process.env.NODE_API_ORIGIN}; connect-src 'self' ${process.env.NODE_API_ORIGIN} ${process.env.NODE_API_ORIGIN.replace(isDev ? 'http' : 'https', isDev ? 'ws' : 'wss')}`
+    const csp = `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: ${process.env.NODE_API_ORIGIN} blob:; connect-src 'self' ${process.env.NODE_API_ORIGIN} ${process.env.NODE_API_ORIGIN.replace(isDev ? 'http' : 'https', isDev ? 'ws' : 'wss')}`
 
     session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
       callback({
