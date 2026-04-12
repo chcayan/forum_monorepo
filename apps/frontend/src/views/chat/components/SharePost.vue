@@ -84,7 +84,7 @@ const navigateToPostDetail = async () => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 200px;
+  width: 190px;
   height: 83px;
   border-radius: 10px;
   padding: 8px 10px;

@@ -231,7 +231,7 @@ defineExpose({
 $main-gap: 20px;
 .chat-toast {
   position: fixed;
-  top: 0;
+  top: -10px;
   left: 50%;
   z-index: $toast-z-index;
   width: auto;

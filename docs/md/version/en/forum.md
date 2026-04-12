@@ -142,3 +142,12 @@ Current version changes:
 
 - optimize style.
 - Fix the issue where the number of followers on my page does not change after adding/removing followers.
+
+### 2.10.5 (260412)
+
+Current version changes:
+
+- optimize style.
+- Fix the issue where the post button disappears in some scenarios.
+- Fix the issue of compressing GIF files into images during upload.
+- Limit the size of GIF files to 5M.

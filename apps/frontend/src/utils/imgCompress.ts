@@ -1,4 +1,5 @@
 import { ImageCompressOptions } from '@/types/imageCompress'
+import { CustomError } from './error'
 
 export const getExt = (type: string) => {
   if (type.includes('webp')) return '.webp'
@@ -99,6 +100,16 @@ export const compressImage = async (
   if (!file) {
     console.error('请上传文件')
     return
+  }
+
+  if (file.type === 'image/gif') {
+    if (file.size / 1024 / 1024 < 5) {
+      return file
+    } else {
+      throw new CustomError('gif 大小不超过 5M', {
+        type: 'IMG_SIZE_LIMIT',
+      })
+    }
   }
 
   const canUseWorker =

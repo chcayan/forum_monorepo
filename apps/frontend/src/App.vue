@@ -33,7 +33,7 @@ async function notify({
     window.electronAPI.notify({
       type: 'chat',
       title: `来自 ${userInfo.username} 的消息：`,
-      body: message,
+      body: isShare === '0' ? message : '# 分享了一条帖子',
     })
   }
 

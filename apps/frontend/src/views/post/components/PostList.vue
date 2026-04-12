@@ -56,7 +56,7 @@ const { postList } = defineProps<{
       gap: initial;
 
       .post-item {
-        width: 100%;
+        width: calc(100vw - 10px);
         padding: 10px 10px 0;
       }
     }

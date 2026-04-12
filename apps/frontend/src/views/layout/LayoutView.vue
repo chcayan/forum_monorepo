@@ -177,17 +177,18 @@ const refreshPost = async () => {
       /></router-link>
       <router-link :to="RouterPath.chat"><ChatSvg /></router-link>
       <router-link :to="RouterPath.publish">
-        <div v-if="!showBackBtnInMobile()">
+        <div style="position: relative">
           <PublishSvg v-if="!route.path.startsWith(RouterPath.publish)" />
           <SendSvg v-else @click="publishPostBtn" />
-        </div>
-        <div
-          tabindex="0"
-          class="tab-focus-style back-mobile"
-          @click="onBack"
-          v-else
-        >
-          <BackSvg />
+          <div
+            style="position: absolute; left: -4px; top: -4px"
+            v-if="showBackBtnInMobile()"
+            tabindex="0"
+            class="tab-focus-style back-mobile"
+            @click="onBack"
+          >
+            <BackSvg />
+          </div>
         </div>
       </router-link>
       <router-link :to="RouterPath.my" class="mobile"><MySvg /></router-link>

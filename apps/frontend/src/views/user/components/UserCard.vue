@@ -5,7 +5,7 @@ import EditSvg from '@/components/svgIcon/EditSvg.vue'
 import SaveSvg from '@/components/svgIcon/SaveSvg.vue'
 import router, { RouterPath } from '@/router'
 import { useUserStore } from '@/stores'
-import { getImgUrl, Toast } from '@/utils'
+import { CustomError, getImgUrl, Toast } from '@/utils'
 import FollowButton from '@/views/post/components/FollowButton.vue'
 import type { UserInfo } from '@forum-monorepo/types'
 import { nextTick, onUnmounted, ref, useTemplateRef } from 'vue'
@@ -98,13 +98,24 @@ const save = async () => {
       msg: '更新成功',
       type: 'success',
     })
-  } catch {
+    close(false)
+  } catch (err: unknown) {
+    if (err instanceof CustomError) {
+      if (err.type === 'IMG_SIZE_LIMIT') {
+        Toast.show({
+          msg: err.message,
+          type: 'error',
+        })
+        close(true)
+        return
+      }
+    }
     Toast.show({
       msg: '更新失败',
       type: 'error',
     })
+    close(true)
   } finally {
-    close(false)
     flag = true
   }
 }

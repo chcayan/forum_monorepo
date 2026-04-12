@@ -4,7 +4,7 @@ import ImgUpload from './components/ImgUpload.vue'
 import ToggleBtn from '@/components/button/ToggleBtn.vue'
 import emitter from '@/utils/eventEmitter'
 import { getPostDetailAPI, publishPostAPI, updatePostInfoAPI } from '@/api'
-import { Toast } from '@/utils'
+import { CustomError, Toast } from '@/utils'
 import { useRoute } from 'vue-router'
 import { PostDetail } from '@forum-monorepo/types'
 import { useUserStore } from '@/stores'
@@ -158,6 +158,15 @@ const publishPost = async () => {
     emitter.emit('EVENT:UPDATE_USER_POST_LIST', res, true)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
+    if (err instanceof CustomError) {
+      if (err.type === 'IMG_SIZE_LIMIT') {
+        Toast.show({
+          msg: err.message,
+          type: 'error',
+        })
+        return
+      }
+    }
     emitter.emit(
       'API:FORBIDDEN',
       err?.response?.data?.message || '服务器异常，请重试'
