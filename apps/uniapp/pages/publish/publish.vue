@@ -57,7 +57,7 @@ onShow(async () => {
         return
       }
 
-      context.value = data.pContent
+      content.value = data.pContent
       fileList.value = data.pImages.map((item) => ({ url: getImgUrl(item) }))
       emitter.emit('EVENT:ECHO_POST_IMAGES', data.pImages)
     } catch (err: any) {
@@ -69,7 +69,7 @@ onShow(async () => {
 const clearPostId = () => {
   uni.removeStorageSync('query')
   postId.value = ''
-  context.value = ''
+  content.value = ''
   fileList.value = []
   isPublic.value = true
   appFlag = true
@@ -79,7 +79,7 @@ emitter.on('EVENT:RESET_PUBLISH_PAGE', () => {
   clearPostId()
 })
 
-const context = ref('')
+const content = ref('')
 const isPublic = ref(true)
 
 const changeStatus = () => {
@@ -139,9 +139,9 @@ const delTag = (name: string) => {
 let flag = true
 const publishPost = async () => {
   if (!flag) return
-  const trimmed = context.value.replace(/\s+$/, '')
-  context.value = trimmed.trim().length ? trimmed : ''
-  if (!context.value) {
+  const trimmed = content.value.replace(/\s+$/, '')
+  content.value = trimmed.trim().length ? trimmed : ''
+  if (!content.value) {
     uni.showToast({
       icon: 'none',
       title: '请输入内容...',
@@ -164,7 +164,7 @@ const publishPost = async () => {
         }
       }
       res = await updatePostInfoAPI({
-        content: context.value as string,
+        content: content.value as string,
         isPublic: isPublic.value ? 'true' : 'false',
         postImages: images,
         postId: postId.value,
@@ -173,13 +173,13 @@ const publishPost = async () => {
       emitter.emit('EVENT:UPDATE_POST_IMAGES', images.length, postId.value)
     } else {
       res = await publishPostAPI({
-        content: context.value as string,
+        content: content.value as string,
         isPublic: isPublic.value ? 'true' : 'false',
         postImages: toRawArray(files.value.filesList),
         tags: tags.value,
       })
     }
-    context.value = ''
+    content.value = ''
     tags.value = []
     files.value.clearFiles()
 
@@ -216,7 +216,7 @@ onShow(() => {
       <textarea
         class="content"
         :class="{ 'theme-content': statusStore.isDarkMode }"
-        v-model="context"
+        v-model="content"
         placeholder="请输入内容..."
       ></textarea>
       <view>

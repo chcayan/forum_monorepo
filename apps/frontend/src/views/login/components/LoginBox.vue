@@ -74,6 +74,7 @@ const submitForm = async () => {
         @input="verifyEmail"
         type="text"
         required
+        name="email"
       />
       <p>
         Email
@@ -87,6 +88,7 @@ const submitForm = async () => {
         @input="verifyPassword"
         type="password"
         required
+        name="password"
       />
       <p>
         Password

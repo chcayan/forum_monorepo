@@ -11,7 +11,7 @@ import { useUserStore } from '@/stores'
 import router, { RouterPath } from '@/router'
 import { compressImage } from '@/utils/imgCompress'
 
-const context = ref<string>('')
+const content = ref<string>('')
 
 const imgUploadRef = useTemplateRef('ImgUploadEl')
 
@@ -32,7 +32,7 @@ onMounted(async () => {
         return
       }
 
-      context.value = data.pContent
+      content.value = data.pContent
       tags.value = data.tags
       emitter.emit('EVENT:ECHO_POST_IMAGES', data.pImages)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -111,9 +111,9 @@ const changeStatus = () => {
 let flag = true
 const publishPost = async () => {
   if (!flag) return
-  const trimmed = context.value.replace(/\s+$/, '')
-  context.value = trimmed.trim().length ? trimmed : ''
-  if (!context.value) {
+  const trimmed = content.value.replace(/\s+$/, '')
+  content.value = trimmed.trim().length ? trimmed : ''
+  if (!content.value) {
     Toast.show({
       msg: '请输入内容...',
       type: 'error',
@@ -128,7 +128,7 @@ const publishPost = async () => {
     if (postId.value) {
       let files = await getPostImages()
       res = await updatePostInfoAPI({
-        content: context.value as string,
+        content: content.value as string,
         isPublic: isPublic.value ? 'true' : 'false',
         postImages: files,
         postId: postId.value as string,
@@ -137,13 +137,13 @@ const publishPost = async () => {
       emitter.emit('EVENT:UPDATE_POST_IMAGES', files.length, postId.value)
     } else {
       res = await publishPostAPI({
-        content: context.value as string,
+        content: content.value as string,
         isPublic: isPublic.value ? 'true' : 'false',
         postImages: await getPostImages(),
         tags: tags.value,
       })
     }
-    context.value = ''
+    content.value = ''
     tags.value = []
     Toast.show({
       msg: postId.value ? '修改成功' : '发布成功',
@@ -192,8 +192,8 @@ onUnmounted(() => {
       <div class="main">
         <h3>内容：</h3>
         <textarea
-          v-model="context"
-          name="context"
+          v-model="content"
+          name="content"
           placeholder="请输入内容..."
         ></textarea>
         <h3>图片：</h3>

@@ -9,7 +9,7 @@ const thunderDiv = useTemplateRef('thunder')
 const bubble = useTemplateRef('bubble')
 const input = useTemplateRef('userInput')
 const sendBtn = useTemplateRef('sendBtn')
-const context = ref('')
+const content = ref('')
 
 onMounted(() => {
   if (container.value) {
@@ -100,15 +100,15 @@ let text: string
 let timer1: number | undefined
 async function sendMessage() {
   if (input.value && sendBtn.value && bubble.value) {
-    if (!context.value) {
+    if (!content.value) {
       text = ''
       triggerShock()
       return
     }
 
     // UI Updates
-    text = context.value
-    context.value = ''
+    text = content.value
+    content.value = ''
     input.value.disabled = true
     sendBtn.value.disabled = true
 
@@ -243,7 +243,7 @@ function applyMood(mood: string) {
       type="text"
       id="userInput"
       ref="userInput"
-      v-model="context"
+      v-model="content"
       placeholder="Chat with Pikachu..."
       autocomplete="off"
     />

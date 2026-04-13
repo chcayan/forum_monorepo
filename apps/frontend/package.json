@@ -9,8 +9,9 @@
     "build": "vite build",
     "build:electron:dev": "vite build --mode electron.development --emptyOutDir",
     "build:electron:prod": "vite build --mode electron.production --emptyOutDir",
-    "preview": "vite build && vite preview",
-    "test:unit": "vitest"
+    "preview": "vite build --mode development && vite preview",
+    "test:unit": "vitest",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "pinia-plugin-persistedstate": "^4.5.0",

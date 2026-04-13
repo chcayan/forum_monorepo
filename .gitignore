@@ -47,3 +47,7 @@ unpackage
 
 # electron
 release
+
+# e2e
+test-results
+storageState.json
