@@ -21,7 +21,6 @@ import { UserPermissionBit } from '../auth/auth.bit';
 import { ReviewViolationReason } from '../admin/entities/review-violation-reason.entity';
 import { formatRemainTimeWithText } from '@/common/utils/date.utils';
 import { UserLog } from '../admin/entities/user-log.entity';
-import { Comment } from '../post/entities/comment.entity';
 
 @Injectable()
 export class UserService {
@@ -36,7 +35,6 @@ export class UserService {
     private readonly reviewViolationReasonRepository: Repository<ReviewViolationReason>,
     @InjectRepository(UserLog)
     private readonly userLogRepository: Repository<UserLog>,
-    @InjectRepository(Comment)
     private readonly dataSource: DataSource,
   ) {}
 

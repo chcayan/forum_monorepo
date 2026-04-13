@@ -16,6 +16,9 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
+
+  // app.enableShutdownHooks();
+
   app.enableCors({
     origin: (
       origin: string,
@@ -39,5 +42,18 @@ async function bootstrap() {
     credentials: true,
   });
   await app.listen(process.env.PORT ?? 3000);
+
+  console.log('当前环境：', process.env.NODE_ENV);
+
+  let flag = false;
+  process.on('SIGINT', () => {
+    if (flag) return;
+    flag = true;
+    void (async () => {
+      console.log('正在关闭应用...');
+      await app.close();
+      process.exit(0);
+    })();
+  });
 }
 void bootstrap();

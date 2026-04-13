@@ -26,5 +26,5 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src", "env.d.ts", "test/**/*.ts"]
+  "include": ["src", "env.d.ts", "e2e/**/*.ts"]
 }

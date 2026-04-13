@@ -34,6 +34,7 @@ import { UserTrack } from './modules/track/entities/user-track.entity';
 import { Tag } from './modules/post/entities/tag.entity';
 import { PostTag } from './modules/post/entities/post-tag.entity';
 import { ErrorTrack } from './modules/track/entities/error-track.entity';
+import { TestModule } from './test/test.module';
 
 @Module({
   imports: [
@@ -76,6 +77,7 @@ import { ErrorTrack } from './modules/track/entities/error-track.entity';
       rootPath: join(process.cwd(), 'uploads'),
       serveRoot: '/uploads',
     }),
+    ...(process.env.NODE_ENV === 'test' ? [TestModule] : []),
     PostModule,
     UserModule,
     AuthModule,
