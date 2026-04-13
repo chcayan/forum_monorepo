@@ -1,11 +1,18 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ResponseInterceptor } from './common/interceptor/response.interceptor';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 
+const logger = new Logger('main');
+
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger:
+      process.env.NODE_ENV === 'test'
+        ? false
+        : ['log', 'error', 'warn', 'debug', 'verbose'],
+  });
 
   app.use(cookieParser());
 
@@ -16,8 +23,6 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
-
-  // app.enableShutdownHooks();
 
   app.enableCors({
     origin: (
@@ -43,17 +48,6 @@ async function bootstrap() {
   });
   await app.listen(process.env.PORT ?? 3000);
 
-  console.log('当前环境：', process.env.NODE_ENV);
-
-  let flag = false;
-  process.on('SIGINT', () => {
-    if (flag) return;
-    flag = true;
-    void (async () => {
-      console.log('正在关闭应用...');
-      await app.close();
-      process.exit(0);
-    })();
-  });
+  logger.log('当前环境：' + process.env.NODE_ENV);
 }
 void bootstrap();

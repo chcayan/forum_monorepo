@@ -10,7 +10,9 @@ import {
 import { ChatService } from './chat.service';
 import { MessageDto } from './dto/message.dto';
 import { Server, Socket } from 'socket.io';
-import { UsePipes, ValidationPipe } from '@nestjs/common';
+import { Logger, UsePipes, ValidationPipe } from '@nestjs/common';
+
+const logger = new Logger('WebSocketGateway');
 
 @WebSocketGateway({
   cors: {
@@ -20,7 +22,7 @@ import { UsePipes, ValidationPipe } from '@nestjs/common';
         process.env.CORS_ORIGIN_1,
         'file://',
       ];
-      console.log('origin: ', origin);
+      logger.log(`origin: ${origin}`);
       if (
         !origin ||
         allowedOrigins.includes(origin) ||
@@ -51,7 +53,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(private readonly chatService: ChatService) {}
 
   handleConnection(client: Socket) {
-    console.log(`连接：${client.id}`);
+    logger.log(`连接：${client.id}`);
   }
 
   handleDisconnect(client: Socket) {
@@ -66,7 +68,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
           );
         }
 
-        console.log(`${username} 断开连接`);
+        logger.log(`${username} 断开连接`);
         break;
       }
     }
@@ -107,7 +109,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
           .emit('receiveOnlineList', this.onLineMap.get(_u));
       }
     }
-    console.log(`${username} 登录，绑定到 ${client.id}`);
+    logger.log(`${username} 登录，绑定到 ${client.id}`);
   }
 
   @SubscribeMessage('sendMessage')

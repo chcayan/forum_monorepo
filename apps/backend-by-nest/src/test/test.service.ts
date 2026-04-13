@@ -1,12 +1,18 @@
-import { Injectable, OnApplicationShutdown } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 
 @Injectable()
-export class TestService implements OnApplicationShutdown {
+export class TestService implements OnModuleInit {
   constructor(private readonly dataSource: DataSource) {}
 
-  async onApplicationShutdown() {
-    console.log('清理数据库...');
+  private readonly logger = new Logger(TestService.name);
+
+  async onModuleInit() {
+    await this.clearDatabase();
+  }
+
+  async clearDatabase() {
+    this.logger.log('清理数据库...');
 
     await this.dataSource.query('SET FOREIGN_KEY_CHECKS = 0');
 
@@ -17,6 +23,6 @@ export class TestService implements OnApplicationShutdown {
 
     await this.dataSource.query('SET FOREIGN_KEY_CHECKS = 1');
 
-    console.log('清理完成');
+    this.logger.log('清理完成');
   }
 }
