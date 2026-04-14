@@ -151,3 +151,10 @@ Current version changes:
 - Fix the issue where the post button disappears in some scenarios.
 - Fix the issue of compressing GIF files into images during upload.
 - Limit the size of GIF files to 5M.
+
+### 2.10.6 (260414)
+
+Current version changes:
+
+- Support clicking on user avatar/name in the comment list/chat page to enter the user page.
+- Optimize user page details.

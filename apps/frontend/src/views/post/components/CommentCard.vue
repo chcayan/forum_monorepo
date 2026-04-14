@@ -5,6 +5,8 @@ import type { CommentList } from '@forum-monorepo/types'
 import { formatDateByYear } from '@forum-monorepo/utils'
 import CommentReportModal from './CommentReportModal.vue'
 import { ref } from 'vue'
+import router, { RouterPath } from '@/router'
+import { useUserStore } from '@/stores'
 
 const { comment } = defineProps<{
   comment: CommentList
@@ -33,15 +35,33 @@ const closeReportModal = () => {
   document.body.removeEventListener('wheel', wheelEvent)
   document.body.removeEventListener('touchmove', touchEvent)
 }
+
+const userStore = useUserStore()
+
+const navigateToUser = (userId: string) => {
+  if (userId === userStore.userInfo.userId) {
+    router.push(RouterPath.my)
+    return
+  }
+  // emitter.emit('EVENT:REACTIVE_USER_VIEW', userId)
+
+  router.push(`${RouterPath.user}/${userId}`)
+}
 </script>
 
 <template>
   <div class="comment-card">
     <div class="header">
-      <img :src="getImgUrl(comment.userAvatar)" alt="avatar" />
+      <img
+        :src="getImgUrl(comment.userAvatar)"
+        alt="avatar"
+        @click="navigateToUser(comment.userId)"
+      />
       <div class="box">
         <div class="left">
-          <span>{{ comment?.username }}</span>
+          <span @click="navigateToUser(comment.userId)">{{
+            comment?.username
+          }}</span>
           <span class="time">{{ formatDateByYear(comment.createdTime) }}</span>
         </div>
         <div class="right">
@@ -96,6 +116,7 @@ $main-gap: 20px;
 
         .time {
           font-size: 11px;
+          cursor: initial;
         }
       }
 

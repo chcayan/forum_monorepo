@@ -275,7 +275,13 @@ onUnmounted(() => {
           style="display: none"
         />
       </label>
-      <div v-if="userInfo.userId === userStore.userInfo?.userId" class="btn">
+      <div
+        v-if="
+          userInfo.userId === userStore.userInfo?.userId &&
+          route.path.startsWith(RouterPath.my)
+        "
+        class="btn"
+      >
         <MsgSvg v-if="!isContenteditable" @click="navigateToMessage" />
         <EditSvg
           tabindex="0"
@@ -284,7 +290,7 @@ onUnmounted(() => {
           @click="edit"
           @keydown.enter="edit"
         />
-        <div v-else>
+        <div v-if="isContenteditable">
           <SaveSvg
             tabindex="0"
             class="tab-focus-style"
@@ -299,7 +305,10 @@ onUnmounted(() => {
           />
         </div>
       </div>
-      <div class="follow-btn" v-else>
+      <div
+        class="follow-btn"
+        v-if="userInfo.userId !== userStore.userInfo?.userId"
+      >
         <FollowButton
           class="f-btn"
           :isFollow="userStore.userFollowIdList.includes(userInfo.userId)"

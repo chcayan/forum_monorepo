@@ -395,9 +395,18 @@ const onPikachuChat = () => {
     <div class="right" :class="{ 'right-up': showChatBox }">
       <div class="chat-box" v-if="currentFriendUsername || isPikachuChat">
         <header v-if="!isPikachuChat">
-          <img :src="getImgUrl(currentFriendAvatar)" />
+          <img
+            :src="getImgUrl(currentFriendAvatar)"
+            @click="navigateToUser(currentFriendUserId)"
+            style="cursor: pointer"
+          />
           <div>
-            <p>{{ currentFriendUsername }}</p>
+            <p
+              @click="navigateToUser(currentFriendUserId)"
+              style="cursor: pointer"
+            >
+              {{ currentFriendUsername }}
+            </p>
             <p class="online">
               {{
                 userStore.onLineList.includes(currentFriendUserId)
