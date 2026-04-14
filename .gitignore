@@ -34,13 +34,13 @@ desktop.ini
 .env.electron.production
 
 # images
+apps/backend_deprecated/uploads/*
+!apps/backend_deprecated/uploads/default/
+!apps/backend_deprecated/uploads/default/**
+
 apps/backend/uploads/*
 !apps/backend/uploads/default/
 !apps/backend/uploads/default/**
-
-apps/backend-by-nest/uploads/*
-!apps/backend-by-nest/uploads/default/
-!apps/backend-by-nest/uploads/default/**
 
 # uniapp
 unpackage

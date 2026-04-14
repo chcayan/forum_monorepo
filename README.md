@@ -8,7 +8,7 @@ Optimize and refactor previous projects: https://github.com/chcayan/forum
 
 Using Monorepo for Project Management.
 
-This project includes web, app, and desktop (Windows). The app is built on Uniapp, while the desktop is built on Electron
+This project includes web, mobile (Android), and desktop (Windows). The mobile app is built on UniApp, while the desktop app is built on Electron.
 
 ---
 
@@ -106,7 +106,7 @@ Run the Uniapp project using HBuilderX.
 Start electron related services.
 
 ```bash
-pnpm start:electron:serve
+pnpm start:electron:service
 ```
 
 Start Electron.
@@ -117,8 +117,26 @@ pnpm start:electron:app
 
 ## Tip
 
-- "apps/backend" has been deprecated, and the backend project is now "apps/backend-by-nest".
 - Default administrator account: admin@forum.com, Password: admin123
+
+## 项目结构
+
+    forum-monorepo/
+    ├── apps/                    # Apps
+    │   ├── admin/               # Manage system
+    │   ├── backend/             # Backend service
+    │   ├── backend_deprecated/  # Backend service (deprecated)
+    │   ├── electron/            # Desktop
+    │   ├── frontend/            # Web
+    │   └── uniapp/              # Mobile
+    ├── database/                # Database files
+    ├── docs/                    # Document
+    │   ├── api/                 # Api document
+    │   └── version/             # Application version description
+    ├── packages/                # Common module
+    │   ├── types/               # Type file
+    │   └── utils/               # Utility function
+    └── script/                  # Script file
 
 ## Version
 

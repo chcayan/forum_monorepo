@@ -69,7 +69,7 @@ const config: Linter.Config[] = defineConfig(
 
   // backend
   {
-    files: ['apps/backend/**/*.{ts,js}'],
+    files: ['apps/backend_deprecated/**/*.{ts,js}'],
     languageOptions: {
       globals: {
         ...globals.node,
@@ -79,7 +79,7 @@ const config: Linter.Config[] = defineConfig(
 
   // backend-by-nest
   {
-    files: ['apps/backend-by-nest/**/*.{ts,js}'],
+    files: ['apps/backend/**/*.{ts,js}'],
     extends: [
       eslint.configs.recommended,
       ...tseslint.configs.recommendedTypeChecked,

@@ -8,7 +8,7 @@
 
 使用 monorepo 进行项目管理
 
-本项目包含 web 端、app 端和桌面端（win），app 基于 uniapp 构建，桌面的基于 electron 构建
+本项目包含 web 端、手机端（android）和桌面端（win），手机端基于 uniapp 构建，桌面端基于 electron 构建
 
 ---
 
@@ -106,7 +106,7 @@ pnpm start:backend
 启动 electron 相关服务
 
 ```bash
-pnpm start:electron:serve
+pnpm start:electron:service
 ```
 
 启动 electron
@@ -117,8 +117,26 @@ pnpm start:electron:app
 
 ## 提示
 
-- apps/backend 已弃用，后端项目现为 apps/backend-by-nest
 - 默认管理员账号：admin@forum.com，密码：admin123
+
+## 项目结构
+
+    forum-monorepo/
+    ├── apps/                    # 应用
+    │   ├── admin/               # 管理系统
+    │   ├── backend/             # 后端服务
+    │   ├── backend_deprecated/  # 后端服务（已弃用）
+    │   ├── electron/            # 桌面端应用
+    │   ├── frontend/            # web 应用
+    │   └── uniapp/              # 手机端应用
+    ├── database/                # 数据库文件
+    ├── docs/                    # 文档
+    │   ├── api/                 # api 文档
+    │   └── version/             # 应用版本说明
+    ├── packages/                # 公共模块
+    │   ├── types/               # 类型文件
+    │   └── utils/               # 工具函数
+    └── script/                  # 脚本文件
 
 ## 版本
 

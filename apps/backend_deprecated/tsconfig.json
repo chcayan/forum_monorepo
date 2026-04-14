@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "lib": ["ESNext"],
+    "esModuleInterop": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "declaration": true,
+    "paths": {
+      "@configs/*": ["./src/configs/*"],
+      "@middleware/*": ["./src/middleware/*"]
+    }
+  },
+  "include": ["src", "env.d.ts"]
+}
