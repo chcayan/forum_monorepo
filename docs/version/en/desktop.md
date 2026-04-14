@@ -16,3 +16,9 @@ Current version changes:
 
 - Synchronize web content.
 - Fix the issue of image display failure on the publish/modify post page.
+
+### 1.1.0 (260414)
+
+Current version changes:
+
+- Add background process.

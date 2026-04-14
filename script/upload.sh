@@ -4,10 +4,10 @@ SERVER_USER="ubuntu"
 SERVER_IP="211.159.186.18"
 
 LOCAL_FILES=(
-  "./apps/backend-by-nest/dist"
+  "./apps/backend/dist"
   "./apps/frontend/dist"
   # "./apps/admin/dist"
-  # "./apps/backend-by-nest/.env.production"
+  # "./apps/backend/.env.production"
 )
 
 REMOTE_DIRS=(

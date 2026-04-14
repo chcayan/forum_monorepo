@@ -18,8 +18,8 @@ function showNotification(
 
       notification.once('click', () => {
         if (win.isMinimized()) win.restore()
-        win.focus()
         win.show()
+        win.focus()
       })
 
       notification.on('close', () => {

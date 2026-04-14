@@ -1,6 +1,14 @@
 // @ts-check
 const path = require('node:path')
-const { session, app, BrowserWindow, ipcMain, Menu } = require('electron')
+const {
+  session,
+  app,
+  BrowserWindow,
+  ipcMain,
+  Menu,
+  Tray,
+  nativeImage,
+} = require('electron')
 const { showNotification } = require('./utils/notify')
 
 require('dotenv').config({
@@ -14,10 +22,13 @@ require('dotenv').config({
 
 console.log('当前环境：', process.env.NODE_ENV)
 
-app.setAppUserModelId('org.chcaya.forum')
+/** @type {BrowserWindow} */
+let win
+let tray
+let isQuitting = false
 
 const createWindow = () => {
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     width: 600,
     height: 900,
     minWidth: 375,
@@ -39,22 +50,60 @@ const createWindow = () => {
     // win.webContents.openDevTools()
   }
 
-  return win
+  win.on('close', (e) => {
+    if (!isQuitting) {
+      e.preventDefault()
+      win.hide()
+    }
+  })
 }
 
-/** @type {BrowserWindow} */
-let mainWin
+const createTray = () => {
+  const iconPath = path.join(__dirname, 'assets/icon.png')
+  const trayIcon = nativeImage.createFromPath(iconPath)
+  tray = new Tray(trayIcon)
+
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: '打开',
+      click: () => {
+        if (win) {
+          win.show()
+        }
+      },
+    },
+    {
+      label: '退出',
+      click: () => {
+        isQuitting = true
+        app.quit()
+      },
+    },
+  ])
+
+  tray.setToolTip('forum')
+  tray.setContextMenu(contextMenu)
+
+  tray.on('click', () => {
+    if (win) {
+      if (win.isMinimized()) win.restore()
+      win.show()
+      win.focus()
+    }
+  })
+}
+
 const gotTheLock = app.requestSingleInstanceLock()
 
 if (!gotTheLock) {
   app.quit()
 } else {
   app.on('second-instance', () => {
-    if (mainWin) {
-      if (mainWin.isMinimized()) mainWin.restore()
+    if (win) {
+      if (win.isMinimized()) win.restore()
 
-      mainWin.show()
-      mainWin.focus()
+      win.show()
+      win.focus()
     }
   })
 
@@ -75,7 +124,8 @@ if (!gotTheLock) {
 
     ipcMain.on('notify', handleNotify)
 
-    mainWin = createWindow()
+    createWindow()
+    createTray()
 
     app.on('activate', () => {
       if (BrowserWindow.getAllWindows().length === 0) {
