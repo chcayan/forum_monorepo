@@ -108,9 +108,14 @@ function renderPreview() {
     }
 
     img.ondrop = (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+
       const target = e.target as HTMLElement
       if (!target) return
       const index = Number(target.dataset.index)
+
+      if (e.dataTransfer?.files?.length && !dragIndex) return
 
       if (dragIndex === null || dragIndex === index) return
       ;[allImages[dragIndex], allImages[index]] = [
@@ -192,6 +197,14 @@ onMounted(() => {
 
 const handleDrop = (e: DragEvent) => {
   e.preventDefault()
+
+  if (allImages.length + e.dataTransfer!.files.length > 9) {
+    Toast.show({
+      msg: '最多只能上传 9 张图片！',
+      type: 'error',
+    })
+    return
+  }
 
   const files = Array.from(e.dataTransfer!.files).sort((a, b) =>
     a.name.localeCompare(b.name)
