@@ -154,6 +154,7 @@ onUnmounted(() => {
     footer {
       position: sticky;
       top: 150px;
+      z-index: $tab-z-index;
 
       ul {
         width: 400px;

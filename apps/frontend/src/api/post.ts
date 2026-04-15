@@ -92,7 +92,9 @@ export async function publishPostAPI(data: PostPublish) {
 
     return postId
   } catch (err) {
-    await deleteUserPostAPI(postId)
+    if (postId) {
+      await deleteUserPostAPI(postId)
+    }
     throw err
   }
 }

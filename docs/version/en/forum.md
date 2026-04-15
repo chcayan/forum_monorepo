@@ -158,3 +158,11 @@ Current version changes:
 
 - Support clicking on user avatar/name in the comment list/chat page to enter the user page.
 - Optimize user page details.
+
+### 2.10.7 (260415)
+
+Current version changes:
+
+- Optimize the toast for users who are banned from posting.
+- Fix the styling issue of the comment reporting overlay.
+- Fix the issue where tag can still be added with empty content.

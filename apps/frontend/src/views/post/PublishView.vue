@@ -68,6 +68,14 @@ const tag = ref('')
 const tags = ref<string[]>([])
 
 const addTag = () => {
+  if (!tag.value.trim()) {
+    Toast.show({
+      msg: '标签内容不能为空',
+      type: 'error',
+    })
+    return
+  }
+
   if (tag.value.length > 20) {
     Toast.show({
       msg: '标签长度不超过20字符',
@@ -279,6 +287,7 @@ onUnmounted(() => {
         button {
           width: 35px;
           height: 35px;
+          padding-bottom: 5px;
           font-size: 20px;
           margin-left: 15px;
           background-color: var(--theme-button-color);

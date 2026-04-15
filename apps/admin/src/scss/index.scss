@@ -70,6 +70,7 @@ button:focus-visible,
 img {
   display: block;
   transition: all 0.3s ease;
+  object-fit: cover;
 }
 
 .del-img {
