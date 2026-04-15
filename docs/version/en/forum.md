@@ -166,3 +166,10 @@ Current version changes:
 - Optimize the toast for users who are banned from posting.
 - Fix the styling issue of the comment reporting overlay.
 - Fix the issue where tag can still be added with empty content.
+
+### 2.11.0 (260415)
+
+Current version changes:
+
+- Add the function of dragging images to the posting page.
+- Add drag and drop image exchange function on the posting page.

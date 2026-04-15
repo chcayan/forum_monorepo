@@ -3,8 +3,8 @@ import { Toast } from '@/utils'
 import emitter from '@/utils/eventEmitter'
 import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 
-const inputRef = useTemplateRef('inputEl')
-const divRef = useTemplateRef('divEl')
+const inputRef = useTemplateRef('inputRef')
+const divRef = useTemplateRef('divRef')
 
 const isHide = ref(false)
 
@@ -12,21 +12,156 @@ type ImageItem = { type: 'file'; file: File } | { type: 'url'; url: string }
 
 const allImages: ImageItem[] = []
 
+let inputEl: HTMLInputElement | null
+let previewEl: HTMLDivElement | null
+
 let off: () => void
 let off1: () => void
 
+async function setImages(urls: string[]) {
+  allImages.length = 0
+
+  for (let i = 0; i < urls.length; i++) {
+    const res = await fetch(urls[i]!)
+    const blob = await res.blob()
+    const name = urls[i]!.split('/').pop() || 'image.jpg'
+    allImages.push({
+      type: 'file',
+      file: new File([blob], name, {
+        type: blob.type,
+      }),
+    })
+  }
+
+  renderPreview()
+}
+
+let dragIndex: number | null
+let hoverIndex: number | null
+
+function renderPreview() {
+  if (!previewEl) return
+
+  previewEl.innerHTML = ''
+
+  const frag = document.createDocumentFragment()
+
+  allImages.forEach((item, index) => {
+    // if (!item.type.startsWith('image/')) return
+
+    const img = document.createElement('img')
+
+    if (item.type === 'file') {
+      img.src = URL.createObjectURL(item.file)
+    } else {
+      img.src = item.url
+    }
+
+    img.classList.add('del-img')
+    img.alt = 'post-img'
+    img.title = '删除？'
+
+    img.style.width = '100%'
+    img.style.height = '100%'
+    img.style.aspectRatio = '1'
+    img.style.objectFit = 'cover'
+    img.style.borderRadius = '10px'
+
+    img.onclick = () => {
+      allImages.splice(index, 1)
+      renderPreview()
+      isHide.value = false
+    }
+
+    // 拖拽
+    img.dataset.index = index.toString()
+    img.draggable = true
+
+    img.ondragstart = (e) => {
+      const target = e.target as HTMLElement
+
+      if (target) {
+        dragIndex = Number(target.dataset.index)
+      }
+    }
+
+    img.ondragenter = (e) => {
+      const target = e.target as HTMLElement
+
+      if (target) {
+        const newIndex = Number(target.dataset.index)
+        if (hoverIndex !== newIndex) {
+          hoverIndex = newIndex
+          updateHighlight()
+        }
+      }
+    }
+
+    img.ondragover = (e) => {
+      e.preventDefault()
+    }
+
+    img.ondragend = () => {
+      dragIndex = null
+      hoverIndex = null
+      updateHighlight()
+    }
+
+    img.ondrop = (e) => {
+      const target = e.target as HTMLElement
+      if (!target) return
+      const index = Number(target.dataset.index)
+
+      if (dragIndex === null || dragIndex === index) return
+      ;[allImages[dragIndex], allImages[index]] = [
+        allImages[index]!,
+        allImages[dragIndex]!,
+      ]
+
+      dragIndex = null
+      hoverIndex = null
+
+      renderPreview()
+    }
+
+    function updateHighlight() {
+      if (!previewEl) return
+      const imgs = previewEl.querySelectorAll('img')
+
+      imgs.forEach((img, i) => {
+        if (i === dragIndex || i === hoverIndex) {
+          img.style.transition = 'none'
+          img.style.outline = '5px solid rgba(177, 177, 177, 1)'
+        } else {
+          img.style.transition = 'none'
+          img.style.outline = 'none'
+        }
+      })
+    }
+
+    frag.appendChild(img)
+  })
+
+  previewEl.appendChild(frag)
+
+  isHide.value = allImages.length === 9
+}
+
 onMounted(() => {
-  const inputEl = inputRef.value
-  const previewEl = divRef.value
+  inputEl = inputRef.value
+  previewEl = divRef.value
 
   if (!inputEl || !previewEl) return
 
   off = emitter.on('EVENT:RESET_POST_IMAGES', () => {
     allImages.length = 0
-    previewEl.innerHTML = ''
+    if (previewEl) {
+      previewEl.innerHTML = ''
+    }
   })
 
   inputEl.addEventListener('change', () => {
+    if (!inputEl) return
     const newFiles = Array.from(inputEl.files ?? [])
 
     if (allImages.length + newFiles.length > 9) {
@@ -50,86 +185,31 @@ onMounted(() => {
     inputEl.value = ''
   })
 
-  async function setImages(urls: string[]) {
-    allImages.length = 0
-
-    for (let i = 0; i < urls.length; i++) {
-      const res = await fetch(urls[i]!)
-      const blob = await res.blob()
-      const name = urls[i]!.split('/').pop() || 'image.jpg'
-      allImages.push({
-        type: 'file',
-        file: new File([blob], name, {
-          type: blob.type,
-        }),
-      })
-    }
-
-    // allImages.push(
-    //   ...urls.map((url): ImageItem => {
-    //     const res = await fetch(url)
-    //     const blob = await res.blob()
-    //     const name = item.url.split('/').pop() || 'image.jpg'
-
-    //     return {
-    //       type: 'file',
-    //       file: new File([blob], name, {
-    //         type: blob.type,
-    //       }),
-    //     }
-    //   })
-    // )
-
-    renderPreview()
-  }
-
   off1 = emitter.on('EVENT:ECHO_POST_IMAGES', (images: string[]) => {
     setImages(images)
   })
+})
 
-  function renderPreview() {
-    if (!previewEl) return
-    previewEl.innerHTML = ''
+const handleDrop = (e: DragEvent) => {
+  e.preventDefault()
 
-    const frag = document.createDocumentFragment()
+  const files = Array.from(e.dataTransfer!.files).sort((a, b) =>
+    a.name.localeCompare(b.name)
+  )
 
-    allImages.forEach((item, index) => {
-      // if (!item.type.startsWith('image/')) return
+  for (const file of files) {
+    if (!file.type.startsWith('image/')) continue
 
-      const img = document.createElement('img')
-
-      if (item.type === 'file') {
-        img.src = URL.createObjectURL(item.file)
-      } else {
-        img.src = item.url
-      }
-
-      // img.src = URL.createObjectURL(file)
-
-      img.classList.add('del-img')
-      img.alt = 'post-img'
-      img.title = '删除？'
-
-      img.style.width = '100%'
-      img.style.height = '100%'
-      img.style.aspectRatio = '1'
-      img.style.objectFit = 'cover'
-      img.style.borderRadius = '10px'
-
-      img.onclick = () => {
-        allImages.splice(index, 1)
-        renderPreview()
-        isHide.value = false
-      }
-
-      frag.appendChild(img)
+    allImages.push({
+      type: 'file' as const,
+      file,
     })
 
-    previewEl.appendChild(frag)
-
-    isHide.value = allImages.length === 9
+    renderPreview()
   }
-})
+}
+
+let dragging = ref(false)
 
 onUnmounted(() => {
   off?.()
@@ -143,23 +223,27 @@ defineExpose({
 
 <template>
   <div class="img-upload">
-    <div ref="divEl" id="preview"></div>
+    <div ref="divRef" id="preview"></div>
     <label
       tabindex="0"
       class="tab-focus-outline-style image"
       :class="{ hide: isHide }"
       title="添加图片"
       @keydown.enter="inputRef?.click()"
+      @dragover.prevent
+      @drop="handleDrop"
+      @dragenter="dragging = true"
+      @dragleave="dragging = false"
     >
       <input
-        ref="inputEl"
+        ref="inputRef"
         type="file"
         id="imageInput"
         multiple
         accept="image/*"
         style="display: none"
       />
-      <p>+</p>
+      <p :class="{ dragging }">+</p>
     </label>
   </div>
 </template>
@@ -188,6 +272,12 @@ defineExpose({
       font-size: 50px;
       opacity: 0.5;
       transition: all 0.3s ease;
+      pointer-events: none;
+    }
+
+    .dragging {
+      transform: scale(1.05);
+      opacity: 1;
     }
 
     &:hover {
