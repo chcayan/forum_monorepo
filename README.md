@@ -119,7 +119,7 @@ pnpm start:electron:app
 
 - Default administrator account: admin@forum.com, Password: admin123
 
-## 项目结构
+## Project structure
 
     forum-monorepo/
     ├── apps/                    # Apps

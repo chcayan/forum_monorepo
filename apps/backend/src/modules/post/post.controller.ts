@@ -119,7 +119,7 @@ export class PostController {
   }
 
   @Get('tag')
-  async findPostsByTah(
+  async findPostsByTag(
     @Query('name') name: string,
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,

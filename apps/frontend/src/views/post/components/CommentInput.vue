@@ -68,7 +68,7 @@ let timer: number | undefined
 const userStore = useUserStore()
 watch(textarea, () => {
   if (userStore.token) return
-  if (textarea.value === '卖掉了') {
+  if (textarea.value === '1234') {
     timer = setTimeout(() => {
       Toast.show({
         msg: '觉醒了神秘的黑暗力量😶‍🌫️',
